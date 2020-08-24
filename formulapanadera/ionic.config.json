@@ -1,0 +1,7 @@
+{
+  "name": "formulapanadera",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
