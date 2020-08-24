@@ -1,0 +1,16 @@
+{
+  "tab1": {
+    "tabName": "Tab One",
+    "invite": "Now you have selected {{lang}}"
+  },
+  "tab2": {
+    "tabName": "Tab Two"
+  },
+  "tab3": {
+    "tabName": "Tab Three"
+  },
+  "change": "Change",
+  "OK": "OK",
+  "CANCEL": "Cancel",
+  "SELECT_LANGUAGE": "Select your language"
+}

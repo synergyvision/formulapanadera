@@ -1,0 +1,16 @@
+{
+  "tab1": {
+    "tabName": "Primera pestaña",
+    "invite": "Seleccionaste {{lang}}"
+  },
+  "tab2": {
+    "tabName": "Segunda pestaña"
+  },
+  "tab3": {
+    "tabName": "Tercera pestaña"
+  },
+  "change": "Cambiar",
+  "OK": "OK",
+  "CANCEL": "Cancelar",
+  "SELECT_LANGUAGE": "Selecciona el lenguaje"
+}
