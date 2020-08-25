@@ -1,15 +1,19 @@
 {
-  "tab1": {
-    "tabName": "Primera pestaña",
-    "invite": "Seleccionaste {{lang}}"
+  "production": {
+    "name": "Producción"
   },
-  "tab2": {
-    "tabName": "Segunda pestaña"
+  "recipes": {
+    "name": "Recetas",
+    "mine": "Mias",
+    "shared": "Compartidas"
   },
-  "tab3": {
-    "tabName": "Tercera pestaña"
+  "ingredients": {
+    "name": "Ingredientes"
   },
-  "change": "Cambiar",
+  "settings": {
+    "name": "Configuración",
+    "language": { "change": "Cambiar idioma" }
+  },
   "OK": "OK",
   "CANCEL": "Cancelar",
   "SELECT_LANGUAGE": "Selecciona el lenguaje"

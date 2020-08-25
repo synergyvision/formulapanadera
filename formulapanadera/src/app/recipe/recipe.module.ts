@@ -4,18 +4,18 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
-import { Tab2Page } from "./tab2.page";
+import { RecipePage } from "./recipe.page";
 
-import { Tab2PageRoutingModule } from "./tab2-routing.module";
+import { RecipePageRoutingModule } from "./recipe-routing.module";
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    Tab2PageRoutingModule,
+    RecipePageRoutingModule,
     TranslateModule.forChild(),
   ],
-  declarations: [Tab2Page],
+  declarations: [RecipePage],
 })
-export class Tab2PageModule {}
+export class RecipePageModule {}

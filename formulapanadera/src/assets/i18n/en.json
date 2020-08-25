@@ -1,13 +1,18 @@
 {
-  "tab1": {
-    "tabName": "Tab One",
-    "invite": "Now you have selected {{lang}}"
+  "production": {
+    "name": "Production"
   },
-  "tab2": {
-    "tabName": "Tab Two"
+  "recipes": {
+    "name": "Recipes",
+    "mine": "Mine",
+    "shared": "Shared"
   },
-  "tab3": {
-    "tabName": "Tab Three"
+  "ingredients": {
+    "name": "Ingredients"
+  },
+  "settings": {
+    "name": "Settings",
+    "language": { "change": "Change language" }
   },
   "change": "Change",
   "OK": "OK",
