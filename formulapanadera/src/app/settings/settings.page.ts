@@ -1,73 +1,23 @@
 import { Component } from "@angular/core";
 
-import { TranslateService } from "@ngx-translate/core";
-import { AlertController } from "@ionic/angular";
 import { LanguageService } from "../utils/language/language.service";
 
 @Component({
   selector: "app-settings",
   templateUrl: "settings.page.html",
-  styleUrls: ["./styles/settings.page.scss"],
+  styleUrls: [
+    "./styles/settings.page.scss",
+    "./../utils/language/styles/change-language.alert.scss",
+  ],
 })
 export class SettingsPage {
-  available_languages = [];
-  translations;
-
-  constructor(
-    private translateService: TranslateService,
-    private languageService: LanguageService,
-    private alertController: AlertController
-  ) {}
+  constructor(private languageService: LanguageService) {}
 
   ngOnInit(): void {
-    this.getTranslations();
-
-    this.translateService.onLangChange.subscribe(() => {
-      this.getTranslations();
-    });
-  }
-
-  getTranslations() {
-    // get translations for this page to use in the Language Chooser Alert
-    this.translateService
-      .getTranslation(this.translateService.currentLang)
-      .subscribe((translations) => {
-        this.translations = translations;
-      });
+    this.languageService.initLanguages();
   }
 
   async openLanguageChooser() {
-    this.available_languages = this.languageService
-      .getLanguages()
-      .map((item) => ({
-        name: item.name,
-        type: "radio",
-        label: item.name,
-        value: item.code,
-        checked: item.code === this.translateService.currentLang,
-      }));
-
-    const alert = await this.alertController.create({
-      header: this.translations.SELECT_LANGUAGE,
-      inputs: this.available_languages,
-      cssClass: "language-alert",
-      buttons: [
-        {
-          text: this.translations.CANCEL,
-          role: "cancel",
-          cssClass: "secondary",
-          handler: () => {},
-        },
-        {
-          text: this.translations.OK,
-          handler: (data) => {
-            if (data) {
-              this.translateService.use(data);
-            }
-          },
-        },
-      ],
-    });
-    await alert.present();
+    await this.languageService.openLanguageChooser();
   }
 }
