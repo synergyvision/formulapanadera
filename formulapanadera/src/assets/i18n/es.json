@@ -2,8 +2,8 @@
   "production": {
     "name": "Producción"
   },
-  "recipes": {
-    "name": "Recetas",
+  "formulas": {
+    "name": "Fórmulas",
     "mine": "Mias",
     "shared": "Compartidas"
   },
