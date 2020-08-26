@@ -15,7 +15,7 @@ export class AuthService {
   profileDataStore: DataStore<UserModel>;
   redirectResult: Subject<any> = new Subject<any>();
 
-  constructor(public angularFire: AngularFireAuth, public platform: Platform) {
+  constructor(private angularFire: AngularFireAuth, private platform: Platform) {
     this.angularFire.onAuthStateChanged((user) => {
       if (user) {
         // User is signed in.
@@ -47,7 +47,7 @@ export class AuthService {
     return this.redirectResult.asObservable();
   }
 
-  public getProfileDataSource(): Observable<UserModel> {
+  private getProfileDataSource(): Observable<UserModel> {
     const userModel = new UserModel();
     const provierData = this.currentUser.providerData[0];
 
@@ -82,7 +82,7 @@ export class AuthService {
     return this.angularFire.createUserWithEmailAndPassword(email, password);
   }
 
-  public getProfileStore(
+  private getProfileStore(
     dataSource: Observable<UserModel>
   ): DataStore<UserModel> {
     // Initialize the model specifying that it is a shell model

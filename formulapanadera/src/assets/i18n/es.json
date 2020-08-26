@@ -9,7 +9,11 @@
     "sign_up": "Registrarse",
     "sign_in": "Iniciar sesión",
     "account_question": "¿Ya tienes una cuenta?",
-    "forgot_password": "¿Olvidaste tu contraseña?"
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "recover_password": "Recupera tu contraseña",
+    "recover": "Recuperar",
+    "recover_indications": "Por favor ingresa tu dirección de correo electrónico y te enviaremos un correo para restablecer tu contraseña.",
+    "reset_password": "Restablecer contraseña"
   },
   "validation": {
     "required": {

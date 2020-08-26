@@ -20,7 +20,7 @@ export class SignUpPage implements OnInit {
   submitError: string;
   redirectLoader: HTMLIonLoadingElement;
   authRedirectResult: Subscription;
-  validation_messages;
+  validation_messages: Object;
 
   constructor(
     private router: Router,

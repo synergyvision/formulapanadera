@@ -1,12 +1,12 @@
 import { NgModule } from "@angular/core";
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "./utils/guards/auth.guard";
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from "./auth/auth.module";
 
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "/auth/sign-up",
+    redirectTo: "/auth/sign-in",
     pathMatch: "full",
   },
   {
@@ -22,7 +22,8 @@ const routes: Routes = [
 ];
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }), AuthModule
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+    AuthModule,
   ],
   exports: [RouterModule],
   providers: [AuthGuard],

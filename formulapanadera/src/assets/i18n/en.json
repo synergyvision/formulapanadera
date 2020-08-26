@@ -9,7 +9,11 @@
     "sign_up": "Sign up",
     "sign_in": "Sign in",
     "account_question": "Already have an account?",
-    "forgot_password": "Forgot password?"
+    "forgot_password": "Forgot password?",
+    "recover_password": "Recover your password",
+    "recover": "Recover",
+    "recover_indications": "Please enter your email address and we'll send you an email to reset your password.",
+    "reset_password": "Reset password"
   },
   "validation": {
     "required": {
