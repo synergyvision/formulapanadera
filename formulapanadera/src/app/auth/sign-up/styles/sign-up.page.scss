@@ -86,16 +86,26 @@
 }
 
 .logo-auth {
-  padding: 20px 0 10px 0;
-  width: 85%;
+  padding: 0 0 10% 0;
+  width: 90%;
   margin: 0 auto;
 }
 
 .company-logo {
   width: 20%;
-
   position: fixed;
   left: 20px;
   bottom: 20px;
   right: 0;
+}
+
+ion-grid {
+  padding: 10% 0;
+  height: 100%;
+}
+ion-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
