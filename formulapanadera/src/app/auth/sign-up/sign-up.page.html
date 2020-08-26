@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/production"></ion-back-button>
+      <ion-back-button defaultHref="auth/sign-in"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'auth.sign_up' | translate }}</ion-title>
     <ion-buttons
@@ -151,16 +151,13 @@
             </div>
           </div>
           <ion-row class="other-auth-options-row">
-            <a class="login-btn" [routerLink]="['/auth/sign-in']">
-              {{ 'auth.account_question' | translate }}
-            </a>
+            <ion-col class="align-text-end">
+              <a class="login-btn" [routerLink]="['/auth/sign-in']">
+                {{ 'auth.account_question' | translate }}
+              </a>
+            </ion-col>
           </ion-row>
         </form>
-        <!-- <ion-img
-            class="company-logo"
-            alt="synergy vision"
-            src="assets/logo/synergy-vision.svg"
-          ></ion-img> -->
       </ion-col>
     </ion-row>
   </ion-grid>

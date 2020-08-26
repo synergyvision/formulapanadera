@@ -6,7 +6,7 @@
 }
 
 // Note:  All the CSS variables defined below are overrides of Ionic elements CSS Custom Properties
-.signup-content {
+.login-content {
   --background: var(--page-background);
   --padding-start: var(--page-margin);
   --padding-end: var(--page-margin);
@@ -44,7 +44,7 @@
     }
   }
 
-  .signup-btn {
+  .login-btn {
     margin: calc(var(--page-margin) / 2) 0px;
   }
 
@@ -57,7 +57,8 @@
       padding-right: 0;
     }
 
-    .login-btn {
+    .signup-btn,
+    .forgot-btn {
       color: var(--ion-color-secondary);
       font-size: 14px;
       margin: 0px;

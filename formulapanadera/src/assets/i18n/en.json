@@ -7,7 +7,9 @@
   },
   "auth": {
     "sign_up": "Sign up",
-    "account_question": "Already have an account?"
+    "sign_in": "Sign in",
+    "account_question": "Already have an account?",
+    "forgot_password": "Forgot password?"
   },
   "validation": {
     "required": {

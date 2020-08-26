@@ -7,7 +7,9 @@
   },
   "auth": {
     "sign_up": "Registrarse",
-    "account_question": "¿Ya tienes una cuenta?"
+    "sign_in": "Iniciar sesión",
+    "account_question": "¿Ya tienes una cuenta?",
+    "forgot_password": "¿Olvidaste tu contraseña?"
   },
   "validation": {
     "required": {
