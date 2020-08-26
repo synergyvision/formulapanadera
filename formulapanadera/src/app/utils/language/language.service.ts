@@ -71,4 +71,12 @@ export class LanguageService {
     });
     await alert.present();
   }
+
+  public getTerm(key: string, interpolateParams?: Object): string {
+    let term;
+    this.translateService.get(key, interpolateParams).subscribe((value) => {
+      term = value;
+    });
+    return term;
+  }
 }

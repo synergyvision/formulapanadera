@@ -1,4 +1,29 @@
 {
+  "input": {
+    "fullName": "Nombre completo",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirm_password": "Confirmación de contraseña"
+  },
+  "auth": {
+    "sign_up": "Registrarse",
+    "account_question": "¿Ya tienes una cuenta?"
+  },
+  "validation": {
+    "required": {
+      "name": "Nombre requerido.",
+      "email": "Correo requerido.",
+      "password": "Contraseña requerida.",
+      "confirm_password": "Confirmación de contraseña requerida."
+    },
+    "pattern": {
+      "email": "Ingresa un correo válido."
+    },
+    "minlength": {
+      "password": "La contraseña debe contener mínimo {{number}} carácteres."
+    },
+    "areNotEqual": { "password": "Las contraseñas no coinciden." }
+  },
   "production": {
     "name": "Producción"
   },

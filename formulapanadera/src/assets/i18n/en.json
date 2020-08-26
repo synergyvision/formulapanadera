@@ -1,4 +1,29 @@
 {
+  "input": {
+    "fullName": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm password"
+  },
+  "auth": {
+    "sign_up": "Sign up",
+    "account_question": "Already have an account?"
+  },
+  "validation": {
+    "required": {
+      "name": "Name is required.",
+      "email": "Email is required.",
+      "password": "Password is required.",
+      "confirm_password": "Confirm password is required."
+    },
+    "pattern": {
+      "email": "Enter a valid email."
+    },
+    "minlength": {
+      "password": "Password must be at least {{number}} characters long."
+    },
+    "areNotEqual": { "password": "Passwords mismatch." }
+  },
   "production": {
     "name": "Production"
   },
