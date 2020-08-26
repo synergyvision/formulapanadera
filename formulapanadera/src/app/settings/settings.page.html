@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      {{ 'settings.name' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ 'settings.name' | translate }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-col class="secondary-actions">
+    <a
+      class="more-btn"
+      size="small"
+      fill="clear"
+      color="medium"
+      (click)="openLanguageChooser()"
+      >{{'settings.language.change' | translate}}
+    </a>
+  </ion-col>
+</ion-content>

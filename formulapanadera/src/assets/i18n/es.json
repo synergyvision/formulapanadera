@@ -1,0 +1,20 @@
+{
+  "production": {
+    "name": "Producción"
+  },
+  "formulas": {
+    "name": "Fórmulas",
+    "mine": "Mias",
+    "shared": "Compartidas"
+  },
+  "ingredients": {
+    "name": "Ingredientes"
+  },
+  "settings": {
+    "name": "Configuración",
+    "language": { "change": "Cambiar idioma" }
+  },
+  "OK": "OK",
+  "CANCEL": "Cancelar",
+  "SELECT_LANGUAGE": "Selecciona el lenguaje"
+}
