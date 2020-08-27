@@ -10,7 +10,7 @@ const routes: Routes = [
     pathMatch: "full",
   },
   {
-    path: "tabs",
+    path: "menu",
     canLoad: [AuthGuard],
     loadChildren: () =>
       import("./tabs/tabs.module").then((m) => m.TabsPageModule),

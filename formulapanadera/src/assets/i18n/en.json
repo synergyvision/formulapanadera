@@ -1,19 +1,13 @@
 {
+  "action": {
+    "ok": "OK",
+    "cancel": "Cancel"
+  },
   "input": {
     "fullName": "Full name",
     "email": "Email",
     "password": "Password",
     "confirm_password": "Confirm password"
-  },
-  "auth": {
-    "sign_up": "Sign up",
-    "sign_in": "Sign in",
-    "account_question": "Already have an account?",
-    "forgot_password": "Forgot password?",
-    "recover_password": "Recover your password",
-    "recover": "Recover",
-    "recover_indications": "Please enter your email address and we'll send you an email to reset your password.",
-    "reset_password": "Reset password"
   },
   "validation": {
     "required": {
@@ -30,6 +24,25 @@
     },
     "areNotEqual": { "password": "Passwords mismatch." }
   },
+  "auth": {
+    "sign_up": "Sign up",
+    "sign_in": "Sign in",
+    "account_question": "Already have an account?",
+    "forgot_password": "Forgot password?",
+    "recover_password": "Recover your password",
+    "recover": "Recover",
+    "recover_indications": "Please enter your email address and we'll send you an email to reset your password.",
+    "reset_password": "Reset password"
+  },
+  "settings": {
+    "name": "Settings",
+    "language": {
+      "change": "Change language",
+      "select": "Select language"
+    },
+    "password": { "change": "Change password" },
+    "logout": "Log out"
+  },
   "production": {
     "name": "Production"
   },
@@ -40,13 +53,5 @@
   },
   "ingredients": {
     "name": "Ingredients"
-  },
-  "settings": {
-    "name": "Settings",
-    "language": { "change": "Change language" }
-  },
-  "change": "Change",
-  "OK": "OK",
-  "CANCEL": "Cancel",
-  "SELECT_LANGUAGE": "Select your language"
+  }
 }

@@ -1,6 +1,8 @@
 import { Component } from "@angular/core";
 
 import { LanguageService } from "../utils/language/language.service";
+import { AuthService } from "../auth/auth.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-settings",
@@ -11,7 +13,11 @@ import { LanguageService } from "../utils/language/language.service";
   ],
 })
 export class SettingsPage {
-  constructor(private languageService: LanguageService) {}
+  constructor(
+    private router: Router,
+    private languageService: LanguageService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.languageService.initLanguages();
@@ -19,5 +25,11 @@ export class SettingsPage {
 
   async openLanguageChooser() {
     await this.languageService.openLanguageChooser();
+  }
+
+  signOut() {
+    this.authService.signOut().subscribe(() => {
+      this.router.navigate(["auth/sign-in"], { replaceUrl: true });
+    });
   }
 }

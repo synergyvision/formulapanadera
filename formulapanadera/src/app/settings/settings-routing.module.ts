@@ -1,16 +1,23 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { SettingsPage } from './settings.page';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { SettingsPage } from "./settings.page";
 
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: SettingsPage,
-  }
+  },
+  {
+    path: "change-password",
+    loadChildren: () =>
+      import("./pages/change-password/change-password.module").then(
+        (m) => m.ChangePasswordPageModule
+      ),
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class SettingsPageRoutingModule {}

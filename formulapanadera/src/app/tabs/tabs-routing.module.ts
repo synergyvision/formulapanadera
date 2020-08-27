@@ -35,14 +35,14 @@ const routes: Routes = [
       },
       {
         path: "",
-        redirectTo: "/production",
+        redirectTo: "/menu/production",
         pathMatch: "full",
       },
     ],
   },
   {
     path: "",
-    redirectTo: "/production",
+    redirectTo: "/menu/production",
     pathMatch: "full",
   },
 ];

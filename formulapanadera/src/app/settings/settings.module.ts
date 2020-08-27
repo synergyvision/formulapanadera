@@ -7,6 +7,7 @@ import { LanguageService } from "../utils/language/language.service";
 import { SettingsPage } from "./settings.page";
 
 import { SettingsPageRoutingModule } from "./settings-routing.module";
+import { AuthService } from '../auth/auth.service';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { SettingsPageRoutingModule } from "./settings-routing.module";
     TranslateModule,
   ],
   declarations: [SettingsPage],
-  providers: [LanguageService],
+  providers: [LanguageService, AuthService],
 })
 export class SettingsPageModule {}

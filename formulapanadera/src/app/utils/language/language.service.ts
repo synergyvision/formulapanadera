@@ -49,18 +49,18 @@ export class LanguageService {
     }));
 
     const alert = await this.alertController.create({
-      header: this.translations.SELECT_LANGUAGE,
+      header: this.translations.settings.language.select,
       inputs: this.available_languages,
       cssClass: "language-alert",
       buttons: [
         {
-          text: this.translations.CANCEL,
+          text: this.translations.action.cancel,
           role: "cancel",
           cssClass: "secondary",
           handler: () => {},
         },
         {
-          text: this.translations.OK,
+          text: this.translations.action.ok,
           handler: (data) => {
             if (data) {
               this.translateService.use(data);

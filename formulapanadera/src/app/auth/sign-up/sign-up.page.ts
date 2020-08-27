@@ -68,7 +68,7 @@ export class SignUpPage implements OnInit {
     // As we are calling the Angular router navigation inside a subscribe method, the navigation will be triggered outside Angular zone.
     // That's why we need to wrap the router navigation call inside an ngZone wrapper
     this.ngZone.run(() => {
-      const previousUrl = "tabs/production";
+      const previousUrl = "menu/production";
 
       // No need to store in the navigation history the sign-in page with redirect params (it's justa a mandatory mid-step)
       this.router.navigate([previousUrl], { replaceUrl: true });
