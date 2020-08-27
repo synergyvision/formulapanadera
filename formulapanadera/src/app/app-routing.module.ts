@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
-import { AuthGuard } from "./utils/guards/auth.guard";
-import { AuthModule } from "./auth/auth.module";
+import { AuthGuard } from "./core/guards/auth.guard";
+import { AuthModule } from "./modules/auth/auth.module";
 
 const routes: Routes = [
   {
@@ -13,11 +13,12 @@ const routes: Routes = [
     path: "menu",
     canLoad: [AuthGuard],
     loadChildren: () =>
-      import("./tabs/tabs.module").then((m) => m.TabsPageModule),
+      import("./modules/tabs/tabs.module").then((m) => m.TabsPageModule),
   },
   {
     path: "auth",
-    loadChildren: () => import("./auth/auth.module").then((m) => m.AuthModule),
+    loadChildren: () =>
+      import("./modules/auth/auth.module").then((m) => m.AuthModule),
   },
 ];
 @NgModule({
