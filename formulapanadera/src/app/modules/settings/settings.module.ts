@@ -1,23 +1,30 @@
 import { IonicModule } from "@ionic/angular";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
-import { TranslateModule } from "@ngx-translate/core";
-import { LanguageService } from "../../core/services/language.service";
-import { SettingsPage } from "./settings.page";
+import { Routes, RouterModule } from "@angular/router";
+import { ComponentsModule } from "../../components/components.module";
 
-import { SettingsPageRoutingModule } from "./settings-routing.module";
-import { AuthService } from "../../core/services/auth.service";
+const routes: Routes = [
+  {
+    path: "",
+    loadChildren: () =>
+      import("./options/options.module").then((m) => m.SettingsPageModule),
+  },
+  {
+    path: "change-password",
+    loadChildren: () =>
+      import("./change-password/change-password.module").then(
+        (m) => m.ChangePasswordPageModule
+      ),
+  },
+];
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
-    FormsModule,
-    SettingsPageRoutingModule,
-    TranslateModule,
+    ComponentsModule,
+    RouterModule.forChild(routes),
   ],
-  declarations: [SettingsPage],
-  providers: [LanguageService, AuthService],
 })
 export class SettingsPageModule {}

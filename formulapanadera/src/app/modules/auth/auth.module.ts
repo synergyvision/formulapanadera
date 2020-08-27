@@ -3,7 +3,6 @@ import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
 import { ComponentsModule } from "../../components/components.module";
-import { AuthService } from "../../core/services/auth.service";
 
 const routes: Routes = [
   {
@@ -32,6 +31,5 @@ const routes: Routes = [
     ComponentsModule,
     RouterModule.forChild(routes),
   ],
-  providers: [AuthService],
 })
 export class AuthModule {}

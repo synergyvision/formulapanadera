@@ -1,8 +1,9 @@
-import { Component } from "@angular/core";
+import { Component, NgZone } from "@angular/core";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
-import { PasswordValidator } from "../../../../core/validators/password.validator";
-import { AuthService } from "../../../../core/services/auth.service";
-import { LanguageService } from "../../../../core/services/language.service";
+import { PasswordValidator } from "../../../core/validators/password.validator";
+import { AuthService } from "../../../core/services/auth.service";
+import { LanguageService } from "../../../core/services/language.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-change-password",
@@ -14,10 +15,13 @@ export class ChangePasswordPage {
   matching_passwords_group: FormGroup;
   submitError: string;
   validation_messages: Object;
+  redirectLoader: HTMLIonLoadingElement;
 
   constructor(
     private authService: AuthService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private router: Router,
+    private ngZone: NgZone
   ) {
     this.matching_passwords_group = new FormGroup(
       {
@@ -39,10 +43,35 @@ export class ChangePasswordPage {
     this.validation_messages = this.getValidationMessages();
   }
 
+  async dismissLoading() {
+    if (this.redirectLoader) {
+      await this.redirectLoader.dismiss();
+    }
+  }
+
+  redirectToSettingsPage() {
+    this.dismissLoading();
+    this.ngZone.run(() => {
+      const previousUrl = "menu/settings";
+      this.router.navigate([previousUrl], { replaceUrl: true });
+    });
+  }
+
+  resetSubmitError() {
+    this.submitError = null;
+  }
+
   updatePassword() {
+    this.resetSubmitError();
     const password = this.passwordForm.value.matching_passwords.password;
-    console.log(password, this.passwordForm);
-    this.authService.updatePassword(password);
+    this.authService
+      .updatePassword(password)
+      .then(() => {
+        this.redirectToSettingsPage();
+      })
+      .catch((error) => {
+        this.submitError = error.message;
+      });
   }
 
   getValidationMessages(): Object {

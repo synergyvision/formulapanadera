@@ -25,11 +25,8 @@ export class SignInPage implements OnInit {
 
   constructor(
     private router: Router,
-    private menu: MenuController,
     private authService: AuthService,
     private ngZone: NgZone,
-    private loadingController: LoadingController,
-    private location: Location,
     private languageService: LanguageService
   ) {
     this.loginForm = new FormGroup({

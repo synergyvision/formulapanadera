@@ -28,7 +28,7 @@ export class AuthService {
     });
   }
 
-  private getProfileDataSource(): Observable<UserModel> {
+  getProfileDataSource(): Observable<UserModel> {
     const userModel = new UserModel();
     const provierData = this.currentUser.providerData[0];
 
@@ -45,7 +45,7 @@ export class AuthService {
     return this.currentUser;
   }
 
-  public signOut(): Observable<any> {
+  signOut(): Observable<any> {
     if (this.platform.is("capacitor")) {
       return cfaSignOut();
     } else {
@@ -61,9 +61,7 @@ export class AuthService {
     return this.angularFire.createUserWithEmailAndPassword(email, password);
   }
 
-  private getProfileStore(
-    dataSource: Observable<UserModel>
-  ): DataStore<UserModel> {
+  getProfileStore(dataSource: Observable<UserModel>): DataStore<UserModel> {
     // Initialize the model specifying that it is a shell model
     const shellModel: UserModel = new UserModel();
     this.profileDataStore = new DataStore(shellModel);
@@ -76,14 +74,7 @@ export class AuthService {
     return this.angularFire.sendPasswordResetEmail(email);
   }
 
-  public updatePassword(password: string) {
-    this.currentUser
-      .updatePassword(password)
-      .then(() => {
-        console.log("Password changed");
-      })
-      .catch((err) => {
-        console.log(` failed ${err}`);
-      });
+  updatePassword(password: string) {
+    return this.currentUser.updatePassword(password);
   }
 }
