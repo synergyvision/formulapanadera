@@ -1,17 +1,11 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar color="primary">
     <ion-icon slot="start" class="btn-med" name="settings-outline"></ion-icon>
     <ion-title> {{ 'settings.name' | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar color="primary">
-      <ion-title size="large"> {{ 'settings.name' | translate }} </ion-title>
-    </ion-toolbar>
-  </ion-header>
-
+<ion-content>
   <ion-list lines="full" class="settings-list">
     <ion-item class="info-item">
       <ion-row class="info-item-wrapper">
