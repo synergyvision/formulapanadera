@@ -47,7 +47,7 @@ export class ForgotPasswordPage implements OnInit {
     this.authService
       .recoverPassword(this.forgotPasswordForm.value.email)
       .then(() => {
-        this.router.navigateByUrl("/auth/sign-in");
+        this.router.navigateByUrl("auth/sign-in");
       })
       .catch((error) => {
         this.submitError = error.message;

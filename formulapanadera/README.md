@@ -26,6 +26,19 @@ npm install
 ionic serve
 ```
 
+### Pruebas
+
+- Pruebas unitarias
+
+Realiza cualquiera de los siguientes comandos para visualizar las pruebas unitarias de la aplicación
+
+> Estos comandos se deben ejecutar al estar en la carpeta /formulapanadera
+
+```bash
+npm run test
+npm run test:cov
+```
+
 ## Construido con 🛠️
 
 - [Ionic 5](https://ionicframework.com/)

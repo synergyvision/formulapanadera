@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { IonicModule } from "@ionic/angular";
 
 import { IngredientPage } from "./ingredient.page";
+import { TranslateModule } from "@ngx-translate/core";
 
 describe("IngredientPage", () => {
   let component: IngredientPage;
@@ -10,7 +11,7 @@ describe("IngredientPage", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [IngredientPage],
-      imports: [IonicModule.forRoot()],
+      imports: [IonicModule.forRoot(), TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(IngredientPage);

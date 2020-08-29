@@ -5,7 +5,7 @@ export class PasswordValidator {
   // If our validation fails, we return an object with a key for the error name and a value of true.
   // Otherwise, if the validation passes, we simply return null because there is no error.
 
-  static areNotEqual(formGroup: FormGroup) {
+  public static areNotEqual(formGroup: FormGroup) {
     let val;
     let valid = true;
 
