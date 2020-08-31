@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { IonicModule } from "@ionic/angular";
 
-import { IngredientPage } from "./ingredient.page";
+import { IngredientListingPage } from "./ingredient-listing.page";
 import { TranslateModule } from "@ngx-translate/core";
 
-describe("IngredientPage", () => {
-  let component: IngredientPage;
-  let fixture: ComponentFixture<IngredientPage>;
+describe("IngredientListingPage", () => {
+  let component: IngredientListingPage;
+  let fixture: ComponentFixture<IngredientListingPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [IngredientPage],
+      declarations: [IngredientListingPage],
       imports: [IonicModule.forRoot(), TranslateModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(IngredientPage);
+    fixture = TestBed.createComponent(IngredientListingPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

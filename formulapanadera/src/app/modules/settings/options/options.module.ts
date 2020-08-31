@@ -28,4 +28,4 @@ const routes: Routes = [
   declarations: [OptionsPage],
   providers: [LanguageService, ProfileResolver],
 })
-export class SettingsPageModule {}
+export class OptionsPageModule {}

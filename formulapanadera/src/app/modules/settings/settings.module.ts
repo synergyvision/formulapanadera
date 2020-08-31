@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: "",
     loadChildren: () =>
-      import("./options/options.module").then((m) => m.SettingsPageModule),
+      import("./options/options.module").then((m) => m.OptionsPageModule),
   },
   {
     path: "change-password",

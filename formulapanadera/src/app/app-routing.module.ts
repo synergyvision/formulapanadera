@@ -6,7 +6,7 @@ import { AuthModule } from "./modules/auth/auth.module";
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "/auth/sign-in",
+    redirectTo: "/menu/production",
     pathMatch: "full",
   },
   {

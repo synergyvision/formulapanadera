@@ -2,15 +2,14 @@ import { IonicModule } from "@ionic/angular";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
+
 import { TranslateModule } from "@ngx-translate/core";
+import { IngredientListingPage } from "./ingredient-listing.page";
 
 const routes: Routes = [
   {
     path: "",
-    loadChildren: () =>
-      import("./listing/ingredient-listing.module").then(
-        (m) => m.IngredientListingPageModule
-      ),
+    component: IngredientListingPage,
   },
 ];
 
@@ -19,7 +18,8 @@ const routes: Routes = [
     IonicModule,
     CommonModule,
     RouterModule.forChild(routes),
-    TranslateModule.forChild(),
+    TranslateModule,
   ],
+  declarations: [IngredientListingPage],
 })
-export class IngredientPageModule {}
+export class IngredientListingPageModule {}
