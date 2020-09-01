@@ -43,10 +43,11 @@
     "name": "Ingredientes",
     "create": "Crear ingrediente",
     "update": "Modificar ingrediente",
-    "ingredient_name": "Name",
+    "ingredient_name": "Nombre",
     "is_flour": "Es harina",
     "hydration": "Hidratación",
     "cost": "Costo",
+    "empty": "No se encontraron ingredientes",
     "filter": {
       "name": "Filtra por nombre...",
       "hydration": "Filtra por hidratación (%)",

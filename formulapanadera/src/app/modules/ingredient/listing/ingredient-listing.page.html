@@ -103,7 +103,11 @@
 </ion-header>
 
 <ion-content class="ingredient-content">
-  <ion-list lines="full" class="ingredients-list">
+  <ion-list
+    lines="full"
+    class="ingredients-list"
+    *ngIf="ingredients?.length > 0; else emptyBlock"
+  >
     <ion-item
       detail
       button
@@ -118,12 +122,13 @@
               <h2 class="ingredients-name">
                 <app-text-shell
                   animation="bouncing"
+                  lines="3"
                   [data]="ingredient.name"
                 ></app-text-shell>
               </h2>
             </ion-col>
           </ion-row>
-          <ion-row>
+          <ion-row *ngIf="ingredient.id !== undefined">
             <ion-col>
               <p class="ingredients-description">
                 <strong>{{'ingredients.hydration' | translate}}: </strong
@@ -142,7 +147,7 @@
             ><ion-col>
               <p class="ingredients-description">
                 <strong>{{'ingredients.cost' | translate}}: </strong
-                >{{ingredient.cost}} {{ingredient_cost_unit}}
+                >{{ingredient.cost }} {{ingredient_cost_unit}}
               </p>
             </ion-col>
           </ion-row>
@@ -150,4 +155,16 @@
       </ion-row>
     </ion-item>
   </ion-list>
+  <ng-template #emptyBlock>
+    <ion-row class="empty-block">
+      <ion-col class="ion-text-center ion-padding">
+        <h5>
+          {{ 'ingredients.empty' | translate }}<br /><a
+            (click)="openModal('create')"
+            >{{ 'ingredients.create' | translate }}</a
+          >
+        </h5>
+      </ion-col>
+    </ion-row>
+  </ng-template>
 </ion-content>

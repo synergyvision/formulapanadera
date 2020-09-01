@@ -13,6 +13,7 @@ import { IngredientListingResolver } from "../../../core/resolvers/ingredient-li
 
 import { IngredientManagementModal } from "../management/ingredient-management.modal";
 import { LanguageService } from "src/app/core/services/language.service";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 const routes: Routes = [
   {
@@ -36,6 +37,11 @@ const routes: Routes = [
   ],
   declarations: [IngredientListingPage, IngredientManagementModal],
   entryComponents: [IngredientManagementModal],
-  providers: [IngredientService, LanguageService, IngredientListingResolver],
+  providers: [
+    IngredientService,
+    LanguageService,
+    FormatNumberService,
+    IngredientListingResolver,
+  ],
 })
 export class IngredientListingPageModule {}

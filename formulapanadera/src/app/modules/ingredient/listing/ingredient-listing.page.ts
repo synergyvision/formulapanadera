@@ -123,12 +123,14 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   }
 
   async openModal(type: string, ingredient?: IngredientModel) {
-    const modal = await this.modalController.create({
-      component: IngredientManagementModal,
-      swipeToClose: true,
-      presentingElement: this.routerOutlet.nativeEl,
-      componentProps: { type: type, ingredient: ingredient },
-    });
-    await modal.present();
+    if (ingredient == undefined || ingredient.id !== undefined) {
+      const modal = await this.modalController.create({
+        component: IngredientManagementModal,
+        swipeToClose: true,
+        presentingElement: this.routerOutlet.nativeEl,
+        componentProps: { type: type, ingredient: ingredient },
+      });
+      await modal.present();
+    }
   }
 }

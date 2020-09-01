@@ -40,8 +40,13 @@
           >
           <ion-input
             type="number"
+            inputmode="numeric"
+            step="0.01"
+            min="0"
+            max="100"
             formControlName="hydration"
             class="ingredient-hydration"
+            (ionBlur)="formatNumberPercentage(manageIngredientForm.value.hydration)"
             required
           ></ion-input>
         </ion-item>
@@ -62,9 +67,13 @@
           </ion-label>
           <ion-input
             type="number"
+            inputmode="numeric"
+            min="0"
             formControlName="cost"
             class="ingredient-cost"
+            step="0.01"
             required
+            (ionBlur)="formatNumberDecimals(manageIngredientForm.value.cost)"
           ></ion-input>
         </ion-item>
       </ion-list>

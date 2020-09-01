@@ -53,3 +53,14 @@
   display: inline-block;
   opacity: 1;
 }
+
+.empty-block {
+  height: 100%;
+
+  ion-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+}

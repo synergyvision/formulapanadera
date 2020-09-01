@@ -32,6 +32,10 @@ export class IngredientService {
         new IngredientModel(),
         new IngredientModel(),
         new IngredientModel(),
+        new IngredientModel(),
+        new IngredientModel(),
+        new IngredientModel(),
+        new IngredientModel(),
       ];
 
       this.ingredientsDataStore = new DataStore(shellModel);

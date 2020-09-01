@@ -7,6 +7,7 @@ import { IngredientService } from "../../../core/services/ingredient.service";
 import { environment } from "src/environments/environment";
 import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 @Component({
   selector: "app-ingredient-management",
@@ -29,6 +30,7 @@ export class IngredientManagementModal implements OnInit {
     private modalController: ModalController,
     private ingredientService: IngredientService,
     private languageService: LanguageService,
+    private formatNumberService: FormatNumberService,
     private alertController: AlertController,
     private router: Router,
     private ngZone: NgZone
@@ -108,5 +110,18 @@ export class IngredientManagementModal implements OnInit {
       ],
     });
     await alert.present();
+  }
+
+  formatNumberDecimals(value: number) {
+    this.manageIngredientForm
+      .get("cost")
+      .patchValue(this.formatNumberService.formatNumberDecimals(value));
+  }
+
+  transformedHydration;
+  formatNumberPercentage(value: number) {
+    this.manageIngredientForm
+      .get("hydration")
+      .patchValue(this.formatNumberService.formatNumberPercentage(value));
   }
 }
