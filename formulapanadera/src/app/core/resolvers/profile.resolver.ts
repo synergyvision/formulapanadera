@@ -3,7 +3,7 @@ import { Resolve } from "@angular/router";
 import { Observable } from "rxjs";
 import { AuthService } from "../services/auth.service";
 import { UserModel } from "../models/user.model";
-import { DataStore } from "../../utils/shell/data-store";
+import { DataStore } from "../../shared/shell/data-store";
 
 @Injectable()
 export class ProfileResolver implements Resolve<any> {

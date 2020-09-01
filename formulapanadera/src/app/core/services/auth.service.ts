@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/auth";
 import { Observable, of, from } from "rxjs";
-import { DataStore } from "../../utils/shell/data-store";
+import { DataStore } from "../../shared/shell/data-store";
 import { UserModel } from "../models/user.model";
 import { Platform } from "@ionic/angular";
 

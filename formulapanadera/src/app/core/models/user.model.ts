@@ -1,4 +1,4 @@
-import { ShellModel } from "../../utils/shell/shell.model";
+import { ShellModel } from "../../shared/shell/shell.model";
 
 export class UserModel extends ShellModel {
   name: string;

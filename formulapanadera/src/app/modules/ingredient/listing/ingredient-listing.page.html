@@ -2,7 +2,113 @@
   <ion-toolbar color="primary">
     <ion-icon slot="start" class="btn-med" name="reader-outline"></ion-icon>
     <ion-title> {{ 'ingredients.name' | translate }} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openModal('create')">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="filters-toolbar">
+    <ion-row class="searchbar-row" align-items-center>
+      <ion-col>
+        <ion-searchbar
+          class="items-searchbar"
+          animated
+          [(ngModel)]="searchQuery"
+          (ionChange)="searchList()"
+          placeholder="{{'filter.name' | translate}}"
+        ></ion-searchbar>
+      </ion-col>
+      <ion-col class="call-to-action-col">
+        <ion-button
+          fill="clear"
+          color="secondary"
+          class="filters-btn"
+          (click)="showHydrationFilter = !showHydrationFilter"
+        >
+          <ion-icon slot="icon-only" name="options"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <form [formGroup]="hydrationRangeForm" [hidden]="!showHydrationFilter">
+      <ion-row class="range-item-row">
+        <ion-col size="12">
+          <div class="range-header">
+            <span class="range-value"
+              >{{ hydrationRangeForm.controls.dual.value.lower }}</span
+            >
+            <span class="range-label">{{'filter.hydration' | translate}}</span>
+            <span class="range-value"
+              >{{ hydrationRangeForm.controls.dual.value.upper }}</span
+            >
+          </div>
+        </ion-col>
+        <ion-col size="12">
+          <ion-range
+            class="range-control"
+            formControlName="dual"
+            color="secondary"
+            pin="true"
+            dualKnobs="true"
+            (ionChange)="searchList()"
+            min="0"
+            max="100"
+            step="1"
+            debounce="400"
+          ></ion-range>
+        </ion-col>
+      </ion-row>
+    </form>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ingredient-content"> </ion-content>
+<ion-content class="ingredient-content">
+  <ion-list lines="full" class="ingredients-list">
+    <ion-item
+      detail
+      button
+      class="ingredient-item"
+      *ngFor="let ingredient of ingredients"
+      (click)="openModal('update',ingredient)"
+    >
+      <ion-row class="ingredient-item-wrapper">
+        <ion-col class="ingredients-wrapper">
+          <ion-row>
+            <ion-col>
+              <h2 class="ingredients-name">
+                <app-text-shell
+                  animation="bouncing"
+                  [data]="ingredient.name"
+                ></app-text-shell>
+              </h2>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <p class="ingredients-description">
+                <strong>{{'ingredients.hydration' | translate}}: </strong
+                >{{ingredient.hydration}}%
+              </p>
+              <p class="ingredients-description">
+                <strong>{{'ingredients.is_flour' | translate}}: </strong>
+                <ion-checkbox
+                  class="ingredient-checkbox"
+                  color="primary"
+                  disabled="true"
+                  [checked]="ingredient.is_flour"
+                >
+                </ion-checkbox>
+              </p> </ion-col
+            ><ion-col>
+              <p class="ingredients-description">
+                <strong>{{'ingredients.cost' | translate}}: </strong
+                >{{ingredient.cost}} {{ingredient_cost_unit}}
+              </p>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+</ion-content>

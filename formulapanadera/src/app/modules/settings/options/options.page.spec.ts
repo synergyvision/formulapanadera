@@ -7,7 +7,7 @@ import { TranslateModule } from "@ngx-translate/core";
 
 import { LanguageService } from "../../../core/services/language.service";
 import { AuthService } from "../../../core/services/auth.service";
-import { ResolverHelper } from "src/app/utils/helpers/resolver-helper";
+import { ResolverHelper } from "../../../shared/helpers/resolver-helper";
 import { Observable } from "rxjs";
 
 describe("OptionsPage", () => {

@@ -9,7 +9,7 @@ import { LanguageService } from "../../../core/services/language.service";
   templateUrl: "./forgot-password.page.html",
   styleUrls: [
     "./styles/forgot-password.page.scss",
-    "./../../../utils/styles/change-language.alert.scss",
+    "./../../../shared/styles/language.alert.scss",
   ],
 })
 export class ForgotPasswordPage implements OnInit {

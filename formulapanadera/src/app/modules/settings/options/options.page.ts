@@ -7,14 +7,14 @@ import { UserModel } from "src/app/core/models/user.model";
 import {
   IResolvedRouteData,
   ResolverHelper,
-} from "src/app/utils/helpers/resolver-helper";
+} from "../../../shared/helpers/resolver-helper";
 
 @Component({
   selector: "app-options",
   templateUrl: "options.page.html",
   styleUrls: [
     "./styles/options.page.scss",
-    "./../../../utils/styles/change-language.alert.scss",
+    "./../../../shared/styles/language.alert.scss",
   ],
 })
 export class OptionsPage {

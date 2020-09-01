@@ -5,12 +5,14 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ModuleLoadedOnceGuard } from "./guards/module-loaded-once.guard";
 
-import { AngularFireModule } from "@angular/fire";
 import { environment } from "src/environments/environment";
+import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
+import { AngularFirestoreModule } from "@angular/fire/firestore";
 
 import { LanguageService } from "./services/language.service";
 import { AuthService } from "./services/auth.service";
+import { IngredientService } from "./services/ingredient.service";
 
 @NgModule({
   imports: [
@@ -20,9 +22,10 @@ import { AuthService } from "./services/auth.service";
     RouterModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    AngularFirestoreModule,
   ],
   exports: [RouterModule, FormsModule],
-  providers: [AuthService, LanguageService],
+  providers: [AuthService, LanguageService, IngredientService],
 })
 export class CoreModule extends ModuleLoadedOnceGuard {
   // Ensure that CoreModule is only loaded into AppModule

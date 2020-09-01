@@ -1,7 +1,12 @@
 {
   "action": {
     "ok": "OK",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "create": "Create",
+    "update": "Update",
+    "delete": "Delete",
+    "delete_question": "Do you want to delete {{item}}?"
   },
   "input": {
     "fullName": "Full name",
@@ -24,6 +29,10 @@
     },
     "areNotEqual": { "password": "Passwords mismatch." }
   },
+  "filter": {
+    "name": "Filter by name...",
+    "hydration": "Filter by hydration (%)"
+  },
   "auth": {
     "sign_up": "Sign up",
     "sign_in": "Sign in",
@@ -33,6 +42,15 @@
     "recover": "Recover",
     "recover_indications": "Please enter your email address and we'll send you an email to reset your password.",
     "reset_password": "Reset password"
+  },
+  "ingredients": {
+    "name": "Ingredients",
+    "create": "Create ingredient",
+    "update": "Update ingredient",
+    "ingredient_name": "Nombre",
+    "is_flour": "Is flour",
+    "hydration": "Hydration",
+    "cost": "Cost"
   },
   "settings": {
     "name": "Settings",
@@ -50,8 +68,5 @@
     "name": "Formulas",
     "mine": "Mine",
     "shared": "Shared"
-  },
-  "ingredients": {
-    "name": "Ingredients"
   }
 }

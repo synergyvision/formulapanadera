@@ -51,7 +51,7 @@ export class LanguageService {
     const alert = await this.alertController.create({
       header: this.translations.settings.language.select,
       inputs: this.available_languages,
-      cssClass: "language-alert",
+      cssClass: "language-alert alert",
       buttons: [
         {
           text: this.translations.action.cancel,

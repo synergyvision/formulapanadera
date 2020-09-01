@@ -11,7 +11,7 @@ import { LanguageService } from "../../../core/services/language.service";
   templateUrl: "./sign-up.page.html",
   styleUrls: [
     "./styles/sign-up.page.scss",
-    "./../../../utils/styles/change-language.alert.scss",
+    "./../../../shared/styles/language.alert.scss",
   ],
 })
 export class SignUpPage implements OnInit {

@@ -13,7 +13,7 @@ import { LanguageService } from "../../../core/services/language.service";
   templateUrl: "./sign-in.page.html",
   styleUrls: [
     "./styles/sign-in.page.scss",
-    "./../../../utils/styles/change-language.alert.scss",
+    "./../../../shared/styles/language.alert.scss",
   ],
 })
 export class SignInPage implements OnInit {

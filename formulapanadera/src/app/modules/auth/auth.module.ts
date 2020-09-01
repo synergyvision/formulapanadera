@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
-import { ComponentsModule } from "../../components/components.module";
+import { ComponentsModule } from "../../shared/components/components.module";
 
 const routes: Routes = [
   {
