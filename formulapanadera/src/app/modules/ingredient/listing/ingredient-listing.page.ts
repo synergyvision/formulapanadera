@@ -21,8 +21,9 @@ import { IngredientManagementModal } from "../management/ingredient-management.m
 })
 export class IngredientListingPage implements OnInit, OnDestroy {
   hydrationRangeForm: FormGroup;
+  costRangeForm: FormGroup;
   searchQuery: string;
-  showHydrationFilter = false;
+  showFilters = false;
 
   searchSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
   searchFiltersObservable: Observable<any> = this.searchSubject.asObservable();
@@ -54,26 +55,28 @@ export class IngredientListingPage implements OnInit, OnDestroy {
       dual: new FormControl({ lower: 0, upper: 100 }),
     });
 
+    this.costRangeForm = new FormGroup({
+      lower: new FormControl(),
+      upper: new FormControl(),
+    });
+
     this.route.data.subscribe((resolvedRouteData) => {
       this.ingredientsDataStore = resolvedRouteData["data"];
 
       const updateSearchObservable = this.searchFiltersObservable.pipe(
         switchMap((filters) => {
-          const filteredDataSource = this.ingredientService.searchIngredientsByHydration(
-            filters.lower,
-            filters.upper
+          let filteredDataSource = this.ingredientService.searchIngredientsByHydration(
+            filters.hydration.lower,
+            filters.hydration.upper
           );
-          const searchingShellModel = [
-            new IngredientModel(),
-            new IngredientModel(),
-          ];
-          // Wait on purpose some time to ensure the shell animation gets shown while loading filtered data
-          const searchingDelay = 400;
-
+          filteredDataSource = this.ingredientService.searchIngredientsByCost(
+            filters.cost.lower,
+            filters.cost.upper
+          );
+          const searchingShellModel = [new IngredientModel()];
           const dataSourceWithShellObservable = DataStore.AppendShell(
             filteredDataSource,
-            searchingShellModel,
-            searchingDelay
+            searchingShellModel
           );
 
           return dataSourceWithShellObservable.pipe(
@@ -106,8 +109,14 @@ export class IngredientListingPage implements OnInit, OnDestroy {
 
   searchList() {
     this.searchSubject.next({
-      lower: this.hydrationRangeForm.controls.dual.value.lower,
-      upper: this.hydrationRangeForm.controls.dual.value.upper,
+      hydration: {
+        lower: this.hydrationRangeForm.controls.dual.value.lower,
+        upper: this.hydrationRangeForm.controls.dual.value.upper,
+      },
+      cost: {
+        lower: this.costRangeForm.value.lower,
+        upper: this.costRangeForm.value.upper,
+      },
       query: this.searchQuery,
     });
   }

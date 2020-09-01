@@ -64,6 +64,10 @@
       }
     }
 
+    .cost-range-header {
+      place-content: center;
+    }
+
     .range-control {
       // override the pin color
       --ion-text-color: var(--ion-color-medium);
@@ -72,4 +76,16 @@
       padding-bottom: 0px;
     }
   }
+}
+
+.cost-input {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.input-item {
+  --padding-start: 0px;
+  --padding-end: 0px;
+  --inner-padding-start: 0px;
+  --inner-padding-end: 0px;
 }

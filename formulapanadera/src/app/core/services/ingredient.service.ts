@@ -57,6 +57,24 @@ export class IngredientService {
     return of(filtered);
   }
 
+  public searchIngredientsByCost(
+    lower: number,
+    upper: number
+  ): Observable<Array<IngredientModel>> {
+    const filtered = [];
+    this.ingredientsDataStore.state.forEach((ingredient) => {
+      ingredient.forEach((item) => {
+        if (
+          (item.cost >= lower || lower == null) &&
+          (item.cost <= upper || upper == null)
+        ) {
+          filtered.push(item);
+        }
+      });
+    });
+    return of(filtered);
+  }
+
   /*
     Ingredient Management Modal
   */

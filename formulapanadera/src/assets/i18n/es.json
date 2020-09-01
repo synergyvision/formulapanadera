@@ -29,10 +29,6 @@
     },
     "areNotEqual": { "password": "Las contraseñas no coinciden." }
   },
-  "filter": {
-    "name": "Filtra por nombre...",
-    "hydration": "Filtra por hidratación (%)"
-  },
   "auth": {
     "sign_up": "Registrarse",
     "sign_in": "Iniciar sesión",
@@ -50,7 +46,14 @@
     "ingredient_name": "Name",
     "is_flour": "Es harina",
     "hydration": "Hidratación",
-    "cost": "Costo"
+    "cost": "Costo",
+    "filter": {
+      "name": "Filtra por nombre...",
+      "hydration": "Filtra por hidratación (%)",
+      "cost": "Filtra por costo",
+      "min": "Mín.",
+      "max": "Máx."
+    }
   },
   "settings": {
     "name": "Configuración",
