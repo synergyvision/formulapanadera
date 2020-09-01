@@ -71,7 +71,8 @@ export class IngredientListingPage implements OnInit, OnDestroy {
           );
           filteredDataSource = this.ingredientService.searchIngredientsByCost(
             filters.cost.lower,
-            filters.cost.upper
+            filters.cost.upper,
+            filteredDataSource
           );
           const searchingShellModel = [new IngredientModel()];
           const dataSourceWithShellObservable = DataStore.AppendShell(

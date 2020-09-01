@@ -59,10 +59,11 @@ export class IngredientService {
 
   public searchIngredientsByCost(
     lower: number,
-    upper: number
+    upper: number,
+    ingredients: Observable<Array<IngredientModel>>
   ): Observable<Array<IngredientModel>> {
     const filtered = [];
-    this.ingredientsDataStore.state.forEach((ingredient) => {
+    ingredients.forEach((ingredient) => {
       ingredient.forEach((item) => {
         if (
           (item.cost >= lower || lower == null) &&
