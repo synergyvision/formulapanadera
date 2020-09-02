@@ -20,10 +20,6 @@ describe("Tabs", () => {
     signInPage.clickSignIn();
   });
 
-  it("should display tabs", () => {
-    expect(tabsPage.rootElement().isDisplayed()).toEqual(true);
-  });
-
   it("allows navigation to production tab", () => {
     tabsPage.navigateToProduction();
     productionPage.waitUntilVisible();

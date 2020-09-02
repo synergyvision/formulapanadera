@@ -96,6 +96,7 @@ export class IngredientManagementModal implements OnInit {
         },
         {
           text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
           handler: () => {
             this.ingredientService
               .deleteIngredient(this.ingredient.id)
