@@ -80,6 +80,23 @@ export class IngredientService {
     return of(filtered);
   }
 
+  public searchIngredientsByType(
+    type: string,
+    ingredients: Observable<Array<IngredientModel>>
+  ): Observable<Array<IngredientModel>> {
+    const filtered = [];
+    let isFlour = type == "flour";
+    ingredients.forEach((ingredient) => {
+      ingredient.forEach((item) => {
+        if (item.is_flour == isFlour) {
+          filtered.push(item);
+        }
+      });
+    });
+
+    return of(filtered);
+  }
+
   /*
     Ingredient Management Modal
   */

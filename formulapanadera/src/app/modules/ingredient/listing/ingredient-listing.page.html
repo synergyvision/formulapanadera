@@ -99,6 +99,27 @@
         </ion-col>
       </ion-row>
     </form>
+    <form [formGroup]="isFlourForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row"
+        ><ion-col>
+          <ion-item lines="full">
+            <ion-label>{{'ingredients.filter.flour' | translate}}</ion-label>
+            <ion-select formControlName="value" (ionChange)="searchList(value)">
+              <ion-select-option value="all"
+                >{{'ingredients.filter.all' | translate}}</ion-select-option
+              >
+              <ion-select-option value="flour"
+                >{{'ingredients.filter.isFlour' | translate}}</ion-select-option
+              >
+              <ion-select-option value="notFlour"
+                >{{'ingredients.filter.notFlour' |
+                translate}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col></ion-row
+      >
+    </form>
   </ion-toolbar>
 </ion-header>
 
@@ -131,22 +152,31 @@
           <ion-row *ngIf="ingredient.id !== undefined">
             <ion-col>
               <p class="ingredients-description">
-                <strong>{{'ingredients.hydration' | translate}}: </strong
+                <ion-icon
+                  class="properties-icon"
+                  name="water-outline"
+                ></ion-icon
                 >{{ingredient.hydration}}%
               </p>
+            </ion-col>
+            <ion-col>
               <p class="ingredients-description">
-                <strong>{{'ingredients.is_flour' | translate}}: </strong>
-                <ion-checkbox
-                  class="ingredient-checkbox"
-                  color="primary"
-                  disabled="true"
-                  [checked]="ingredient.is_flour"
+                <img
+                  class="properties-icon image-icon"
+                  src="assets/icon/wheat.png"
+                  width="18"
+                  height="18"
+                />
+                <span *ngIf="ingredient.is_flour; else notFlour"
+                  >{{ 'action.yes' | translate }}</span
                 >
-                </ion-checkbox>
+                <ng-template #notFlour>
+                  <span>{{ 'action.no' | translate }}</span>
+                </ng-template>
               </p> </ion-col
             ><ion-col>
               <p class="ingredients-description">
-                <strong>{{'ingredients.cost' | translate}}: </strong
+                <ion-icon name="card-outline" class="properties-icon"></ion-icon
                 >{{ingredient.cost }} {{ingredient_cost_unit}}
               </p>
             </ion-col>

@@ -64,3 +64,20 @@
     height: 100%;
   }
 }
+
+.properties-icon {
+  color: var(--ion-color-secondary) !important;
+  padding-right: 5px !important;
+  margin-bottom: -2px;
+}
+
+.image-icon {
+  padding: 2px 5px 0px 2px !important;
+  margin-top: -5px;
+}
+
+ion-select {
+  width: 100%;
+
+  justify-content: center;
+}

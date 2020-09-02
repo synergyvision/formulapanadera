@@ -4,5 +4,5 @@ export class IngredientModel {
   is_flour: boolean;
   hydration: number;
   cost: number;
-  //user_email: string; // Creator
+  can_be_deleted: boolean;
 }

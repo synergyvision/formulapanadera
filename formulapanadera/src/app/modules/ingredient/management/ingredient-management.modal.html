@@ -58,6 +58,7 @@
             class="ingredient-is-flour"
             color="primary"
             formControlName="is_flour"
+            (ionChange)="changeFlourIngredient()"
           >
           </ion-checkbox>
         </ion-item>
@@ -102,6 +103,7 @@
           color="danger"
           fill="solid"
           (click)="deleteIngredient()"
+          [disabled]="!ingredient.can_be_deleted"
           >{{ 'action.delete' | translate }}
         </ion-button>
       </ion-col>

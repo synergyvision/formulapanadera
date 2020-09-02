@@ -22,6 +22,7 @@ import { IngredientManagementModal } from "../management/ingredient-management.m
 export class IngredientListingPage implements OnInit, OnDestroy {
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
+  isFlourForm: FormGroup;
   searchQuery: string;
   showFilters = false;
 
@@ -60,6 +61,10 @@ export class IngredientListingPage implements OnInit, OnDestroy {
       upper: new FormControl(),
     });
 
+    this.isFlourForm = new FormGroup({
+      value: new FormControl("all"),
+    });
+
     this.route.data.subscribe((resolvedRouteData) => {
       this.ingredientsDataStore = resolvedRouteData["data"];
 
@@ -74,6 +79,12 @@ export class IngredientListingPage implements OnInit, OnDestroy {
             filters.cost.upper,
             filteredDataSource
           );
+          if (filters.is_flour !== "all") {
+            filteredDataSource = this.ingredientService.searchIngredientsByType(
+              filters.is_flour,
+              filteredDataSource
+            );
+          }
           const searchingShellModel = [new IngredientModel()];
           const dataSourceWithShellObservable = DataStore.AppendShell(
             filteredDataSource,
@@ -118,6 +129,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
         lower: this.costRangeForm.value.lower,
         upper: this.costRangeForm.value.upper,
       },
+      is_flour: this.isFlourForm.value.value,
       query: this.searchQuery,
     });
   }

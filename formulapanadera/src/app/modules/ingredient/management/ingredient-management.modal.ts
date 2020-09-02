@@ -70,6 +70,7 @@ export class IngredientManagementModal implements OnInit {
     this.ingredientData.is_flour = this.manageIngredientForm.value.is_flour;
     this.ingredientData.cost = this.manageIngredientForm.value.cost;
     if (this.type == "create") {
+      this.ingredientData.can_be_deleted = true;
       this.ingredientService.createIngredient(this.ingredientData).then(() => {
         this.dismissModal();
       });
@@ -119,10 +120,19 @@ export class IngredientManagementModal implements OnInit {
       .patchValue(this.formatNumberService.formatNumberDecimals(value));
   }
 
-  transformedHydration;
   formatNumberPercentage(value: number) {
-    this.manageIngredientForm
-      .get("hydration")
-      .patchValue(this.formatNumberService.formatNumberPercentage(value));
+    if (this.manageIngredientForm.value.is_flour) {
+      this.manageIngredientForm.get("hydration").patchValue("0.00");
+    } else {
+      this.manageIngredientForm
+        .get("hydration")
+        .patchValue(this.formatNumberService.formatNumberDecimals(value));
+    }
+  }
+
+  changeFlourIngredient() {
+    if (this.manageIngredientForm.value.is_flour) {
+      this.manageIngredientForm.get("hydration").patchValue("0.00");
+    }
   }
 }

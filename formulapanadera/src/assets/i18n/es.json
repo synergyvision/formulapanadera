@@ -6,7 +6,9 @@
     "create": "Crear",
     "update": "Modificar",
     "delete": "Eliminar",
-    "delete_question": "¿Desea eliminar {{item}}?"
+    "delete_question": "¿Desea eliminar {{item}}?",
+    "yes": "Sí",
+    "no": "No"
   },
   "input": {
     "fullName": "Nombre completo",
@@ -53,7 +55,11 @@
       "hydration": "Filtra por hidratación (%)",
       "cost": "Filtra por costo",
       "min": "Mín.",
-      "max": "Máx."
+      "max": "Máx.",
+      "flour": "Mostrar",
+      "all": "Todos",
+      "isFlour": "Harinas",
+      "notFlour": "Otros"
     }
   },
   "settings": {
