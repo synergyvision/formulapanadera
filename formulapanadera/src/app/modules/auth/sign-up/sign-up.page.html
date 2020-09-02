@@ -1,0 +1,168 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="auth/sign-in"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'auth.sign_up' | translate }}</ion-title>
+    <ion-buttons
+      slot="end"
+      class="language-btn btn-med"
+      fill="clear"
+      color="dark"
+      (click)="openLanguageChooser()"
+    >
+      <ion-icon name="language-outline"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="signup-content">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-img
+          class="logo-auth"
+          alt="page_logo"
+          src="assets/logo/logo-nav.png"
+        ></ion-img>
+        <form [formGroup]="signupForm" (ngSubmit)="signUp()">
+          <ion-list class="inputs-list" lines="full">
+            <ion-item class="input-item">
+              <ion-input
+                placeholder="{{ 'input.fullName' | translate }}"
+                formControlName="fullName"
+                clearInput
+                autocapitalize="off"
+                class="name-input"
+              ></ion-input>
+            </ion-item>
+            <div class="error-container">
+              <ng-container
+                *ngFor="let validation of validation_messages.fullName"
+              >
+                <div
+                  class="error-message"
+                  *ngIf="signupForm.get('fullName').hasError(validation.type) && (signupForm.get('fullName').dirty || signupForm.get('fullName').touched)"
+                >
+                  <ion-icon name="information-circle-outline"></ion-icon>
+                  <span>{{ validation.message }}</span>
+                </div>
+              </ng-container>
+            </div>
+
+            <ion-item class="input-item">
+              <ion-input
+                type="email"
+                placeholder="{{ 'input.email' | translate }}"
+                formControlName="email"
+                clearInput
+                autocapitalize="off"
+                inputmode="email"
+                class="email-input"
+              ></ion-input>
+            </ion-item>
+            <div class="error-container">
+              <ng-container
+                *ngFor="let validation of validation_messages.email"
+              >
+                <div
+                  class="error-message"
+                  *ngIf="signupForm.get('email').hasError(validation.type) && (signupForm.get('email').dirty || signupForm.get('email').touched)"
+                >
+                  <ion-icon name="information-circle-outline"></ion-icon>
+                  <span>{{ validation.message }}</span>
+                </div>
+              </ng-container>
+            </div>
+
+            <div formGroupName="matching_passwords">
+              <ion-item class="input-item">
+                <app-show-hide-password>
+                  <ion-input
+                    type="password"
+                    placeholder="{{ 'input.password' | translate }}"
+                    formControlName="password"
+                    class="password-input"
+                  >
+                  </ion-input>
+                </app-show-hide-password>
+              </ion-item>
+              <div class="error-container">
+                <ng-container
+                  *ngFor="let validation of validation_messages.password"
+                >
+                  <div
+                    class="error-message"
+                    *ngIf="signupForm.get('matching_passwords').get('password').hasError(validation.type) && (signupForm.get('matching_passwords').get('password').dirty || signupForm.get('matching_passwords').get('password').touched)"
+                  >
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    <span>{{ validation.message }}</span>
+                  </div>
+                </ng-container>
+              </div>
+
+              <ion-item class="input-item">
+                <app-show-hide-password>
+                  <ion-input
+                    type="password"
+                    placeholder="{{ 'input.confirm_password' | translate }}"
+                    formControlName="confirm_password"
+                    class="confirm-password-input"
+                  ></ion-input>
+                </app-show-hide-password>
+              </ion-item>
+              <div class="error-container">
+                <ng-container
+                  *ngFor="let validation of validation_messages.confirm_password"
+                >
+                  <div
+                    class="error-message"
+                    *ngIf="signupForm.get('matching_passwords').get('confirm_password').hasError(validation.type) && (signupForm.get('matching_passwords').get('confirm_password').dirty || signupForm.get('matching_passwords').get('confirm_password').touched)"
+                  >
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    <span>{{ validation.message }}</span>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="error-container">
+              <ng-container
+                *ngFor="let validation of validation_messages.matching_passwords"
+              >
+                <div
+                  class="error-message"
+                  *ngIf="signupForm.get('matching_passwords').hasError(validation.type) && (signupForm.get('matching_passwords').get('confirm_password').dirty || signupForm.get('matching_passwords').get('confirm_password').touched)"
+                >
+                  <ion-icon name="information-circle-outline"></ion-icon>
+                  <span>{{ validation.message }}</span>
+                </div>
+              </ng-container>
+            </div>
+          </ion-list>
+
+          <ion-button
+            class="signup-btn"
+            type="submit"
+            expand="block"
+            [disabled]="!signupForm.valid"
+          >
+            {{ 'auth.sign_up' | translate }}</ion-button
+          >
+          <div class="error-container" *ngIf="submitError">
+            <div class="error-message">
+              <ion-icon name="information-circle-outline"></ion-icon>
+              <span>{{ submitError }}</span>
+            </div>
+          </div>
+          <ion-row class="other-auth-options-row">
+            <ion-col class="align-text-end">
+              <a class="login-btn" [routerLink]="['/auth/sign-in']">
+                {{ 'auth.account_question' | translate }}
+              </a>
+            </ion-col>
+          </ion-row>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

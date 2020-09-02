@@ -26,6 +26,29 @@ npm install
 ionic serve
 ```
 
+### Pruebas
+
+- Pruebas unitarias
+
+Realiza cualquiera de los siguientes comandos para visualizar las pruebas unitarias de la aplicación
+
+> Estos comandos se deben ejecutar al estar en la carpeta /formulapanadera
+
+```bash
+npm run test
+npm run test:cov
+```
+
+- Pruebas E2E
+
+Realiza el siguiente comandos para visualizar las pruebas E2E de la aplicación
+
+> Este comando se debe ejecutar al estar en la carpeta /formulapanadera. Para una correcta ejecución de las pruebas, asegurarse de tener el archivo environment.e2e.ts con las credenciales de una conexión a Firebase de pruebas y de ejecutar las pruebas colocando la pestaña del navegador de forma que se observen todos los elementos visuales de la aplicación correctamente
+
+```bash
+npm run e2e
+```
+
 ## Construido con 🛠️
 
 - [Ionic 5](https://ionicframework.com/)
