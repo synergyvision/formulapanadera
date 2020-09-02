@@ -1,26 +1,26 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { IonicModule } from "@ionic/angular";
 
-import { FormulaPage } from "./formula.page";
+import { FormulaListingPage } from "./formula-listing.page";
 import { TranslateModule } from '@ngx-translate/core';
 
-describe("FormulaPage", () => {
-  let component: FormulaPage;
-  let fixture: ComponentFixture<FormulaPage>;
+describe("FormulaListingPage", () => {
+  let component: FormulaListingPage;
+  let fixture: ComponentFixture<FormulaListingPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [FormulaPage],
+      declarations: [FormulaListingPage],
       imports: [IonicModule.forRoot(), TranslateModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FormulaPage);
+    fixture = TestBed.createComponent(FormulaListingPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormulaPage);
+    fixture = TestBed.createComponent(FormulaListingPage);
     component = fixture.componentInstance;
   });
 

@@ -1,20 +1,19 @@
 import { IonicModule } from "@ionic/angular";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
-import { TranslateModule } from "@ngx-translate/core";
-import { FormulaPage } from "./formula.page";
+import { Routes, RouterModule } from "@angular/router";
 
-import { FormulaPageRoutingModule } from "./formula-routing.module";
+const routes: Routes = [
+  {
+    path: "",
+    loadChildren: () =>
+      import("./listing/formula-listing.module").then(
+        (m) => m.FormulaListingPageModule
+      ),
+  },
+];
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    FormulaPageRoutingModule,
-    TranslateModule.forChild(),
-  ],
-  declarations: [FormulaPage],
+  imports: [IonicModule, CommonModule, RouterModule.forChild(routes)],
 })
 export class FormulaPageModule {}
