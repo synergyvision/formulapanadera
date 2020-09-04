@@ -32,7 +32,7 @@
     "areNotEqual": { "password": "Las contraseñas no coinciden." }
   },
   "auth": {
-    "sign_up": "Registrarse",
+    "sign_up": "Regístrate",
     "sign_in": "Iniciar sesión",
     "account_question": "¿Ya tienes una cuenta?",
     "forgot_password": "¿Olvidaste tu contraseña?",
@@ -40,6 +40,32 @@
     "recover": "Recuperar",
     "recover_indications": "Por favor ingresa tu dirección de correo electrónico y te enviaremos un correo para restablecer tu contraseña.",
     "reset_password": "Restablecer contraseña"
+  },
+  "formulas": {
+    "name": "Fórmulas",
+    "create": "Crear fórmula",
+    "update": "Modificar fórmula",
+    "formula_name": "Nombre",
+    "units": "Unidades",
+    "unit_weight": "Peso por unidad",
+    "ingredients": { "percentage": "Porcentaje" },
+    "mixing_order": "Orden de mezclado",
+    "steps": "Pasos",
+    "step": "Paso",
+    "time": "Tiempo",
+    "minutes": "Min.",
+    "temperature": "Temperatura",
+    "description": "Descripción",
+    "range": {
+      "min": "Min.",
+      "max": "Máx."
+    },
+    "temperature_options": {
+      "no": "No requiere",
+      "yes": "Escoger",
+      "range": "Escoger rango"
+    },
+    "empty": "No se encontraron fórmulas"
   },
   "ingredients": {
     "name": "Ingredientes",
@@ -49,6 +75,7 @@
     "is_flour": "Es harina",
     "hydration": "Hidratación",
     "cost": "Costo",
+    "grams": "gr.",
     "empty": "No se encontraron ingredientes",
     "filter": {
       "name": "Filtra por nombre...",
@@ -74,9 +101,18 @@
   "production": {
     "name": "Producción"
   },
-  "formulas": {
-    "name": "Fórmulas",
-    "mine": "Mias",
-    "shared": "Compartidas"
+  "steps": {
+    "1": "Preparación",
+    "2": "Mezcla/Amasado",
+    "3": "Fermentación en bloque",
+    "4": "Manipulación",
+    "5": "División",
+    "6": "Preformado",
+    "7": "Descanso en mesa",
+    "8": "Formado",
+    "9": "Barnices, Coberturas y Greñado",
+    "10": "Maduración",
+    "11": "Horneado",
+    "12": "Enfriamiento"
   }
 }

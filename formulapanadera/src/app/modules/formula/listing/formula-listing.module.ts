@@ -5,11 +5,17 @@ import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
 import { Routes, RouterModule } from "@angular/router";
 import { FormulaListingPage } from "./formula-listing.page";
+import { FormulaService } from "src/app/core/services/formula.service";
+import { FormulaListingResolver } from "src/app/core/resolvers/formula-listing.resolver";
+import { AuthService } from "src/app/core/services/auth.service";
 
 const routes: Routes = [
   {
     path: "",
     component: FormulaListingPage,
+    resolve: {
+      data: FormulaListingResolver,
+    },
   },
 ];
 
@@ -22,5 +28,6 @@ const routes: Routes = [
     TranslateModule,
   ],
   declarations: [FormulaListingPage],
+  providers: [AuthService, FormulaService, FormulaListingResolver],
 })
 export class FormulaListingPageModule {}

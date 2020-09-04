@@ -3,11 +3,46 @@
     <ion-icon slot="start" class="btn-med" name="library-outline"></ion-icon>
     <ion-title> {{ 'formulas.name' | translate }} </ion-title>
     <ion-buttons slot="end">
-      <ion-button class="create-formula">
+      <ion-button class="create-formula" (click)="createFormula()">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="formula-content"> </ion-content>
+<ion-content class="formula-content">
+  <ion-list
+    lines="full"
+    class="formulas-list"
+    *ngIf="formulas?.length > 0; else emptyBlock"
+  >
+    <ion-item
+      detail
+      button
+      class="formula-item"
+      *ngFor="let formula of formulas"
+      (click)="formulaDetails(formula)"
+    >
+      <ion-row class="formula-item-wrapper">
+        <ion-col class="formulas-wrapper">
+          <ion-row>
+            <ion-col>
+              <h2 class="formulas-name">{{formula.name}}</h2>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+  <ng-template #emptyBlock>
+    <ion-row class="empty-block">
+      <ion-col class="ion-text-center ion-padding">
+        <h5>
+          {{ 'formulas.empty' | translate }}<br /><a (click)="createFormula()"
+            >{{ 'formulas.create' | translate }}</a
+          >
+        </h5>
+      </ion-col>
+    </ion-row>
+  </ng-template>
+</ion-content>

@@ -1,0 +1,210 @@
+<form
+  class="manage-formula-form ion-page"
+  [formGroup]="manageFormulaForm"
+  (ngSubmit)="sendFormula()"
+>
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="menu/formula"></ion-back-button>
+      </ion-buttons>
+      <ion-title *ngIf="!update"> {{'formulas.create' | translate}} </ion-title>
+      <ion-title *ngIf="update"> {{'formulas.update' | translate}} </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="manage-formula-content">
+    <section class="formula-details-fields fields-section">
+      <ion-list class="inputs-list" lines="full">
+        <ion-row
+          ><ion-col>
+            <ion-item class="input-item">
+              <ion-label color="primary" position="floating"
+                >{{'formulas.formula_name' | translate}}</ion-label
+              >
+              <ion-input
+                type="text"
+                formControlName="name"
+                class="formula-name"
+                required
+              ></ion-input>
+            </ion-item> </ion-col
+        ></ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item class="input-item">
+              <ion-label color="primary" position="floating"
+                >{{'formulas.units' | translate}}</ion-label
+              >
+              <ion-input
+                type="number"
+                formControlName="units"
+                inputmode="numeric"
+                class="formula-units"
+                (ionBlur)="formatUnits(manageFormulaForm.value.units)"
+                required
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item class="input-item">
+              <ion-label color="primary" position="floating"
+                >{{'formulas.unit_weight' | translate}} ({{'ingredients.grams' |
+                translate}})</ion-label
+              >
+              <ion-input
+                type="text"
+                formControlName="unit_weight"
+                inputmode="numeric"
+                class="formula-unit-weight"
+                (ionBlur)="formatUnitWeight(manageFormulaForm.value.unit_weight)"
+                required
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+      <ion-card>
+        <ion-card-header>
+          <ion-item>
+            <ion-label> {{'ingredients.name' | translate}} </ion-label>
+
+            <ion-button
+              size="small"
+              (click)="pickIngredient()"
+              class="pick-ingredient"
+            >
+              <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-card-header>
+        <ion-list lines="full" class="ingredients-list">
+          <app-ingredient-item
+            *ngFor="let percentageIngredient of formula.ingredients"
+            (click)="deleteIngredient(percentageIngredient)"
+            [ingredient]="percentageIngredient.ingredient"
+            [percentage]="percentageIngredient.percentage+formulaUnit"
+            [details]="false"
+          >
+          </app-ingredient-item>
+        </ion-list>
+      </ion-card>
+      <ion-card>
+        <ion-card-header>
+          <ion-item>
+            <ion-label> {{'formulas.mixing_order' | translate}} </ion-label>
+
+            <ion-button
+              size="small"
+              (click)="mixIngredients()"
+              class="mix-ingredient"
+              [disabled]="!formula.ingredients"
+            >
+              <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-card-header>
+        <ion-list lines="full" class="mixing-list">
+          <span *ngFor="let mixStep of formula.mixing; index as i">
+            <ion-item-divider
+              ><ion-label
+                >{{'formulas.step' | translate}} {{i+1}}</ion-label
+              ></ion-item-divider
+            >
+            <app-ingredient-item
+              *ngFor="let ingredient of mixStep.ingredients"
+              [ingredient]="ingredient.ingredient"
+              [details]="false"
+            >
+            </app-ingredient-item>
+          </span>
+        </ion-list>
+      </ion-card>
+      <ion-card>
+        <ion-card-header>
+          <ion-item>
+            <ion-label> {{'formulas.steps' | translate}} </ion-label>
+            <ion-button
+              size="small"
+              (click)="describeSteps()"
+              class="describe-steps"
+            >
+              <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-card-header>
+        <ion-list lines="full" class="steps-list">
+          <span *ngFor="let step of formula.steps; index as i">
+            <ion-item-divider>
+              <ion-label
+                >{{'formulas.step' | translate}} {{step.number+1}}:
+                {{step.name}}</ion-label
+              >
+            </ion-item-divider>
+            <ion-item>
+              <ion-row class="step-item-wrapper">
+                <ion-col class="step-wrapper">
+                  <p>
+                    <ion-icon name="timer-outline" color="dark"></ion-icon>
+                    {{step.time}} {{'formulas.minutes' | translate}}
+                  </p>
+                </ion-col>
+                <ion-col *ngIf="step.temperature">
+                  <p>
+                    <ion-icon
+                      name="thermometer-outline"
+                      color="danger"
+                    ></ion-icon>
+                    {{step.temperature.min}} º{{temperatureUnit}}
+                    <span *ngIf="step.temperature.max">
+                      - {{step.temperature.max}} </span
+                    >º{{temperatureUnit}}
+                  </p>
+                </ion-col>
+              </ion-row>
+            </ion-item>
+          </span>
+        </ion-list>
+      </ion-card>
+      <ion-row class="form-actions-wrapper" *ngIf="!update">
+        <ion-col>
+          <ion-button
+            class="submit-btn"
+            expand="block"
+            color="primary"
+            type="submit"
+            fill="solid"
+            [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps)"
+            >{{ 'action.create' | translate }}</ion-button
+          >
+        </ion-col>
+      </ion-row>
+    </section>
+  </ion-content>
+
+  <ion-footer *ngIf="update">
+    <ion-row class="form-actions-wrapper">
+      <ion-col>
+        <ion-button
+          class="delete-btn"
+          expand="block"
+          color="danger"
+          fill="solid"
+          (click)="deleteFormula()"
+          >{{ 'action.delete' | translate }}
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button
+          class="submit-btn"
+          expand="block"
+          color="primary"
+          type="submit"
+          fill="solid"
+          [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps)"
+          >{{ 'action.update' | translate }}</ion-button
+        >
+      </ion-col>
+    </ion-row>
+  </ion-footer>
+</form>

@@ -1,0 +1,79 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" name="list-outline"></ion-icon>
+    <ion-title> {{'formulas.mixing_order' | translate}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()" class="create-ingredient">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ingredient-content">
+  <ion-list lines="full" class="ingredients-list">
+    <span *ngFor="let mixStep of formulaMixing; index as i">
+      <ion-item-divider>
+        <ion-label>{{'formulas.step' | translate}} {{i+1}}</ion-label>
+        <ion-icon
+          name="close-outline"
+          class="delete-step"
+          slot="end"
+          color="danger"
+          button
+          *ngIf="mixStep.ingredients.length==0"
+          (click)="deleteStep(mixStep)"
+        ></ion-icon>
+      </ion-item-divider>
+      <app-ingredient-item
+        *ngFor="let ingredient of mixStep.ingredients"
+        [ingredient]="ingredient.ingredient"
+        [details]="true"
+        [selector]="true"
+      >
+        <ion-select
+          [value]="i"
+          (ionChange)="changeMixingOrder($event, i, ingredient)"
+          class="step-selector"
+        >
+          <ion-select-option
+            *ngFor="let index of formulaMixing; index as j"
+            [value]="j"
+            >{{j+1}}</ion-select-option
+          >
+        </ion-select></app-ingredient-item
+      >
+      <ion-item>
+        <ion-label color="primary" position="floating"
+          >{{'formulas.description' | translate}}</ion-label
+        >
+        <ion-textarea
+          type="text"
+          [(ngModel)]="mixStep.description"
+        ></ion-textarea>
+      </ion-item>
+    </span>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addStep()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<ion-footer>
+  <ion-row class="form-actions-wrapper">
+    <ion-col>
+      <ion-button
+        class="submit-btn"
+        expand="block"
+        color="primary"
+        (click)="saveMixing()"
+        fill="solid"
+        [disabled]="stepsEmpty()"
+      >
+        {{ 'action.confirm' | translate }}</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-footer>

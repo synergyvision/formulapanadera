@@ -1,0 +1,53 @@
+.ingredient-item {
+  color: var(--ion-color-secondary);
+}
+
+.ingredient-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  align-items: center;
+}
+
+.ingredients-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: var(--page-margin);
+
+  .ingredients-name {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    color: var(--ion-color-primary);
+  }
+
+  .ingredients-description {
+    font-size: 12px;
+    margin: 0px;
+  }
+}
+
+.ingredient-checkbox {
+  --size: 12px;
+  margin: 0px 5px -1px 5px;
+  display: inline-block;
+  opacity: 1;
+}
+
+.properties-icon {
+  color: var(--ion-color-secondary) !important;
+  padding-right: 5px !important;
+  margin-bottom: -2px;
+}
+
+.image-icon {
+  padding: 2px 5px 0px 2px !important;
+  margin-top: -5px;
+}
+
+.ingredient-percentage {
+  margin: 0;
+}

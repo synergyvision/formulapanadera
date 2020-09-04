@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="menu/formula"></ion-back-button>
+    </ion-buttons>
+    <ion-title> {{'formulas.name' | translate}} </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="manage-formula-content">
+  <section class="formula-details-fields fields-section"></section>
+  <ion-button expand="block" fill="solid" (click)="updateFormula()"
+    >{{ 'action.update' | translate }}
+  </ion-button>
+</ion-content>

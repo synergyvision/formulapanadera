@@ -1,0 +1,66 @@
+import { Injectable } from "@angular/core";
+import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
+
+import { DataStore } from "src/app/shared/shell/data-store";
+import { FormulaModel } from "../models/formula.model";
+import { Observable } from "rxjs";
+
+@Injectable()
+export class FormulaService {
+  private formulaDataStore: DataStore<Array<FormulaModel>>;
+
+  constructor(private afs: AngularFirestore) {}
+
+  /*
+    Formula Listing Page
+  */
+  public getFormulasDataSource(): Observable<Array<FormulaModel>> {
+    return this.afs
+      .collection<FormulaModel>("formulas")
+      .valueChanges({ idField: "id" });
+  }
+
+  public getFormulasStore(
+    dataSource: Observable<Array<FormulaModel>>
+  ): DataStore<Array<FormulaModel>> {
+    // Use cache if available
+    if (!this.formulaDataStore) {
+      // Initialize the model specifying that it is a shell model
+      const shellModel: Array<FormulaModel> = [
+        new FormulaModel(),
+        new FormulaModel(),
+        new FormulaModel(),
+        new FormulaModel(),
+        new FormulaModel(),
+        new FormulaModel(),
+        new FormulaModel(),
+        new FormulaModel(),
+        new FormulaModel(),
+        new FormulaModel(),
+      ];
+
+      this.formulaDataStore = new DataStore(shellModel);
+      // Trigger the loading mechanism (with shell) in the dataStore
+      this.formulaDataStore.load(dataSource);
+    }
+    return this.formulaDataStore;
+  }
+
+  /*
+    Formula Management
+  */
+  public createFormula(formulaData: FormulaModel): Promise<DocumentReference> {
+    return this.afs.collection("formulas").add({ ...formulaData });
+  }
+
+  public updateFormula(formulaData: FormulaModel): Promise<void> {
+    return this.afs
+      .collection("formulas")
+      .doc(formulaData.id)
+      .set({ ...formulaData });
+  }
+
+  public deleteFormula(formulaKey: string): Promise<void> {
+    return this.afs.collection("formulas").doc(formulaKey).delete();
+  }
+}

@@ -11,6 +11,20 @@ const routes: Routes = [
         (m) => m.FormulaListingPageModule
       ),
   },
+  {
+    path: "manage",
+    loadChildren: () =>
+      import("./management/formula-management.module").then(
+        (m) => m.FormulaManagementModule
+      ),
+  },
+  {
+    path: "details",
+    loadChildren: () =>
+      import("./details/formula-details.module").then(
+        (m) => m.FormulaDetailsPageModule
+      ),
+  },
 ];
 
 @NgModule({

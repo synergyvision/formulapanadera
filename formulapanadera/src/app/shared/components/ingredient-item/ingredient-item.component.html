@@ -1,0 +1,57 @@
+<ion-item [detail]="clickable" [button]="clickable" class="ingredient-item">
+  <ion-row class="ingredient-item-wrapper">
+    <ion-col class="ingredients-wrapper">
+      <ion-row>
+        <ion-col>
+          <h2 class="ingredients-name">
+            <app-text-shell
+              animation="bouncing"
+              lines="3"
+              [data]="ingredient.name"
+            ></app-text-shell>
+          </h2>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="ingredient.id !== undefined && details">
+        <ion-col>
+          <p class="ingredients-description">
+            <ion-icon class="properties-icon" name="water-outline"></ion-icon
+            >{{ ingredient.hydration }}%
+          </p>
+        </ion-col>
+        <ion-col>
+          <p class="ingredients-description">
+            <img
+              class="properties-icon image-icon"
+              src="assets/icon/wheat.png"
+              width="18"
+              height="18"
+            />
+            <ion-checkbox
+              class="ingredient-checkbox"
+              color="primary"
+              disabled="true"
+              [checked]="ingredient.is_flour"
+            >
+            </ion-checkbox>
+          </p>
+        </ion-col>
+        <ion-col>
+          <p class="ingredients-description">
+            <ion-icon name="card-outline" class="properties-icon"></ion-icon
+            >{{ ingredient.cost }}
+            {{ ingredient_cost_unit }}
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+    <ion-col size="3" *ngIf="percentage">
+      <p class="ingredient-percentage">
+        {{ percentage }}
+      </p>
+    </ion-col>
+    <ion-col size="3" *ngIf="selector">
+      <ng-content></ng-content>
+    </ion-col>
+  </ion-row>
+</ion-item>

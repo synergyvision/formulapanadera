@@ -1,0 +1,66 @@
+:host {
+  --page-margin: var(--app-fair-margin);
+  --page-background: var(--app-background);
+
+  --page-background-shade: var(--app-background-shade);
+  --page-tags-gutter: 5px;
+}
+
+.manage-formula-content {
+  --background: var(--page-background);
+
+  .fields-section {
+    .section-header {
+      padding: 0px var(--page-margin);
+      margin-top: 0px;
+      margin-bottom: var(--page-margin);
+    }
+  }
+
+  .formula-details-fields {
+    height: 100%;
+    .inputs-list {
+      padding: 0px var(--page-margin);
+    }
+
+    .input-item {
+      --padding-start: 0px;
+      --padding-end: 0px;
+      --inner-padding-start: 0px;
+      --inner-padding-end: 0px;
+    }
+  }
+}
+
+.form-actions-wrapper {
+  --ion-grid-column-padding: calc(var(--page-margin) / 2);
+
+  padding: calc(var(--page-margin) / 2);
+
+  .submit-btn {
+    margin: 0px;
+  }
+
+  .delete-btn {
+    margin: 0px;
+  }
+}
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+.step-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  align-items: center;
+  font-size: 14px;
+}
+
+.step-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: var(--page-margin);
+}

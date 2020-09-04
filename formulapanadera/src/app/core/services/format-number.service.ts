@@ -20,4 +20,13 @@ export class FormatNumberService {
       return number;
     }
   }
+
+  formatNonZeroPositiveNumber(value: number): string {
+    let number = this.formatNumberDecimals(value, 0);
+    if (Number(number) <= 0) {
+      return "1";
+    } else {
+      return number;
+    }
+  }
 }

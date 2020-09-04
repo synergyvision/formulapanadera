@@ -41,6 +41,32 @@
     "recover_indications": "Please enter your email address and we'll send you an email to reset your password.",
     "reset_password": "Reset password"
   },
+  "formulas": {
+    "name": "Formulas",
+    "create": "Create formula",
+    "update": "Update formula",
+    "formula_name": "Name",
+    "units": "Units",
+    "unit_weight": "Unit weight",
+    "ingredients": { "percentage": "Percentage" },
+    "mixing_order": "Mixing order",
+    "steps": "Steps",
+    "step": "Step",
+    "time": "Time",
+    "minutes": "Min.",
+    "temperature": "Temperature",
+    "description": "Description",
+    "range": {
+      "min": "Min.",
+      "max": "Max."
+    },
+    "temperature_options": {
+      "no": "Doesn't require",
+      "yes": "Choose",
+      "range": "Choose range"
+    },
+    "empty": "No formulas found"
+  },
   "ingredients": {
     "name": "Ingredients",
     "create": "Create ingredient",
@@ -49,6 +75,7 @@
     "is_flour": "Is flour",
     "hydration": "Hydration",
     "cost": "Cost",
+    "grams": "gr.",
     "empty": "No ingredients found",
     "filter": {
       "name": "Filter by name...",
@@ -74,9 +101,18 @@
   "production": {
     "name": "Production"
   },
-  "formulas": {
-    "name": "Formulas",
-    "mine": "Mine",
-    "shared": "Shared"
+  "steps": {
+    "1": "Mise en place",
+    "2": "Mixing and kneading",
+    "3": "Primary fermentation",
+    "4": "Punching down",
+    "5": "Dividing",
+    "6": "Rounding",
+    "7": "Rest/Benching",
+    "8": "Shaping",
+    "9": "Coverings",
+    "10": "Proofing",
+    "11": "Baking",
+    "12": "Cooling"
   }
 }
