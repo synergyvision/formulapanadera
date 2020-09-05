@@ -67,8 +67,8 @@ export class FormulaService {
   /*
   Formula calculations
   */
-  public calculateBakersPercentage(formula: FormulaModel): string {
-    let total_weight: number = formula.units * formula.unit_weight;
+  public calculateBakersPercentage(units: number, formula: FormulaModel): string {
+    let total_weight: number = units * formula.unit_weight;
     let percentage: number = 0;
     formula.ingredients.forEach((ingredientData) => {
       percentage = percentage + Number(ingredientData.percentage);
@@ -99,5 +99,22 @@ export class FormulaService {
         cost;
     });
     return cost.toFixed(2);
+  }
+
+  public fromRecipeToFormula(formula: FormulaModel) {
+    let flour = 0;
+    formula.ingredients.forEach((ingredient) => {
+      if (ingredient.ingredient.is_flour) {
+        flour = flour + ingredient.percentage;
+      }
+    });
+
+    let bakers_percentage = flour / 100;
+    formula.ingredients.forEach((ingredient) => {
+      ingredient.percentage = Number(
+        (ingredient.percentage / Number(bakers_percentage)).toFixed(1)
+      );
+    });
+    return formula.ingredients;
   }
 }

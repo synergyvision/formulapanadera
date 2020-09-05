@@ -29,25 +29,29 @@
         </ion-row>
       </ion-item>
     </ion-list>
-    <ion-row
-      ><ion-col size="4" class="detail-col">
+    <ion-row>
+      <ion-col class="detail-col">
         <ion-item class="formula-detail">
           <ion-label color="primary" position="floating"
             >{{'formulas.units' | translate}}</ion-label
           >
-          <p>{{formula.units}}</p>
+          <ion-input
+            [(ngModel)]="units"
+            (ionChange)="changeUnits($event)"
+          ></ion-input>
         </ion-item>
-      </ion-col>
-      <ion-col size="4" class="detail-col">
+      </ion-col> </ion-row
+    ><ion-row>
+      <ion-col size="6" class="detail-col">
         <ion-item class="formula-detail">
-          <ion-label color="primary" position="floating"
+          <ion-label color="secondary" position="floating"
             >{{'formulas.weight' | translate}}</ion-label
           >
           <p>{{formula.unit_weight}} {{'ingredients.grams' | translate}}</p>
         </ion-item> </ion-col
-      ><ion-col size="4" class="detail-col">
+      ><ion-col size="6" class="detail-col">
         <ion-item class="formula-detail">
-          <ion-label color="primary" position="floating"
+          <ion-label color="secondary" position="floating"
             >{{'formulas.total_weight' | translate}}</ion-label
           >
           <p>{{total_weight}} {{'ingredients.grams' | translate}}</p>
@@ -56,14 +60,14 @@
     ><ion-row
       ><ion-col class="detail-col">
         <ion-item class="formula-detail">
-          <ion-label color="primary" position="floating"
+          <ion-label color="secondary" position="floating"
             >{{'formulas.bakers_percentage' | translate}}</ion-label
           >
           <p>{{bakers_percentage}} {{'ingredients.grams' | translate}}/%</p>
         </ion-item> </ion-col
       ><ion-col class="detail-col">
         <ion-item class="formula-detail">
-          <ion-label color="primary" position="floating"
+          <ion-label color="secondary" position="floating"
             >{{'ingredients.hydration' | translate}}</ion-label
           >
           <p>{{hydration}} %</p>
@@ -73,7 +77,7 @@
     <ion-row>
       <ion-col class="detail-col">
         <ion-item class="formula-detail">
-          <ion-label color="primary" position="floating"
+          <ion-label color="secondary" position="floating"
             >{{'formulas.cost.unitary' | translate}}</ion-label
           >
           <p>{{unitary_cost}} {{cost_unit}}</p>
@@ -81,7 +85,7 @@
       </ion-col>
       <ion-col class="detail-col">
         <ion-item class="formula-detail">
-          <ion-label color="primary" position="floating"
+          <ion-label color="secondary" position="floating"
             >{{'formulas.cost.total' | translate}}</ion-label
           >
           <p>{{total_cost}} {{cost_unit}}</p>

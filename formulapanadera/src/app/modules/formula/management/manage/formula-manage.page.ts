@@ -30,7 +30,7 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
 export class FormulaManagePage {
   formula: FormulaModel = new FormulaModel();
   manageFormulaForm: FormGroup;
-  formulaUnit = "%";
+  formulaUnit = "gr";
   temperatureUnit = "C";
   update: boolean = false;
 
@@ -77,6 +77,10 @@ export class FormulaManagePage {
         this.formula.steps.push(ingredient);
       });
     }
+  }
+
+  changeUnit(ev: any) {
+    this.formulaUnit = ev.detail.value;
   }
 
   formatUnits(value: number) {
@@ -182,6 +186,7 @@ export class FormulaManagePage {
   }
 
   sendFormula() {
+    this.verifyUnit();
     this.verifyTemperature();
     this.formula.name = this.manageFormulaForm.value.name;
     this.formula.shared = false;
@@ -244,6 +249,14 @@ export class FormulaManagePage {
           }
         }
       });
+    }
+  }
+
+  verifyUnit() {
+    if (this.formulaUnit == "gr") {
+      this.formula.ingredients = this.formulaService.fromRecipeToFormula(
+        this.formula
+      );
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { ActionSheetController } from "@ionic/angular";
 import {
@@ -15,10 +15,11 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
   templateUrl: "formula-details.page.html",
   styleUrls: ["./styles/formula-details.page.scss"],
 })
-export class FormulaDetailsPage implements OnInit {
+export class FormulaDetailsPage implements OnInit, OnDestroy {
   formula: FormulaModel = new FormulaModel();
   formulaUnit = "%";
   temperatureUnit = "C";
+  units: number;
 
   bakers_percentage: string;
   total_weight: string;
@@ -51,23 +52,30 @@ export class FormulaDetailsPage implements OnInit {
       this.router.navigateByUrl("menu/formula");
     } else {
       this.formula = state.formula;
-      this.bakers_percentage = this.formulaService.calculateBakersPercentage(
-        this.formula
-      );
-      this.total_weight = (
-        this.formula.units * this.formula.unit_weight
-      ).toFixed(1);
-      this.hydration = this.formulaService.calculateHydration(this.formula);
-      this.total_cost = this.formulaService.calculateTotalCost(
-        this.formula,
-        Number(this.bakers_percentage)
-      );
-      this.unitary_cost = (
-        Number(this.total_cost) / this.formula.units
-      ).toFixed(2);
+      this.units = this.formula.units;
+      this.calculateFormula();
 
       this.steps = JSON.parse(JSON.stringify(this.formula.steps));
     }
+  }
+
+  ngOnDestroy() {
+    this.units = this.formula.units;
+    this.calculateFormula();
+  }
+
+  calculateFormula() {
+    this.bakers_percentage = this.formulaService.calculateBakersPercentage(
+      this.units,
+      this.formula
+    );
+    this.total_weight = (this.units * this.formula.unit_weight).toFixed(1);
+    this.hydration = this.formulaService.calculateHydration(this.formula);
+    this.total_cost = this.formulaService.calculateTotalCost(
+      this.formula,
+      Number(this.bakers_percentage)
+    );
+    this.unitary_cost = (Number(this.total_cost) / this.units).toFixed(2);
   }
 
   //Change
@@ -92,6 +100,12 @@ export class FormulaDetailsPage implements OnInit {
       });
     } else {
       this.steps = JSON.parse(JSON.stringify(this.formula.steps));
+    }
+  }
+
+  changeUnits(event: any) {
+    if (event.detail.value > 0) {
+      this.calculateFormula();
     }
   }
 
@@ -128,6 +142,8 @@ export class FormulaDetailsPage implements OnInit {
   }
 
   updateFormula() {
+    this.units = this.formula.units;
+    this.calculateFormula();
     this.router.navigateByUrl("menu/formula/manage", {
       state: { formula: this.formula },
     });

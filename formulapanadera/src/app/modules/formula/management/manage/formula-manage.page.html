@@ -79,6 +79,19 @@
               <ion-icon name="add-outline" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-item>
+          <ion-item class="unit-select-item">
+            <ion-label>{{'formulas.unit' | translate}}</ion-label
+            ><ion-select
+              [value]="formulaUnit"
+              class="unit-selector"
+              (ionChange)="changeUnit($event)"
+            >
+              <ion-select-option value="gr"
+                >{{'ingredients.grams' | translate}}</ion-select-option
+              >
+              <ion-select-option value="%">%</ion-select-option>
+            </ion-select></ion-item
+          >
         </ion-card-header>
         <ion-list lines="full" class="ingredients-list">
           <ion-item

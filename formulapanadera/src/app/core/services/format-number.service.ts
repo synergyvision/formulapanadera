@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
 export class FormatNumberService {
   constructor() {}
 
-  formatNumberDecimals(value: number, decimals: number = 2): string {
+  formatNumberDecimals(value: number, decimals: number = 1): string {
     if (value != null) {
       return (Math.round(value * 100) / 100).toFixed(decimals);
     } else {

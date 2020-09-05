@@ -153,15 +153,15 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
   async clickIngredient(ingredient: IngredientModel) {
     const alert = await this.alertController.create({
       cssClass: "ingredient-percentage-alert alert",
-      header: `${this.languageService.getTerm(
-        "formulas.ingredients.percentage"
-      )} (${this.formulaUnit})`,
+      header: `${this.languageService.getTerm("formulas.ingredients.value")} (${
+        this.formulaUnit
+      })`,
       inputs: [
         {
           name: "percentage",
           type: "number",
           placeholder: this.languageService.getTerm(
-            "formulas.ingredients.percentage"
+            "formulas.ingredients.value"
           ),
         },
       ],
@@ -176,10 +176,19 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
           cssClass: "confirm-alert-accept",
           handler: (data) => {
             if (data.percentage > 0) {
-              this.modalController.dismiss({
-                percentage: this.formatNumberService.formatNumberPercentage(
+              let value: string;
+              if (this.formulaUnit == "%") {
+                value = this.formatNumberService.formatNumberPercentage(
                   data.percentage
-                ),
+                );
+              } else {
+                value = this.formatNumberService.formatNumberDecimals(
+                  data.percentage,
+                  1
+                );
+              }
+              this.modalController.dismiss({
+                percentage: value,
                 ingredient: ingredient,
               });
             }
