@@ -1,0 +1,26 @@
+<ion-list lines="full" class="mixing-list">
+  <span *ngFor="let mixStep of steps; index as i">
+    <ion-item-divider>
+      <ion-label>{{ "formulas.step" | translate }} {{ i + 1 }}</ion-label>
+      <ion-icon
+        *ngIf="mixStep.description"
+        name="document-outline"
+        class="step-note"
+        slot="end"
+        button
+        (click)="showNote(i, mixStep)"
+      ></ion-icon>
+    </ion-item-divider>
+    <ion-item *ngFor="let item of mixStep.ingredients" class="ingredient-item">
+      <ion-row class="ingredient-item-wrapper">
+        <ion-col size="9" class="ingredients-wrapper">
+          <ion-row>
+            <ion-col>
+              <h2 class="ingredients-name">{{ item.ingredient.name }}</h2>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </span>
+</ion-list>

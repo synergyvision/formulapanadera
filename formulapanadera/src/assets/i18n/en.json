@@ -3,6 +3,7 @@
     "ok": "OK",
     "cancel": "Cancel",
     "confirm": "Confirm",
+    "share": "Share",
     "create": "Create",
     "update": "Update",
     "delete": "Delete",
@@ -45,9 +46,12 @@
     "name": "Formulas",
     "create": "Create formula",
     "update": "Update formula",
+    "bakers_percentage": "Baker's percentage",
     "formula_name": "Name",
     "units": "Units",
+    "weight": "Weight",
     "unit_weight": "Unit weight",
+    "total_weight": "Total weight",
     "ingredients": { "percentage": "Percentage" },
     "mixing_order": "Mixing order",
     "steps": "Steps",
@@ -56,6 +60,7 @@
     "minutes": "Min.",
     "temperature": "Temperature",
     "description": "Description",
+    "cost": { "unitary": "Unitary cost", "total": "Total cost" },
     "range": {
       "min": "Min.",
       "max": "Max."
@@ -75,7 +80,7 @@
     "is_flour": "Is flour",
     "hydration": "Hydration",
     "cost": "Cost",
-    "grams": "gr.",
+    "grams": "gr",
     "empty": "No ingredients found",
     "filter": {
       "name": "Filter by name...",

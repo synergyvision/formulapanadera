@@ -1,0 +1,21 @@
+.step-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  align-items: center;
+  font-size: 14px;
+}
+
+.step-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: var(--page-margin);
+}
+
+.step-note {
+  margin: 0;
+  margin-right: 10px;
+  color: cornflowerblue;
+  font-size: 20px;
+}

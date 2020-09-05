@@ -3,9 +3,30 @@
   margin: 0 0 0 10px;
 }
 
+.ingredients-list {
+  padding: 0px !important;
+}
+
+.ingredient-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  align-items: center;
+}
+
+.ingredients-name {
+  margin-top: 0px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  color: black;
+}
+
 .step-selector {
   padding: 0px;
   border-bottom: 1px solid lightgray;
+  font-size: 14px;
 }
 
 .delete-step {
@@ -15,4 +36,8 @@
 
 .ios.title-default {
   padding: 0 0;
+}
+
+.step-description {
+  font-size: 14px;
 }

@@ -20,7 +20,7 @@ import { LanguageService } from "src/app/core/services/language.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 @Component({
-  selector: "app-ingredient-picker",
+  selector: "app-ingredient-picker-modal",
   templateUrl: "ingredient-picker.modal.html",
   styleUrls: [
     "./styles/ingredient-picker.modal.scss",

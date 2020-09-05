@@ -11,23 +11,18 @@
 </ion-header>
 
 <ion-content class="ingredient-content">
-  <ion-radio-group [(ngModel)]="temperatureUnit">
-    <ion-list-header>
-      <ion-label>{{'formulas.temperature' | translate}}</ion-label>
-    </ion-list-header>
-    <ion-item>
-      <ion-label>ºC</ion-label>
-      <ion-radio slot="start" value="C"></ion-radio>
-    </ion-item>
-    <ion-item>
-      <ion-label>ºF</ion-label>
-      <ion-radio slot="start" value="F"></ion-radio>
-    </ion-item>
-  </ion-radio-group>
+  <ion-select
+    [value]="temperatureUnit"
+    class="temperature-selector"
+    (ionChange)="changeTemperature($event)"
+  >
+    <ion-select-option value="C">ºC</ion-select-option>
+    <ion-select-option value="F">ºF</ion-select-option>
+  </ion-select>
 
   <ion-list lines="full" class="steps-list">
     <span *ngFor="let step of formulaSteps">
-      <ion-item-divider color="secondary">
+      <ion-item-divider>
         <ion-label>
           {{'formulas.step' | translate}} {{step.number+1}}: {{step.name}}
         </ion-label>
@@ -53,7 +48,7 @@
               >{{'formulas.temperature' | translate}}</ion-label
             >
             <ion-select
-              value="no"
+              [value]="selectValue(step)"
               (ionChange)="changeTemperatureOption($event, step)"
               class="temperature-selector"
             >
@@ -79,14 +74,14 @@
             <ion-label
               color="primary"
               position="floating"
-              *ngIf="step.temperature.max !== undefined"
+              *ngIf="step.temperature.max !== -1"
               >{{'formulas.range.min' | translate}}
               (º{{temperatureUnit}})</ion-label
             >
             <ion-label
               color="primary"
               position="floating"
-              *ngIf="step.temperature.max === undefined"
+              *ngIf="step.temperature.max === -1"
               >{{'formulas.temperature' | translate}} (º{{temperatureUnit}})
             </ion-label>
             <ion-input
@@ -98,7 +93,7 @@
           </ion-item>
         </ion-col>
         <ion-col>
-          <ion-item *ngIf="step.temperature.max !== undefined">
+          <ion-item *ngIf="step.temperature.max !== -1">
             <ion-label color="primary" position="floating"
               >{{'formulas.range.max' | translate}}
               (º{{temperatureUnit}})</ion-label

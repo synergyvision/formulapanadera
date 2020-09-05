@@ -63,7 +63,19 @@ export class FormulaManagePage {
           Validators.required
         ),
       });
-      this.formula = state.formula;
+      this.formula.id = state.formula.id;
+      this.formula.ingredients = [];
+      this.formula.mixing = [];
+      this.formula.steps = [];
+      state.formula.ingredients.forEach((ingredient) => {
+        this.formula.ingredients.push(ingredient);
+      });
+      state.formula.mixing.forEach((ingredient) => {
+        this.formula.mixing.push(ingredient);
+      });
+      state.formula.steps.forEach((ingredient) => {
+        this.formula.steps.push(ingredient);
+      });
     }
   }
 
@@ -121,6 +133,7 @@ export class FormulaManagePage {
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
         formulaMixing: mixedIngredients,
+        editable: true,
       },
     });
     await modal.present();
@@ -169,15 +182,20 @@ export class FormulaManagePage {
   }
 
   sendFormula() {
+    this.verifyTemperature();
     this.formula.name = this.manageFormulaForm.value.name;
     this.formula.shared = false;
     this.formula.units = this.manageFormulaForm.value.units;
     this.formula.unit_weight = this.manageFormulaForm.value.unit_weight;
     this.formula.useremail = this.authService.getLoggedInUser().email;
     if (this.update) {
-      this.formulaService.updateFormula(this.formula);
+      this.formulaService.updateFormula(this.formula).then(() => {
+        this.router.navigateByUrl("menu/formula");
+      });
     } else {
-      this.formulaService.createFormula(this.formula);
+      this.formulaService.createFormula(this.formula).then(() => {
+        this.router.navigateByUrl("menu/formula");
+      });
     }
   }
 
@@ -206,5 +224,26 @@ export class FormulaManagePage {
       ],
     });
     await alert.present();
+  }
+
+  verifyTemperature() {
+    if (this.temperatureUnit == "F") {
+      this.formula.steps.forEach((step) => {
+        if (step.temperature !== null) {
+          step.temperature.min = Number(
+            this.formatNumberService.fromFahrenheitToCelsius(
+              step.temperature.min
+            )
+          );
+          if (step.temperature.max !== -1) {
+            step.temperature.max = Number(
+              this.formatNumberService.fromFahrenheitToCelsius(
+                step.temperature.max
+              )
+            );
+          }
+        }
+      });
+    }
   }
 }

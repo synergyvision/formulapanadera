@@ -8,12 +8,7 @@ import { IngredientModel } from "src/app/core/models/ingredient.model";
 })
 export class IngredientItemComponent {
   @Input() ingredient: IngredientModel;
-
   @Input() clickable: boolean = false;
-  @Input() details: boolean = true;
-
-  @Input() percentage?: string;
-  @Input() selector?: number;
 
   constructor() {}
 }

@@ -28,6 +28,7 @@
       --padding-end: 0px;
       --inner-padding-start: 0px;
       --inner-padding-end: 0px;
+      font-size: 14px;
     }
   }
 }
@@ -50,17 +51,34 @@
   padding: 0 0;
 }
 
-.step-item-wrapper {
+.card-title {
+  font-size: 15px;
+}
+
+.ingredient-percentage {
+  margin: 0;
+  font-size: 14px;
+}
+
+.ingredient-item-wrapper {
   --ion-grid-column-padding: 0px;
   padding: 10px 0 10px 0;
   width: 100%;
   align-items: center;
-  font-size: 14px;
 }
 
-.step-wrapper {
+.ingredients-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  padding-left: var(--page-margin);
+  padding-left: 0;
+
+  .ingredients-name {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    color: black;
+  }
 }

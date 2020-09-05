@@ -6,6 +6,8 @@ import { IonicModule } from "@ionic/angular";
 import { TranslateModule } from "@ngx-translate/core";
 import { FormulaDetailsPage } from "./formula-details.page";
 import { FormulaService } from "src/app/core/services/formula.service";
+import { ComponentsModule } from "src/app/shared/components/components.module";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 const routes: Routes = [
   {
@@ -20,8 +22,9 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     TranslateModule,
+    ComponentsModule,
   ],
   declarations: [FormulaDetailsPage],
-  providers: [FormulaService],
+  providers: [FormulaService, FormatNumberService],
 })
 export class FormulaDetailsPageModule {}

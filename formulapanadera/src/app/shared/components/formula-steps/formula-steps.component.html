@@ -1,0 +1,38 @@
+<ion-list lines="full" class="steps-list">
+  <span *ngFor="let step of steps; index as i">
+    <ion-item-divider>
+      <ion-label
+        >{{ "formulas.step" | translate }} {{ step.number + 1 }}:
+        {{ step.name }}</ion-label
+      >
+      <ion-icon
+        *ngIf="step.description"
+        name="document-outline"
+        class="step-note"
+        slot="end"
+        button
+        (click)="showNote(step.name, step)"
+      >
+      </ion-icon>
+    </ion-item-divider>
+    <ion-item>
+      <ion-row class="step-item-wrapper">
+        <ion-col class="step-wrapper">
+          <p>
+            <ion-icon name="timer-outline" color="dark"></ion-icon>
+            {{ step.time }} {{ "formulas.minutes" | translate }}
+          </p>
+        </ion-col>
+        <ion-col *ngIf="step.temperature">
+          <p>
+            <ion-icon name="thermometer-outline" color="danger"></ion-icon>
+            {{ step.temperature.min }} º{{ temperatureUnit }}
+            <span *ngIf="step.temperature.max !== -1">
+              - {{ step.temperature.max }} º{{ temperatureUnit }}</span
+            >
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </span>
+</ion-list>

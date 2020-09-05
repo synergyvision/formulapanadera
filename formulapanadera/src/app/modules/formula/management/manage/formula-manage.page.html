@@ -67,7 +67,9 @@
       <ion-card>
         <ion-card-header>
           <ion-item>
-            <ion-label> {{'ingredients.name' | translate}} </ion-label>
+            <ion-label class="card-title">
+              {{'ingredients.name' | translate}}
+            </ion-label>
 
             <ion-button
               size="small"
@@ -79,20 +81,41 @@
           </ion-item>
         </ion-card-header>
         <ion-list lines="full" class="ingredients-list">
-          <app-ingredient-item
-            *ngFor="let percentageIngredient of formula.ingredients"
-            (click)="deleteIngredient(percentageIngredient)"
-            [ingredient]="percentageIngredient.ingredient"
-            [percentage]="percentageIngredient.percentage+formulaUnit"
-            [details]="false"
+          <ion-item
+            *ngFor="let item of formula.ingredients"
+            class="ingredient-item"
           >
-          </app-ingredient-item>
+            <ion-row class="ingredient-item-wrapper">
+              <ion-col size="9" class="ingredients-wrapper">
+                <ion-row>
+                  <ion-col>
+                    <h2 class="ingredients-name">{{item.ingredient.name}}</h2>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col size="3">
+                <p class="ingredient-percentage">
+                  {{ item.percentage+formulaUnit }}
+                </p>
+              </ion-col>
+            </ion-row>
+            <ion-icon
+              name="close-outline"
+              class="delete-step"
+              slot="end"
+              color="danger"
+              button
+              (click)="deleteIngredient(item)"
+            ></ion-icon>
+          </ion-item>
         </ion-list>
       </ion-card>
       <ion-card>
         <ion-card-header>
           <ion-item>
-            <ion-label> {{'formulas.mixing_order' | translate}} </ion-label>
+            <ion-label class="card-title">
+              {{'formulas.mixing_order' | translate}}
+            </ion-label>
 
             <ion-button
               size="small"
@@ -104,26 +127,14 @@
             </ion-button>
           </ion-item>
         </ion-card-header>
-        <ion-list lines="full" class="mixing-list">
-          <span *ngFor="let mixStep of formula.mixing; index as i">
-            <ion-item-divider
-              ><ion-label
-                >{{'formulas.step' | translate}} {{i+1}}</ion-label
-              ></ion-item-divider
-            >
-            <app-ingredient-item
-              *ngFor="let ingredient of mixStep.ingredients"
-              [ingredient]="ingredient.ingredient"
-              [details]="false"
-            >
-            </app-ingredient-item>
-          </span>
-        </ion-list>
+        <app-mixing-steps [steps]="formula.mixing"></app-mixing-steps>
       </ion-card>
       <ion-card>
         <ion-card-header>
           <ion-item>
-            <ion-label> {{'formulas.steps' | translate}} </ion-label>
+            <ion-label class="card-title">
+              {{'formulas.steps' | translate}}
+            </ion-label>
             <ion-button
               size="small"
               (click)="describeSteps()"
@@ -133,38 +144,10 @@
             </ion-button>
           </ion-item>
         </ion-card-header>
-        <ion-list lines="full" class="steps-list">
-          <span *ngFor="let step of formula.steps; index as i">
-            <ion-item-divider>
-              <ion-label
-                >{{'formulas.step' | translate}} {{step.number+1}}:
-                {{step.name}}</ion-label
-              >
-            </ion-item-divider>
-            <ion-item>
-              <ion-row class="step-item-wrapper">
-                <ion-col class="step-wrapper">
-                  <p>
-                    <ion-icon name="timer-outline" color="dark"></ion-icon>
-                    {{step.time}} {{'formulas.minutes' | translate}}
-                  </p>
-                </ion-col>
-                <ion-col *ngIf="step.temperature">
-                  <p>
-                    <ion-icon
-                      name="thermometer-outline"
-                      color="danger"
-                    ></ion-icon>
-                    {{step.temperature.min}} º{{temperatureUnit}}
-                    <span *ngIf="step.temperature.max">
-                      - {{step.temperature.max}} </span
-                    >º{{temperatureUnit}}
-                  </p>
-                </ion-col>
-              </ion-row>
-            </ion-item>
-          </span>
-        </ion-list>
+        <app-formula-steps
+          [steps]="formula.steps"
+          [temperatureUnit]="temperatureUnit"
+        ></app-formula-steps>
       </ion-card>
       <ion-row class="form-actions-wrapper" *ngIf="!update">
         <ion-col>

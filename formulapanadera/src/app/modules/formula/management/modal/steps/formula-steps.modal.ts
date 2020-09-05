@@ -2,17 +2,14 @@ import { Component, Input } from "@angular/core";
 import { ModalController } from "@ionic/angular";
 import { StepDetailsModel } from "src/app/core/models/formula.model";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
-import { FormGroup } from "@angular/forms";
 
 @Component({
-  selector: "app-formula-steps",
+  selector: "app-formula-steps-modal",
   templateUrl: "formula-steps.modal.html",
   styleUrls: ["./styles/formula-steps.modal.scss"],
 })
 export class FormulaStepsModal {
   @Input() formulaSteps: Array<StepDetailsModel>;
-
-  stepsForm: FormGroup = new FormGroup({});
 
   temperatureUnit: string = "C";
 
@@ -38,13 +35,23 @@ export class FormulaStepsModal {
     } else if (event.detail.value == "yes") {
       this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = {
         min: 1,
-        max: undefined,
+        max: -1,
       };
     } else if (event.detail.value == "range") {
       this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = {
         min: 1,
         max: 2,
       };
+    }
+  }
+
+  selectValue(step: StepDetailsModel) {
+    if (step.temperature === null) {
+      return "no";
+    } else if (step.temperature.max == -1) {
+      return "yes";
+    } else {
+      return "range";
     }
   }
 
@@ -70,5 +77,10 @@ export class FormulaStepsModal {
         this.formulaSteps[index].time
       )
     );
+  }
+
+  //Change
+  changeTemperature(event: any) {
+    this.temperatureUnit = event.detail.value;
   }
 }

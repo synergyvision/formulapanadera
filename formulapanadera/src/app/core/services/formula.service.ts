@@ -63,4 +63,41 @@ export class FormulaService {
   public deleteFormula(formulaKey: string): Promise<void> {
     return this.afs.collection("formulas").doc(formulaKey).delete();
   }
+
+  /*
+  Formula calculations
+  */
+  public calculateBakersPercentage(formula: FormulaModel): string {
+    let total_weight: number = formula.units * formula.unit_weight;
+    let percentage: number = 0;
+    formula.ingredients.forEach((ingredientData) => {
+      percentage = percentage + Number(ingredientData.percentage);
+    });
+    return (total_weight / percentage).toFixed(2);
+  }
+
+  public calculateHydration(formula: FormulaModel): string {
+    let hydration: number = 0;
+    formula.ingredients.forEach((ingredientData) => {
+      hydration =
+        ingredientData.percentage * ingredientData.ingredient.hydration +
+        hydration;
+    });
+    return (hydration / 100).toFixed(1);
+  }
+
+  public calculateTotalCost(
+    formula: FormulaModel,
+    bakery_percentage: number
+  ): string {
+    let cost: number = 0;
+    formula.ingredients.forEach((ingredientData) => {
+      cost =
+        ingredientData.percentage *
+          bakery_percentage *
+          ingredientData.ingredient.cost +
+        cost;
+    });
+    return cost.toFixed(2);
+  }
 }

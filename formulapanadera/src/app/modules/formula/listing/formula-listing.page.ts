@@ -50,8 +50,10 @@ export class FormulaListingPage implements OnInit, OnDestroy {
   }
 
   formulaDetails(formula: FormulaModel) {
-    this.router.navigateByUrl("menu/formula/details", {
-      state: { formula: formula },
-    });
+    if (formula.id !== undefined) {
+      this.router.navigateByUrl("menu/formula/details", {
+        state: { formula: formula },
+      });
+    }
   }
 }

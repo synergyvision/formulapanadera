@@ -3,6 +3,7 @@
     "ok": "Aceptar",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
+    "share": "Compartir",
     "create": "Crear",
     "update": "Modificar",
     "delete": "Eliminar",
@@ -45,9 +46,12 @@
     "name": "Fórmulas",
     "create": "Crear fórmula",
     "update": "Modificar fórmula",
+    "bakers_percentage": "Factor panadero",
     "formula_name": "Nombre",
     "units": "Unidades",
+    "weight": "Peso",
     "unit_weight": "Peso por unidad",
+    "total_weight": "Peso total",
     "ingredients": { "percentage": "Porcentaje" },
     "mixing_order": "Orden de mezclado",
     "steps": "Pasos",
@@ -56,6 +60,10 @@
     "minutes": "Min.",
     "temperature": "Temperatura",
     "description": "Descripción",
+    "cost": {
+      "unitary": "Costo unitario",
+      "total": "Costo total"
+    },
     "range": {
       "min": "Min.",
       "max": "Máx."
@@ -75,7 +83,7 @@
     "is_flour": "Es harina",
     "hydration": "Hidratación",
     "cost": "Costo",
-    "grams": "gr.",
+    "grams": "gr",
     "empty": "No se encontraron ingredientes",
     "filter": {
       "name": "Filtra por nombre...",

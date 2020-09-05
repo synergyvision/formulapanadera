@@ -29,4 +29,12 @@ export class FormatNumberService {
       return number;
     }
   }
+
+  fromCelsiusToFahrenheit(celsius: number) {
+    return ((celsius * 9) / 5 + 32).toFixed(0);
+  }
+
+  fromFahrenheitToCelsius(fahrenheit: number) {
+    return (((fahrenheit - 32) * 5) / 9).toFixed(0);
+  }
 }

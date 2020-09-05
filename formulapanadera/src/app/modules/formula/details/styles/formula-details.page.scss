@@ -9,3 +9,38 @@
 .ios.title-default {
   padding: 0 0;
 }
+
+.title-row {
+  width: 100%;
+  padding: 0 10px;
+
+  .formula-name {
+    text-align: center;
+    color: var(--ion-color-primary);
+  }
+
+  .formula-title-name {
+    text-align: center;
+    color: var(--ion-color-secondary);
+  }
+}
+
+.formula-detail {
+  font-size: 14px;
+}
+
+.detail-col {
+  padding: 0;
+}
+
+.steps-list {
+  font-size: 13px;
+  margin: 10px;
+}
+
+.arrow-col {
+  align-self: center;
+  ion-icon {
+    vertical-align: bottom;
+  }
+}

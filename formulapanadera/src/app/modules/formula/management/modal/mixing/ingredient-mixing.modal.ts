@@ -6,12 +6,13 @@ import {
 } from "src/app/core/models/formula.model";
 
 @Component({
-  selector: "app-ingredient-mixing",
+  selector: "app-ingredient-mixing-modal",
   templateUrl: "ingredient-mixing.modal.html",
   styleUrls: ["./styles/ingredient-mixing.modal.scss"],
 })
 export class IngredientMixingModal {
   @Input() formulaMixing: Array<IngredientMixingModel>;
+  @Input() editable: boolean;
 
   constructor(public modalController: ModalController) {}
 

@@ -25,43 +25,56 @@
           (click)="deleteStep(mixStep)"
         ></ion-icon>
       </ion-item-divider>
-      <app-ingredient-item
-        *ngFor="let ingredient of mixStep.ingredients"
-        [ingredient]="ingredient.ingredient"
-        [details]="true"
-        [selector]="true"
+      <ion-item
+        *ngFor="let item of mixStep.ingredients"
+        class="ingredient-item"
       >
-        <ion-select
-          [value]="i"
-          (ionChange)="changeMixingOrder($event, i, ingredient)"
-          class="step-selector"
-        >
-          <ion-select-option
-            *ngFor="let index of formulaMixing; index as j"
-            [value]="j"
-            >{{j+1}}</ion-select-option
-          >
-        </ion-select></app-ingredient-item
-      >
-      <ion-item>
+        <ion-row class="ingredient-item-wrapper">
+          <ion-col size="9" class="ingredients-wrapper">
+            <ion-row>
+              <ion-col>
+                <h2 class="ingredients-name">{{item.ingredient.name}}</h2>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+          <ion-col size="3" *ngIf="editable">
+            <ion-select
+              [value]="i"
+              (ionChange)="changeMixingOrder($event, i, item)"
+              class="step-selector"
+            >
+              <ion-select-option
+                *ngFor="let index of formulaMixing; index as j"
+                [value]="j"
+                >{{j+1}}</ion-select-option
+              >
+            </ion-select>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+
+      <ion-item *ngIf="editable || mixStep.description">
         <ion-label color="primary" position="floating"
           >{{'formulas.description' | translate}}</ion-label
         >
         <ion-textarea
+          class="step-description"
+          [autoGrow]="!editable"
           type="text"
           [(ngModel)]="mixStep.description"
+          [readonly]="!editable"
         ></ion-textarea>
       </ion-item>
     </span>
   </ion-list>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="editable">
     <ion-fab-button (click)="addStep()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="editable">
   <ion-row class="form-actions-wrapper">
     <ion-col>
       <ion-button
