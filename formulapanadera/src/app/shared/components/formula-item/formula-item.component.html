@@ -1,0 +1,31 @@
+<ion-item [detail]="clickable" [button]="clickable" class="formula-item">
+  <ion-row class="formula-item-wrapper">
+    <ion-col class="formulas-wrapper">
+      <ion-row>
+        <ion-col>
+          <h2 class="formulas-name">
+            <app-text-shell
+              animation="bouncing"
+              lines="3"
+              [data]="formula.name"
+            ></app-text-shell>
+          </h2>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="formula.id !== undefined">
+        <ion-col>
+          <p class="formulas-description">
+            <ion-icon class="properties-icon" name="water-outline"></ion-icon
+            >{{ hydration() }}%
+          </p>
+        </ion-col>
+        <ion-col>
+          <p class="formulas-description">
+            <ion-icon name="card-outline" class="properties-icon"></ion-icon
+            >{{ unitCost() }} {{ currency }}
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+</ion-item>

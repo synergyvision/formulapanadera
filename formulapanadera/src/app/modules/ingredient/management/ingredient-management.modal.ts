@@ -24,7 +24,7 @@ export class IngredientManagementModal implements OnInit {
   manageIngredientForm: FormGroup;
   ingredientData: IngredientModel = new IngredientModel();
 
-  ingredient_cost_unit = environment.ingredient_cost_unit;
+  currency = environment.currency;
 
   constructor(
     private modalController: ModalController,

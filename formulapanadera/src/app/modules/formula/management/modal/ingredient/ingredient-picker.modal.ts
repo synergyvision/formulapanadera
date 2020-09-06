@@ -44,7 +44,7 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
   ingredientsDataStore: DataStore<Array<IngredientModel>>;
   stateSubscription: Subscription;
 
-  ingredient_cost_unit = environment.ingredient_cost_unit;
+  currency = environment.currency;
   ingredients: IngredientModel[] & ShellModel;
 
   @HostBinding("class.is-shell") get isShell() {

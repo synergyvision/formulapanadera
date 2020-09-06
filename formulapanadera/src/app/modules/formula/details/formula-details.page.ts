@@ -27,7 +27,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   unitary_cost: string;
   total_cost: string;
 
-  cost_unit: string = environment.ingredient_cost_unit;
+  currency: string = environment.currency;
 
   steps: Array<StepDetailsModel>;
 

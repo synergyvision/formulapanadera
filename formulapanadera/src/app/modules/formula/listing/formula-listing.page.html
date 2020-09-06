@@ -1,12 +1,108 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-icon slot="start" class="btn-med" name="library-outline"></ion-icon>
+    <ion-icon slot="start" class="btn-med" name="book-outline"></ion-icon>
     <ion-title> {{ 'formulas.name' | translate }} </ion-title>
     <ion-buttons slot="end">
       <ion-button class="create-formula" (click)="createFormula()">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="filters-toolbar">
+    <ion-row class="searchbar-row" align-items-center>
+      <ion-col>
+        <ion-searchbar
+          class="items-searchbar"
+          animated
+          [(ngModel)]="searchQuery"
+          (ionChange)="searchList()"
+          placeholder="{{'ingredients.filter.name' | translate}}"
+        ></ion-searchbar>
+      </ion-col>
+      <ion-col class="call-to-action-col">
+        <ion-button
+          fill="clear"
+          color="secondary"
+          class="filters-btn"
+          (click)="showFilters = !showFilters"
+        >
+          <ion-icon slot="icon-only" name="options"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <form [formGroup]="hydrationRangeForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row">
+        <ion-col size="12">
+          <div class="range-header">
+            <span class="range-value"
+              >{{ hydrationRangeForm.controls.dual.value.lower }}</span
+            >
+            <span class="range-label"
+              >{{'ingredients.filter.hydration' | translate}}</span
+            >
+            <span class="range-value"
+              >{{ hydrationRangeForm.controls.dual.value.upper }}</span
+            >
+          </div>
+        </ion-col>
+        <ion-col size="12">
+          <ion-range
+            class="range-control"
+            formControlName="dual"
+            color="secondary"
+            pin="true"
+            dualKnobs="true"
+            (ionChange)="searchList()"
+            min="0"
+            max="100"
+            step="1"
+            debounce="400"
+          ></ion-range>
+        </ion-col>
+      </ion-row>
+    </form>
+    <form [formGroup]="costRangeForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row">
+        <ion-col size="12">
+          <div class="range-header cost-range-header">
+            <span class="range-label"
+              >{{'ingredients.filter.cost' | translate}} ({{currency}})</span
+            >
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="cost-input">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="floating"
+              >{{'ingredients.filter.min' | translate}}</ion-label
+            >
+            <ion-input
+              type="number"
+              formControlName="lower"
+              class="ingredient-cost-lower"
+              (ionChange)="searchList()"
+            >
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col class="cost-input">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="floating"
+              >{{'ingredients.filter.max' | translate}}
+            </ion-label>
+            <ion-input
+              type="number"
+              formControlName="upper"
+              class="ingredient-cost-upper"
+              (ionChange)="searchList()"
+            >
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </form>
   </ion-toolbar>
 </ion-header>
 
@@ -16,23 +112,12 @@
     class="formulas-list"
     *ngIf="formulas?.length > 0; else emptyBlock"
   >
-    <ion-item
-      detail
-      button
-      class="formula-item"
+    <app-formula-item
       *ngFor="let formula of formulas"
       (click)="formulaDetails(formula)"
-    >
-      <ion-row class="formula-item-wrapper">
-        <ion-col class="formulas-wrapper">
-          <ion-row>
-            <ion-col>
-              <h2 class="formulas-name">{{formula.name}}</h2>
-            </ion-col>
-          </ion-row>
-        </ion-col>
-      </ion-row>
-    </ion-item>
+      [formula]="formula"
+      [clickable]="true"
+    ></app-formula-item>
   </ion-list>
   <ng-template #emptyBlock>
     <ion-row class="empty-block">

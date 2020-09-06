@@ -3,7 +3,7 @@ import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
 
 import { DataStore } from "src/app/shared/shell/data-store";
 import { FormulaModel } from "../models/formula.model";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 
 @Injectable()
 export class FormulaService {
@@ -46,6 +46,50 @@ export class FormulaService {
     return this.formulaDataStore;
   }
 
+  //Filters
+  public searchFormulasByHydration(
+    lower: number,
+    upper: number
+  ): Observable<Array<FormulaModel>> {
+    const filtered = [];
+    let hydration: number;
+    this.formulaDataStore.state.forEach((ingredient) => {
+      ingredient.forEach((item) => {
+        hydration = Number(this.calculateHydration(item));
+        if (hydration >= lower && hydration <= upper) {
+          filtered.push(item);
+        }
+      });
+    });
+    return of(filtered);
+  }
+
+  public searchFormulasByCost(
+    lower: number,
+    upper: number,
+    formulas: Observable<Array<FormulaModel>>
+  ): Observable<Array<FormulaModel>> {
+    const filtered = [];
+    let bakers_percentage: number;
+    let cost: number;
+    formulas.forEach((formula) => {
+      formula.forEach((item) => {
+        bakers_percentage = Number(
+          this.calculateBakersPercentage(item.units, item)
+        );
+        cost =
+          Number(this.calculateTotalCost(item, bakers_percentage)) / item.units;
+        if (
+          (cost >= lower || lower == null) &&
+          (cost <= upper || upper == null)
+        ) {
+          filtered.push(item);
+        }
+      });
+    });
+    return of(filtered);
+  }
+
   /*
     Formula Management
   */
@@ -67,7 +111,10 @@ export class FormulaService {
   /*
   Formula calculations
   */
-  public calculateBakersPercentage(units: number, formula: FormulaModel): string {
+  public calculateBakersPercentage(
+    units: number,
+    formula: FormulaModel
+  ): string {
     let total_weight: number = units * formula.unit_weight;
     let percentage: number = 0;
     formula.ingredients.forEach((ingredientData) => {
@@ -88,13 +135,13 @@ export class FormulaService {
 
   public calculateTotalCost(
     formula: FormulaModel,
-    bakery_percentage: number
+    bakers_percentage: number
   ): string {
     let cost: number = 0;
     formula.ingredients.forEach((ingredientData) => {
       cost =
         ingredientData.percentage *
-          bakery_percentage *
+          bakers_percentage *
           ingredientData.ingredient.cost +
         cost;
     });

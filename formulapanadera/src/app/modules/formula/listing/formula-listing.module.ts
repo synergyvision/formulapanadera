@@ -1,13 +1,14 @@
 import { IonicModule } from "@ionic/angular";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
 import { Routes, RouterModule } from "@angular/router";
 import { FormulaListingPage } from "./formula-listing.page";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { FormulaListingResolver } from "src/app/core/resolvers/formula-listing.resolver";
 import { AuthService } from "src/app/core/services/auth.service";
+import { ComponentsModule } from "src/app/shared/components/components.module";
 
 const routes: Routes = [
   {
@@ -25,6 +26,8 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     FormsModule,
+    ReactiveFormsModule,
+    ComponentsModule,
     TranslateModule,
   ],
   declarations: [FormulaListingPage],

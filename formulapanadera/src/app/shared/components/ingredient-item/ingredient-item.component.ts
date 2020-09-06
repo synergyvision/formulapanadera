@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { IngredientModel } from "src/app/core/models/ingredient.model";
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: "app-ingredient-item",
@@ -9,6 +10,8 @@ import { IngredientModel } from "src/app/core/models/ingredient.model";
 export class IngredientItemComponent {
   @Input() ingredient: IngredientModel;
   @Input() clickable: boolean = false;
+
+  currency = environment.currency
 
   constructor() {}
 }
