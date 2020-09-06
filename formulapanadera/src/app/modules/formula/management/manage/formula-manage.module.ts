@@ -42,6 +42,6 @@ const routes: Routes = [
     IngredientMixingModal,
     FormulaStepsModal,
   ],
-  providers: [IngredientListingResolver, LanguageService, FormatNumberService],
+  providers: [IngredientListingResolver],
 })
 export class FormulaManagePageModule {}

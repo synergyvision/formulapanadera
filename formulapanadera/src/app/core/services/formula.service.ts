@@ -14,9 +14,13 @@ export class FormulaService {
   /*
     Formula Listing Page
   */
-  public getFormulasDataSource(): Observable<Array<FormulaModel>> {
+  public getFormulasDataSource(
+    user_email: string
+  ): Observable<Array<FormulaModel>> {
     return this.afs
-      .collection<FormulaModel>("formulas")
+      .collection<FormulaModel>("formulas", (ref) =>
+        ref.where("useremail", "==", user_email)
+      )
       .valueChanges({ idField: "id" });
   }
 

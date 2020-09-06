@@ -1,6 +1,10 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormulaService } from "src/app/core/services/formula.service";
-import { ActionSheetController } from "@ionic/angular";
+import {
+  ActionSheetController,
+  AlertController,
+  ToastController,
+} from "@ionic/angular";
 import {
   FormulaModel,
   StepDetailsModel,
@@ -9,11 +13,16 @@ import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { environment } from "src/environments/environment";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
+import { AuthService } from "src/app/core/services/auth.service";
 
 @Component({
   selector: "app-formula-deatils",
   templateUrl: "formula-details.page.html",
-  styleUrls: ["./styles/formula-details.page.scss"],
+  styleUrls: [
+    "./styles/formula-details.page.scss",
+    "./../../../shared/styles/note.alert.scss",
+    "./../../../shared/styles/confirm.alert.scss"
+  ],
 })
 export class FormulaDetailsPage implements OnInit, OnDestroy {
   formula: FormulaModel = new FormulaModel();
@@ -38,8 +47,11 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   constructor(
     private formulaService: FormulaService,
     private languageService: LanguageService,
+    private authService: AuthService,
     private formatNumberService: FormatNumberService,
     private actionSheetController: ActionSheetController,
+    private alertController: AlertController,
+    private toastController: ToastController,
     private router: Router
   ) {}
 
@@ -112,33 +124,67 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   //Options
 
   async presentOptions() {
-    const actionSheet = await this.actionSheetController.create({
-      cssClass: "formula-options",
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.update"),
-          icon: "create-outline",
-          cssClass: "action-icon",
-          handler: () => {
-            this.updateFormula();
+    if (!this.formula.shared) {
+      const actionSheet = await this.actionSheetController.create({
+        cssClass: "formula-options",
+        buttons: [
+          {
+            text: this.languageService.getTerm("action.update"),
+            icon: "create-outline",
+            cssClass: "action-icon",
+            handler: () => {
+              this.updateFormula();
+            },
           },
-        },
-        {
-          text: this.languageService.getTerm("action.share"),
-          icon: "share-outline",
-          cssClass: "action-icon",
-          handler: () => {},
-        },
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          icon: "close",
-          role: "cancel",
-          cssClass: "cancel-icon",
-          handler: () => {},
-        },
-      ],
-    });
-    await actionSheet.present();
+          {
+            text: this.languageService.getTerm("action.share"),
+            icon: "share-outline",
+            cssClass: "action-icon",
+            handler: () => {
+              this.shareFormula();
+            },
+          },
+          {
+            text: this.languageService.getTerm("action.cancel"),
+            icon: "close",
+            role: "cancel",
+            cssClass: "cancel-icon",
+            handler: () => {},
+          },
+        ],
+      });
+      await actionSheet.present();
+    } else {
+      const actionSheet = await this.actionSheetController.create({
+        cssClass: "formula-options",
+        buttons: [
+          {
+            text: this.languageService.getTerm("action.clone"),
+            icon: "add-circle-outline",
+            cssClass: "action-icon",
+            handler: () => {
+              this.cloneFormula();
+            },
+          },
+          {
+            text: this.languageService.getTerm("action.delete"),
+            icon: "trash-outline",
+            cssClass: "delete-icon",
+            handler: () => {
+              this.deleteFormula();
+            },
+          },
+          {
+            text: this.languageService.getTerm("action.cancel"),
+            icon: "close",
+            role: "cancel",
+            cssClass: "cancel-icon",
+            handler: () => {},
+          },
+        ],
+      });
+      await actionSheet.present();
+    }
   }
 
   updateFormula() {
@@ -147,5 +193,118 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.router.navigateByUrl("menu/formula/manage", {
       state: { formula: this.formula },
     });
+  }
+
+  async shareFormula() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.share"),
+      message: this.languageService.getTerm("formulas.share.instructions"),
+      cssClass: "alert share-alert",
+      inputs: [
+        {
+          name: "email",
+          type: "email",
+          placeholder: this.languageService.getTerm("input.email"),
+        },
+      ],
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: (data) => {
+            let formula = JSON.parse(JSON.stringify(this.formula));
+            formula.useremail = data.email;
+            formula.shared = true;
+            this.formulaService
+              .createFormula(formula)
+              .then(() => {
+                this.presentToast(true);
+              })
+              .catch(() => {
+                this.presentToast(false);
+              });
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async cloneFormula() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.clone"),
+      message: this.languageService.getTerm("formulas.clone.instructions"),
+      cssClass: "alert clone-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            let formula = JSON.parse(JSON.stringify(this.formula));
+            formula.useremail = this.authService.getLoggedInUser().email;
+            formula.shared = false;
+            this.formulaService.createFormula(formula).then(() => {
+              this.router.navigateByUrl("menu/formula");
+            });
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async deleteFormula() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.confirm"),
+      message: this.languageService.getTerm("action.delete_question", {
+        item: this.formula.name,
+      }),
+      cssClass: "confirm-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            this.formulaService.deleteFormula(this.formula.id).then(() => {
+              this.router.navigateByUrl("menu/formula");
+            });
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async presentToast(success: boolean) {
+    const toast = await this.toastController.create({
+      message: success
+        ? this.languageService.getTerm("formulas.share.success")
+        : this.languageService.getTerm("formulas.share.error"),
+      color: "secondary",
+      duration: 5000,
+      buttons: [
+        {
+          icon: "close",
+          role: "cancel",
+          handler: () => {},
+        },
+      ],
+    });
+    toast.present();
   }
 }

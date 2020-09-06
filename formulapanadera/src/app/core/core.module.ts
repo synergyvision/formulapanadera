@@ -13,6 +13,8 @@ import { AngularFirestoreModule } from "@angular/fire/firestore";
 import { LanguageService } from "./services/language.service";
 import { AuthService } from "./services/auth.service";
 import { IngredientService } from "./services/ingredient.service";
+import { FormatNumberService } from "./services/format-number.service";
+import { FormulaService } from "./services/formula.service";
 
 @NgModule({
   imports: [
@@ -25,7 +27,13 @@ import { IngredientService } from "./services/ingredient.service";
     AngularFirestoreModule,
   ],
   exports: [RouterModule, FormsModule],
-  providers: [AuthService, LanguageService, IngredientService],
+  providers: [
+    AuthService,
+    FormatNumberService,
+    FormulaService,
+    IngredientService,
+    LanguageService,
+  ],
 })
 export class CoreModule extends ModuleLoadedOnceGuard {
   // Ensure that CoreModule is only loaded into AppModule

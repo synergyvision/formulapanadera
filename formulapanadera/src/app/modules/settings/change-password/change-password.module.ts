@@ -27,6 +27,5 @@ const routes: Routes = [
     ComponentsModule,
   ],
   declarations: [ChangePasswordPage],
-  providers: [LanguageService],
 })
 export class ChangePasswordPageModule {}

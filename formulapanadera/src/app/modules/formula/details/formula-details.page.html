@@ -167,6 +167,7 @@
           </ion-item>
         </ion-list>
         <ion-select
+          *ngIf="showSteps"
           [value]="temperatureUnit"
           class="temperature-selector"
           (ionChange)="changeTemperature($event)"

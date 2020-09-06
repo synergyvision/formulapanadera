@@ -1,6 +1,6 @@
 @import "../../../theme/mixins/inputs/select-alert.scss";
 
-::ng-deep .alert {
+::ng-deep .confirm-alert {
   @include select-alert();
 
   // Variables should be in a deeper selector or after the mixin include to override default values

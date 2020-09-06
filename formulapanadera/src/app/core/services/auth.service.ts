@@ -45,6 +45,10 @@ export class AuthService {
     return this.currentUser;
   }
 
+  setLoggedInUser(user: User) {
+    this.currentUser = user;
+  }
+
   signOut(): Observable<any> {
     if (this.platform.is("capacitor")) {
       return cfaSignOut();

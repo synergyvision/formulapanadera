@@ -152,7 +152,7 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
 
   async clickIngredient(ingredient: IngredientModel) {
     const alert = await this.alertController.create({
-      cssClass: "ingredient-percentage-alert alert",
+      cssClass: "ingredient-percentage-alert language-alert",
       header: `${this.languageService.getTerm("formulas.ingredients.value")} (${
         this.formulaUnit
       })`,

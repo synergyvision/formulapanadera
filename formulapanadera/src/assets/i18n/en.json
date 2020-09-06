@@ -4,6 +4,7 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "share": "Share",
+    "clone": "Clone",
     "create": "Create",
     "update": "Update",
     "delete": "Delete",
@@ -71,7 +72,17 @@
       "yes": "Choose",
       "range": "Choose range"
     },
-    "empty": "No formulas found"
+    "empty": "No formulas found",
+    "share": {
+      "instructions": "Enter the email address of the user to whom you wish to share the formula",
+      "success": "Formula shared",
+      "error": "An error ocurred. Try again",
+      "mine": "Mine",
+      "shared": "Shared"
+    },
+    "clone": {
+      "instructions": "By cloning this formula you can modify it, it will appear among your formulas. The original version will be in the shared section"
+    }
   },
   "ingredients": {
     "name": "Ingredients",

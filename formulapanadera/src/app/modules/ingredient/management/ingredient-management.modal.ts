@@ -88,7 +88,7 @@ export class IngredientManagementModal implements OnInit {
       message: this.languageService.getTerm("action.delete_question", {
         item: this.manageIngredientForm.value.name,
       }),
-      cssClass: "alert confirm-alert",
+      cssClass: "confirm-alert",
       buttons: [
         {
           text: this.languageService.getTerm("action.cancel"),

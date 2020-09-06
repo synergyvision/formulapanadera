@@ -38,9 +38,6 @@ const routes: Routes = [
   declarations: [IngredientListingPage, IngredientManagementModal],
   entryComponents: [IngredientManagementModal],
   providers: [
-    IngredientService,
-    LanguageService,
-    FormatNumberService,
     IngredientListingResolver,
   ],
 })

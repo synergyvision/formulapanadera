@@ -32,6 +32,8 @@ export class FormulaListingPage implements OnInit, OnDestroy {
   currency = environment.currency;
   formulas: FormulaModel[] & ShellModel;
 
+  segment: string = "mine";
+
   @HostBinding("class.is-shell") get isShell() {
     return this.formulas && this.formulas.isShell ? true : false;
   }
@@ -69,6 +71,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
             filters.cost.upper,
             filteredDataSource
           );
+
           const searchingShellModel = [new FormulaModel()];
           const dataSourceWithShellObservable = DataStore.AppendShell(
             filteredDataSource,
@@ -115,6 +118,10 @@ export class FormulaListingPage implements OnInit, OnDestroy {
       },
       query: this.searchQuery,
     });
+  }
+
+  segmentChanged(ev: any) {
+    this.segment = ev.detail.value;
   }
 
   createFormula() {

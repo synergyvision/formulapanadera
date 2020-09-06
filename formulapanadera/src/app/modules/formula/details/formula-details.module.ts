@@ -28,6 +28,5 @@ const routes: Routes = [
     ReactiveFormsModule,
   ],
   declarations: [FormulaDetailsPage],
-  providers: [FormulaService, FormatNumberService],
 })
 export class FormulaDetailsPageModule {}

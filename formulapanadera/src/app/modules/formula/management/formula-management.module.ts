@@ -25,6 +25,5 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TranslateModule,
   ],
-  providers: [FormulaService],
 })
 export class FormulaManagementModule {}

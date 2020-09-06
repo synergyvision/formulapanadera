@@ -1,4 +1,9 @@
-<ion-item [detail]="clickable" [button]="clickable" class="formula-item">
+<ion-item
+  [detail]="clickable"
+  [button]="clickable"
+  class="formula-item"
+  *ngIf="formula.shared == (type == 'shared')"
+>
   <ion-row class="formula-item-wrapper">
     <ion-col class="formulas-wrapper">
       <ion-row>
@@ -28,4 +33,9 @@
       </ion-row>
     </ion-col>
   </ion-row>
+  <ion-icon
+    *ngIf="formula.shared == true"
+    name="people-outline"
+    slot="end"
+  ></ion-icon>
 </ion-item>

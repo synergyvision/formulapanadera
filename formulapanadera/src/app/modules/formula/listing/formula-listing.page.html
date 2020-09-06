@@ -107,6 +107,14 @@
 </ion-header>
 
 <ion-content class="formula-content">
+  <ion-segment (ionChange)="segmentChanged($event)" [value]="segment">
+    <ion-segment-button value="mine">
+      <ion-label>{{'formulas.share.mine' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="shared">
+      <ion-label>{{'formulas.share.shared' | translate}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
   <ion-list
     lines="full"
     class="formulas-list"
@@ -116,6 +124,7 @@
       *ngFor="let formula of formulas"
       (click)="formulaDetails(formula)"
       [formula]="formula"
+      [type]="segment"
       [clickable]="true"
     ></app-formula-item>
   </ion-list>

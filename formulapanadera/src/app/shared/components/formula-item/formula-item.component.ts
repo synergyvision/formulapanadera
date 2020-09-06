@@ -10,6 +10,7 @@ import { environment } from "src/environments/environment";
 })
 export class FormulaItemComponent {
   @Input() formula: FormulaModel;
+  @Input() type: string;
   @Input() clickable: boolean = false;
 
   currency = environment.currency;

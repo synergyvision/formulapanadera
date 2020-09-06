@@ -26,6 +26,6 @@ const routes: Routes = [
     TranslateModule,
   ],
   declarations: [OptionsPage],
-  providers: [LanguageService, ProfileResolver],
+  providers: [ProfileResolver],
 })
 export class OptionsPageModule {}

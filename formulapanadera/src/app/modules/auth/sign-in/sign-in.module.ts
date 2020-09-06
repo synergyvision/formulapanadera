@@ -27,6 +27,5 @@ const routes: Routes = [
     TranslateModule,
   ],
   declarations: [SignInPage],
-  providers: [LanguageService],
 })
 export class SignInPageModule {}
