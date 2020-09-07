@@ -21,7 +21,7 @@ import { AuthService } from "src/app/core/services/auth.service";
   styleUrls: [
     "./styles/formula-details.page.scss",
     "./../../../shared/styles/note.alert.scss",
-    "./../../../shared/styles/confirm.alert.scss"
+    "./../../../shared/styles/confirm.alert.scss",
   ],
 })
 export class FormulaDetailsPage implements OnInit, OnDestroy {
@@ -253,6 +253,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             let formula = JSON.parse(JSON.stringify(this.formula));
             formula.useremail = this.authService.getLoggedInUser().email;
             formula.shared = false;
+            formula.name = `${
+              this.formula.name
+            } (${this.languageService.getTerm("action.copy")})`;
             this.formulaService.createFormula(formula).then(() => {
               this.router.navigateByUrl("menu/formula");
             });

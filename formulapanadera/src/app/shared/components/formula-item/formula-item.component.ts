@@ -12,6 +12,7 @@ export class FormulaItemComponent {
   @Input() formula: FormulaModel;
   @Input() type: string;
   @Input() clickable: boolean = false;
+  @Input() even: boolean = false
 
   currency = environment.currency;
 

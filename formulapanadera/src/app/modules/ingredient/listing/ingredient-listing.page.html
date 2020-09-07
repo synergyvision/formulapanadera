@@ -125,15 +125,16 @@
 
 <ion-content class="ingredient-content">
   <ion-list
-    lines="full"
     class="ingredients-list"
+    lines="none"
     *ngIf="ingredients?.length > 0; else emptyBlock"
   >
     <app-ingredient-item
-      *ngFor="let ingredient of ingredients"
+      *ngFor="let ingredient of ingredients; index as i"
       (click)="openModal('update',ingredient)"
       [ingredient]="ingredient"
       [clickable]="true"
+      [even]="(i%2==0)"
     >
     </app-ingredient-item>
   </ion-list>

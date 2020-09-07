@@ -11,12 +11,18 @@
         (click)="showNote(i, mixStep)"
       ></ion-icon>
     </ion-item-divider>
-    <ion-item *ngFor="let item of mixStep.ingredients" class="ingredient-item">
+    <ion-item>
       <ion-row class="ingredient-item-wrapper">
         <ion-col size="9" class="ingredients-wrapper">
           <ion-row>
             <ion-col>
-              <h2 class="ingredients-name">{{ item.ingredient.name }}</h2>
+              <p
+                class="ingredients-name ingredient-item"
+                *ngFor="let item of mixStep.ingredients; index as i"
+              >
+                {{ item.ingredient.name
+                }}<span *ngIf="mixStep.ingredients[i + 1]">, </span>
+              </p>
             </ion-col>
           </ion-row>
         </ion-col>

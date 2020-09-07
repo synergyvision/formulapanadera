@@ -116,16 +116,17 @@
     </ion-segment-button>
   </ion-segment>
   <ion-list
-    lines="full"
+    lines="none"
     class="formulas-list"
     *ngIf="formulas?.length > 0; else emptyBlock"
   >
     <app-formula-item
-      *ngFor="let formula of formulas"
+      *ngFor="let formula of filteredFormulas(); index as i"
       (click)="formulaDetails(formula)"
       [formula]="formula"
       [type]="segment"
       [clickable]="true"
+      [even]="(i%2==0)"
     ></app-formula-item>
   </ion-list>
   <ng-template #emptyBlock>

@@ -18,8 +18,10 @@ export class FormulaService {
     user_email: string
   ): Observable<Array<FormulaModel>> {
     return this.afs
-      .collection<FormulaModel>("formulas", (ref) =>
-        ref.where("useremail", "==", user_email)
+      .collection<FormulaModel>(
+        "formulas"
+        // (ref) =>
+        // ref.where("useremail", "==", user_email)
       )
       .valueChanges({ idField: "id" });
   }
@@ -92,6 +94,19 @@ export class FormulaService {
       });
     });
     return of(filtered);
+  }
+
+  public searchFormulasByShared(
+    type: string,
+    formulas: Array<FormulaModel>
+  ): Array<FormulaModel> {
+    const filtered = [];
+    formulas.forEach((item) => {
+      if (item.shared == (type == "shared")) {
+        filtered.push(item);
+      }
+    });
+    return filtered;
   }
 
   /*

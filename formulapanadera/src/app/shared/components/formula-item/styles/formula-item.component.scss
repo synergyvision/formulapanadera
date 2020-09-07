@@ -1,5 +1,9 @@
 .formula-item {
-  color: var(--ion-color-secondary);
+  color: var(--ion-color-medium);
+}
+
+.background-gray {
+  --background: rgba(221, 221, 221, 0.322) !important;
 }
 
 .formula-item-wrapper {
@@ -19,19 +23,39 @@
     margin-top: 0px;
     margin-bottom: 5px;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: bold;
     letter-spacing: 0.2px;
     color: var(--ion-color-primary);
   }
 
+  .properties-col {
+    align-self: flex-end;
+  }
+
   .formulas-description {
-    font-size: 12px;
+    font-size: 15px;
     margin: 0px;
+  }
+
+  .cost-col {
+    text-align: center;
+    align-self: flex-end;
+    padding-bottom: 2px;
+
+    .formula-cost {
+      color: var(--ion-color-secondary) !important;
+      font-size: 15px !important;
+      margin: 0;
+    }
   }
 }
 
 .properties-icon {
-  color: var(--ion-color-secondary) !important;
+  color: cornflowerblue !important;
+  margin-bottom: -2px;
+}
+
+.shared-icon {
   padding-right: 5px !important;
   margin-bottom: -2px;
 }

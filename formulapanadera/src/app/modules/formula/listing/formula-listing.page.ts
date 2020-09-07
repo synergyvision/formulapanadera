@@ -120,6 +120,13 @@ export class FormulaListingPage implements OnInit, OnDestroy {
     });
   }
 
+  filteredFormulas() {
+    return this.formulaService.searchFormulasByShared(
+      this.segment,
+      this.formulas
+    );
+  }
+
   segmentChanged(ev: any) {
     this.segment = ev.detail.value;
   }

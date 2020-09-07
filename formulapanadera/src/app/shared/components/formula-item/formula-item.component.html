@@ -2,7 +2,7 @@
   [detail]="clickable"
   [button]="clickable"
   class="formula-item"
-  *ngIf="formula.shared == (type == 'shared')"
+  [class]="even ? 'background-gray' : ''"
 >
   <ion-row class="formula-item-wrapper">
     <ion-col class="formulas-wrapper">
@@ -18,24 +18,24 @@
         </ion-col>
       </ion-row>
       <ion-row *ngIf="formula.id !== undefined">
-        <ion-col>
+        <ion-col size="8" class="properties-col">
           <p class="formulas-description">
-            <ion-icon class="properties-icon" name="water-outline"></ion-icon
+            <ion-icon
+              class="shared-icon"
+              *ngIf="formula.shared == true"
+              name="people"
+            ></ion-icon>
+            <ion-icon class="properties-icon" name="water"></ion-icon
             >{{ hydration() }}%
           </p>
         </ion-col>
-        <ion-col>
-          <p class="formulas-description">
-            <ion-icon name="card-outline" class="properties-icon"></ion-icon
-            >{{ unitCost() }} {{ currency }}
+        <ion-col size="4" class="cost-col">
+          <p class="formulas-description formula-cost">
+            {{ currency }}/{{ "formulas.unit_letter" | translate }}
+            {{ unitCost() }}
           </p>
         </ion-col>
       </ion-row>
     </ion-col>
   </ion-row>
-  <ion-icon
-    *ngIf="formula.shared == true"
-    name="people-outline"
-    slot="end"
-  ></ion-icon>
 </ion-item>
