@@ -19,3 +19,27 @@
   color: cornflowerblue;
   font-size: 20px;
 }
+
+.divider {
+  background-color: rgba(221, 221, 221, 0.322) !important;
+  color: black;
+  font-size: 13px;
+}
+
+.item-description {
+  font-size: 14px;
+  margin-left: -16px;
+  .label {
+    font-size: 12px;
+    margin-top: -10px;
+  }
+}
+
+.step-properties {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.step-description {
+  margin-left: -15px;
+}

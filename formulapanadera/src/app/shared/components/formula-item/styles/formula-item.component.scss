@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  padding-left: var(--page-margin);
+  padding-left: 0;
 
   .formulas-name {
     margin-top: 0px;
@@ -44,8 +44,12 @@
 
     .formula-cost {
       color: var(--ion-color-secondary) !important;
-      font-size: 15px !important;
+      font-size: 17px !important;
       margin: 0;
+      .formula-currency {
+        font-size: 12px !important;
+        color: var(--ion-color-medium);
+      }
     }
   }
 }

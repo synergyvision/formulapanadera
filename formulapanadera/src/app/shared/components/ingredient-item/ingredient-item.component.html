@@ -1,6 +1,6 @@
 <ion-item
   class="ingredient-item"
-  [class]="even ? 'background-gray' : ''"
+  [ngClass]="{ 'background-gray': even, 'background-selected': selected }"
   [detail]="clickable"
   [button]="true"
 >
@@ -37,8 +37,10 @@
         </ion-col>
         <ion-col size="4" *ngIf="ingredient.id !== undefined" class="cost-col">
           <p class="ingredients-description ingredient-cost">
-            {{ currency }}/{{ "ingredients.grams" | translate }}
             {{ ingredient.cost }}
+            <span class="ingredient-currency"
+              >{{ currency }}/{{ "ingredients.grams" | translate }}</span
+            >
           </p>
         </ion-col>
       </ion-row>

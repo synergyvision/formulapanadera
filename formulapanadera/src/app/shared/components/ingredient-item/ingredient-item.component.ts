@@ -10,7 +10,8 @@ import { environment } from "src/environments/environment";
 export class IngredientItemComponent {
   @Input() ingredient: IngredientModel;
   @Input() clickable: boolean = false;
-  @Input() even: boolean = false
+  @Input() even: boolean = false;
+  @Input() selected: boolean = false;
 
   currency = environment.currency;
 

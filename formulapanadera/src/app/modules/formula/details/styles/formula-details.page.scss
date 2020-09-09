@@ -12,10 +12,10 @@
 
 .title-row {
   width: 100%;
-  padding: 0 10px;
+  padding: 0;
 
   .formula-name {
-    text-align: center;
+    text-align: start;
     color: var(--ion-color-primary);
   }
 
@@ -40,7 +40,17 @@
 
 .arrow-col {
   align-self: center;
+  text-align: end;
   ion-icon {
     vertical-align: bottom;
   }
+}
+
+.temperature-selector {
+  margin: 10px 20px;
+  border-bottom: 1px solid gray;
+}
+
+.label {
+  margin-top: -8px;
 }

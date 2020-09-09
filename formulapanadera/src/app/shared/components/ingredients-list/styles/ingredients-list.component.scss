@@ -1,12 +1,15 @@
 .ingredients-list {
   font-size: 13px;
   border: 1px solid var(--ion-color-primary);
-  text-align: center;
+  text-align: end;
 
   .title-row {
     border-bottom: 1px solid var(--ion-color-primary);
     font-style: bold;
-    text-align: center;
+    text-align: end;
+    .title-name {
+      text-align: start;
+    }
   }
 
   .ingredients-row {

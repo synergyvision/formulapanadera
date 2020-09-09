@@ -44,6 +44,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   showMixing: boolean;
   showSteps: boolean;
 
+  state;
+
   constructor(
     private formulaService: FormulaService,
     private languageService: LanguageService,
@@ -53,17 +55,18 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private alertController: AlertController,
     private toastController: ToastController,
     private router: Router
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.showIngredients = true;
     this.showMixing = true;
     this.showSteps = true;
-    let state = this.router.getCurrentNavigation().extras.state;
-    if (state === undefined) {
+    this.state = this.router.getCurrentNavigation().extras.state;
+  }
+
+  ngOnInit() {
+    if (this.state === undefined) {
       this.router.navigateByUrl("menu/formula");
     } else {
-      this.formula = state.formula;
+      this.formula = this.state.formula;
       this.units = this.formula.units;
       this.calculateFormula();
 

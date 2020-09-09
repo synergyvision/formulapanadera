@@ -122,17 +122,17 @@ export class IngredientManagementModal implements OnInit {
 
   formatNumberPercentage(value: number) {
     if (this.manageIngredientForm.value.is_flour) {
-      this.manageIngredientForm.get("hydration").patchValue("0.00");
+      this.manageIngredientForm.get("hydration").patchValue("0.0");
     } else {
       this.manageIngredientForm
         .get("hydration")
-        .patchValue(this.formatNumberService.formatNumberDecimals(value));
+        .patchValue(this.formatNumberService.formatNumberDecimals(value, 1));
     }
   }
 
   changeFlourIngredient() {
     if (this.manageIngredientForm.value.is_flour) {
-      this.manageIngredientForm.get("hydration").patchValue("0.00");
+      this.manageIngredientForm.get("hydration").patchValue("0.0");
     }
   }
 }

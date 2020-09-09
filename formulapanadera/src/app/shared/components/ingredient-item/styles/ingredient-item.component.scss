@@ -6,6 +6,10 @@
   --background: rgba(221, 221, 221, 0.322) !important;
 }
 
+.background-selected {
+  --background: var(--ion-color-tertiary) !important;
+}
+
 .ingredient-item-wrapper {
   --ion-grid-column-padding: 0px;
   padding: 10px 0 10px 0;
@@ -17,7 +21,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  padding-left: var(--page-margin);
+  padding-left: 0;
 
   .ingredients-name {
     margin-top: 0px;
@@ -50,8 +54,12 @@
 
     .ingredient-cost {
       color: var(--ion-color-secondary) !important;
-      font-size: 15px;
+      font-size: 17px;
       margin: 0;
+      .ingredient-currency {
+        font-size: 12px !important;
+        color: var(--ion-color-medium);
+      }
     }
   }
 }

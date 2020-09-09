@@ -95,6 +95,18 @@ export class FormulaManagePage {
       .patchValue(this.formatNumberService.formatNumberDecimals(value, 1));
   }
 
+  formatPercentage(ingredient: IngredientPercentageModel) {
+    if (this.formulaUnit == "%") {
+      ingredient.percentage = Number(
+        this.formatNumberService.formatNumberPercentage(ingredient.percentage)
+      );
+    } else {
+      ingredient.percentage = Number(
+        this.formatNumberService.formatNumberDecimals(ingredient.percentage, 1)
+      );
+    }
+  }
+
   async pickIngredient() {
     const modal = await this.modalController.create({
       component: IngredientPickerModal,
@@ -111,7 +123,7 @@ export class FormulaManagePage {
       if (this.formula.ingredients == null) {
         this.formula.ingredients = [];
       }
-      this.formula.ingredients.push(data);
+      this.formula.ingredients = data.ingredients;
       this.formula.mixing = undefined;
     }
   }
@@ -258,5 +270,17 @@ export class FormulaManagePage {
         this.formula
       );
     }
+  }
+
+  ingredientsAreValid() {
+    let valid = true
+    if (this.formula.ingredients) {
+      this.formula.ingredients.forEach(ingredient => {
+        if (ingredient.percentage <= 0) {
+          valid = false
+        }
+      })
+    }
+    return valid
   }
 }

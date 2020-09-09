@@ -99,17 +99,27 @@
             class="ingredient-item"
           >
             <ion-row class="ingredient-item-wrapper">
-              <ion-col size="9" class="ingredients-wrapper">
+              <ion-col size="7" class="ingredients-wrapper">
                 <ion-row>
                   <ion-col>
                     <h2 class="ingredients-name">{{item.ingredient.name}}</h2>
                   </ion-col>
                 </ion-row>
               </ion-col>
-              <ion-col size="3">
-                <p class="ingredient-percentage">
-                  {{ item.percentage+formulaUnit }}
-                </p>
+              <ion-col size="4">
+                <ion-item
+                  ><ion-input
+                    class="ingredient-percentage"
+                    [(ngModel)]="item.percentage"
+                    [ngModelOptions]="{standalone: true}"
+                    type="number"
+                    inputmode="numeric"
+                    (ionBlur)="formatPercentage(item)"
+                  ></ion-input
+                ></ion-item>
+              </ion-col>
+              <ion-col size="1">
+                <p class="ingredient-percentage">{{formulaUnit}}</p>
               </ion-col>
             </ion-row>
             <ion-icon
@@ -170,7 +180,7 @@
             color="primary"
             type="submit"
             fill="solid"
-            [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps)"
+            [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps || !ingredientsAreValid())"
             >{{ 'action.create' | translate }}</ion-button
           >
         </ion-col>
@@ -197,7 +207,7 @@
           color="primary"
           type="submit"
           fill="solid"
-          [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps)"
+          [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps || !ingredientsAreValid())"
           >{{ 'action.update' | translate }}</ion-button
         >
       </ion-col>

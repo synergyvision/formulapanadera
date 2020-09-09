@@ -13,7 +13,7 @@
 <ion-content class="ingredient-content">
   <ion-list lines="full" class="ingredients-list">
     <span *ngFor="let mixStep of formulaMixing; index as i">
-      <ion-item-divider>
+      <ion-item-divider class="divider">
         <ion-label>{{'formulas.step' | translate}} {{i+1}}</ion-label>
         <ion-icon
           name="close-outline"

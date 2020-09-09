@@ -12,12 +12,10 @@ import { FormGroup, FormControl } from "@angular/forms";
 import { DataStore } from "../../../../../shared/shell/data-store";
 import { Subscription, ReplaySubject, Observable, merge, of } from "rxjs";
 import { IngredientService } from "../../../../../core/services/ingredient.service";
-import { ModalController, AlertController } from "@ionic/angular";
+import { ModalController } from "@ionic/angular";
 import { switchMap, map } from "rxjs/operators";
 import { IngredientListingResolver } from "src/app/core/resolvers/ingredient-listing.resolver";
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
-import { LanguageService } from "src/app/core/services/language.service";
-import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 @Component({
   selector: "app-ingredient-picker-modal",
@@ -30,7 +28,6 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
 })
 export class IngredientPickerModal implements OnInit, OnDestroy {
   @Input() selectedIngredients: Array<IngredientPercentageModel>;
-  @Input() formulaUnit: string;
 
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
@@ -53,10 +50,7 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
   constructor(
     private ingredientService: IngredientService,
     private ingredientResolver: IngredientListingResolver,
-    private alertController: AlertController,
-    public modalController: ModalController,
-    private languageService: LanguageService,
-    private formatNumberService: FormatNumberService
+    public modalController: ModalController
   ) {}
 
   ngOnDestroy(): void {
@@ -150,54 +144,29 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
     });
   }
 
-  async clickIngredient(ingredient: IngredientModel) {
-    const alert = await this.alertController.create({
-      cssClass: "ingredient-percentage-alert language-alert",
-      header: `${this.languageService.getTerm("formulas.ingredients.value")} (${
-        this.formulaUnit
-      })`,
-      inputs: [
-        {
-          name: "percentage",
-          type: "number",
-          placeholder: this.languageService.getTerm(
-            "formulas.ingredients.value"
-          ),
-        },
-      ],
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          role: "cancel",
-          handler: () => {},
-        },
-        {
-          text: this.languageService.getTerm("action.ok"),
-          cssClass: "confirm-alert-accept",
-          handler: (data) => {
-            if (data.percentage > 0) {
-              let value: string;
-              if (this.formulaUnit == "%") {
-                value = this.formatNumberService.formatNumberPercentage(
-                  data.percentage
-                );
-              } else {
-                value = this.formatNumberService.formatNumberDecimals(
-                  data.percentage,
-                  1
-                );
-              }
-              this.modalController.dismiss({
-                percentage: value,
-                ingredient: ingredient,
-              });
-            }
-          },
-        },
-      ],
-    });
+  clickIngredient(ingredient: IngredientModel) {
+    if (ingredient !== undefined && ingredient.id !== undefined) {
+      if (this.selectedIngredients === undefined) {
+        this.selectedIngredients = [];
+      }
+      if (this.isSelected(ingredient)) {
+        for (let index = 0; index < this.selectedIngredients.length; index++) {
+          if (this.selectedIngredients[index].ingredient.id === ingredient.id)
+            this.selectedIngredients.splice(index, 1);
+        }
+      } else {
+        this.selectedIngredients.push({
+          percentage: null,
+          ingredient: ingredient,
+        });
+      }
+    }
+  }
 
-    await alert.present();
+  saveIngredients() {
+    this.modalController.dismiss({
+      ingredients: this.selectedIngredients,
+    });
   }
 
   dismissModal() {

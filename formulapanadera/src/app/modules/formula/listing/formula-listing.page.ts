@@ -71,6 +71,10 @@ export class FormulaListingPage implements OnInit, OnDestroy {
             filters.cost.upper,
             filteredDataSource
           );
+          filteredDataSource = this.formulaService.searchFormulasByShared(
+            this.segment,
+            filteredDataSource
+          );
 
           const searchingShellModel = [new FormulaModel()];
           const dataSourceWithShellObservable = DataStore.AppendShell(
@@ -120,15 +124,9 @@ export class FormulaListingPage implements OnInit, OnDestroy {
     });
   }
 
-  filteredFormulas() {
-    return this.formulaService.searchFormulasByShared(
-      this.segment,
-      this.formulas
-    );
-  }
-
   segmentChanged(ev: any) {
     this.segment = ev.detail.value;
+    this.searchList()
   }
 
   createFormula() {
