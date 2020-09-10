@@ -97,6 +97,23 @@ export class IngredientService {
     return of(filtered);
   }
 
+  public searchIngredientsByFormula(
+    type: string,
+    ingredients: Observable<Array<IngredientModel>>
+  ): Observable<Array<IngredientModel>> {
+    const filtered = [];
+    let simple = type == "simple";
+    ingredients.forEach((ingredient) => {
+      ingredient.forEach((item) => {
+        if ((item.formula && !simple) || (!item.formula && simple)) {
+          filtered.push(item);
+        }
+      });
+    });
+
+    return of(filtered);
+  }
+
   /*
     Ingredient Management Modal
   */

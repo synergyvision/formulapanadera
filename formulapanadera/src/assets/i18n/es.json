@@ -99,6 +99,16 @@
     "cost": "Costo",
     "grams": "gr",
     "empty": "No se encontraron ingredientes",
+    "compensation_percentage": "Factor de compensación",
+    "type": {
+      "simple": "Simple",
+      "compound": "Compuesto"
+    },
+    "proportion_factor": {
+      "name": "Calculado de",
+      "flour": "la harina",
+      "dough": "la masa"
+    },
     "filter": {
       "name": "Filtra por nombre...",
       "hydration": "Filtra por hidratación (%)",

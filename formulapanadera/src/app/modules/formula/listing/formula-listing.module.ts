@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
 import { Routes, RouterModule } from "@angular/router";
 import { FormulaListingPage } from "./formula-listing.page";
-import { FormulaService } from "src/app/core/services/formula.service";
 import { FormulaListingResolver } from "src/app/core/resolvers/formula-listing.resolver";
 import { ComponentsModule } from "src/app/shared/components/components.module";
 

@@ -11,6 +11,20 @@ const routes: Routes = [
         (m) => m.IngredientListingPageModule
       ),
   },
+  {
+    path: "manage",
+    loadChildren: () =>
+      import("./manage/ingredient-manage.module").then(
+        (m) => m.IngredientManagePageModule
+      ),
+  },
+  {
+    path: "details",
+    loadChildren: () =>
+      import("./details/ingredient-details.module").then(
+        (m) => m.IngredientDetailsPageModule
+      ),
+  },
 ];
 
 @NgModule({

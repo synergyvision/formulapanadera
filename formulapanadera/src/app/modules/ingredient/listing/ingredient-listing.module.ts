@@ -8,12 +8,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { ComponentsModule } from "../../../shared/components/components.module";
 
 import { IngredientListingPage } from "./ingredient-listing.page";
-import { IngredientService } from "../../../core/services/ingredient.service";
 import { IngredientListingResolver } from "../../../core/resolvers/ingredient-listing.resolver";
-
-import { IngredientManagementModal } from "../management/ingredient-management.modal";
-import { LanguageService } from "src/app/core/services/language.service";
-import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 const routes: Routes = [
   {
@@ -35,10 +30,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
   ],
-  declarations: [IngredientListingPage, IngredientManagementModal],
-  entryComponents: [IngredientManagementModal],
-  providers: [
-    IngredientListingResolver,
-  ],
+  declarations: [IngredientListingPage],
+  providers: [IngredientListingResolver],
 })
 export class IngredientListingPageModule {}

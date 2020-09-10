@@ -6,10 +6,8 @@ import { FormGroup, FormControl } from "@angular/forms";
 import { DataStore } from "../../../shared/shell/data-store";
 import { Subscription, ReplaySubject, Observable, merge } from "rxjs";
 import { IngredientService } from "../../../core/services/ingredient.service";
-import { ActivatedRoute } from "@angular/router";
-import { ModalController, IonRouterOutlet } from "@ionic/angular";
-import { switchMap, map } from "rxjs/operators";
-import { IngredientManagementModal } from "../management/ingredient-management.modal";
+import { ActivatedRoute, Router } from "@angular/router";
+import { switchMap, map, finalize } from "rxjs/operators";
 
 @Component({
   selector: "app-ingredient-listing",
@@ -25,6 +23,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   isFlourForm: FormGroup;
   searchQuery: string;
   showFilters = false;
+  firstLoad = true;
 
   searchSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
   searchFiltersObservable: Observable<any> = this.searchSubject.asObservable();
@@ -35,14 +34,15 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   currency = environment.currency;
   ingredients: IngredientModel[] & ShellModel;
 
+  segment: string = "simple";
+
   @HostBinding("class.is-shell") get isShell() {
     return this.ingredients && this.ingredients.isShell ? true : false;
   }
   constructor(
     private ingredientService: IngredientService,
-    public modalController: ModalController,
     private route: ActivatedRoute,
-    private routerOutlet: IonRouterOutlet
+    private router: Router
   ) {}
 
   ngOnDestroy(): void {
@@ -51,16 +51,13 @@ export class IngredientListingPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.searchQuery = "";
-
     this.hydrationRangeForm = new FormGroup({
       dual: new FormControl({ lower: 0, upper: 100 }),
     });
-
     this.costRangeForm = new FormGroup({
       lower: new FormControl(),
       upper: new FormControl(),
     });
-
     this.isFlourForm = new FormGroup({
       value: new FormControl("all"),
     });
@@ -85,7 +82,23 @@ export class IngredientListingPage implements OnInit, OnDestroy {
               filteredDataSource
             );
           }
-          const searchingShellModel = [new IngredientModel()];
+          filteredDataSource = this.ingredientService.searchIngredientsByFormula(
+            this.segment,
+            filteredDataSource
+          );
+
+          const searchingShellModel = [
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+          ];
           const dataSourceWithShellObservable = DataStore.AppendShell(
             filteredDataSource,
             searchingShellModel
@@ -115,6 +128,10 @@ export class IngredientListingPage implements OnInit, OnDestroy {
         updateSearchObservable
       ).subscribe((state) => {
         this.ingredients = state;
+        if (state.isShell == false && this.firstLoad == true) {
+          this.searchList();
+          this.firstLoad = false;
+        }
       });
     });
   }
@@ -134,15 +151,20 @@ export class IngredientListingPage implements OnInit, OnDestroy {
     });
   }
 
-  async openModal(type: string, ingredient?: IngredientModel) {
-    if (ingredient == undefined || ingredient.id !== undefined) {
-      const modal = await this.modalController.create({
-        component: IngredientManagementModal,
-        swipeToClose: true,
-        presentingElement: this.routerOutlet.nativeEl,
-        componentProps: { type: type, ingredient: ingredient },
+  segmentChanged(ev: any) {
+    this.segment = ev.detail.value;
+    this.searchList();
+  }
+
+  createIngredient() {
+    this.router.navigateByUrl("menu/ingredient/manage");
+  }
+
+  ingredientDetails(ingredient: IngredientModel) {
+    if (ingredient.id !== undefined) {
+      this.router.navigateByUrl("menu/ingredient/details", {
+        state: { ingredient: ingredient },
       });
-      await modal.present();
     }
   }
 }

@@ -19,7 +19,7 @@ export class FormulaItemComponent {
   constructor(private formulaService: FormulaService) {}
 
   hydration() {
-    return this.formulaService.calculateHydration(this.formula);
+    return this.formulaService.calculateHydration(this.formula.ingredients);
   }
 
   unitCost() {
@@ -28,7 +28,7 @@ export class FormulaItemComponent {
       this.formula
     );
     let total_cost = this.formulaService.calculateTotalCost(
-      this.formula,
+      this.formula.ingredients,
       Number(bakers_percentage)
     );
     return (Number(total_cost) / this.formula.units).toFixed(2);

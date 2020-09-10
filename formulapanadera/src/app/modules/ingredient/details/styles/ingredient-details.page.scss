@@ -56,3 +56,28 @@
 .ios.title-default {
   padding: 0 0;
 }
+
+.label {
+  margin-top: -8px;
+  font-size: 13px;
+}
+
+.value {
+  margin-bottom: 5px;
+  padding-top: 5px;
+}
+
+.steps-list {
+  font-size: 13px;
+  margin-top: -10px;
+}
+
+.title-row {
+  width: 100%;
+  padding: 0;
+
+  .formula-name {
+    text-align: center;
+    color: var(--ion-color-primary);
+  }
+}

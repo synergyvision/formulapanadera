@@ -5,13 +5,13 @@ import {
   OnDestroy,
   Input,
 } from "@angular/core";
-import { IngredientModel } from "../../../../../core/models/ingredient.model";
-import { ShellModel } from "../../../../../shared/shell/shell.model";
-import { environment } from "../../../../../../environments/environment";
+import { IngredientModel } from "../../../core/models/ingredient.model";
+import { ShellModel } from "../../shell/shell.model";
+import { environment } from "../../../../environments/environment";
 import { FormGroup, FormControl } from "@angular/forms";
-import { DataStore } from "../../../../../shared/shell/data-store";
+import { DataStore } from "../../shell/data-store";
 import { Subscription, ReplaySubject, Observable, merge, of } from "rxjs";
-import { IngredientService } from "../../../../../core/services/ingredient.service";
+import { IngredientService } from "../../../core/services/ingredient.service";
 import { ModalController } from "@ionic/angular";
 import { switchMap, map } from "rxjs/operators";
 import { IngredientListingResolver } from "src/app/core/resolvers/ingredient-listing.resolver";
@@ -23,7 +23,7 @@ import { IngredientPercentageModel } from "src/app/core/models/formula.model";
   styleUrls: [
     "./styles/ingredient-picker.modal.scss",
     "./styles/ingredient-picker.filter.scss",
-    "./../../../../../shared/styles/language.alert.scss",
+    "./../../styles/language.alert.scss",
   ],
 })
 export class IngredientPickerModal implements OnInit, OnDestroy {

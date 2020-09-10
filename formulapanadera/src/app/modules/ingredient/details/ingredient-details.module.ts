@@ -4,14 +4,15 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { IonicModule } from "@ionic/angular";
 import { TranslateModule } from "@ngx-translate/core";
-import { FormulaDetailsPage } from "./formula-details.page";
 import { ComponentsModule } from "src/app/shared/components/components.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+
+import { IngredientDetailsPage } from "./ingredient-details.page";
 
 const routes: Routes = [
   {
     path: "",
-    component: FormulaDetailsPage,
+    component: IngredientDetailsPage,
   },
 ];
 
@@ -25,6 +26,6 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
   ],
-  declarations: [FormulaDetailsPage],
+  declarations: [IngredientDetailsPage],
 })
-export class FormulaDetailsPageModule {}
+export class IngredientDetailsPageModule {}

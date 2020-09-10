@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
 
 import { DataStore } from "src/app/shared/shell/data-store";
-import { FormulaModel } from "../models/formula.model";
+import { FormulaModel, IngredientPercentageModel } from "../models/formula.model";
 import { Observable, of } from "rxjs";
 
 @Injectable()
@@ -59,7 +59,7 @@ export class FormulaService {
     let hydration: number;
     this.formulaDataStore.state.forEach((ingredient) => {
       ingredient.forEach((item) => {
-        hydration = Number(this.calculateHydration(item));
+        hydration = Number(this.calculateHydration(item.ingredients));
         if (hydration >= lower && hydration <= upper) {
           filtered.push(item);
         }
@@ -82,7 +82,7 @@ export class FormulaService {
           this.calculateBakersPercentage(item.units, item)
         );
         cost =
-          Number(this.calculateTotalCost(item, bakers_percentage)) / item.units;
+          Number(this.calculateTotalCost(item.ingredients, bakers_percentage)) / item.units;
         if (
           (cost >= lower || lower == null) &&
           (cost <= upper || upper == null)
@@ -142,9 +142,9 @@ export class FormulaService {
     return (total_weight / percentage).toFixed(2);
   }
 
-  public calculateHydration(formula: FormulaModel): string {
+  public calculateHydration(ingredients: Array<IngredientPercentageModel>): string {
     let hydration: number = 0;
-    formula.ingredients.forEach((ingredientData) => {
+    ingredients.forEach((ingredientData) => {
       hydration =
         ingredientData.percentage * ingredientData.ingredient.hydration +
         hydration;
@@ -153,11 +153,11 @@ export class FormulaService {
   }
 
   public calculateTotalCost(
-    formula: FormulaModel,
+    ingredients: Array<IngredientPercentageModel>,
     bakers_percentage: number
   ): string {
     let cost: number = 0;
-    formula.ingredients.forEach((ingredientData) => {
+    ingredients.forEach((ingredientData) => {
       cost =
         ingredientData.percentage *
           bakers_percentage *

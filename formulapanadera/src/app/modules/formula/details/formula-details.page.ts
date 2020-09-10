@@ -16,7 +16,7 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
 import { AuthService } from "src/app/core/services/auth.service";
 
 @Component({
-  selector: "app-formula-deatils",
+  selector: "app-formula-details",
   templateUrl: "formula-details.page.html",
   styleUrls: [
     "./styles/formula-details.page.scss",
@@ -85,9 +85,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       this.formula
     );
     this.total_weight = (this.units * this.formula.unit_weight).toFixed(1);
-    this.hydration = this.formulaService.calculateHydration(this.formula);
+    this.hydration = this.formulaService.calculateHydration(this.formula.ingredients);
     this.total_cost = this.formulaService.calculateTotalCost(
-      this.formula,
+      this.formula.ingredients,
       Number(this.bakers_percentage)
     );
     this.unitary_cost = (Number(this.total_cost) / this.units).toFixed(2);

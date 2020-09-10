@@ -5,19 +5,19 @@ import {
   IonRouterOutlet,
   AlertController,
 } from "@ionic/angular";
-import { IngredientPickerModal } from "../modal/ingredient/ingredient-picker.modal";
 import {
   IngredientPercentageModel,
   FormulaModel,
 } from "src/app/core/models/formula.model";
 import { AuthService } from "src/app/core/services/auth.service";
-import { IngredientMixingModal } from "../modal/mixing/ingredient-mixing.modal";
-import { FormulaStepsModal } from "../modal/steps/formula-steps.modal";
+import { FormulaStepsModal } from "../steps/formula-steps.modal";
 import { environment } from "src/environments/environment";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { LanguageService } from "src/app/core/services/language.service";
 import { Router } from "@angular/router";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
+import { IngredientPickerModal } from 'src/app/shared/modal/ingredient/ingredient-picker.modal';
+import { IngredientMixingModal } from 'src/app/shared/modal/mixing/ingredient-mixing.modal';
 
 @Component({
   selector: "app-formula-manage",

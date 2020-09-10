@@ -11,7 +11,7 @@ const routes: Routes = [
   },
   {
     path: "menu",
-    canLoad: [AuthGuard],
+    //canLoad: [AuthGuard],
     loadChildren: () =>
       import("./modules/tabs/tabs.module").then((m) => m.TabsPageModule),
   },

@@ -22,6 +22,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
   costRangeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
+  firstLoad = true;
 
   searchSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
   searchFiltersObservable: Observable<any> = this.searchSubject.asObservable();
@@ -76,7 +77,18 @@ export class FormulaListingPage implements OnInit, OnDestroy {
             filteredDataSource
           );
 
-          const searchingShellModel = [new FormulaModel()];
+          const searchingShellModel = [
+            new FormulaModel(),
+            new FormulaModel(),
+            new FormulaModel(),
+            new FormulaModel(),
+            new FormulaModel(),
+            new FormulaModel(),
+            new FormulaModel(),
+            new FormulaModel(),
+            new FormulaModel(),
+            new FormulaModel(),
+          ];
           const dataSourceWithShellObservable = DataStore.AppendShell(
             filteredDataSource,
             searchingShellModel
@@ -106,6 +118,10 @@ export class FormulaListingPage implements OnInit, OnDestroy {
         updateSearchObservable
       ).subscribe((state) => {
         this.formulas = state;
+        if (state.isShell == false && this.firstLoad == true) {
+          this.searchList();
+          this.firstLoad = false;
+        }
       });
     });
   }
@@ -126,7 +142,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
 
   segmentChanged(ev: any) {
     this.segment = ev.detail.value;
-    this.searchList()
+    this.searchList();
   }
 
   createFormula() {

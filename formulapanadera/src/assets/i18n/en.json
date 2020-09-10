@@ -64,7 +64,10 @@
     "minutes": "Min.",
     "temperature": "Temperature",
     "description": "Description",
-    "cost": { "unitary": "Unitary cost", "total": "Total cost" },
+    "cost": {
+      "unitary": "Unitary cost",
+      "total": "Total cost"
+    },
     "range": {
       "min": "Min.",
       "max": "Max."
@@ -96,6 +99,16 @@
     "cost": "Cost",
     "grams": "gr",
     "empty": "No ingredients found",
+    "compensation_percentage": "Compensation factor",
+    "type": {
+      "simple": "Simple",
+      "compound": "Compound"
+    },
+    "proportion_factor": {
+      "name": "Calculated from",
+      "flour": "flour",
+      "dough": "dough"
+    },
     "filter": {
       "name": "Filter by name...",
       "hydration": "Filter by hydration (%)",
