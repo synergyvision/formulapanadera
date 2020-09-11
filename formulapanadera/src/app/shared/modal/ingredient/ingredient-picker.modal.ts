@@ -34,6 +34,7 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
   isFlourForm: FormGroup;
   searchQuery: string;
   showFilters = false;
+  firstLoad = true;
 
   searchSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
   searchFiltersObservable: Observable<any> = this.searchSubject.asObservable();
@@ -43,6 +44,8 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
 
   currency = environment.currency;
   ingredients: IngredientModel[] & ShellModel;
+
+  segment: string = "simple";
 
   @HostBinding("class.is-shell") get isShell() {
     return this.ingredients && this.ingredients.isShell ? true : false;
@@ -95,7 +98,23 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
               filteredDataSource
             );
           }
-          const searchingShellModel = [new IngredientModel()];
+          filteredDataSource = this.ingredientService.searchIngredientsByFormula(
+            this.segment,
+            filteredDataSource
+          );
+
+          const searchingShellModel = [
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+            new IngredientModel(),
+          ];
           const dataSourceWithShellObservable = DataStore.AppendShell(
             filteredDataSource,
             searchingShellModel
@@ -125,6 +144,10 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
         updateSearchObservable
       ).subscribe((state) => {
         this.ingredients = state;
+        if (state.isShell == false && this.firstLoad == true) {
+          this.searchList();
+          this.firstLoad = false;
+        }
       });
     });
   }
@@ -142,6 +165,11 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
       is_flour: this.isFlourForm.value.value,
       query: this.searchQuery,
     });
+  }
+
+  segmentChanged(ev: any) {
+    this.segment = ev.detail.value;
+    this.searchList();
   }
 
   clickIngredient(ingredient: IngredientModel) {

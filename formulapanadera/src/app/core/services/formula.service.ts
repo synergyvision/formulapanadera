@@ -2,7 +2,10 @@ import { Injectable } from "@angular/core";
 import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
 
 import { DataStore } from "src/app/shared/shell/data-store";
-import { FormulaModel, IngredientPercentageModel } from "../models/formula.model";
+import {
+  FormulaModel,
+  IngredientPercentageModel,
+} from "../models/formula.model";
 import { Observable, of } from "rxjs";
 
 @Injectable()
@@ -79,10 +82,14 @@ export class FormulaService {
     formulas.forEach((formula) => {
       formula.forEach((item) => {
         bakers_percentage = Number(
-          this.calculateBakersPercentage(item.units, item)
+          this.calculateBakersPercentage(
+            item.units * item.unit_weight,
+            item.ingredients
+          )
         );
         cost =
-          Number(this.calculateTotalCost(item.ingredients, bakers_percentage)) / item.units;
+          Number(this.calculateTotalCost(item.ingredients, bakers_percentage)) /
+          item.units;
         if (
           (cost >= lower || lower == null) &&
           (cost <= upper || upper == null)
@@ -131,23 +138,28 @@ export class FormulaService {
   Formula calculations
   */
   public calculateBakersPercentage(
-    units: number,
-    formula: FormulaModel
+    total_weight: number,
+    ingredients: Array<IngredientPercentageModel>
   ): string {
-    let total_weight: number = units * formula.unit_weight;
     let percentage: number = 0;
-    formula.ingredients.forEach((ingredientData) => {
-      percentage = percentage + Number(ingredientData.percentage);
+    ingredients.forEach((ingredientData) => {
+      if (!ingredientData.ingredient.formula) {
+        percentage = percentage + Number(ingredientData.percentage);
+      }
     });
     return (total_weight / percentage).toFixed(2);
   }
 
-  public calculateHydration(ingredients: Array<IngredientPercentageModel>): string {
+  public calculateHydration(
+    ingredients: Array<IngredientPercentageModel>
+  ): string {
     let hydration: number = 0;
     ingredients.forEach((ingredientData) => {
-      hydration =
-        ingredientData.percentage * ingredientData.ingredient.hydration +
-        hydration;
+      if (!ingredientData.ingredient.formula) {
+        hydration =
+          ingredientData.percentage * ingredientData.ingredient.hydration +
+          hydration;
+      }
     });
     return (hydration / 100).toFixed(1);
   }
@@ -158,29 +170,36 @@ export class FormulaService {
   ): string {
     let cost: number = 0;
     ingredients.forEach((ingredientData) => {
-      cost =
-        ingredientData.percentage *
-          bakers_percentage *
-          ingredientData.ingredient.cost +
-        cost;
+      if (!ingredientData.ingredient.formula) {
+        cost =
+          ingredientData.percentage *
+            bakers_percentage *
+            ingredientData.ingredient.cost +
+          cost;
+      }
     });
     return cost.toFixed(2);
   }
 
-  public fromRecipeToFormula(formula: FormulaModel) {
+  public fromRecipeToFormula(ingredients: Array<IngredientPercentageModel>) {
+    let bakers_percentage = this.totalFlour(ingredients) / 100;
+    ingredients.forEach((ingredient) => {
+      if (!ingredient.ingredient.formula) {
+        ingredient.percentage = Number(
+          (ingredient.percentage / Number(bakers_percentage)).toFixed(1)
+        );
+      }
+    });
+    return ingredients;
+  }
+
+  public totalFlour(ingredients: Array<IngredientPercentageModel>) {
     let flour = 0;
-    formula.ingredients.forEach((ingredient) => {
+    ingredients.forEach((ingredient) => {
       if (ingredient.ingredient.is_flour) {
         flour = flour + ingredient.percentage;
       }
     });
-
-    let bakers_percentage = flour / 100;
-    formula.ingredients.forEach((ingredient) => {
-      ingredient.percentage = Number(
-        (ingredient.percentage / Number(bakers_percentage)).toFixed(1)
-      );
-    });
-    return formula.ingredients;
+    return flour;
   }
 }

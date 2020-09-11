@@ -79,21 +79,60 @@
         <ion-row class="steps-list">
           <ion-col>
             <ion-list>
-              <ion-item class="formula-title">
+              <ion-item
+                class="formula-title"
+                (click)="showIngredients = !showIngredients"
+              >
                 <ion-row class="title-row">
-                  <ion-col size="12">
+                  <ion-col size="9">
                     <h5 class="formula-name">
                       {{'ingredients.name' | translate}}
                     </h5>
+                  </ion-col>
+                  <ion-col size="3" class="arrow-col">
+                    <ion-icon
+                      [name]="showIngredients?'chevron-up-outline':'chevron-down-outline'"
+                      button
+                    ></ion-icon>
                   </ion-col>
                 </ion-row>
               </ion-item>
             </ion-list>
             <app-ingredients-list
+              *ngIf="showIngredients"
               [ingredients]="ingredient.formula.ingredients"
               [bakers_percentage]="0"
+              [total_weight]="total_weight"
             >
             </app-ingredients-list>
+          </ion-col>
+        </ion-row>
+        <ion-row class="steps-list">
+          <ion-col>
+            <ion-list>
+              <ion-item
+                class="formula-title"
+                (click)="showMixing = !showMixing"
+              >
+                <ion-row class="title-row">
+                  <ion-col size="9">
+                    <h5 class="formula-name">
+                      {{'formulas.mixing_order' | translate}}
+                    </h5>
+                  </ion-col>
+                  <ion-col size="3" class="arrow-col">
+                    <ion-icon
+                      [name]="showMixing?'chevron-up-outline':'chevron-down-outline'"
+                      button
+                    ></ion-icon>
+                  </ion-col>
+                </ion-row>
+              </ion-item>
+            </ion-list>
+            <app-mixing-steps
+              *ngIf="showMixing"
+              [steps]="ingredient.formula.mixing"
+            ></app-mixing-steps>
           </ion-col>
         </ion-row>
       </span>

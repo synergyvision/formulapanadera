@@ -124,6 +124,14 @@
 </ion-header>
 
 <ion-content class="ingredient-content">
+  <ion-segment (ionChange)="segmentChanged($event)" [value]="segment">
+    <ion-segment-button value="simple">
+      <ion-label>{{'ingredients.type.simple' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="compound">
+      <ion-label>{{'ingredients.type.compound' | translate}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
   <ion-list
     lines="full"
     class="ingredients-list"

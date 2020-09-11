@@ -4,10 +4,12 @@ import {
   ActionSheetController,
   AlertController,
   ToastController,
+  ViewWillEnter,
 } from "@ionic/angular";
 import {
   FormulaModel,
   StepDetailsModel,
+  IngredientPercentageModel,
 } from "src/app/core/models/formula.model";
 import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
@@ -38,6 +40,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   currency: string = environment.currency;
 
+  ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
 
   showIngredients: boolean;
@@ -68,8 +71,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     } else {
       this.formula = this.state.formula;
       this.units = this.formula.units;
-      this.calculateFormula();
-
+      this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
       this.steps = JSON.parse(JSON.stringify(this.formula.steps));
     }
   }
@@ -80,17 +82,21 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   }
 
   calculateFormula() {
+    this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
     this.bakers_percentage = this.formulaService.calculateBakersPercentage(
-      this.units,
-      this.formula
+      this.units * this.formula.unit_weight,
+      this.ingredients
     );
+
     this.total_weight = (this.units * this.formula.unit_weight).toFixed(1);
-    this.hydration = this.formulaService.calculateHydration(this.formula.ingredients);
+    this.hydration = this.formulaService.calculateHydration(this.ingredients);
     this.total_cost = this.formulaService.calculateTotalCost(
-      this.formula.ingredients,
+      this.ingredients,
       Number(this.bakers_percentage)
     );
     this.unitary_cost = (Number(this.total_cost) / this.units).toFixed(2);
+
+    this.calculateIngredientsWithFormula();
   }
 
   //Change
@@ -312,5 +318,98 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     toast.present();
+  }
+
+  // Calculate ingredients with formula
+  calculateIngredientsWithFormula() {
+    //Identifies ingredients with formula
+    let ingredients_formula = [];
+    this.ingredients.forEach((item) => {
+      if (item.ingredient.formula) {
+        ingredients_formula.push(JSON.parse(JSON.stringify(item)));
+      }
+    });
+
+    if (ingredients_formula.length > 0) {
+      this.ingredients.forEach((item) => {
+        if (!item.ingredient.formula) {
+          item.percentage = item.percentage * Number(this.bakers_percentage);
+        }
+      });
+
+      let bakers_percentage: string;
+      let proportion_factor: number;
+      ingredients_formula.forEach((item: IngredientPercentageModel) => {
+        // Get bakers percentage from certain factor
+        if (item.ingredient.formula.proportion_factor == "dough") {
+          proportion_factor =
+            (item.percentage / 100) * Number(this.total_weight);
+        } else {
+          proportion_factor =
+            (item.percentage / 100) * Number(this.bakers_percentage) * 100;
+        }
+        bakers_percentage = this.formulaService.calculateBakersPercentage(
+          proportion_factor,
+          item.ingredient.formula.ingredients
+        );
+
+        //Gets new values of ingredients
+
+        this.ingredients.forEach((ingredient) => {
+          if (!ingredient.ingredient.formula) {
+            item.ingredient.formula.ingredients.forEach((ingredientFormula) => {
+              if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
+                ingredient.percentage =
+                  ingredient.percentage -
+                  ingredientFormula.percentage * Number(bakers_percentage);
+              }
+            });
+          }
+        });
+      });
+
+      //Gets new total flour of formula
+      let total_flour = this.formulaService.totalFlour(this.ingredients);
+
+      //Gets new percentage of ingredient with formula
+      ingredients_formula.forEach((item) => {
+        this.ingredients.forEach((ingredient) => {
+          if (item.ingredient.id == ingredient.ingredient.id) {
+            if (item.ingredient.formula.proportion_factor == "dough") {
+              ingredient.percentage = Number(
+                (
+                  (ingredient.percentage / 100) *
+                  Number(this.total_weight) *
+                  (100 / total_flour)
+                ).toFixed(2)
+              );
+            } else {
+              ingredient.percentage = Number(
+                (
+                  ingredient.percentage *
+                  Number(this.bakers_percentage) *
+                  (100 / total_flour)
+                ).toFixed(2)
+              );
+            }
+          }
+        });
+      });
+
+      //Gets new bakers percentage
+      this.bakers_percentage = (
+        this.formulaService.totalFlour(this.ingredients) / 100
+      ).toFixed(2);
+
+      //Sets ingredients
+      this.ingredients = this.formulaService.fromRecipeToFormula(
+        this.ingredients
+      );
+      this.ingredients.sort(
+        (a: IngredientPercentageModel, b: IngredientPercentageModel) => {
+          return b.percentage - a.percentage;
+        }
+      );
+    }
   }
 }

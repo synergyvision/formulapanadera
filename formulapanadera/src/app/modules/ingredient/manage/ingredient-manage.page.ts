@@ -233,6 +233,12 @@ export class IngredientManagePage implements OnInit {
     }
   }
 
+  formatDecimals(item: IngredientPercentageModel) {
+    item.percentage = Number(
+      this.formatNumberService.formatNumberDecimals(item.percentage)
+    );
+  }
+
   changeFlourIngredient() {
     if (this.manageIngredientForm.value.is_flour) {
       this.manageIngredientForm.get("hydration").patchValue("0.0");

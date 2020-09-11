@@ -9,10 +9,13 @@ import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 export class IngredientsListComponent {
   @Input() ingredients: Array<IngredientPercentageModel>;
   @Input() bakers_percentage: number;
+  @Input() total_weight?: number;
 
   constructor() {}
 
-  ingredientGrams(percentage: number): string {
+  ingredientGrams(
+    percentage: number
+  ): string {
     return (percentage * this.bakers_percentage).toFixed(2);
   }
 }

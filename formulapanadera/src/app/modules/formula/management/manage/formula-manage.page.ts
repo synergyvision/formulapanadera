@@ -16,8 +16,8 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { LanguageService } from "src/app/core/services/language.service";
 import { Router } from "@angular/router";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
-import { IngredientPickerModal } from 'src/app/shared/modal/ingredient/ingredient-picker.modal';
-import { IngredientMixingModal } from 'src/app/shared/modal/mixing/ingredient-mixing.modal';
+import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
+import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
 
 @Component({
   selector: "app-formula-manage",
@@ -96,7 +96,7 @@ export class FormulaManagePage {
   }
 
   formatPercentage(ingredient: IngredientPercentageModel) {
-    if (this.formulaUnit == "%") {
+    if (this.formulaUnit == "%" || ingredient.ingredient.formula) {
       ingredient.percentage = Number(
         this.formatNumberService.formatNumberPercentage(ingredient.percentage)
       );
@@ -267,20 +267,20 @@ export class FormulaManagePage {
   verifyUnit() {
     if (this.formulaUnit == "gr") {
       this.formula.ingredients = this.formulaService.fromRecipeToFormula(
-        this.formula
+        this.formula.ingredients
       );
     }
   }
 
   ingredientsAreValid() {
-    let valid = true
+    let valid = true;
     if (this.formula.ingredients) {
-      this.formula.ingredients.forEach(ingredient => {
+      this.formula.ingredients.forEach((ingredient) => {
         if (ingredient.percentage <= 0) {
-          valid = false
+          valid = false;
         }
-      })
+      });
     }
-    return valid
+    return valid;
   }
 }

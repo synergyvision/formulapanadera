@@ -12,7 +12,7 @@ export class FormulaItemComponent {
   @Input() formula: FormulaModel;
   @Input() type: string;
   @Input() clickable: boolean = false;
-  @Input() even: boolean = false
+  @Input() even: boolean = false;
 
   currency = environment.currency;
 
@@ -24,8 +24,8 @@ export class FormulaItemComponent {
 
   unitCost() {
     let bakers_percentage = this.formulaService.calculateBakersPercentage(
-      this.formula.units,
-      this.formula
+      this.formula.units * this.formula.unit_weight,
+      this.formula.ingredients
     );
     let total_cost = this.formulaService.calculateTotalCost(
       this.formula.ingredients,

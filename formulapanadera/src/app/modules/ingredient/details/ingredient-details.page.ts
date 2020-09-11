@@ -17,6 +17,9 @@ export class IngredientDetailsPage implements OnInit {
 
   currency = environment.currency;
 
+  showIngredients: boolean;
+  showMixing: boolean;
+
   state;
 
   constructor(
@@ -24,6 +27,8 @@ export class IngredientDetailsPage implements OnInit {
     private actionSheetController: ActionSheetController,
     private languageService: LanguageService
   ) {
+    this.showIngredients = true;
+    this.showMixing = true;
     this.state = this.router.getCurrentNavigation().extras.state;
   }
 
