@@ -42,8 +42,10 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
+  ingredients_formula: Array<any> = [];
 
   showIngredients: boolean;
+  showSubIngredients: boolean;
   showMixing: boolean;
   showSteps: boolean;
 
@@ -60,6 +62,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private router: Router
   ) {
     this.showIngredients = true;
+    this.showSubIngredients = true;
     this.showMixing = true;
     this.showSteps = true;
     this.state = this.router.getCurrentNavigation().extras.state;
@@ -323,78 +326,34 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   // Calculate ingredients with formula
   calculateIngredientsWithFormula() {
     //Identifies ingredients with formula
-    let ingredients_formula = [];
+    this.ingredients_formula = [];
     this.ingredients.forEach((item) => {
       if (item.ingredient.formula) {
-        ingredients_formula.push(JSON.parse(JSON.stringify(item)));
+        this.ingredients_formula.push(JSON.parse(JSON.stringify(item)));
       }
     });
 
-    if (ingredients_formula.length > 0) {
+    if (this.ingredients_formula.length > 0) {
       this.ingredients.forEach((item) => {
         if (!item.ingredient.formula) {
           item.percentage = item.percentage * Number(this.bakers_percentage);
         }
       });
 
-      let bakers_percentage: string;
-      let proportion_factor: number;
-      ingredients_formula.forEach((item: IngredientPercentageModel) => {
-        // Get bakers percentage from certain factor
-        if (item.ingredient.formula.proportion_factor == "dough") {
-          proportion_factor =
-            (item.percentage / 100) * Number(this.total_weight);
-        } else {
-          proportion_factor =
-            (item.percentage / 100) * Number(this.bakers_percentage) * 100;
-        }
-        bakers_percentage = this.formulaService.calculateBakersPercentage(
-          proportion_factor,
-          item.ingredient.formula.ingredients
-        );
-
-        //Gets new values of ingredients
-
-        this.ingredients.forEach((ingredient) => {
-          if (!ingredient.ingredient.formula) {
-            item.ingredient.formula.ingredients.forEach((ingredientFormula) => {
-              if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
-                ingredient.percentage =
-                  ingredient.percentage -
-                  ingredientFormula.percentage * Number(bakers_percentage);
-              }
-            });
-          }
-        });
-      });
-
-      //Gets new total flour of formula
-      let total_flour = this.formulaService.totalFlour(this.ingredients);
+      this.formulaService.getIngredientsCalculatedPercentages(
+        Number(this.total_weight),
+        Number(this.bakers_percentage),
+        this.ingredients,
+        this.ingredients_formula
+      );
 
       //Gets new percentage of ingredient with formula
-      ingredients_formula.forEach((item) => {
-        this.ingredients.forEach((ingredient) => {
-          if (item.ingredient.id == ingredient.ingredient.id) {
-            if (item.ingredient.formula.proportion_factor == "dough") {
-              ingredient.percentage = Number(
-                (
-                  (ingredient.percentage / 100) *
-                  Number(this.total_weight) *
-                  (100 / total_flour)
-                ).toFixed(2)
-              );
-            } else {
-              ingredient.percentage = Number(
-                (
-                  ingredient.percentage *
-                  Number(this.bakers_percentage) *
-                  (100 / total_flour)
-                ).toFixed(2)
-              );
-            }
-          }
-        });
-      });
+      this.formulaService.getIngredientsWithFormulaCalculatedPercentages(
+        Number(this.total_weight),
+        Number(this.bakers_percentage),
+        this.ingredients,
+        this.ingredients_formula
+      );
 
       //Gets new bakers percentage
       this.bakers_percentage = (

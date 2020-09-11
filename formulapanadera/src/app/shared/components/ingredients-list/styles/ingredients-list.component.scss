@@ -18,3 +18,12 @@
     }
   }
 }
+
+.sub-ingredient {
+  border: 1px solid var(--ion-color-secondary);
+  margin: 15px;
+  margin-bottom: 0;
+  .title-row {
+    border-bottom: 1px solid var(--ion-color-secondary);
+  }
+}

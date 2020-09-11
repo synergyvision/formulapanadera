@@ -202,4 +202,87 @@ export class FormulaService {
     });
     return flour;
   }
+
+  public getProportionFactor(
+    weight: number,
+    bakers_percentage: number,
+    item: IngredientPercentageModel
+  ): number {
+    if (item.ingredient.formula.proportion_factor == "dough") {
+      return (item.percentage / 100) * Number(weight);
+    } else {
+      return (item.percentage / 100) * Number(bakers_percentage) * 100;
+    }
+  }
+
+  public getIngredientsCalculatedPercentages(
+    formula_weight: number,
+    original_bakers_percentage: number,
+    ingredients: Array<IngredientPercentageModel>,
+    ingredients_formula: Array<any>
+  ) {
+    let bakers_percentage: string;
+    let proportion_factor: number;
+    ingredients_formula.forEach((item) => {
+      // Get bakers percentage from certain factor
+      proportion_factor = this.getProportionFactor(
+        formula_weight,
+        original_bakers_percentage,
+        item
+      );
+      bakers_percentage = this.calculateBakersPercentage(
+        proportion_factor,
+        item.ingredient.formula.ingredients
+      );
+      item.bakers_percentage = bakers_percentage;
+
+      //Gets new values of ingredients
+
+      ingredients.forEach((ingredient) => {
+        if (!ingredient.ingredient.formula) {
+          item.ingredient.formula.ingredients.forEach((ingredientFormula) => {
+            if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
+              ingredient.percentage =
+                ingredient.percentage -
+                ingredientFormula.percentage * Number(bakers_percentage);
+            }
+          });
+        }
+      });
+    });
+  }
+
+  public getIngredientsWithFormulaCalculatedPercentages(
+    formula_weight: number,
+    original_bakers_percentage: number,
+    ingredients: Array<IngredientPercentageModel>,
+    ingredients_formula: Array<IngredientPercentageModel>
+  ) {
+    //Gets new total flour of formula
+    let total_flour = this.totalFlour(ingredients);
+
+    ingredients_formula.forEach((item) => {
+      ingredients.forEach((ingredient) => {
+        if (item.ingredient.id == ingredient.ingredient.id) {
+          if (item.ingredient.formula.proportion_factor == "dough") {
+            ingredient.percentage = Number(
+              (
+                (ingredient.percentage / 100) *
+                Number(formula_weight) *
+                (100 / total_flour)
+              ).toFixed(2)
+            );
+          } else {
+            ingredient.percentage = Number(
+              (
+                ingredient.percentage *
+                Number(original_bakers_percentage) *
+                (100 / total_flour)
+              ).toFixed(2)
+            );
+          }
+        }
+      });
+    });
+  }
 }

@@ -119,6 +119,36 @@
           [bakers_percentage]="bakers_percentage"
         >
         </app-ingredients-list>
+        <span *ngIf="ingredients_formula && showIngredients">
+          <ion-item
+            class="formula-subtitle"
+            (click)="showSubIngredients = !showSubIngredients"
+          >
+            <ion-row class="title-row">
+              <ion-col size="9">
+                <h5 class="formula-subtitle-name">
+                  {{'ingredients.subingredients' | translate}}
+                </h5>
+              </ion-col>
+              <ion-col size="3" class="arrow-col">
+                <ion-icon
+                  [name]="showSubIngredients?'chevron-up-outline':'chevron-down-outline'"
+                  button
+                ></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+          <span *ngIf="showSubIngredients">
+            <app-ingredients-list
+              *ngFor="let ingredientFormula of ingredients_formula"
+              [ingredients]="ingredientFormula.ingredient.formula.ingredients"
+              [bakers_percentage]="ingredientFormula.bakers_percentage"
+              [compensation]="ingredientFormula.ingredient.formula.compensation_percentage"
+              [name]="ingredientFormula.ingredient.name"
+            >
+            </app-ingredients-list
+          ></span>
+        </span>
       </ion-col>
     </ion-row>
 

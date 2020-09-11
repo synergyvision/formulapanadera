@@ -1,5 +1,13 @@
-<ion-row class="ingredients-list">
+<ion-row
+  class="ingredients-list"
+  [ngClass]="{ 'sub-ingredient': compensation}"
+>
   <ion-col>
+    <ion-row *ngIf="name" class="title-row">
+      <ion-col size="12" class="title-name">
+        {{ name }}
+      </ion-col>
+    </ion-row>
     <ion-row class="title-row"
       ><ion-col size="6" class="title-name">
         {{ "formulas.formula_name" | translate }}
