@@ -52,7 +52,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
-      dual: new FormControl({ lower: 0, upper: 100 }),
+      dual: new FormControl({ lower: 0, upper: 1000 }),
     });
     this.costRangeForm = new FormGroup({
       lower: new FormControl(),

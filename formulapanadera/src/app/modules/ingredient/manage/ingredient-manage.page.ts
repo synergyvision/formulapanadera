@@ -140,7 +140,6 @@ export class IngredientManagePage implements OnInit {
       (this.ingredient.formula &&
         !(
           this.manageIngredientForm.value.name &&
-          this.ingredient.formula.compensation_percentage &&
           this.ingredient.formula.proportion_factor &&
           this.ingredient.formula.ingredients &&
           this.ingredientsAreValid() &&
@@ -163,6 +162,9 @@ export class IngredientManagePage implements OnInit {
       );
       this.ingredient.is_flour = false;
       this.ingredient.cost = null;
+      if (!this.ingredient.formula.compensation_percentage) {
+        this.ingredient.formula.compensation_percentage = 0;
+      }
     }
     if (!this.update) {
       this.ingredient.can_be_deleted = true;
