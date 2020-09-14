@@ -99,7 +99,18 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     );
     this.unitary_cost = (Number(this.total_cost) / this.units).toFixed(2);
 
-    this.calculateIngredientsWithFormula();
+    this.ingredients_formula = [];
+    this.bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
+      this.ingredients,
+      this.ingredients_formula,
+      this.bakers_percentage,
+      Number(this.total_weight)
+    );
+
+    this.formulaService.sortIngredients(this.ingredients);
+    this.ingredients_formula.forEach((item) => {
+      this.formulaService.sortIngredients(item.ingredient.formula.ingredients);
+    });
   }
 
   //Change
@@ -321,54 +332,5 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     toast.present();
-  }
-
-  // Calculate ingredients with formula
-  calculateIngredientsWithFormula() {
-    //Identifies ingredients with formula
-    this.ingredients_formula = [];
-    this.ingredients.forEach((item) => {
-      if (item.ingredient.formula) {
-        this.ingredients_formula.push(JSON.parse(JSON.stringify(item)));
-      }
-    });
-
-    if (this.ingredients_formula.length > 0) {
-      this.ingredients.forEach((item) => {
-        if (!item.ingredient.formula) {
-          item.percentage = item.percentage * Number(this.bakers_percentage);
-        }
-      });
-
-      this.formulaService.getIngredientsCalculatedPercentages(
-        Number(this.total_weight),
-        Number(this.bakers_percentage),
-        this.ingredients,
-        this.ingredients_formula
-      );
-
-      //Gets new percentage of ingredient with formula
-      this.formulaService.getIngredientsWithFormulaCalculatedPercentages(
-        Number(this.total_weight),
-        Number(this.bakers_percentage),
-        this.ingredients,
-        this.ingredients_formula
-      );
-
-      //Gets new bakers percentage
-      this.bakers_percentage = (
-        this.formulaService.totalFlour(this.ingredients) / 100
-      ).toFixed(2);
-
-      //Sets ingredients
-      this.ingredients = this.formulaService.fromRecipeToFormula(
-        this.ingredients
-      );
-      this.ingredients.sort(
-        (a: IngredientPercentageModel, b: IngredientPercentageModel) => {
-          return b.percentage - a.percentage;
-        }
-      );
-    }
   }
 }

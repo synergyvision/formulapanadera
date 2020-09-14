@@ -1,7 +1,4 @@
-<ion-row
-  class="ingredients-list"
-  [ngClass]="{ 'sub-ingredient': compensation}"
->
+<ion-row class="ingredients-list" [ngClass]="{ 'sub-ingredient': name }">
   <ion-col>
     <ion-row *ngIf="name" class="title-row">
       <ion-col size="12" class="title-name">

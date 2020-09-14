@@ -139,11 +139,12 @@ export class FormulaService {
   */
   public calculateBakersPercentage(
     total_weight: number,
-    ingredients: Array<IngredientPercentageModel>
+    ingredients: Array<IngredientPercentageModel>,
+    all = false
   ): string {
     let percentage: number = 0;
     ingredients.forEach((ingredientData) => {
-      if (!ingredientData.ingredient.formula) {
+      if (!ingredientData.ingredient.formula || all) {
         percentage = percentage + Number(ingredientData.percentage);
       }
     });
@@ -203,6 +204,17 @@ export class FormulaService {
     return flour;
   }
 
+  public getIngredientsWithFormula(
+    ingredients: Array<IngredientPercentageModel>,
+    ingredients_formula: Array<IngredientPercentageModel>
+  ) {
+    ingredients.forEach((item) => {
+      if (item.ingredient.formula) {
+        ingredients_formula.push(JSON.parse(JSON.stringify(item)));
+      }
+    });
+  }
+
   public getProportionFactor(
     weight: number,
     bakers_percentage: number,
@@ -219,25 +231,49 @@ export class FormulaService {
     formula_weight: number,
     original_bakers_percentage: number,
     ingredients: Array<IngredientPercentageModel>,
-    ingredients_formula: Array<any>
+    ingredients_formula: Array<any>,
+    all_ingredients_formula: Array<any>
   ) {
     let bakers_percentage: string;
     let proportion_factor: number;
     ingredients_formula.forEach((item) => {
       // Get bakers percentage from certain factor
-      proportion_factor = this.getProportionFactor(
-        formula_weight,
-        original_bakers_percentage,
-        item
-      );
+      if (!item.prop_factor) {
+        proportion_factor = this.getProportionFactor(
+          formula_weight,
+          original_bakers_percentage,
+          item
+        );
+      } else {
+        proportion_factor = item.prop_factor;
+      }
       bakers_percentage = this.calculateBakersPercentage(
         proportion_factor,
-        item.ingredient.formula.ingredients
+        item.ingredient.formula.ingredients,
+        true
       );
       item.bakers_percentage = bakers_percentage;
 
-      //Gets new values of ingredients
+      all_ingredients_formula.push(item);
 
+      let sub_ingredients_formula = [];
+      item.ingredient.formula.ingredients.forEach((element) => {
+        if (element.ingredient.formula) {
+          element.prop_factor = element.percentage * Number(bakers_percentage);
+          sub_ingredients_formula.push(JSON.parse(JSON.stringify(element)));
+        }
+      });
+      if (sub_ingredients_formula.length > 0) {
+        this.getIngredientsCalculatedPercentages(
+          0,
+          0,
+          ingredients,
+          sub_ingredients_formula,
+          all_ingredients_formula
+        );
+      }
+
+      //Gets new values of ingredients
       ingredients.forEach((ingredient) => {
         if (!ingredient.ingredient.formula) {
           item.ingredient.formula.ingredients.forEach((ingredientFormula) => {
@@ -284,5 +320,80 @@ export class FormulaService {
         }
       });
     });
+  }
+
+  public calculateIngredientsWithFormula(
+    ingredients: Array<IngredientPercentageModel>,
+    all_ingredients_formula: Array<IngredientPercentageModel>,
+    bakers_percentage: string,
+    total_weight: number
+  ) {
+    //Identifies ingredients with formula
+    let ingredients_formula = [];
+    this.getIngredientsWithFormula(ingredients, ingredients_formula);
+
+    if (ingredients_formula.length > 0) {
+      ingredients.forEach((item) => {
+        if (!item.ingredient.formula) {
+          item.percentage = item.percentage * Number(bakers_percentage);
+        }
+      });
+
+      this.getIngredientsCalculatedPercentages(
+        total_weight,
+        Number(bakers_percentage),
+        ingredients,
+        ingredients_formula,
+        all_ingredients_formula
+      );
+
+      //Gets new percentage of ingredient with formula
+      this.getIngredientsWithFormulaCalculatedPercentages(
+        total_weight,
+        Number(bakers_percentage),
+        ingredients,
+        ingredients_formula
+      );
+
+      //Gets new bakers percentage
+      bakers_percentage = (this.totalFlour(ingredients) / 100).toFixed(2);
+
+      //Sets ingredients
+      ingredients = this.fromRecipeToFormula(ingredients);
+
+      return bakers_percentage;
+    }
+  }
+
+  public sortIngredients(ingredients: any) {
+    ingredients.sort(
+      (a: IngredientPercentageModel, b: IngredientPercentageModel) => {
+        let num = 0;
+        if (b.percentage > a.percentage) {
+          num = 1;
+        } else {
+          num = -1;
+        }
+        if (a.ingredient.is_flour === b.ingredient.is_flour) {
+          num = num;
+        } else {
+          if (a.ingredient.is_flour) {
+            num = num - 1;
+          } else {
+            num = num + 1;
+          }
+        }
+        if (a.ingredient.formula === b.ingredient.formula) {
+          num = num;
+        } else {
+          if (a.ingredient.formula) {
+            num = num + 1;
+          } else {
+            num = num - 10;
+          }
+        }
+        return num;
+      }
+    );
   }
 }
