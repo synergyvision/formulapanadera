@@ -119,6 +119,15 @@
           [bakers_percentage]="bakers_percentage"
         >
         </app-ingredients-list>
+        <span *ngFor="let step of steps">
+          <app-ingredients-list
+            *ngIf="step.ingredients"
+            [ingredients]="step.ingredients"
+            [name]="step.name"
+            [bakers_percentage]="total_weight/100"
+          >
+          </app-ingredients-list>
+        </span>
         <span *ngIf="ingredients_formula && showIngredients">
           <ion-item
             class="formula-subtitle"
@@ -205,11 +214,43 @@
           <ion-select-option value="C">ºC</ion-select-option>
           <ion-select-option value="F">ºF</ion-select-option>
         </ion-select>
-        <app-formula-steps
-          *ngIf="showSteps"
-          [steps]="steps"
-          [temperatureUnit]="temperatureUnit"
-        ></app-formula-steps> </ion-col
-    ></ion-row>
+        <ion-list lines="full" class="steps-list" *ngIf="showSteps">
+          <span *ngFor="let step of steps; index as i">
+            <ion-item-divider class="divider">
+              <ion-label
+                >{{ "formulas.step" | translate }} {{ step.number + 1 }}: {{
+                step.name }}</ion-label
+              >
+            </ion-item-divider>
+            <app-formula-step
+              [step]="step"
+              [temperatureUnit]="temperatureUnit"
+            ></app-formula-step>
+            <ion-item
+              class="item-description"
+              lines="full"
+              *ngIf="step.ingredients"
+            >
+              <ion-label color="primary" position="floating" class="label"
+                >{{ "ingredients.name" | translate }}</ion-label
+              >
+              <ion-row
+                ><ion-col>
+                  <p
+                    class="ingredients-name ingredient-item"
+                    *ngFor="let item of step.ingredients; index as i"
+                  >
+                    {{ item.ingredient.name }}<span
+                      *ngIf="step.ingredients[i + 1]"
+                      >,
+                    </span>
+                  </p>
+                </ion-col></ion-row
+              >
+            </ion-item>
+          </span></ion-list
+        >
+      </ion-col></ion-row
+    >
   </section>
 </ion-content>

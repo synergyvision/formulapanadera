@@ -100,12 +100,35 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.unitary_cost = (Number(this.total_cost) / this.units).toFixed(2);
 
     this.ingredients_formula = [];
-    this.bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
+    let bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
       this.ingredients,
       this.ingredients_formula,
       this.bakers_percentage,
       Number(this.total_weight)
     );
+
+    let ing_formula;
+    this.steps.forEach((step) => {
+      ing_formula = [];
+      if (step.ingredients) {
+        step.ingredients.forEach((ingredient) => {
+          if (ingredient.ingredient.formula) {
+            ing_formula.push(ingredient);
+          }
+        });
+        this.formulaService.getIngredientsCalculatedPercentages(
+          Number(this.total_weight),
+          Number(this.bakers_percentage),
+          step.ingredients,
+          ing_formula,
+          this.ingredients_formula
+        );
+      }
+    });
+
+    if (bakers_percentage) {
+      this.bakers_percentage = bakers_percentage;
+    }
 
     this.formulaService.sortIngredients(this.ingredients);
     this.ingredients_formula.forEach((item) => {

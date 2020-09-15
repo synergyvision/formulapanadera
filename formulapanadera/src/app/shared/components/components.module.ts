@@ -10,7 +10,7 @@ import { ShowHidePasswordComponent } from "./show-hide-password/show-hide-passwo
 import { IngredientItemComponent } from "./ingredient-item/ingredient-item.component";
 import { FormulaItemComponent } from "./formula-item/formula-item.component";
 import { IngredientsListComponent } from "./ingredients-list/ingredients-list.component";
-import { FormulaStepsComponent } from "./formula-steps/formula-steps.component";
+import { FormulaStepComponent } from "./formula-step/formula-step.component";
 import { MixingStepsComponent } from "./mixing-steps/mixing-steps.component";
 
 @NgModule({
@@ -26,7 +26,7 @@ import { MixingStepsComponent } from "./mixing-steps/mixing-steps.component";
     IngredientItemComponent,
     FormulaItemComponent,
     IngredientsListComponent,
-    FormulaStepsComponent,
+    FormulaStepComponent,
     MixingStepsComponent,
   ],
   exports: [
@@ -34,7 +34,7 @@ import { MixingStepsComponent } from "./mixing-steps/mixing-steps.component";
     IngredientItemComponent,
     FormulaItemComponent,
     IngredientsListComponent,
-    FormulaStepsComponent,
+    FormulaStepComponent,
     MixingStepsComponent,
     ShellModule,
   ],

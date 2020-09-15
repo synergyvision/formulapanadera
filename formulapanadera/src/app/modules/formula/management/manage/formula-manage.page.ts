@@ -8,6 +8,7 @@ import {
 import {
   IngredientPercentageModel,
   FormulaModel,
+  StepDetailsModel,
 } from "src/app/core/models/formula.model";
 import { AuthService } from "src/app/core/services/auth.service";
 import { FormulaStepsModal } from "../steps/formula-steps.modal";
@@ -107,24 +108,38 @@ export class FormulaManagePage {
     }
   }
 
-  async pickIngredient() {
+  async ingredientPicker(ingredients: Array<IngredientPercentageModel>) {
     const modal = await this.modalController.create({
       component: IngredientPickerModal,
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
-        selectedIngredients: this.formula.ingredients,
-        formulaUnit: this.formulaUnit,
+        selectedIngredients: ingredients,
       },
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
+    return data;
+  }
+
+  async pickIngredient() {
+    let data = await this.ingredientPicker(this.formula.ingredients);
     if (data !== undefined) {
       if (this.formula.ingredients == null) {
         this.formula.ingredients = [];
       }
       this.formula.ingredients = data.ingredients;
       this.formula.mixing = undefined;
+    }
+  }
+
+  async pickStepIngredient(step: StepDetailsModel) {
+    let data = await this.ingredientPicker(step.ingredients);
+    if (data !== undefined) {
+      if (step.ingredients == null) {
+        step.ingredients = [];
+      }
+      step.ingredients = data.ingredients;
     }
   }
 
@@ -195,6 +210,13 @@ export class FormulaManagePage {
       this.formula.ingredients.indexOf(ingredient),
       1
     );
+  }
+
+  deleteStepIngredient(
+    step: StepDetailsModel,
+    ingredient: IngredientPercentageModel
+  ) {
+    step.ingredients.splice(step.ingredients.indexOf(ingredient), 1);
   }
 
   sendFormula() {

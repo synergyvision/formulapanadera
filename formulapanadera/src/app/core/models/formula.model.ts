@@ -19,6 +19,7 @@ export class StepDetailsModel {
     min: number;
     max: number;
   };
+  ingredients?: Array<IngredientPercentageModel>;
   description: string;
 }
 

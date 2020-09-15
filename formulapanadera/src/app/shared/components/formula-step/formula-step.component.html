@@ -1,0 +1,35 @@
+<ion-item class="step-description">
+  <ion-row class="step-item-wrapper">
+    <ion-col class="step-wrapper">
+      <ion-row
+        ><ion-col
+          ><p class="step-properties">
+            <ion-icon name="timer-outline" color="dark"></ion-icon>
+            {{ step.time }} {{ "formulas.minutes" | translate }}
+          </p>
+        </ion-col>
+        <ion-col *ngIf="step.temperature">
+          <p class="step-properties">
+            <ion-icon name="thermometer-outline" color="danger"></ion-icon>
+            {{ step.temperature.min }} º{{ temperatureUnit }}
+            <span *ngIf="step.temperature.max !== -1">
+              - {{ step.temperature.max }} º{{ temperatureUnit }}</span
+            >
+          </p></ion-col
+        ></ion-row
+      >
+      <ion-row *ngIf="step.description">
+        <ion-col>
+          <ion-item class="item-description" lines="full">
+            <ion-label color="primary" position="floating" class="label">{{
+              "formulas.description" | translate
+            }}</ion-label>
+            <p>
+              {{ step.description }}
+            </p>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+</ion-item>
