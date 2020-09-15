@@ -93,6 +93,39 @@
         <span *ngIf="type == 'compound'">
           <ion-item class="input-item">
             <ion-label color="primary" position="floating"
+              >{{'ingredients.suggested_values' | translate}} (%)</ion-label
+            >
+            <ion-row
+              ><ion-col>
+                <ion-item>
+                  <ion-label color="primary" position="floating"
+                    >{{'formulas.range.min' | translate}}</ion-label
+                  >
+                  <ion-input
+                    type="number"
+                    inputmode="numeric"
+                    [(ngModel)]="ingredient.formula.suggested_values.min"
+                    [ngModelOptions]="{standalone: true}"
+                    (ionBlur)="formatSuggestedValues('min', ingredient.formula.suggested_values.min)"
+                  ></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col>
+                <ion-item>
+                  <ion-label color="primary" position="floating"
+                    >{{'formulas.range.max' | translate}}</ion-label
+                  >
+                  <ion-input
+                    type="number"
+                    inputmode="numeric"
+                    [(ngModel)]="ingredient.formula.suggested_values.max"
+                    [ngModelOptions]="{standalone: true}"
+                    (ionBlur)="formatSuggestedValues('max', ingredient.formula.suggested_values.max)"
+                  ></ion-input>
+                </ion-item> </ion-col></ion-row
+          ></ion-item>
+          <ion-item class="input-item">
+            <ion-label color="primary" position="floating"
               >{{'ingredients.compensation_percentage' | translate}}
               (%)</ion-label
             >

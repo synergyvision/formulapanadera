@@ -101,6 +101,7 @@
     "grams": "gr",
     "empty": "No ingredients found",
     "compensation_percentage": "Compensation factor",
+    "suggested_values": "Suggested values",
     "type": {
       "simple": "Simple",
       "compound": "Compound"

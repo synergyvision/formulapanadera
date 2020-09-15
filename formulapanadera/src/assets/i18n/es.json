@@ -101,6 +101,7 @@
     "grams": "gr",
     "empty": "No se encontraron ingredientes",
     "compensation_percentage": "Factor de compensación",
+    "suggested_values": "Valores sugeridos",
     "type": {
       "simple": "Simple",
       "compound": "Compuesto"

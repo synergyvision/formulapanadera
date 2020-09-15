@@ -148,6 +148,18 @@ export class IngredientManagePage implements OnInit {
     );
   }
 
+  formatSuggestedValues(type: string, value: number) {
+    if (type == "min") {
+      this.ingredient.formula.suggested_values.min = Number(
+        this.formatNumberService.formatNumberDecimals(value, 0)
+      );
+    } else {
+      this.ingredient.formula.suggested_values.max = Number(
+        this.formatNumberService.formatNumberDecimals(value, 0)
+      );
+    }
+  }
+
   sendIngredient() {
     this.ingredient.name = this.manageIngredientForm.value.name;
     if (!this.ingredient.formula) {
@@ -255,6 +267,10 @@ export class IngredientManagePage implements OnInit {
         mixing: [],
         compensation_percentage: null,
         proportion_factor: null,
+        suggested_values: {
+          min: 0,
+          max: 0,
+        },
       };
       this.ingredient.formula.proportion_factor = "dough";
     } else {

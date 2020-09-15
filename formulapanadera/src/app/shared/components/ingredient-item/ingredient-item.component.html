@@ -43,6 +43,23 @@
             >
           </p>
         </ion-col>
+        <ion-col size="4" class="cost-col">
+          <span *ngIf="ingredient.formula">
+            <p
+              class="ingredients-description"
+              *ngIf="ingredient.formula.suggested_values"
+            >
+              {{ ingredient.formula.suggested_values.min }}%
+              <span
+                *ngIf="
+                  ingredient.formula.suggested_values.min &&
+                  ingredient.formula.suggested_values.max
+                "
+                >- </span
+              >{{ ingredient.formula.suggested_values.max }}%
+            </p>
+          </span>
+        </ion-col>
       </ion-row>
     </ion-col>
   </ion-row></ion-item

@@ -13,10 +13,15 @@ export class IngredientModel {
   hydration: number;
   cost: number;
   can_be_deleted: boolean;
-  formula?: { // if the ingredient has its own formula
+  formula?: {
+    // if the ingredient has its own formula
     ingredients: Array<IngredientPercentageModel>;
     mixing: Array<IngredientMixingModel>;
     compensation_percentage: number;
     proportion_factor: ProportionFactor;
+    suggested_values: {
+      min: number;
+      max: number;
+    };
   };
 }

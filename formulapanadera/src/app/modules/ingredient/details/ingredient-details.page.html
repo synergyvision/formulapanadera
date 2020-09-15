@@ -51,8 +51,23 @@
           <p class="value">{{ingredient.cost}}</p>
         </ion-item>
       </span>
-      <span *ngIf="type == 'compound'"
-        ><ion-item class="input-item">
+      <span *ngIf="type == 'compound'">
+        <ion-item
+          class="input-item"
+          *ngIf="ingredient.formula.suggested_values"
+        >
+          <ion-label color="primary" position="floating" class="label"
+            >{{'ingredients.suggested_values' | translate}} (%)</ion-label
+          >
+          <p class="value">
+            {{ingredient.formula.suggested_values.min}}
+            <span
+              *ngIf="ingredient.formula.suggested_values.min && ingredient.formula.suggested_values.max"
+              >- </span
+            >{{ingredient.formula.suggested_values.max}}
+          </p>
+        </ion-item>
+        <ion-item class="input-item">
           <ion-label color="primary" position="floating" class="label"
             >{{'ingredients.compensation_percentage' | translate}}
             (%)</ion-label
