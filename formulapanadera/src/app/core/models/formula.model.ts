@@ -1,4 +1,5 @@
 import { IngredientModel } from "./ingredient.model";
+import { UserDataModel } from "./user.model";
 
 export class IngredientPercentageModel {
   ingredient: IngredientModel;
@@ -26,11 +27,19 @@ export class StepDetailsModel {
 export class FormulaModel {
   id: string;
   name: string;
-  shared: boolean; // recipe was shared by another user
   units: number; // number of breads on the recipe
   unit_weight: number; // weight of one bread
   ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
   mixing: Array<IngredientMixingModel>;
-  useremail: string; // creator
+  user: {
+    // If empty formula is public
+    owner: string;
+    // Used to clone
+    can_clone: boolean;
+    cloned: boolean;
+    // Used to credit the users
+    creator: UserDataModel;
+    modifiers: Array<UserDataModel>;
+  };
 }

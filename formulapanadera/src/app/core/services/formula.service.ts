@@ -7,12 +7,16 @@ import {
   IngredientPercentageModel,
 } from "../models/formula.model";
 import { Observable, of } from "rxjs";
+import { AuthService } from "./auth.service";
 
 @Injectable()
 export class FormulaService {
   private formulaDataStore: DataStore<Array<FormulaModel>>;
 
-  constructor(private afs: AngularFirestore) {}
+  constructor(
+    private afs: AngularFirestore,
+    private authService: AuthService
+  ) {}
 
   /*
     Formula Listing Page
@@ -22,7 +26,7 @@ export class FormulaService {
   ): Observable<Array<FormulaModel>> {
     return this.afs
       .collection<FormulaModel>("formulas", (ref) =>
-        ref.where("useremail", "==", user_email)
+        ref.where("user.owner", "in", [user_email, ""])
       )
       .valueChanges({ idField: "id" });
   }
@@ -106,9 +110,20 @@ export class FormulaService {
     formulas: Observable<Array<FormulaModel>>
   ): Observable<Array<FormulaModel>> {
     const filtered = [];
+    const user_email = this.authService.getLoggedInUser().email;
     formulas.forEach((formula) => {
       formula.forEach((item) => {
-        if (item.shared == (type == "shared")) {
+        if (
+          (type == "mine" &&
+            (item.user.creator.email == user_email || // creator or
+              item.user.cloned)) || // owner that cloned the formula
+          (type == "shared" &&
+            item.user.owner == user_email &&
+            !item.user.cloned) ||
+          (type == "public" &&
+            item.user.creator.email !== user_email && // public formulas, current user is not the creator
+            !item.user.owner)
+        ) {
           filtered.push(item);
         }
       });

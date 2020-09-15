@@ -34,6 +34,11 @@
     },
     "areNotEqual": { "password": "Passwords mismatch." }
   },
+  "credits": {
+    "name": "Credits",
+    "creator": "Creator",
+    "modifiers": "Modified by"
+  },
   "auth": {
     "sign_up": "Sign up",
     "sign_in": "Sign in",
@@ -64,6 +69,8 @@
     "minutes": "Min.",
     "temperature": "Temperature",
     "description": "Description",
+    "public": "Public",
+    "can_clone": "Can be cloned",
     "cost": {
       "unitary": "Unitary cost",
       "total": "Total cost"
@@ -83,7 +90,8 @@
       "success": "Formula shared",
       "error": "An error ocurred. Try again",
       "mine": "Mine",
-      "shared": "Shared"
+      "shared": "Shared",
+      "public": "Public"
     },
     "clone": {
       "instructions": "By cloning this formula you can modify it, it will appear among your formulas. The original version will be in the shared section"

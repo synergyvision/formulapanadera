@@ -8,3 +8,8 @@ export class UserModel extends ShellModel {
     super();
   }
 }
+
+export class UserDataModel {
+  name: string;
+  email: string;
+}

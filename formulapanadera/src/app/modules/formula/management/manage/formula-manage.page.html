@@ -63,6 +63,36 @@
             </ion-item>
           </ion-col>
         </ion-row>
+        <ion-row
+          ><ion-col
+            ><ion-item class="input-item">
+              <ion-label color="primary"
+                >{{'formulas.public' | translate}}</ion-label
+              >
+              <ion-checkbox
+                class="formula-is-public"
+                color="primary"
+                [(ngModel)]="public"
+                [ngModelOptions]="{standalone: true}"
+              >
+              </ion-checkbox> </ion-item></ion-col
+        ></ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item class="input-item">
+              <ion-label color="primary"
+                >{{'formulas.can_clone' | translate}}</ion-label
+              >
+              <ion-checkbox
+                class="formula-can-clone"
+                color="primary"
+                [(ngModel)]="formula.user.can_clone"
+                [ngModelOptions]="{standalone: true}"
+              >
+              </ion-checkbox>
+            </ion-item>
+          </ion-col>
+        </ion-row>
       </ion-list>
       <ion-card>
         <ion-card-header>

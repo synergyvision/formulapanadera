@@ -34,6 +34,8 @@ export class FormulaManagePage {
   formulaUnit = "gr";
   temperatureUnit = "C";
   update: boolean = false;
+  public = false;
+  current_user;
 
   constructor(
     private formulaService: FormulaService,
@@ -48,12 +50,23 @@ export class FormulaManagePage {
 
   ngOnInit() {
     let state = this.router.getCurrentNavigation().extras.state;
+    this.current_user = this.authService.getLoggedInUser();
     if (state == undefined) {
       this.manageFormulaForm = new FormGroup({
         name: new FormControl(null, Validators.required),
         units: new FormControl(null, Validators.required),
         unit_weight: new FormControl(null, Validators.required),
       });
+      this.formula.user = {
+        owner: this.current_user.email,
+        can_clone: false,
+        cloned: true,
+        creator: {
+          name: this.current_user.displayName,
+          email: this.current_user.email,
+        },
+        modifiers: [],
+      };
     } else {
       this.update = true;
       this.manageFormulaForm = new FormGroup({
@@ -65,6 +78,7 @@ export class FormulaManagePage {
         ),
       });
       this.formula.id = state.formula.id;
+      this.formula.user = state.formula.user;
       this.formula.ingredients = [];
       this.formula.mixing = [];
       this.formula.steps = [];
@@ -223,15 +237,31 @@ export class FormulaManagePage {
     this.verifyUnit();
     this.verifyTemperature();
     this.formula.name = this.manageFormulaForm.value.name;
-    this.formula.shared = false;
     this.formula.units = this.manageFormulaForm.value.units;
     this.formula.unit_weight = this.manageFormulaForm.value.unit_weight;
-    this.formula.useremail = this.authService.getLoggedInUser().email;
     if (this.update) {
+      let is_modifier = false;
+      this.formula.user.modifiers.forEach((user) => {
+        if (user.email == this.current_user.email) {
+          is_modifier = true;
+        }
+      });
+      if (
+        !is_modifier &&
+        this.current_user.email !== this.formula.user.creator.email
+      ) {
+        this.formula.user.modifiers.push({
+          name: this.current_user.displayName,
+          email: this.current_user.email,
+        });
+      }
       this.formulaService.updateFormula(this.formula).then(() => {
         this.router.navigateByUrl("menu/formula");
       });
     } else {
+      if (this.public) {
+        this.formula.user.owner = "";
+      }
       this.formulaService.createFormula(this.formula).then(() => {
         this.router.navigateByUrl("menu/formula");
       });

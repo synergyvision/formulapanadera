@@ -4,7 +4,6 @@ import {
   ActionSheetController,
   AlertController,
   ToastController,
-  ViewWillEnter,
 } from "@ionic/angular";
 import {
   FormulaModel,
@@ -16,6 +15,7 @@ import { LanguageService } from "src/app/core/services/language.service";
 import { environment } from "src/environments/environment";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { AuthService } from "src/app/core/services/auth.service";
+import { UserModel } from "src/app/core/models/user.model";
 
 @Component({
   selector: "app-formula-details",
@@ -170,67 +170,84 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   //Options
 
   async presentOptions() {
-    if (!this.formula.shared) {
-      const actionSheet = await this.actionSheetController.create({
-        cssClass: "formula-options",
-        buttons: [
-          {
-            text: this.languageService.getTerm("action.update"),
-            icon: "create-outline",
-            cssClass: "action-icon",
-            handler: () => {
-              this.updateFormula();
-            },
-          },
-          {
-            text: this.languageService.getTerm("action.share"),
-            icon: "share-outline",
-            cssClass: "action-icon",
-            handler: () => {
-              this.shareFormula();
-            },
-          },
-          {
-            text: this.languageService.getTerm("action.cancel"),
-            icon: "close",
-            role: "cancel",
-            cssClass: "cancel-icon",
-            handler: () => {},
-          },
-        ],
+    let current_user = this.authService.getLoggedInUser().email;
+    let is_modifier = false;
+    this.formula.user.modifiers.forEach((modifier: UserModel) => {
+      if (modifier.email == current_user) {
+        is_modifier = true;
+      }
+    });
+    let buttons = [];
+    if (this.formula.user.cloned) {
+      buttons.push({
+        text: this.languageService.getTerm("action.update"),
+        icon: "create-outline",
+        cssClass: "action-icon",
+        handler: () => {
+          this.updateFormula();
+        },
       });
-      await actionSheet.present();
-    } else {
-      const actionSheet = await this.actionSheetController.create({
-        cssClass: "formula-options",
-        buttons: [
-          {
-            text: this.languageService.getTerm("action.clone"),
-            icon: "add-circle-outline",
-            cssClass: "action-icon",
-            handler: () => {
-              this.cloneFormula();
-            },
-          },
-          {
-            text: this.languageService.getTerm("action.delete"),
-            icon: "trash-outline",
-            cssClass: "delete-icon",
-            handler: () => {
-              this.deleteFormula();
-            },
-          },
-          {
-            text: this.languageService.getTerm("action.cancel"),
-            icon: "close",
-            role: "cancel",
-            cssClass: "cancel-icon",
-            handler: () => {},
-          },
-        ],
-      });
-      await actionSheet.present();
     }
+    if (
+      this.formula.user.owner &&
+      ((this.formula.user.cloned && is_modifier) ||
+        this.formula.user.creator.email == current_user)
+    ) {
+      // If not public but is cloned and was modified or user is creator
+      buttons.push({
+        text: this.languageService.getTerm("action.share"),
+        icon: "share-outline",
+        cssClass: "action-icon",
+        handler: () => {
+          this.shareFormula();
+        },
+      });
+    }
+    if (!this.formula.user.cloned && this.formula.user.can_clone) {
+      // If not cloned but can clone
+      buttons.push({
+        text: this.languageService.getTerm("action.clone"),
+        icon: "add-circle-outline",
+        cssClass: "action-icon",
+        handler: () => {
+          this.cloneFormula();
+        },
+      });
+    }
+    if (!this.formula.user.cloned && this.formula.user.owner) {
+      // If not public or cloned
+      buttons.push({
+        text: this.languageService.getTerm("action.delete"),
+        icon: "trash-outline",
+        cssClass: "delete-icon",
+        handler: () => {
+          this.deleteFormula();
+        },
+      });
+    }
+    buttons.push(
+      {
+        text: this.languageService.getTerm("credits.name"),
+        icon: "people-outline",
+        cssClass: "action-icon",
+        handler: () => {
+          this.showCredits();
+        },
+      },
+      {
+        text: this.languageService.getTerm("action.cancel"),
+        icon: "close",
+        role: "cancel",
+        cssClass: "cancel-icon",
+        handler: () => {},
+      }
+    );
+
+    const actionSheet = await this.actionSheetController.create({
+      cssClass: "formula-options",
+      buttons: buttons,
+    });
+    await actionSheet.present();
   }
 
   updateFormula() {
@@ -264,8 +281,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           cssClass: "confirm-alert-accept",
           handler: (data) => {
             let formula = JSON.parse(JSON.stringify(this.formula));
-            formula.useremail = data.email;
-            formula.shared = true;
+            formula.user.owner = data.email;
+            formula.user.cloned = false;
             this.formulaService
               .createFormula(formula)
               .then(() => {
@@ -297,8 +314,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           cssClass: "confirm-alert-accept",
           handler: () => {
             let formula = JSON.parse(JSON.stringify(this.formula));
-            formula.useremail = this.authService.getLoggedInUser().email;
-            formula.shared = false;
+            formula.user.owner = this.authService.getLoggedInUser().email;
+            formula.user.cloned = true;
             formula.name = `${
               this.formula.name
             } (${this.languageService.getTerm("action.copy")})`;
@@ -333,6 +350,31 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
               this.router.navigateByUrl("menu/formula");
             });
           },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async showCredits() {
+    let creator_title = this.languageService.getTerm("credits.creator");
+    let creator_name = `${this.formula.user.creator.name} (${this.formula.user.creator.email})`;
+    let modifiers_title = this.languageService.getTerm("credits.modifiers");
+    let modifiers = "";
+    this.formula.user.modifiers.forEach((modifier) => {
+      modifiers = modifiers + `${modifier.name} (${modifier.email})<br>`;
+    });
+    let text = `<strong>${creator_title}:</strong><br/> ${creator_name} <br/><br/>
+                <strong>${modifiers_title}:</strong><br/> ${modifiers}`;
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("credits.name"),
+      message: text,
+      cssClass: "alert clone-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {},
         },
       ],
     });
