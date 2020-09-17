@@ -1,0 +1,37 @@
+.hydration-bar-col {
+  padding: 10px 10px 0px 20px;
+}
+
+.hydration-percentage {
+  margin: 2px 0px;
+  font-size: 12px;
+  color: gray;
+  display: flex;
+  justify-content: space-between;
+}
+
+.hydration-value {
+  margin: 2px 0px;
+  font-size: 12px;
+  color: black;
+  display: flex;
+  padding: 5px 0;
+  background-color: rgb(215 230 255);
+}
+
+.hydration-legend {
+  margin: 2px 0px;
+  font-size: 12px;
+  color: gray;
+  display: flex;
+  text-align: center;
+
+  .hydration-type {
+    text-align: center;
+    width: 20%;
+  }
+}
+
+.barb {
+  background-color: red;
+}

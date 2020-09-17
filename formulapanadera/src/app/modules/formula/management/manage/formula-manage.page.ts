@@ -69,6 +69,7 @@ export class FormulaManagePage {
       };
     } else {
       this.update = true;
+      this.formulaUnit = "%";
       this.manageFormulaForm = new FormGroup({
         name: new FormControl(state.formula.name, Validators.required),
         units: new FormControl(state.formula.units, Validators.required),
@@ -79,6 +80,9 @@ export class FormulaManagePage {
       });
       this.formula.id = state.formula.id;
       this.formula.user = state.formula.user;
+      if (this.formula.user.owner == "") {
+        this.public = true;
+      }
       this.formula.ingredients = [];
       this.formula.mixing = [];
       this.formula.steps = [];
@@ -255,12 +259,19 @@ export class FormulaManagePage {
           email: this.current_user.email,
         });
       }
+      if (this.public) {
+        this.formula.user.owner = "";
+        this.formula.user.cloned = false;
+      } else {
+        this.formula.user.owner = this.current_user.email;
+      }
       this.formulaService.updateFormula(this.formula).then(() => {
         this.router.navigateByUrl("menu/formula");
       });
     } else {
       if (this.public) {
         this.formula.user.owner = "";
+        this.formula.user.cloned = false;
       }
       this.formulaService.createFormula(this.formula).then(() => {
         this.router.navigateByUrl("menu/formula");

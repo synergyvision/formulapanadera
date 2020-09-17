@@ -12,6 +12,7 @@ import { FormulaItemComponent } from "./formula-item/formula-item.component";
 import { IngredientsListComponent } from "./ingredients-list/ingredients-list.component";
 import { FormulaStepComponent } from "./formula-step/formula-step.component";
 import { MixingStepsComponent } from "./mixing-steps/mixing-steps.component";
+import { HydrationBarComponent } from "./hydration-bar/hydration-bar.component";
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { MixingStepsComponent } from "./mixing-steps/mixing-steps.component";
     ShowHidePasswordComponent,
     IngredientItemComponent,
     FormulaItemComponent,
+    HydrationBarComponent,
     IngredientsListComponent,
     FormulaStepComponent,
     MixingStepsComponent,
@@ -33,6 +35,7 @@ import { MixingStepsComponent } from "./mixing-steps/mixing-steps.component";
     ShowHidePasswordComponent,
     IngredientItemComponent,
     FormulaItemComponent,
+    HydrationBarComponent,
     IngredientsListComponent,
     FormulaStepComponent,
     MixingStepsComponent,

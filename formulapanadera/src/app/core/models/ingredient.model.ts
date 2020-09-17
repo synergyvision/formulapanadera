@@ -3,8 +3,11 @@ import {
   IngredientMixingModel,
 } from "./formula.model";
 
-export const proportion_factor = ["flour", "dough"] as const;
-export type ProportionFactor = typeof proportion_factor[number];
+export const proportion_factor = ["flour", "dough", "ingredient"] as const;
+export type ProportionFactor = {
+  factor: typeof proportion_factor[number];
+  ingredient?: { id: string; name: string };
+};
 
 export class IngredientModel {
   id: string;

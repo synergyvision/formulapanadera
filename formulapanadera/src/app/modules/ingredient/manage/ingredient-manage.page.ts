@@ -48,7 +48,7 @@ export class IngredientManagePage implements OnInit {
   ngOnInit() {
     let state = this.router.getCurrentNavigation().extras.state;
     if (state == undefined) {
-      this.ingredient.formula = null;
+      delete this.ingredient.formula;
       this.manageIngredientForm = new FormGroup({
         name: new FormControl("", Validators.required),
         hydration: new FormControl("", Validators.required),
@@ -140,7 +140,7 @@ export class IngredientManagePage implements OnInit {
       (this.ingredient.formula &&
         !(
           this.manageIngredientForm.value.name &&
-          this.ingredient.formula.proportion_factor &&
+          this.ingredient.formula.proportion_factor.factor &&
           this.ingredient.formula.ingredients &&
           this.ingredientsAreValid() &&
           this.ingredient.formula.mixing
@@ -259,22 +259,49 @@ export class IngredientManagePage implements OnInit {
     }
   }
 
+  async pickProportionIngredient() {
+    const modal = await this.modalController.create({
+      component: IngredientPickerModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        selectedIngredients: undefined,
+        limit: 1,
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      this.ingredient.formula.proportion_factor.ingredient = {
+        id: data.ingredients[0].ingredient.id,
+        name: data.ingredients[0].ingredient.name,
+      };
+    }
+  }
+
+  async changeProportionFactor() {
+    if (this.ingredient.formula.proportion_factor.factor == "ingredient") {
+      await this.pickProportionIngredient();
+    } else {
+      this.ingredient.formula.proportion_factor.ingredient = null;
+    }
+  }
+
   changeType(ev: any) {
     this.type = ev.detail.value;
     if (this.type == "compound") {
       this.ingredient.formula = {
         ingredients: [],
         mixing: [],
-        compensation_percentage: null,
-        proportion_factor: null,
+        compensation_percentage: 0,
+        proportion_factor: { factor: "dough" },
         suggested_values: {
           min: 0,
           max: 0,
         },
       };
-      this.ingredient.formula.proportion_factor = "dough";
     } else {
-      this.ingredient.formula = null;
+      delete this.ingredient.formula;
     }
   }
 

@@ -148,9 +148,10 @@
               >{{'ingredients.proportion_factor.name' | translate}}</ion-label
             >
             <ion-select
-              [(ngModel)]="ingredient.formula.proportion_factor"
+              [(ngModel)]="ingredient.formula.proportion_factor.factor"
               [ngModelOptions]="{standalone: true}"
               class="proportion-selector"
+              (ionChange)="changeProportionFactor()"
             >
               <ion-select-option value="dough"
                 >{{'ingredients.proportion_factor.dough' |
@@ -160,7 +161,24 @@
                 >{{'ingredients.proportion_factor.flour' |
                 translate}}</ion-select-option
               >
+              <ion-select-option value="ingredient"
+                >{{'ingredients.proportion_factor.ingredient' |
+                translate}}</ion-select-option
+              >
             </ion-select>
+          </ion-item>
+          <ion-item *ngIf="ingredient.formula.proportion_factor.ingredient">
+            <ion-row class="ingredient-item-wrapper">
+              <ion-col size="12" class="ingredients-wrapper">
+                <ion-row>
+                  <ion-col>
+                    <h2 class="ingredients-name">
+                      {{ingredient.formula.proportion_factor.ingredient.name}}
+                    </h2>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
           </ion-item>
 
           <ion-card>

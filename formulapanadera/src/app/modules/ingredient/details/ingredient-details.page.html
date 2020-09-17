@@ -80,13 +80,13 @@
           >
           <p
             class="value"
-            *ngIf="ingredient.formula.proportion_factor == 'dough'"
+            *ngIf="ingredient.formula.proportion_factor.factor == 'dough'"
           >
             {{'ingredients.proportion_factor.dough' | translate}}
           </p>
           <p
             class="value"
-            *ngIf="ingredient.formula.proportion_factor == 'flour'"
+            *ngIf="ingredient.formula.proportion_factor.factor == 'flour'"
           >
             {{'ingredients.proportion_factor.flour' | translate}}
           </p>

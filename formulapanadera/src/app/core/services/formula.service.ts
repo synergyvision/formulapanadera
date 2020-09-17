@@ -233,12 +233,32 @@ export class FormulaService {
   public getProportionFactor(
     weight: number,
     bakers_percentage: number,
-    item: IngredientPercentageModel
+    item: IngredientPercentageModel,
+    ingredients: Array<IngredientPercentageModel>,
+    ingredients_proportions?: boolean
   ): number {
-    if (item.ingredient.formula.proportion_factor == "dough") {
+    if (item.ingredient.formula.proportion_factor.factor == "dough") {
       return (item.percentage / 100) * Number(weight);
-    } else {
+    } else if (item.ingredient.formula.proportion_factor.factor == "flour") {
       return (item.percentage / 100) * Number(bakers_percentage) * 100;
+    } else if (
+      item.ingredient.formula.proportion_factor.factor == "ingredient"
+    ) {
+      let ingredientWeight: number;
+      ingredients.forEach((ingredient) => {
+        if (
+          ingredient.ingredient.id ==
+          item.ingredient.formula.proportion_factor.ingredient.id
+        ) {
+          if (ingredients_proportions) {
+            ingredientWeight =
+              ingredient.percentage * Number(bakers_percentage);
+          } else {
+            ingredientWeight = ingredient.percentage;
+          }
+        }
+      });
+      return (item.percentage / 100) * ingredientWeight;
     }
   }
 
@@ -257,7 +277,8 @@ export class FormulaService {
         proportion_factor = this.getProportionFactor(
           formula_weight,
           original_bakers_percentage,
-          item
+          item,
+          ingredients
         );
       } else {
         proportion_factor = item.prop_factor;
@@ -307,31 +328,29 @@ export class FormulaService {
     formula_weight: number,
     original_bakers_percentage: number,
     ingredients: Array<IngredientPercentageModel>,
-    ingredients_formula: Array<IngredientPercentageModel>
+    ingredients_formula: Array<any>,
+    original_ingredients: Array<IngredientPercentageModel>
   ) {
     //Gets new total flour of formula
     let total_flour = this.totalFlour(ingredients);
-
+    let proportion_factor;
     ingredients_formula.forEach((item) => {
+      if (!item.prop_factor) {
+        proportion_factor = this.getProportionFactor(
+          formula_weight,
+          original_bakers_percentage,
+          item,
+          original_ingredients,
+          true
+        );
+      } else {
+        proportion_factor = item.prop_factor;
+      }
       ingredients.forEach((ingredient) => {
         if (item.ingredient.id == ingredient.ingredient.id) {
-          if (item.ingredient.formula.proportion_factor == "dough") {
-            ingredient.percentage = Number(
-              (
-                (ingredient.percentage / 100) *
-                Number(formula_weight) *
-                (100 / total_flour)
-              ).toFixed(2)
-            );
-          } else {
-            ingredient.percentage = Number(
-              (
-                ingredient.percentage *
-                Number(original_bakers_percentage) *
-                (100 / total_flour)
-              ).toFixed(2)
-            );
-          }
+          ingredient.percentage = Number(
+            (proportion_factor * (100 / total_flour)).toFixed(2)
+          );
         }
       });
     });
@@ -343,6 +362,8 @@ export class FormulaService {
     bakers_percentage: string,
     total_weight: number
   ) {
+    let original_ingredients = JSON.parse(JSON.stringify(ingredients));
+
     //Identifies ingredients with formula
     let ingredients_formula = [];
     this.getIngredientsWithFormula(ingredients, ingredients_formula);
@@ -367,7 +388,8 @@ export class FormulaService {
         total_weight,
         Number(bakers_percentage),
         ingredients,
-        ingredients_formula
+        ingredients_formula,
+        original_ingredients
       );
 
       //Gets new bakers percentage
@@ -398,7 +420,11 @@ export class FormulaService {
             num = num + 1;
           }
         }
-        if (a.ingredient.formula === b.ingredient.formula) {
+        if (
+          (a.ingredient.formula === null ||
+            a.ingredient.formula === undefined) ===
+          (b.ingredient.formula === null || b.ingredient.formula === undefined)
+        ) {
           num = num;
         } else {
           if (a.ingredient.formula) {
@@ -410,5 +436,6 @@ export class FormulaService {
         return num;
       }
     );
+    return ingredients;
   }
 }

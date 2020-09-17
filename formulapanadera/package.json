@@ -1,8 +1,8 @@
 {
   "name": "formulapanadera",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Alba Sánchez",
+  "homepage": "https://github.com/synergyvision/formulapanadera/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

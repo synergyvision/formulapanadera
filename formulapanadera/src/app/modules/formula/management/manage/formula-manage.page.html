@@ -63,7 +63,7 @@
             </ion-item>
           </ion-col>
         </ion-row>
-        <ion-row
+        <ion-row *ngIf="current_user.email === formula.user.creator.email"
           ><ion-col
             ><ion-item class="input-item">
               <ion-label color="primary"
@@ -77,7 +77,7 @@
               >
               </ion-checkbox> </ion-item></ion-col
         ></ion-row>
-        <ion-row>
+        <ion-row *ngIf="current_user.email === formula.user.creator.email">
           <ion-col>
             <ion-item class="input-item">
               <ion-label color="primary"

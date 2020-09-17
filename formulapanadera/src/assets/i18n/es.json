@@ -84,6 +84,11 @@
       "yes": "Escoger",
       "range": "Escoger rango"
     },
+    "hydration": {
+      "hard": "Duro",
+      "standard": "Estándar",
+      "rustic": "Rústico"
+    },
     "empty": "No se encontraron fórmulas",
     "share": {
       "instructions": "Ingresa el correo electrónico del usuario al que deseas compartir la fórmula",
@@ -115,9 +120,10 @@
       "compound": "Compuesto"
     },
     "proportion_factor": {
-      "name": "Calculado de",
-      "flour": "la harina",
-      "dough": "la masa"
+      "name": "En relación a",
+      "flour": "Harina",
+      "dough": "Masa",
+      "ingredient": "Ingrediente"
     },
     "filter": {
       "name": "Filtra por nombre...",

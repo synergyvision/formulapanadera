@@ -28,6 +28,7 @@ import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 })
 export class IngredientPickerModal implements OnInit, OnDestroy {
   @Input() selectedIngredients: Array<IngredientPercentageModel>;
+  @Input() limit?: number;
 
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
@@ -183,6 +184,9 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
             this.selectedIngredients.splice(index, 1);
         }
       } else {
+        if (this.limit) {
+          this.selectedIngredients = [];
+        }
         this.selectedIngredients.push({
           percentage: null,
           ingredient: ingredient,

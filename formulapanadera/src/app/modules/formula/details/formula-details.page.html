@@ -29,6 +29,7 @@
         </ion-row>
       </ion-item>
     </ion-list>
+    <app-hydration-bar [hydration]="hydration/100"></app-hydration-bar>
     <ion-row>
       <ion-col class="detail-col">
         <ion-item class="formula-detail">
@@ -128,7 +129,7 @@
           >
           </app-ingredients-list>
         </span>
-        <span *ngIf="ingredients_formula && showIngredients">
+        <span *ngIf="ingredients_formula.length>0 && showIngredients">
           <ion-item
             class="formula-subtitle"
             (click)="showSubIngredients = !showSubIngredients"
@@ -225,32 +226,8 @@
             <app-formula-step
               [step]="step"
               [temperatureUnit]="temperatureUnit"
-            ></app-formula-step>
-            <ion-item
-              class="item-description"
-              lines="full"
-              *ngIf="step.ingredients"
-            >
-              <ion-label color="primary" position="floating" class="label"
-                >{{ "ingredients.name" | translate }}</ion-label
-              >
-              <ion-row
-                ><ion-col>
-                  <p
-                    class="ingredients-name ingredient-item"
-                    *ngFor="let item of step.ingredients; index as i"
-                  >
-                    {{ item.ingredient.name }}<span
-                      *ngIf="step.ingredients[i + 1]"
-                      >,
-                    </span>
-                  </p>
-                </ion-col></ion-row
-              >
-            </ion-item>
-          </span></ion-list
-        >
-      </ion-col></ion-row
-    >
+            ></app-formula-step> </span
+        ></ion-list> </ion-col
+    ></ion-row>
   </section>
 </ion-content>

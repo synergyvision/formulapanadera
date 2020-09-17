@@ -81,13 +81,15 @@
 }
 
 .type-selector {
-  margin: 10px 20px;
+  margin: 10px 0px;
   border-bottom: 1px solid gray;
 }
 
 .proportion-selector {
   margin: 10px 0;
   border-bottom: 1px solid gray;
+  width: 100%;
+  padding-left: 0;
 }
 
 .card-title {
@@ -96,4 +98,9 @@
 
 .unit-select-item {
   font-size: 14px;
+}
+
+ion-card {
+  margin-left: 0;
+  margin-right: 0;
 }

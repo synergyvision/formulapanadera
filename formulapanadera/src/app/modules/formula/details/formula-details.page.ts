@@ -130,10 +130,19 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       this.bakers_percentage = bakers_percentage;
     }
 
-    this.formulaService.sortIngredients(this.ingredients);
-    this.ingredients_formula.forEach((item) => {
-      this.formulaService.sortIngredients(item.ingredient.formula.ingredients);
+    this.steps.forEach((item) => {
+      if (item.ingredients) {
+        item.ingredients = this.formulaService.sortIngredients(
+          item.ingredients
+        );
+      }
     });
+    this.ingredients_formula.forEach((item) => {
+      item.ingredient.formula.ingredients = this.formulaService.sortIngredients(
+        item.ingredient.formula.ingredients
+      );
+    });
+    this.ingredients = this.formulaService.sortIngredients(this.ingredients);
   }
 
   //Change
@@ -364,8 +373,11 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.formula.user.modifiers.forEach((modifier) => {
       modifiers = modifiers + `${modifier.name} (${modifier.email})<br>`;
     });
-    let text = `<strong>${creator_title}:</strong><br/> ${creator_name} <br/><br/>
-                <strong>${modifiers_title}:</strong><br/> ${modifiers}`;
+    let text = `<strong>${creator_title}:</strong><br/> ${creator_name} <br/>`;
+    if (modifiers) {
+      text =
+        text + `<br/><strong>${modifiers_title}:</strong><br/> ${modifiers}`;
+    }
     const alert = await this.alertController.create({
       header: this.languageService.getTerm("credits.name"),
       message: text,
