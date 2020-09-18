@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 
 import { IonicModule } from "@ionic/angular";
@@ -25,6 +25,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
   ],
+  providers: [DatePipe],
   declarations: [FormulaDetailsPage],
 })
 export class FormulaDetailsPageModule {}

@@ -1,5 +1,5 @@
 import { IngredientModel } from "./ingredient.model";
-import { UserDataModel } from "./user.model";
+import { ModifierModel } from "./user.model";
 
 export class IngredientPercentageModel {
   ingredient: IngredientModel;
@@ -39,7 +39,7 @@ export class FormulaModel {
     can_clone: boolean;
     cloned: boolean;
     // Used to credit the users
-    creator: UserDataModel;
-    modifiers: Array<UserDataModel>;
+    creator: ModifierModel;
+    modifiers: Array<ModifierModel>;
   };
 }

@@ -15,7 +15,9 @@ import { LanguageService } from "src/app/core/services/language.service";
 import { environment } from "src/environments/environment";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { AuthService } from "src/app/core/services/auth.service";
-import { UserModel } from "src/app/core/models/user.model";
+import { ModifierModel } from "src/app/core/models/user.model";
+import { date_format } from "src/app/config/formats";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "app-formula-details",
@@ -59,7 +61,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
     private toastController: ToastController,
-    private router: Router
+    private router: Router,
+    private datePipe: DatePipe
   ) {
     this.showIngredients = true;
     this.showSubIngredients = true;
@@ -181,13 +184,17 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   async presentOptions() {
     let current_user = this.authService.getLoggedInUser().email;
     let is_modifier = false;
-    this.formula.user.modifiers.forEach((modifier: UserModel) => {
+    this.formula.user.modifiers.forEach((modifier: ModifierModel) => {
       if (modifier.email == current_user) {
         is_modifier = true;
       }
     });
     let buttons = [];
-    if (this.formula.user.cloned) {
+    if (
+      this.formula.user.cloned ||
+      (!this.formula.user.cloned &&
+        this.formula.user.creator.email == current_user)
+    ) {
       buttons.push({
         text: this.languageService.getTerm("action.update"),
         icon: "create-outline",
@@ -214,14 +221,21 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     }
     if (!this.formula.user.cloned && this.formula.user.can_clone) {
       // If not cloned but can clone
-      buttons.push({
-        text: this.languageService.getTerm("action.clone"),
-        icon: "add-circle-outline",
-        cssClass: "action-icon",
-        handler: () => {
-          this.cloneFormula();
-        },
-      });
+      if (
+        !(
+          this.formula.user.creator.email == current_user &&
+          this.formula.user.owner == ""
+        )
+      ) {
+        buttons.push({
+          text: this.languageService.getTerm("action.clone"),
+          icon: "add-circle-outline",
+          cssClass: "action-icon",
+          handler: () => {
+            this.cloneFormula();
+          },
+        });
+      }
     }
     if (!this.formula.user.cloned && this.formula.user.owner) {
       // If not public or cloned
@@ -367,16 +381,24 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   async showCredits() {
     let creator_title = this.languageService.getTerm("credits.creator");
-    let creator_name = `${this.formula.user.creator.name} (${this.formula.user.creator.email})`;
+    let creator_name = `${this.formula.user.creator.name}<br/>${this.formula.user.creator.email}`;
+    let creator_date = `${this.datePipe.transform(
+      this.formula.user.creator.date.seconds * 1000,
+      date_format
+    )}`;
     let modifiers_title = this.languageService.getTerm("credits.modifiers");
     let modifiers = "";
     this.formula.user.modifiers.forEach((modifier) => {
-      modifiers = modifiers + `${modifier.name} (${modifier.email})<br>`;
+      modifiers =
+        modifiers +
+        `${modifier.name}<br/>${modifier.email}<br>${this.datePipe.transform(
+          modifier.date.seconds * 1000,
+          date_format
+        )}`;
     });
-    let text = `<strong>${creator_title}:</strong><br/> ${creator_name} <br/>`;
+    let text = `<strong>${creator_title}</strong><br/>${creator_name}<br/>${creator_date}<br/>`;
     if (modifiers) {
-      text =
-        text + `<br/><strong>${modifiers_title}:</strong><br/> ${modifiers}`;
+      text = text + `<br/><strong>${modifiers_title}</strong><br/>${modifiers}`;
     }
     const alert = await this.alertController.create({
       header: this.languageService.getTerm("credits.name"),

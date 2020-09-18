@@ -227,7 +227,11 @@
               [step]="step"
               [temperatureUnit]="temperatureUnit"
             ></app-formula-step>
-            <ion-list lines="full" class="ingredients-list">
+            <ion-list
+              lines="full"
+              class="ingredients-list"
+              *ngIf="step.ingredients"
+            >
               <ion-item
                 *ngFor="let item of step.ingredients"
                 class="ingredient-item"

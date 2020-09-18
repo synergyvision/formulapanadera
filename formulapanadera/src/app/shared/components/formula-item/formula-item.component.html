@@ -19,6 +19,9 @@
       </ion-row>
       <ion-row *ngIf="formula.id !== undefined">
         <ion-col size="8" class="properties-col">
+          <p class="formula-user">
+            {{ formula.user.creator.name }}
+          </p>
           <p class="formulas-description">
             <ion-icon
               class="shared-icon"
@@ -32,7 +35,9 @@
         <ion-col size="4" class="cost-col">
           <p class="formulas-description formula-cost">
             {{ unitCost() }}
-            <span class="formula-currency">{{ currency }}/{{ "formulas.unit_letter" | translate }}</span>
+            <span class="formula-currency"
+              >{{ currency }}/{{ "formulas.unit_letter" | translate }}</span
+            >
           </p>
         </ion-col>
       </ion-row>

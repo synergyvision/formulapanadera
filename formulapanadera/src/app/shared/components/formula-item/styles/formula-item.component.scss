@@ -20,8 +20,7 @@
   padding-left: 0;
 
   .formulas-name {
-    margin-top: 0px;
-    margin-bottom: 5px;
+    margin: 0px;
     font-size: 16px;
     font-weight: bold;
     letter-spacing: 0.2px;
@@ -62,4 +61,9 @@
 .shared-icon {
   padding-right: 5px !important;
   margin-bottom: -2px;
+}
+
+.formula-user {
+  font-size: 12px;
+  margin: 0px 0 5px 0;
 }

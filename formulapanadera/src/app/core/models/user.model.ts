@@ -9,7 +9,8 @@ export class UserModel extends ShellModel {
   }
 }
 
-export class UserDataModel {
+export class ModifierModel {
   name: string;
   email: string;
+  date: any;
 }

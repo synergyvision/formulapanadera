@@ -64,6 +64,7 @@ export class FormulaManagePage {
         creator: {
           name: this.current_user.displayName,
           email: this.current_user.email,
+          date: new Date(),
         },
         modifiers: [],
       };
@@ -257,6 +258,7 @@ export class FormulaManagePage {
         this.formula.user.modifiers.push({
           name: this.current_user.displayName,
           email: this.current_user.email,
+          date: new Date(),
         });
       }
       if (this.public) {

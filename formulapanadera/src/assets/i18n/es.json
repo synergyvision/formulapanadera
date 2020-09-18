@@ -104,7 +104,7 @@
   },
   "ingredients": {
     "name": "Ingredientes",
-    "subingredients": "Sub-ingredientes",
+    "subingredients": "Ingredientes compuestos",
     "create": "Crear ingrediente",
     "update": "Modificar ingrediente",
     "ingredient_name": "Nombre",
