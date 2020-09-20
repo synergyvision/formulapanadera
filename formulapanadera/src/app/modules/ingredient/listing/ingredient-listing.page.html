@@ -104,7 +104,7 @@
         ><ion-col>
           <ion-item lines="full">
             <ion-label>{{'ingredients.filter.flour' | translate}}</ion-label>
-            <ion-select formControlName="value" (ionChange)="searchList(value)">
+            <ion-select formControlName="value" (ionChange)="searchList()">
               <ion-select-option value="all"
                 >{{'ingredients.filter.all' | translate}}</ion-select-option
               >

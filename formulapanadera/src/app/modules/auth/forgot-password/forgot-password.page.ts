@@ -58,7 +58,7 @@ export class ForgotPasswordPage implements OnInit {
     await this.languageService.openLanguageChooser();
   }
 
-  getValidationMessages(): Object {
+  getValidationMessages() {
     return {
       email: [
         {

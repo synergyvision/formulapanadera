@@ -74,7 +74,7 @@ export class ChangePasswordPage {
       });
   }
 
-  getValidationMessages(): Object {
+  getValidationMessages() {
     return {
       password: [
         {

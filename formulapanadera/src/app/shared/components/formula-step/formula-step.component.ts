@@ -10,7 +10,7 @@ import { StepDetailsModel } from "src/app/core/models/formula.model";
   ],
 })
 export class FormulaStepComponent {
-  @Input() step: Array<StepDetailsModel>;
+  @Input() step: StepDetailsModel;
   @Input() temperatureUnit: string;
 
   constructor() {}

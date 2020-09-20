@@ -103,7 +103,7 @@ export class SignInPage implements OnInit {
     await this.languageService.openLanguageChooser();
   }
 
-  getValidationMessages(): Object {
+  getValidationMessages() {
     return {
       email: [
         {

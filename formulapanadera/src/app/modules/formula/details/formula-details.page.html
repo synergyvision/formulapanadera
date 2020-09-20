@@ -29,7 +29,7 @@
         </ion-row>
       </ion-item>
     </ion-list>
-    <app-hydration-bar [hydration]="hydration/100"></app-hydration-bar>
+    <app-hydration-bar [hydration]="Number(hydration)/100"></app-hydration-bar>
     <ion-row>
       <ion-col class="detail-col">
         <ion-item class="formula-detail">
@@ -125,7 +125,7 @@
             *ngIf="step.ingredients"
             [ingredients]="step.ingredients"
             [name]="step.name"
-            [bakers_percentage]="total_weight/100"
+            [bakers_percentage]="Number(total_weight)/100"
           >
           </app-ingredients-list>
         </span>

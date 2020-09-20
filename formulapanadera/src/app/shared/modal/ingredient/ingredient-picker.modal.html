@@ -104,7 +104,7 @@
         ><ion-col>
           <ion-item lines="full">
             <ion-label>{{'ingredients.filter.flour' | translate}}</ion-label>
-            <ion-select formControlName="value" (ionChange)="searchList(value)">
+            <ion-select formControlName="value" (ionChange)="searchList()">
               <ion-select-option value="all"
                 >{{'ingredients.filter.all' | translate}}</ion-select-option
               >
@@ -140,7 +140,7 @@
     <span *ngFor="let ingredient of ingredients; index as i">
       <app-ingredient-item
         [selected]="isSelected(ingredient)"
-        (click)="clickIngredient(ingredient,i)"
+        (click)="clickIngredient(ingredient)"
         [ingredient]="ingredient"
         [even]="(i%2==0)"
       ></app-ingredient-item>

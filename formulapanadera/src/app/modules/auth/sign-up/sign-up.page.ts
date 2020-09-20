@@ -112,7 +112,7 @@ export class SignUpPage implements OnInit {
     await this.languageService.openLanguageChooser();
   }
 
-  getValidationMessages(): Object {
+  getValidationMessages() {
     return {
       fullName: [
         {
