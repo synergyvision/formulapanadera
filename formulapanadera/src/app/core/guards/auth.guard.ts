@@ -1,18 +1,28 @@
 import { Injectable } from "@angular/core";
 import { Router, CanLoad } from "@angular/router";
-import { AuthService } from "../services/auth.service";
+import { Plugins } from "@capacitor/core";
+import { UserModel } from "../models/user.model";
+
+const { Storage } = Plugins;
 
 @Injectable()
 export class AuthGuard implements CanLoad {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private router: Router) {}
 
-  canLoad(): boolean {
-    // check if user is authenticated
-    if (this.authService.getLoggedInUser() != null) {
+  async canLoad(): Promise<any> {
+    let user = UserModel;
+    await Storage.get({ key: "user" }).then((data) => {
+      // Check if user is authenticated
+      if (data.value) {
+        user = JSON.parse(data.value);
+      } else {
+        // Navigate to the login page
+        this.router.navigate(["auth/sign-in"], { replaceUrl: true });
+      }
+    });
+    if (user) {
       return true;
     } else {
-      // Navigate to the login page
-      this.router.navigate(["auth/sign-in"]);
       return false;
     }
   }

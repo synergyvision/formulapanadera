@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/auth";
-import { Observable, of, from } from "rxjs";
+import { Observable, from } from "rxjs";
 import { DataStore } from "../../shared/shell/data-store";
 import { UserModel } from "../models/user.model";
 import { Platform } from "@ionic/angular";
@@ -10,44 +10,10 @@ import { cfaSignOut } from "capacitor-firebase-auth";
 
 @Injectable()
 export class AuthService {
-  currentUser: User;
-  profileDataStore: DataStore<UserModel>;
-
   constructor(
     private angularFire: AngularFireAuth,
     private platform: Platform
-  ) {
-    this.angularFire.onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in.
-        this.currentUser = user;
-      } else {
-        // No user is signed in.
-        this.currentUser = null;
-      }
-    });
-  }
-
-  getProfileDataSource(): Observable<UserModel> {
-    const userModel = new UserModel();
-    const provierData = this.currentUser.providerData[0];
-
-    const userData = provierData;
-
-    userModel.name = userData.displayName || "Unknown";
-    userModel.email = userData.email;
-
-    return of(userModel);
-  }
-
-  // Get the currently signed-in user
-  getLoggedInUser() {
-    return this.currentUser;
-  }
-
-  setLoggedInUser(user: User) {
-    this.currentUser = user;
-  }
+  ) {}
 
   signOut(): Observable<any> {
     if (this.platform.is("capacitor")) {
@@ -65,20 +31,11 @@ export class AuthService {
     return this.angularFire.createUserWithEmailAndPassword(email, password);
   }
 
-  getProfileStore(dataSource: Observable<UserModel>): DataStore<UserModel> {
-    // Initialize the model specifying that it is a shell model
-    const shellModel: UserModel = new UserModel();
-    this.profileDataStore = new DataStore(shellModel);
-    // Trigger the loading mechanism (with shell) in the dataStore
-    this.profileDataStore.load(dataSource);
-    return this.profileDataStore;
-  }
-
   recoverPassword(email: string): Promise<void> {
     return this.angularFire.sendPasswordResetEmail(email);
   }
 
-  updatePassword(password: string) {
-    return this.currentUser.updatePassword(password);
+  async updatePassword(password: string) {
+    return (await this.angularFire.currentUser).updatePassword(password);
   }
 }

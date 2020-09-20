@@ -10,7 +10,6 @@ import {
   FormulaModel,
   StepDetailsModel,
 } from "src/app/core/models/formula.model";
-import { AuthService } from "src/app/core/services/auth.service";
 import { FormulaStepsModal } from "../steps/formula-steps.modal";
 import { environment } from "src/environments/environment";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -19,6 +18,9 @@ import { Router } from "@angular/router";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
+import { Plugins } from "@capacitor/core";
+
+const { Storage } = Plugins;
 
 @Component({
   selector: "app-formula-manage",
@@ -39,7 +41,6 @@ export class FormulaManagePage {
 
   constructor(
     private formulaService: FormulaService,
-    private authService: AuthService,
     public modalController: ModalController,
     private alertController: AlertController,
     private routerOutlet: IonRouterOutlet,
@@ -50,7 +51,9 @@ export class FormulaManagePage {
 
   ngOnInit() {
     let state = this.router.getCurrentNavigation().extras.state;
-    this.current_user = this.authService.getLoggedInUser();
+    Storage.get({ key: "user" }).then((user) => {
+      this.current_user = JSON.parse(user.value);
+    });
     if (state == undefined) {
       this.manageFormulaForm = new FormGroup({
         name: new FormControl(null, Validators.required),

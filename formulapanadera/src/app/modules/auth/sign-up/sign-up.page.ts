@@ -5,6 +5,9 @@ import { PasswordValidator } from "../../../core/validators/password.validator";
 import { AuthService } from "../../../core/services/auth.service";
 import { Subscription } from "rxjs";
 import { LanguageService } from "../../../core/services/language.service";
+import { Plugins } from "@capacitor/core";
+
+const { Storage } = Plugins;
 
 @Component({
   selector: "app-sign-up",
@@ -88,10 +91,16 @@ export class SignUpPage implements OnInit {
   signUp(): void {
     this.resetSubmitError();
     const values = this.signupForm.value;
+    let user: string;
     this.authService
       .signUp(values.email, values.matching_passwords.password)
-      .then((result) => {
-        result.user.updateProfile({ displayName: values.fullName });
+      .then(async (result) => {
+        await result.user.updateProfile({ displayName: values.fullName });
+        user = JSON.stringify({
+          name: values.fullName,
+          email: values.email,
+        });
+        Storage.set({ key: "user", value: user });
         this.redirectLoggedUserToMainPage();
       })
       .catch((error) => {

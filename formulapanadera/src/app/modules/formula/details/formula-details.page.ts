@@ -14,10 +14,12 @@ import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { environment } from "src/environments/environment";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
-import { AuthService } from "src/app/core/services/auth.service";
-import { ModifierModel } from "src/app/core/models/user.model";
+import { ModifierModel, UserModel } from "src/app/core/models/user.model";
 import { date_format } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
+import { Plugins } from "@capacitor/core";
+
+const { Storage } = Plugins;
 
 @Component({
   selector: "app-formula-details",
@@ -52,11 +54,11 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   showSteps: boolean;
 
   state;
+  user: UserModel;
 
   constructor(
     private formulaService: FormulaService,
     private languageService: LanguageService,
-    private authService: AuthService,
     private formatNumberService: FormatNumberService,
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
@@ -80,6 +82,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
       this.steps = JSON.parse(JSON.stringify(this.formula.steps));
     }
+    Storage.get({ key: "user" }).then((user) => {
+      this.user = JSON.parse(user.value);
+    });
   }
 
   ngOnDestroy() {
@@ -182,7 +187,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   //Options
 
   async presentOptions() {
-    let current_user = this.authService.getLoggedInUser().email;
+    let current_user = this.user.email;
     let is_modifier = false;
     this.formula.user.modifiers.forEach((modifier: ModifierModel) => {
       if (modifier.email == current_user) {
@@ -337,7 +342,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           cssClass: "confirm-alert-accept",
           handler: () => {
             let formula = JSON.parse(JSON.stringify(this.formula));
-            formula.user.owner = this.authService.getLoggedInUser().email;
+            formula.user.owner = this.user.email;
             formula.user.cloned = true;
             formula.name = `${
               this.formula.name

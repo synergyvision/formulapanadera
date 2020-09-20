@@ -7,16 +7,15 @@ import {
   IngredientPercentageModel,
 } from "../models/formula.model";
 import { Observable, of } from "rxjs";
-import { AuthService } from "./auth.service";
+import { Plugins } from "@capacitor/core";
+
+const { Storage } = Plugins;
 
 @Injectable()
 export class FormulaService {
   private formulaDataStore: DataStore<Array<FormulaModel>>;
 
-  constructor(
-    private afs: AngularFirestore,
-    private authService: AuthService
-  ) {}
+  constructor(private afs: AngularFirestore) {}
 
   /*
     Formula Listing Page
@@ -107,10 +106,10 @@ export class FormulaService {
 
   public searchFormulasByShared(
     type: string,
-    formulas: Observable<Array<FormulaModel>>
+    formulas: Observable<Array<FormulaModel>>,
+    user_email: string
   ): Observable<Array<FormulaModel>> {
     const filtered = [];
-    const user_email = this.authService.getLoggedInUser().email;
     formulas.forEach((formula) => {
       formula.forEach((item) => {
         if (

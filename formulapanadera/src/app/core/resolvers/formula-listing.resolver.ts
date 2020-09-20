@@ -4,25 +4,32 @@ import { Observable } from "rxjs";
 import { FormulaService } from "../services/formula.service";
 import { DataStore } from "src/app/shared/shell/data-store";
 import { FormulaModel } from "../models/formula.model";
-import { AuthService } from "../services/auth.service";
+import { Plugins } from "@capacitor/core";
+import { UserModel } from '../models/user.model';
+
+const { Storage } = Plugins;
 
 @Injectable()
 export class FormulaListingResolver implements Resolve<any> {
-  constructor(
-    private formulaService: FormulaService,
-    private authService: AuthService
-  ) {}
+  constructor(private formulaService: FormulaService) {}
 
-  resolve() {
-    let user = this.authService.getLoggedInUser();
-    const dataSource: Observable<Array<
-      FormulaModel
-    >> = this.formulaService.getFormulasDataSource(user.email);
+  async resolve() {
+    let user: UserModel
+    await Storage.get({ key: "user" }).then((data) => {
+      if (data.value) {
+        user = JSON.parse(data.value);
+      }
+    });
+    if (user) {
+      const dataSource: Observable<Array<
+        FormulaModel
+      >> = this.formulaService.getFormulasDataSource(user.email);
 
-    const dataStore: DataStore<Array<
-      FormulaModel
-    >> = this.formulaService.getFormulasStore(dataSource);
+      const dataStore: DataStore<Array<
+        FormulaModel
+      >> = this.formulaService.getFormulasStore(dataSource);
 
-    return dataStore;
+      return dataStore;
+    }
   }
 }

@@ -1,12 +1,12 @@
 import { Component, OnInit, NgZone } from "@angular/core";
-import { Location } from "@angular/common";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
-import { MenuController, LoadingController } from "@ionic/angular";
+import { Plugins } from "@capacitor/core";
 import { Subscription } from "rxjs";
-
 import { AuthService } from "../../../core/services/auth.service";
 import { LanguageService } from "../../../core/services/language.service";
+
+const { Storage } = Plugins;
 
 @Component({
   selector: "app-sign-in",
@@ -48,6 +48,11 @@ export class SignInPage implements OnInit {
 
   ngOnInit(): void {
     this.languageService.initLanguages();
+    Storage.get({ key: "user" }).then((data) => {
+      if (data.value) {
+        this.redirectLoggedUserToMainPage();
+      }
+    });
   }
 
   // Once the auth provider finished the authentication flow, and the auth redirect completes,
@@ -77,9 +82,15 @@ export class SignInPage implements OnInit {
 
   signIn() {
     this.resetSubmitError();
+    let user: string;
     this.authService
       .signIn(this.loginForm.value["email"], this.loginForm.value["password"])
-      .then(() => {
+      .then((loggedUser) => {
+        user = JSON.stringify({
+          name: loggedUser.user.displayName,
+          email: loggedUser.user.email,
+        });
+        Storage.set({ key: "user", value: user });
         this.redirectLoggedUserToMainPage();
       })
       .catch((error) => {

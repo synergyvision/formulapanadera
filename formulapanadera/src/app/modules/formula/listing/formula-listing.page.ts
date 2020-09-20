@@ -8,6 +8,9 @@ import { FormulaService } from "src/app/core/services/formula.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormGroup, FormControl } from "@angular/forms";
 import { switchMap, map } from "rxjs/operators";
+import { Plugins } from "@capacitor/core";
+
+const { Storage } = Plugins;
 
 @Component({
   selector: "app-formula-listing",
@@ -48,7 +51,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
     this.stateSubscription.unsubscribe();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
       dual: new FormControl({ lower: 0, upper: 100 }),
@@ -56,6 +59,11 @@ export class FormulaListingPage implements OnInit, OnDestroy {
     this.costRangeForm = new FormGroup({
       lower: new FormControl(),
       upper: new FormControl(),
+    });
+
+    let user_email: string;
+    await Storage.get({ key: "user" }).then((user) => {
+      user_email = JSON.parse(user.value).email;
     });
 
     this.route.data.subscribe((resolvedRouteData) => {
@@ -74,7 +82,8 @@ export class FormulaListingPage implements OnInit, OnDestroy {
           );
           filteredDataSource = this.formulaService.searchFormulasByShared(
             this.segment,
-            filteredDataSource
+            filteredDataSource,
+            user_email
           );
 
           const searchingShellModel = [
