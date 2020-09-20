@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { CURRENCY } from 'src/app/config/units';
 import { IngredientModel } from "src/app/core/models/ingredient.model";
 import { environment } from "src/environments/environment";
 
@@ -13,7 +14,7 @@ export class IngredientItemComponent {
   @Input() even: boolean = false;
   @Input() selected: boolean = false;
 
-  currency = environment.currency;
+  currency = CURRENCY;
 
   constructor() {}
 }

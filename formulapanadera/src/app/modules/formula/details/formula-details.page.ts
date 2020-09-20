@@ -12,12 +12,13 @@ import {
 } from "src/app/core/models/formula.model";
 import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
-import { environment } from "src/environments/environment";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { ModifierModel, UserModel } from "src/app/core/models/user.model";
-import { date_format } from "src/app/config/formats";
+import { DATE_FORMAT, DECIMALS } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
 import { Plugins } from "@capacitor/core";
+import { CURRENCY } from "src/app/config/units";
+import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 
 const { Storage } = Plugins;
 
@@ -42,7 +43,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   unitary_cost: string;
   total_cost: string;
 
-  currency: string = environment.currency;
+  currency: string = CURRENCY;
 
   ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
@@ -58,6 +59,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   constructor(
     private formulaService: FormulaService,
+    private formulaCRUDService: FormulaCRUDService,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
     private actionSheetController: ActionSheetController,
@@ -99,13 +101,19 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       this.ingredients
     );
 
-    this.total_weight = Number((this.units * this.formula.unit_weight).toFixed(1));
-    this.hydration = Number(this.formulaService.calculateHydration(this.ingredients));
+    this.total_weight = Number(
+      (this.units * this.formula.unit_weight).toFixed(DECIMALS.weight)
+    );
+    this.hydration = Number(
+      this.formulaService.calculateHydration(this.ingredients)
+    );
     this.total_cost = this.formulaService.calculateTotalCost(
       this.ingredients,
       Number(this.bakers_percentage)
     );
-    this.unitary_cost = (Number(this.total_cost) / this.units).toFixed(2);
+    this.unitary_cost = (Number(this.total_cost) / this.units).toFixed(
+      DECIMALS.cost
+    );
 
     this.ingredients_formula = [];
     let bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
@@ -311,7 +319,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             let formula = JSON.parse(JSON.stringify(this.formula));
             formula.user.owner = data.email;
             formula.user.cloned = false;
-            this.formulaService
+            this.formulaCRUDService
               .createFormula(formula)
               .then(() => {
                 this.presentToast(true);
@@ -347,7 +355,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             formula.name = `${
               this.formula.name
             } (${this.languageService.getTerm("action.copy")})`;
-            this.formulaService.createFormula(formula).then(() => {
+            this.formulaCRUDService.createFormula(formula).then(() => {
               this.router.navigateByUrl("menu/formula");
             });
           },
@@ -374,7 +382,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: () => {
-            this.formulaService.deleteFormula(this.formula.id).then(() => {
+            this.formulaCRUDService.deleteFormula(this.formula.id).then(() => {
               this.router.navigateByUrl("menu/formula");
             });
           },
@@ -389,7 +397,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     let creator_name = `${this.formula.user.creator.name}<br/>${this.formula.user.creator.email}`;
     let creator_date = `${this.datePipe.transform(
       this.formula.user.creator.date.seconds * 1000,
-      date_format
+      DATE_FORMAT
     )}`;
     let modifiers_title = this.languageService.getTerm("credits.modifiers");
     let modifiers = "";
@@ -398,7 +406,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         modifiers +
         `${modifier.name}<br/>${modifier.email}<br>${this.datePipe.transform(
           modifier.date.seconds * 1000,
-          date_format
+          DATE_FORMAT
         )}`;
     });
     let text = `<strong>${creator_title}</strong><br/>${creator_name}<br/>${creator_date}<br/>`;

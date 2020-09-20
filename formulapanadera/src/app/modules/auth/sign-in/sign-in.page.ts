@@ -4,7 +4,8 @@ import { Router } from "@angular/router";
 import { Plugins } from "@capacitor/core";
 import { Subscription } from "rxjs";
 import { ValidationModel } from "src/app/core/models/validation.model";
-import { AuthService } from "../../../core/services/auth.service";
+import { LanguageAlert } from "src/app/shared/alert/language/language.alert";
+import { AuthService } from "../../../core/services/firebase/auth.service";
 import { LanguageService } from "../../../core/services/language.service";
 
 const { Storage } = Plugins;
@@ -31,7 +32,8 @@ export class SignInPage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private ngZone: NgZone,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private languageAlert: LanguageAlert
   ) {
     this.loginForm = new FormGroup({
       email: new FormControl(
@@ -51,7 +53,6 @@ export class SignInPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this.languageService.initLanguages();
     Storage.get({ key: "user" }).then((data) => {
       if (data.value) {
         this.redirectLoggedUserToMainPage();
@@ -104,7 +105,7 @@ export class SignInPage implements OnInit {
   }
 
   async openLanguageChooser() {
-    await this.languageService.openLanguageChooser();
+    await this.languageAlert.openLanguageChooser();
   }
 
   getValidationMessages(): {

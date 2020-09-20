@@ -1,53 +1,32 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
-
 import { DataStore } from "src/app/shared/shell/data-store";
 import {
   FormulaModel,
   IngredientPercentageModel,
 } from "../models/formula.model";
 import { Observable, of } from "rxjs";
-import { Plugins } from "@capacitor/core";
-
-const { Storage } = Plugins;
+import { LOADING_ITEMS } from "src/app/config/loading";
+import { DECIMALS } from "src/app/config/formats";
 
 @Injectable()
 export class FormulaService {
   private formulaDataStore: DataStore<Array<FormulaModel>>;
 
-  constructor(private afs: AngularFirestore) {}
+  constructor() {}
 
   /*
-    Formula Listing Page
+    Formula Listing
   */
-  public getFormulasDataSource(
-    user_email: string
-  ): Observable<Array<FormulaModel>> {
-    return this.afs
-      .collection<FormulaModel>("formulas", (ref) =>
-        ref.where("user.owner", "in", [user_email, ""])
-      )
-      .valueChanges({ idField: "id" });
-  }
-
   public getFormulasStore(
     dataSource: Observable<Array<FormulaModel>>
   ): DataStore<Array<FormulaModel>> {
     // Use cache if available
     if (!this.formulaDataStore) {
       // Initialize the model specifying that it is a shell model
-      const shellModel: Array<FormulaModel> = [
-        new FormulaModel(),
-        new FormulaModel(),
-        new FormulaModel(),
-        new FormulaModel(),
-        new FormulaModel(),
-        new FormulaModel(),
-        new FormulaModel(),
-        new FormulaModel(),
-        new FormulaModel(),
-        new FormulaModel(),
-      ];
+      const shellModel: Array<FormulaModel> = [];
+      for (let index = 0; index < LOADING_ITEMS; index++) {
+        shellModel.push(new FormulaModel());
+      }
 
       this.formulaDataStore = new DataStore(shellModel);
       // Trigger the loading mechanism (with shell) in the dataStore
@@ -56,15 +35,17 @@ export class FormulaService {
     return this.formulaDataStore;
   }
 
-  //Filters
+  /*
+    Filters
+  */
   public searchFormulasByHydration(
     lower: number,
     upper: number
   ): Observable<Array<FormulaModel>> {
     const filtered = [];
     let hydration: number;
-    this.formulaDataStore.state.forEach((ingredient) => {
-      ingredient.forEach((item) => {
+    this.formulaDataStore.state.forEach((formula) => {
+      formula.forEach((item) => {
         hydration = Number(this.calculateHydration(item.ingredients));
         if (hydration >= lower && hydration <= upper) {
           filtered.push(item);
@@ -131,24 +112,6 @@ export class FormulaService {
   }
 
   /*
-    Formula Management
-  */
-  public createFormula(formulaData: FormulaModel): Promise<DocumentReference> {
-    return this.afs.collection("formulas").add({ ...formulaData });
-  }
-
-  public updateFormula(formulaData: FormulaModel): Promise<void> {
-    return this.afs
-      .collection("formulas")
-      .doc(formulaData.id)
-      .set({ ...formulaData });
-  }
-
-  public deleteFormula(formulaKey: string): Promise<void> {
-    return this.afs.collection("formulas").doc(formulaKey).delete();
-  }
-
-  /*
   Formula calculations
   */
   public calculateBakersPercentage(
@@ -162,7 +125,7 @@ export class FormulaService {
         percentage = percentage + Number(ingredientData.percentage);
       }
     });
-    return (total_weight / percentage).toFixed(2);
+    return (total_weight / percentage).toFixed(DECIMALS.bakers_percentage);
   }
 
   public calculateHydration(
@@ -176,7 +139,7 @@ export class FormulaService {
           hydration;
       }
     });
-    return (hydration / 100).toFixed(1);
+    return (hydration / 100).toFixed(DECIMALS.hydration);
   }
 
   public calculateTotalCost(
@@ -193,7 +156,7 @@ export class FormulaService {
           cost;
       }
     });
-    return cost.toFixed(2);
+    return cost.toFixed(DECIMALS.cost);
   }
 
   public fromRecipeToFormula(ingredients: Array<IngredientPercentageModel>) {
@@ -201,7 +164,9 @@ export class FormulaService {
     ingredients.forEach((ingredient) => {
       if (!ingredient.ingredient.formula) {
         ingredient.percentage = Number(
-          (ingredient.percentage / Number(bakers_percentage)).toFixed(1)
+          (ingredient.percentage / Number(bakers_percentage)).toFixed(
+            DECIMALS.formula_percentage
+          )
         );
       }
     });
@@ -348,7 +313,9 @@ export class FormulaService {
       ingredients.forEach((ingredient) => {
         if (item.ingredient.id == ingredient.ingredient.id) {
           ingredient.percentage = Number(
-            (proportion_factor * (100 / total_flour)).toFixed(2)
+            (proportion_factor * (100 / total_flour)).toFixed(
+              DECIMALS.formula_grams
+            )
           );
         }
       });
@@ -392,7 +359,9 @@ export class FormulaService {
       );
 
       //Gets new bakers percentage
-      bakers_percentage = (this.totalFlour(ingredients) / 100).toFixed(2);
+      bakers_percentage = (this.totalFlour(ingredients) / 100).toFixed(
+        DECIMALS.bakers_percentage
+      );
 
       //Sets ingredients
       ingredients = this.fromRecipeToFormula(ingredients);

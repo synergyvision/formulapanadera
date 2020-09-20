@@ -6,7 +6,6 @@ import { Routes, RouterModule } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
 import { SignInPage } from "./sign-in.page";
 import { ComponentsModule } from "../../../shared/components/components.module";
-import { LanguageService } from "src/app/core/services/language.service";
 import { TranslateModule } from "@ngx-translate/core";
 
 const routes: Routes = [

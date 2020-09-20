@@ -6,7 +6,7 @@ import { OptionsPage } from "./options.page";
 import { TranslateModule } from "@ngx-translate/core";
 
 import { LanguageService } from "../../../core/services/language.service";
-import { AuthService } from "../../../core/services/auth.service";
+import { AuthService } from "../../../core/services/firebase/auth.service";
 import { ResolverHelper } from "../../../shared/helpers/resolver-helper";
 import { Observable } from "rxjs";
 

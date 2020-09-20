@@ -11,7 +11,6 @@ import {
   StepDetailsModel,
 } from "src/app/core/models/formula.model";
 import { FormulaStepsModal } from "../steps/formula-steps.modal";
-import { environment } from "src/environments/environment";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { LanguageService } from "src/app/core/services/language.service";
 import { Router } from "@angular/router";
@@ -19,6 +18,8 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
 import { Plugins } from "@capacitor/core";
+import { BAKERY_STEPS } from "src/app/config/constants/formula.constants";
+import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 
 const { Storage } = Plugins;
 
@@ -41,6 +42,7 @@ export class FormulaManagePage {
 
   constructor(
     private formulaService: FormulaService,
+    private formulaCRUDService: FormulaCRUDService,
     public modalController: ModalController,
     private alertController: AlertController,
     private routerOutlet: IonRouterOutlet,
@@ -199,7 +201,7 @@ export class FormulaManagePage {
   async describeSteps() {
     let steps = [];
     if (!this.formula.steps) {
-      for (let i = 0; i < environment.bakery_steps; i++) {
+      for (let i = 0; i < BAKERY_STEPS; i++) {
         steps.push({
           number: i,
           name: this.languageService.getTerm("steps." + (i + 1)),
@@ -270,7 +272,7 @@ export class FormulaManagePage {
       } else {
         this.formula.user.owner = this.current_user.email;
       }
-      this.formulaService.updateFormula(this.formula).then(() => {
+      this.formulaCRUDService.updateFormula(this.formula).then(() => {
         this.router.navigateByUrl("menu/formula");
       });
     } else {
@@ -278,7 +280,7 @@ export class FormulaManagePage {
         this.formula.user.owner = "";
         this.formula.user.cloned = false;
       }
-      this.formulaService.createFormula(this.formula).then(() => {
+      this.formulaCRUDService.createFormula(this.formula).then(() => {
         this.router.navigateByUrl("menu/formula");
       });
     }
@@ -301,7 +303,7 @@ export class FormulaManagePage {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: () => {
-            this.formulaService.deleteFormula(this.formula.id).then(() => {
+            this.formulaCRUDService.deleteFormula(this.formula.id).then(() => {
               this.router.navigateByUrl("menu/formula");
             });
           },

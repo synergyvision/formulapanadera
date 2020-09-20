@@ -6,7 +6,7 @@ import { SignInPage } from "./sign-in.page";
 import { TranslateModule } from "@ngx-translate/core";
 import { ProductionPageModule } from "../../production/production.module";
 import { LanguageService } from "src/app/core/services/language.service";
-import { AuthService } from "src/app/core/services/auth.service";
+import { AuthService } from "src/app/core/services/firebase/auth.service";
 
 describe("SignInPage", () => {
   let component: SignInPage;

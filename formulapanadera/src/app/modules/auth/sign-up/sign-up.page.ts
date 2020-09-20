@@ -2,11 +2,12 @@ import { Component, OnInit, NgZone } from "@angular/core";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import { PasswordValidator } from "../../../core/validators/password.validator";
-import { AuthService } from "../../../core/services/auth.service";
+import { AuthService } from "../../../core/services/firebase/auth.service";
 import { Subscription } from "rxjs";
 import { LanguageService } from "../../../core/services/language.service";
 import { Plugins } from "@capacitor/core";
 import { ValidationModel } from "src/app/core/models/validation.model";
+import { LanguageAlert } from "src/app/shared/alert/language/language.alert";
 
 const { Storage } = Plugins;
 
@@ -18,7 +19,7 @@ const { Storage } = Plugins;
     "./../../../shared/styles/language.alert.scss",
   ],
 })
-export class SignUpPage implements OnInit {
+export class SignUpPage {
   signupForm: FormGroup;
   matching_passwords_group: FormGroup;
   submitError: string;
@@ -36,7 +37,8 @@ export class SignUpPage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private ngZone: NgZone,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private languageAlert: LanguageAlert
   ) {
     this.matching_passwords_group = new FormGroup(
       {
@@ -64,10 +66,6 @@ export class SignUpPage implements OnInit {
     });
 
     this.validation_messages = this.getValidationMessages();
-  }
-
-  ngOnInit(): void {
-    this.languageService.initLanguages();
   }
 
   // Once the auth provider finished the authentication flow, and the auth redirect completes,
@@ -116,7 +114,7 @@ export class SignUpPage implements OnInit {
   }
 
   async openLanguageChooser() {
-    await this.languageService.openLanguageChooser();
+    await this.languageAlert.openLanguageChooser();
   }
 
   getValidationMessages(): {

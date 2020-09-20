@@ -8,7 +8,7 @@ import { Validators, FormGroup, FormControl } from "@angular/forms";
 
 import { IngredientModel } from "../../../core/models/ingredient.model";
 import { IngredientService } from "../../../core/services/ingredient.service";
-import { environment } from "src/environments/environment";
+import { IngredientCRUDService } from "../../../core/services/firebase/ingredient.service";
 import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
@@ -16,6 +16,7 @@ import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredien
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
 import { FormulaService } from "src/app/core/services/formula.service";
+import { CURRENCY } from "src/app/config/units";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -31,10 +32,11 @@ export class IngredientManagePage implements OnInit {
   update: boolean = false;
   type: string = "simple";
 
-  currency = environment.currency;
+  currency = CURRENCY;
 
   constructor(
     private ingredientService: IngredientService,
+    private ingredientCRUDService: IngredientCRUDService,
     private formulaService: FormulaService,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
@@ -180,11 +182,11 @@ export class IngredientManagePage implements OnInit {
     }
     if (!this.update) {
       this.ingredient.can_be_deleted = true;
-      this.ingredientService.createIngredient(this.ingredient).then(() => {
+      this.ingredientCRUDService.createIngredient(this.ingredient).then(() => {
         this.router.navigateByUrl("menu/ingredient");
       });
     } else {
-      this.ingredientService.updateIngredient(this.ingredient).then(() => {
+      this.ingredientCRUDService.updateIngredient(this.ingredient).then(() => {
         this.router.navigateByUrl("menu/ingredient");
       });
     }
@@ -207,7 +209,7 @@ export class IngredientManagePage implements OnInit {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: () => {
-            this.ingredientService
+            this.ingredientCRUDService
               .deleteIngredient(this.ingredient.id)
               .then(() => {
                 this.ngZone

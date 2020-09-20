@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy, HostBinding } from "@angular/core";
 import { DataStore } from "src/app/shared/shell/data-store";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { Subscription, merge, ReplaySubject, Observable } from "rxjs";
-import { environment } from "src/environments/environment";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormGroup, FormControl } from "@angular/forms";
 import { switchMap, map } from "rxjs/operators";
 import { Plugins } from "@capacitor/core";
+import { CURRENCY } from "src/app/config/units";
 
 const { Storage } = Plugins;
 
@@ -33,7 +33,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
   formulaDataStore: DataStore<Array<FormulaModel>>;
   stateSubscription: Subscription;
 
-  currency = environment.currency;
+  currency = CURRENCY;
   formulas: FormulaModel[] & ShellModel;
 
   segment: string = "mine";

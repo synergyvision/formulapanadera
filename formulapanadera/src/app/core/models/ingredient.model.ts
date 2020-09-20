@@ -1,11 +1,11 @@
+import { PROPORTION_FACTOR } from "src/app/config/constants/formula.constants";
 import {
   IngredientPercentageModel,
   IngredientMixingModel,
 } from "./formula.model";
 
-export const proportion_factor = ["flour", "dough", "ingredient"] as const;
 export type ProportionFactor = {
-  factor: typeof proportion_factor[number];
+  factor: typeof PROPORTION_FACTOR[number];
   ingredient?: { id: string; name: string };
 };
 

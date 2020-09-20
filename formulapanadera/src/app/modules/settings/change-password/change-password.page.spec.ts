@@ -5,7 +5,7 @@ import { IonicModule } from "@ionic/angular";
 import { ChangePasswordPage } from "./change-password.page";
 import { TranslateModule } from "@ngx-translate/core";
 
-import { AuthService } from "src/app/core/services/auth.service";
+import { AuthService } from "src/app/core/services/firebase/auth.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { SettingsPageModule } from "../options/options.module";
 

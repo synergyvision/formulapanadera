@@ -8,6 +8,7 @@ import { Subscription, ReplaySubject, Observable, merge } from "rxjs";
 import { IngredientService } from "../../../core/services/ingredient.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { switchMap, map, finalize } from "rxjs/operators";
+import { CURRENCY } from 'src/app/config/units';
 
 @Component({
   selector: "app-ingredient-listing",
@@ -31,7 +32,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   ingredientsDataStore: DataStore<Array<IngredientModel>>;
   stateSubscription: Subscription;
 
-  currency = environment.currency;
+  currency = CURRENCY;
   ingredients: IngredientModel[] & ShellModel;
 
   segment: string = "simple";

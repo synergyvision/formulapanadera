@@ -1,7 +1,7 @@
 import { Component, NgZone } from "@angular/core";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 import { PasswordValidator } from "../../../core/validators/password.validator";
-import { AuthService } from "../../../core/services/auth.service";
+import { AuthService } from "../../../core/services/firebase/auth.service";
 import { LanguageService } from "../../../core/services/language.service";
 import { Router } from "@angular/router";
 import { ValidationModel } from "src/app/core/models/validation.model";

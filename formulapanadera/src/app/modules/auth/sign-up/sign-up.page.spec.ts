@@ -5,7 +5,7 @@ import { IonicModule } from "@ionic/angular";
 import { SignUpPage } from "./sign-up.page";
 import { TranslateModule } from "@ngx-translate/core";
 import { LanguageService } from "src/app/core/services/language.service";
-import { AuthService } from "src/app/core/services/auth.service";
+import { AuthService } from "src/app/core/services/firebase/auth.service";
 import { ProductionPageModule } from "../../production/production.module";
 
 describe("SignUpPage", () => {

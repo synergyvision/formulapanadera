@@ -5,6 +5,7 @@ import { environment } from "src/environments/environment";
 import { Router } from "@angular/router";
 import { ActionSheetController } from "@ionic/angular";
 import { LanguageService } from "src/app/core/services/language.service";
+import { CURRENCY } from "src/app/config/units";
 
 @Component({
   selector: "app-ingredient-details",
@@ -15,7 +16,7 @@ export class IngredientDetailsPage implements OnInit {
   ingredient: IngredientModel = new IngredientModel();
   type: string = "simple";
 
-  currency = environment.currency;
+  currency = CURRENCY;
 
   showIngredients: boolean;
   showMixing: boolean;

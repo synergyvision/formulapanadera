@@ -11,10 +11,12 @@ import { AngularFireAuthModule } from "@angular/fire/auth";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
 
 import { LanguageService } from "./services/language.service";
-import { AuthService } from "./services/auth.service";
-import { IngredientService } from "./services/ingredient.service";
 import { FormatNumberService } from "./services/format-number.service";
+import { AuthService } from "./services/firebase/auth.service";
+import { IngredientService } from "./services/ingredient.service";
 import { FormulaService } from "./services/formula.service";
+import { IngredientCRUDService } from "./services/firebase/ingredient.service";
+import { FormulaCRUDService } from "./services/firebase/formula.service";
 
 @NgModule({
   imports: [
@@ -22,7 +24,7 @@ import { FormulaService } from "./services/formula.service";
     CommonModule,
     FormsModule,
     RouterModule,
-    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(environment.connection),
     AngularFireAuthModule,
     AngularFirestoreModule,
   ],
@@ -31,7 +33,9 @@ import { FormulaService } from "./services/formula.service";
     AuthService,
     FormatNumberService,
     FormulaService,
+    FormulaCRUDService,
     IngredientService,
+    IngredientCRUDService,
     LanguageService,
   ],
 })

@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
-import { LanguageService } from "../../../core/services/language.service";
-import { AuthService } from "../../../core/services/auth.service";
+import { AuthService } from "../../../core/services/firebase/auth.service";
 import { Router } from "@angular/router";
 import { UserModel } from "src/app/core/models/user.model";
 import { Plugins } from "@capacitor/core";
+import { LanguageAlert } from 'src/app/shared/alert/language/language.alert';
 
 const { Storage } = Plugins;
 
@@ -20,12 +20,11 @@ export class OptionsPage {
 
   constructor(
     private router: Router,
-    private languageService: LanguageService,
+    private languageAlert: LanguageAlert,
     private authService: AuthService
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.languageService.initLanguages();
     await Storage.get({ key: "user" }).then((data) => {
       if (data.value) {
         this.user = JSON.parse(data.value);
@@ -36,7 +35,7 @@ export class OptionsPage {
   }
 
   async openLanguageChooser() {
-    await this.languageService.openLanguageChooser();
+    await this.languageAlert.openLanguageChooser();
   }
 
   signOut() {

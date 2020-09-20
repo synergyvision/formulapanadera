@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { DECIMALS } from "src/app/config/formats";
 
 @Injectable()
 export class FormatNumberService {
@@ -31,10 +32,10 @@ export class FormatNumberService {
   }
 
   fromCelsiusToFahrenheit(celsius: number) {
-    return ((celsius * 9) / 5 + 32).toFixed(0);
+    return ((celsius * 9) / 5 + 32).toFixed(DECIMALS.temperature);
   }
 
   fromFahrenheitToCelsius(fahrenheit: number) {
-    return (((fahrenheit - 32) * 5) / 9).toFixed(0);
+    return (((fahrenheit - 32) * 5) / 9).toFixed(DECIMALS.temperature);
   }
 }

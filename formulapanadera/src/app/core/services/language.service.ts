@@ -1,25 +1,27 @@
 import { Injectable } from "@angular/core";
 import { LanguageModel } from "../models/language.model";
 import { TranslateService } from "@ngx-translate/core";
-import { AlertController } from "@ionic/angular";
 
-import { environment } from "../../../environments/environment";
+import { LANGUAGE } from "src/app/config/constants/language.constants";
 
 @Injectable()
 export class LanguageService {
   languages: Array<LanguageModel> = new Array<LanguageModel>();
-  available_languages = [];
-  translations;
 
-  constructor(
-    private translateService: TranslateService,
-    private alertController: AlertController
-  ) {
-    this.languages = environment.language.available;
+  constructor(private translateService: TranslateService) {
+    this.languages = LANGUAGE.available;
   }
 
   getLanguages() {
     return this.languages;
+  }
+
+  getCurrentLang() {
+    return this.translateService.currentLang;
+  }
+
+  useLang(data: string) {
+    this.translateService.use(data);
   }
 
   public initLanguages() {
@@ -32,44 +34,9 @@ export class LanguageService {
 
   public getTranslations() {
     // get translations for this page to use in the Language Chooser Alert
-    this.translateService
-      .getTranslation(this.translateService.currentLang)
-      .subscribe((translations) => {
-        this.translations = translations;
-      });
-  }
-
-  async openLanguageChooser() {
-    this.available_languages = this.languages.map((item) => ({
-      name: item.name,
-      type: "radio",
-      label: item.name,
-      value: item.code,
-      checked: item.code === this.translateService.currentLang,
-    }));
-
-    const alert = await this.alertController.create({
-      header: this.translations.settings.language.select,
-      inputs: this.available_languages,
-      cssClass: "language-alert alert",
-      buttons: [
-        {
-          text: this.translations.action.cancel,
-          role: "cancel",
-          cssClass: "secondary",
-          handler: () => {},
-        },
-        {
-          text: this.translations.action.ok,
-          handler: (data) => {
-            if (data) {
-              this.translateService.use(data);
-            }
-          },
-        },
-      ],
-    });
-    await alert.present();
+    return this.translateService.getTranslation(
+      this.translateService.currentLang
+    );
   }
 
   public getTerm(key: string, interpolateParams?: Object): string {

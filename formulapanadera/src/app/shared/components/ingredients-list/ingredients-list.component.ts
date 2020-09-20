@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { DECIMALS } from "src/app/config/formats";
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 
 @Component({
@@ -16,13 +17,15 @@ export class IngredientsListComponent {
 
   ingredientGrams(percentage: number): string {
     if (!this.compensation) {
-      return (percentage * this.bakers_percentage).toFixed(2);
+      return (percentage * this.bakers_percentage).toFixed(
+        DECIMALS.bakers_percentage
+      );
     } else {
       return (
         percentage *
         this.bakers_percentage *
         (1 + this.compensation / 100)
-      ).toFixed(2);
+      ).toFixed(DECIMALS.formula_grams);
     }
   }
 }

@@ -2,7 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ValidationModel } from "src/app/core/models/validation.model";
-import { AuthService } from "../../../core/services/auth.service";
+import { LanguageAlert } from "src/app/shared/alert/language/language.alert";
+import { AuthService } from "../../../core/services/firebase/auth.service";
 import { LanguageService } from "../../../core/services/language.service";
 
 @Component({
@@ -13,7 +14,7 @@ import { LanguageService } from "../../../core/services/language.service";
     "./../../../shared/styles/language.alert.scss",
   ],
 })
-export class ForgotPasswordPage implements OnInit {
+export class ForgotPasswordPage {
   forgotPasswordForm: FormGroup;
   submitError: string;
   validation_messages: {
@@ -23,7 +24,8 @@ export class ForgotPasswordPage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private languageAlert: LanguageAlert
   ) {
     this.forgotPasswordForm = new FormGroup({
       email: new FormControl(
@@ -35,10 +37,6 @@ export class ForgotPasswordPage implements OnInit {
       ),
     });
     this.validation_messages = this.getValidationMessages();
-  }
-
-  ngOnInit(): void {
-    this.languageService.initLanguages();
   }
 
   resetSubmitError() {
@@ -58,7 +56,7 @@ export class ForgotPasswordPage implements OnInit {
   }
 
   async openLanguageChooser() {
-    await this.languageService.openLanguageChooser();
+    await this.languageAlert.openLanguageChooser();
   }
 
   getValidationMessages(): {
