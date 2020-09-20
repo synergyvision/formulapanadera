@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Resolve } from "@angular/router";
 import { Observable } from "rxjs";
+
 import { IngredientModel } from "../models/ingredient.model";
 import { DataStore } from "src/app/shared/shell/data-store";
-
 import { IngredientService } from "../services/ingredient.service";
 import { IngredientCRUDService } from '../services/firebase/ingredient.service';
 

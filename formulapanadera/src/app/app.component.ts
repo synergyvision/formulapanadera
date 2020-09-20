@@ -6,7 +6,7 @@ import { StatusBar } from "@ionic-native/status-bar/ngx";
 
 import { TranslateService } from "@ngx-translate/core";
 
-import { LANGUAGE } from "./config/constants/language.constants";
+import { LANGUAGE } from "./config/configuration";
 
 @Component({
   selector: "app-root",

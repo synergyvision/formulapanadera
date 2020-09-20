@@ -17,7 +17,7 @@ import { ModifierModel, UserModel } from "src/app/core/models/user.model";
 import { DATE_FORMAT, DECIMALS } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
 import { Plugins } from "@capacitor/core";
-import { CURRENCY } from "src/app/config/units";
+import { CURRENCY } from "src/app/config/configuration";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 
 const { Storage } = Plugins;

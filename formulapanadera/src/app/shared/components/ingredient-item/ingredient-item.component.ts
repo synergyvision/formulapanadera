@@ -1,7 +1,6 @@
 import { Component, Input } from "@angular/core";
-import { CURRENCY } from 'src/app/config/units';
+import { CURRENCY } from 'src/app/config/configuration';
 import { IngredientModel } from "src/app/core/models/ingredient.model";
-import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-ingredient-item",

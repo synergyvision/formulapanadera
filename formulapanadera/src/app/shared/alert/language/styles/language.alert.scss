@@ -1,4 +1,4 @@
-@import "../../../theme/mixins/inputs/select-alert.scss";
+@import "../../../../../theme/mixins/inputs/select-alert.scss";
 
 ::ng-deep .language-alert {
   @include select-alert();

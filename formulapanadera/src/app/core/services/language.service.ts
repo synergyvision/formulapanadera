@@ -1,12 +1,14 @@
 import { Injectable } from "@angular/core";
-import { LanguageModel } from "../models/language.model";
 import { TranslateService } from "@ngx-translate/core";
 
-import { LANGUAGE } from "src/app/config/constants/language.constants";
+import { LanguageModel } from "../models/language.model";
+
+import { LANGUAGE } from "src/app/config/configuration";
 
 @Injectable()
 export class LanguageService {
   languages: Array<LanguageModel> = new Array<LanguageModel>();
+  translations;
 
   constructor(private translateService: TranslateService) {
     this.languages = LANGUAGE.available;
@@ -34,9 +36,11 @@ export class LanguageService {
 
   public getTranslations() {
     // get translations for this page to use in the Language Chooser Alert
-    return this.translateService.getTranslation(
-      this.translateService.currentLang
-    );
+    return this.translateService
+      .getTranslation(this.translateService.currentLang)
+      .subscribe((translations) => {
+        this.translations = translations;
+      });
   }
 
   public getTerm(key: string, interpolateParams?: Object): string {

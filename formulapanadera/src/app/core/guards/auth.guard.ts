@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router, CanLoad } from "@angular/router";
 import { Plugins } from "@capacitor/core";
+
 import { UserModel } from "../models/user.model";
 
 const { Storage } = Plugins;

@@ -4,7 +4,6 @@ import { PasswordValidator } from "../../../core/validators/password.validator";
 import { AuthService } from "../../../core/services/firebase/auth.service";
 import { LanguageService } from "../../../core/services/language.service";
 import { Router } from "@angular/router";
-import { ValidationModel } from "src/app/core/models/validation.model";
 
 @Component({
   selector: "app-change-password",
@@ -15,11 +14,6 @@ export class ChangePasswordPage {
   passwordForm: FormGroup;
   matching_passwords_group: FormGroup;
   submitError: string;
-  validation_messages: {
-    password: Array<ValidationModel>;
-    confirm_password: Array<ValidationModel>;
-    matching_passwords: Array<ValidationModel>;
-  };
   redirectLoader: HTMLIonLoadingElement;
 
   constructor(
@@ -44,8 +38,6 @@ export class ChangePasswordPage {
     this.passwordForm = new FormGroup({
       matching_passwords: this.matching_passwords_group,
     });
-
-    this.validation_messages = this.getValidationMessages();
   }
 
   async dismissLoading() {
@@ -77,45 +69,5 @@ export class ChangePasswordPage {
       .catch((error) => {
         this.submitError = error.message;
       });
-  }
-
-  getValidationMessages(): {
-    password: Array<ValidationModel>;
-    confirm_password: Array<ValidationModel>;
-    matching_passwords: Array<ValidationModel>;
-  } {
-    return {
-      password: [
-        {
-          type: "required",
-          message: this.languageService.getTerm("validation.required.password"),
-        },
-        {
-          type: "minlength",
-          message: this.languageService.getTerm(
-            "validation.minlength.password",
-            {
-              number: "6",
-            }
-          ),
-        },
-      ],
-      confirm_password: [
-        {
-          type: "required",
-          message: this.languageService.getTerm(
-            "validation.required.confirm_password"
-          ),
-        },
-      ],
-      matching_passwords: [
-        {
-          type: "areNotEqual",
-          message: this.languageService.getTerm(
-            "validation.areNotEqual.password"
-          ),
-        },
-      ],
-    };
   }
 }

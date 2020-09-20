@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
-import { ComponentsModule } from "../../shared/components/components.module";
 
 const routes: Routes = [
   {
@@ -25,11 +24,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    ComponentsModule,
-    RouterModule.forChild(routes),
-  ],
+  imports: [CommonModule, IonicModule, RouterModule.forChild(routes)],
 })
 export class AuthModule {}

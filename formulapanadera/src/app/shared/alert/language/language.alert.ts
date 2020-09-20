@@ -14,9 +14,6 @@ export class LanguageAlert implements OnInit {
     private languageService: LanguageService
   ) {
     this.languages = this.languageService.getLanguages();
-    this.languageService.getTranslations().subscribe((translations) => {
-      this.translations = translations;
-    });
   }
 
   ngOnInit(): void {
@@ -33,18 +30,18 @@ export class LanguageAlert implements OnInit {
     }));
 
     const alert = await this.alertController.create({
-      header: this.translations.settings.language.select,
+      header: this.languageService.getTerm("settings.language.select"),
       inputs: this.available_languages,
       cssClass: "language-alert alert",
       buttons: [
         {
-          text: this.translations.action.cancel,
+          text: this.languageService.getTerm("action.cancel"),
           role: "cancel",
           cssClass: "secondary",
           handler: () => {},
         },
         {
-          text: this.translations.action.ok,
+          text: this.languageService.getTerm("action.ok"),
           handler: (data) => {
             if (data) {
               this.languageService.useLang(data);

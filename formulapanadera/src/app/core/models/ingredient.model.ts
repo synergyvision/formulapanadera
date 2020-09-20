@@ -1,4 +1,5 @@
-import { PROPORTION_FACTOR } from "src/app/config/constants/formula.constants";
+import { PROPORTION_FACTOR } from "src/app/config/formula";
+
 import {
   IngredientPercentageModel,
   IngredientMixingModel,

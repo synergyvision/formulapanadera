@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { IonicModule } from "@ionic/angular";
 
@@ -14,7 +14,7 @@ describe("SignInPage", () => {
   let languageServiceSpy: any;
   let authServiceSpy: any;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     languageServiceSpy = jasmine.createSpyObj("LanguageService", {
       initLanguages: 0,
       openLanguageChooser: 0,
@@ -45,7 +45,7 @@ describe("SignInPage", () => {
     fixture = TestBed.createComponent(SignInPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   it("should create", () => {
     expect(component).toBeTruthy();

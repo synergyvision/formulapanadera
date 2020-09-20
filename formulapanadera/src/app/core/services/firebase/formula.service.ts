@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
+import { Observable } from "rxjs";
 
 import { FormulaModel } from "../../models/formula.model";
-import { Observable } from "rxjs";
-import { COLLECTIONS } from "src/app/config/firebase.constants";
+import { COLLECTIONS } from "src/app/config/firebase";
 
 @Injectable()
 export class FormulaCRUDService {

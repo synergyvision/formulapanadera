@@ -19,21 +19,6 @@
     "password": "Contraseña",
     "confirm_password": "Confirmación de contraseña"
   },
-  "validation": {
-    "required": {
-      "name": "Nombre requerido.",
-      "email": "Correo requerido.",
-      "password": "Contraseña requerida.",
-      "confirm_password": "Confirmación de contraseña requerida."
-    },
-    "pattern": {
-      "email": "Ingresa un correo válido."
-    },
-    "minlength": {
-      "password": "La contraseña debe contener mínimo {{number}} carácteres."
-    },
-    "areNotEqual": { "password": "Las contraseñas no coinciden." }
-  },
   "credits": {
     "name": "Créditos",
     "creator": "Creador",

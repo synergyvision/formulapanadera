@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Resolve } from "@angular/router";
+import { Plugins } from "@capacitor/core";
 import { Observable } from "rxjs";
+
 import { DataStore } from "src/app/shared/shell/data-store";
 import { FormulaModel } from "../models/formula.model";
-import { Plugins } from "@capacitor/core";
 import { UserModel } from "../models/user.model";
-
 import { FormulaService } from "../services/formula.service";
 import { FormulaCRUDService } from "../services/firebase/formula.service";
 

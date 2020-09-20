@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
+
 import { DataStore } from "src/app/shared/shell/data-store";
 import {
   FormulaModel,
   IngredientPercentageModel,
 } from "../models/formula.model";
-import { Observable, of } from "rxjs";
-import { LOADING_ITEMS } from "src/app/config/loading";
+
+import { LOADING_ITEMS } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
 
 @Injectable()

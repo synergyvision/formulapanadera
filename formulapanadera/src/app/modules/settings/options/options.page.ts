@@ -12,7 +12,7 @@ const { Storage } = Plugins;
   templateUrl: "options.page.html",
   styleUrls: [
     "./styles/options.page.scss",
-    "./../../../shared/styles/language.alert.scss",
+    "./../../../shared/alert/language/styles/language.alert.scss",
   ],
 })
 export class OptionsPage {

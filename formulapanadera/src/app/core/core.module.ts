@@ -17,6 +17,7 @@ import { IngredientService } from "./services/ingredient.service";
 import { FormulaService } from "./services/formula.service";
 import { IngredientCRUDService } from "./services/firebase/ingredient.service";
 import { FormulaCRUDService } from "./services/firebase/formula.service";
+import { UserStorageService } from "./services/storage/user.service";
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { FormulaCRUDService } from "./services/firebase/formula.service";
     IngredientService,
     IngredientCRUDService,
     LanguageService,
+    UserStorageService,
   ],
 })
 export class CoreModule extends ModuleLoadedOnceGuard {

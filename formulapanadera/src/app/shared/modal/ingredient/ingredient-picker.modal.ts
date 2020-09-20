@@ -16,7 +16,7 @@ import { ModalController } from "@ionic/angular";
 import { switchMap, map } from "rxjs/operators";
 import { IngredientListingResolver } from "src/app/core/resolvers/ingredient-listing.resolver";
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
-import { CURRENCY } from 'src/app/config/units';
+import { CURRENCY } from 'src/app/config/configuration';
 
 @Component({
   selector: "app-ingredient-picker-modal",
@@ -24,7 +24,7 @@ import { CURRENCY } from 'src/app/config/units';
   styleUrls: [
     "./styles/ingredient-picker.modal.scss",
     "./styles/ingredient-picker.filter.scss",
-    "./../../styles/language.alert.scss",
+    "./../../alert/language/styles/language.alert.scss",
   ],
 })
 export class IngredientPickerModal implements OnInit, OnDestroy {

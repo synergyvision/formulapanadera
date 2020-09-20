@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { FormGroup, FormControl } from "@angular/forms";
 import { switchMap, map } from "rxjs/operators";
 import { Plugins } from "@capacitor/core";
-import { CURRENCY } from "src/app/config/units";
+import { CURRENCY } from "src/app/config/configuration";
 
 const { Storage } = Plugins;
 

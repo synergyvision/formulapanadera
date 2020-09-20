@@ -19,21 +19,6 @@
     "password": "Password",
     "confirm_password": "Confirm password"
   },
-  "validation": {
-    "required": {
-      "name": "Name is required.",
-      "email": "Email is required.",
-      "password": "Password is required.",
-      "confirm_password": "Confirm password is required."
-    },
-    "pattern": {
-      "email": "Enter a valid email."
-    },
-    "minlength": {
-      "password": "Password must be at least {{number}} characters long."
-    },
-    "areNotEqual": { "password": "Passwords mismatch." }
-  },
   "credits": {
     "name": "Credits",
     "creator": "Creator",

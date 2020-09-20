@@ -1,8 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { FormulaModel } from "../../../core/models/formula.model";
 import { FormulaService } from "src/app/core/services/formula.service";
-import { environment } from "src/environments/environment";
-import { CURRENCY } from "src/app/config/units";
+import { CURRENCY } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
 
 @Component({

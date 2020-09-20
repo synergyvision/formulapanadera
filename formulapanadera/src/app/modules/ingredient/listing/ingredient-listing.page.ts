@@ -8,7 +8,7 @@ import { Subscription, ReplaySubject, Observable, merge } from "rxjs";
 import { IngredientService } from "../../../core/services/ingredient.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { switchMap, map, finalize } from "rxjs/operators";
-import { CURRENCY } from 'src/app/config/units';
+import { CURRENCY } from 'src/app/config/configuration';
 
 @Component({
   selector: "app-ingredient-listing",

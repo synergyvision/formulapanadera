@@ -1,11 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 
 import { IngredientModel } from "../../../core/models/ingredient.model";
-import { environment } from "src/environments/environment";
 import { Router } from "@angular/router";
 import { ActionSheetController } from "@ionic/angular";
 import { LanguageService } from "src/app/core/services/language.service";
-import { CURRENCY } from "src/app/config/units";
+import { CURRENCY } from "src/app/config/configuration";
 
 @Component({
   selector: "app-ingredient-details",

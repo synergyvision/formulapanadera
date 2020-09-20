@@ -18,7 +18,7 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
 import { Plugins } from "@capacitor/core";
-import { BAKERY_STEPS } from "src/app/config/constants/formula.constants";
+import { BAKERY_STEPS } from "src/app/config/formula";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 
 const { Storage } = Plugins;

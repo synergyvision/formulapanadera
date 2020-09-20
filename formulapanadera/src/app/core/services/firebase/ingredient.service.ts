@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
+import { Observable } from "rxjs";
 
 import { IngredientModel } from "../../models/ingredient.model";
-import { Observable } from "rxjs";
-import { COLLECTIONS } from "src/app/config/firebase.constants";
+import { COLLECTIONS } from "src/app/config/firebase";
 
 @Injectable()
 export class IngredientCRUDService {

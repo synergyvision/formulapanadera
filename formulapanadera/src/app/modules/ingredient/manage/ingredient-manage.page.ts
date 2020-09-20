@@ -16,7 +16,7 @@ import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredien
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
 import { FormulaService } from "src/app/core/services/formula.service";
-import { CURRENCY } from "src/app/config/units";
+import { CURRENCY } from "src/app/config/configuration";
 
 @Component({
   selector: "app-ingredient-manage",
