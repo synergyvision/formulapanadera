@@ -4,6 +4,7 @@ import { PasswordValidator } from "../../../core/validators/password.validator";
 import { AuthService } from "../../../core/services/auth.service";
 import { LanguageService } from "../../../core/services/language.service";
 import { Router } from "@angular/router";
+import { ValidationModel } from "src/app/core/models/validation.model";
 
 @Component({
   selector: "app-change-password",
@@ -14,7 +15,11 @@ export class ChangePasswordPage {
   passwordForm: FormGroup;
   matching_passwords_group: FormGroup;
   submitError: string;
-  validation_messages: Object;
+  validation_messages: {
+    password: Array<ValidationModel>;
+    confirm_password: Array<ValidationModel>;
+    matching_passwords: Array<ValidationModel>;
+  };
   redirectLoader: HTMLIonLoadingElement;
 
   constructor(
@@ -74,7 +79,11 @@ export class ChangePasswordPage {
       });
   }
 
-  getValidationMessages() {
+  getValidationMessages(): {
+    password: Array<ValidationModel>;
+    confirm_password: Array<ValidationModel>;
+    matching_passwords: Array<ValidationModel>;
+  } {
     return {
       password: [
         {

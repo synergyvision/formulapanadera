@@ -37,8 +37,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   units: number;
 
   bakers_percentage: string;
-  total_weight: string;
-  hydration: string;
+  total_weight: number;
+  hydration: number;
   unitary_cost: string;
   total_cost: string;
 
@@ -99,8 +99,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       this.ingredients
     );
 
-    this.total_weight = (this.units * this.formula.unit_weight).toFixed(1);
-    this.hydration = this.formulaService.calculateHydration(this.ingredients);
+    this.total_weight = Number((this.units * this.formula.unit_weight).toFixed(1));
+    this.hydration = Number(this.formulaService.calculateHydration(this.ingredients));
     this.total_cost = this.formulaService.calculateTotalCost(
       this.ingredients,
       Number(this.bakers_percentage)

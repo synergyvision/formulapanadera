@@ -3,6 +3,7 @@ import { Validators, FormGroup, FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Plugins } from "@capacitor/core";
 import { Subscription } from "rxjs";
+import { ValidationModel } from "src/app/core/models/validation.model";
 import { AuthService } from "../../../core/services/auth.service";
 import { LanguageService } from "../../../core/services/language.service";
 
@@ -21,7 +22,10 @@ export class SignInPage implements OnInit {
   submitError: string;
   redirectLoader: HTMLIonLoadingElement;
   authRedirectResult: Subscription;
-  validation_messages: Object;
+  validation_messages: {
+    email: Array<ValidationModel>;
+    password: Array<ValidationModel>;
+  };
 
   constructor(
     private router: Router,
@@ -103,7 +107,10 @@ export class SignInPage implements OnInit {
     await this.languageService.openLanguageChooser();
   }
 
-  getValidationMessages() {
+  getValidationMessages(): {
+    email: Array<ValidationModel>;
+    password: Array<ValidationModel>;
+  } {
     return {
       email: [
         {

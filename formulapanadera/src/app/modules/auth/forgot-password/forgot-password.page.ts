@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
+import { ValidationModel } from "src/app/core/models/validation.model";
 import { AuthService } from "../../../core/services/auth.service";
 import { LanguageService } from "../../../core/services/language.service";
 
@@ -15,7 +16,9 @@ import { LanguageService } from "../../../core/services/language.service";
 export class ForgotPasswordPage implements OnInit {
   forgotPasswordForm: FormGroup;
   submitError: string;
-  validation_messages: Object;
+  validation_messages: {
+    email: Array<ValidationModel>;
+  };
 
   constructor(
     private router: Router,
@@ -58,7 +61,9 @@ export class ForgotPasswordPage implements OnInit {
     await this.languageService.openLanguageChooser();
   }
 
-  getValidationMessages() {
+  getValidationMessages(): {
+    email: Array<ValidationModel>;
+  } {
     return {
       email: [
         {

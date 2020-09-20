@@ -6,6 +6,7 @@ import { AuthService } from "../../../core/services/auth.service";
 import { Subscription } from "rxjs";
 import { LanguageService } from "../../../core/services/language.service";
 import { Plugins } from "@capacitor/core";
+import { ValidationModel } from "src/app/core/models/validation.model";
 
 const { Storage } = Plugins;
 
@@ -23,7 +24,13 @@ export class SignUpPage implements OnInit {
   submitError: string;
   redirectLoader: HTMLIonLoadingElement;
   authRedirectResult: Subscription;
-  validation_messages: Object;
+  validation_messages: {
+    fullName: Array<ValidationModel>;
+    email: Array<ValidationModel>;
+    password: Array<ValidationModel>;
+    confirm_password: Array<ValidationModel>;
+    matching_passwords: Array<ValidationModel>;
+  };
 
   constructor(
     private router: Router,
@@ -112,7 +119,13 @@ export class SignUpPage implements OnInit {
     await this.languageService.openLanguageChooser();
   }
 
-  getValidationMessages() {
+  getValidationMessages(): {
+    fullName: Array<ValidationModel>;
+    email: Array<ValidationModel>;
+    password: Array<ValidationModel>;
+    confirm_password: Array<ValidationModel>;
+    matching_passwords: Array<ValidationModel>;
+  } {
     return {
       fullName: [
         {
