@@ -132,7 +132,9 @@
     "logout": "Cerrar sesión"
   },
   "production": {
-    "name": "Producción"
+    "name": "Producción",
+    "create": "Crear producción",
+    "update": "Modificar producción"
   },
   "steps": {
     "1": "Preparación",

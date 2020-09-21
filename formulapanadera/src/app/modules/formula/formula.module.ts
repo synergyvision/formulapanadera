@@ -31,4 +31,4 @@ const routes: Routes = [
 @NgModule({
   imports: [IonicModule, CommonModule, RouterModule.forChild(routes)],
 })
-export class FormulaPageModule {}
+export class FormulaModule {}

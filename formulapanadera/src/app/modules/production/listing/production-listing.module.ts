@@ -7,16 +7,12 @@ import { Routes, RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { ComponentsModule } from "src/app/shared/components/components.module";
 
-import { FormulaListingPage } from "./formula-listing.page";
-import { FormulaListingResolver } from "src/app/core/resolvers/formula-listing.resolver";
+import { ProductionListingPage } from "./production-listing.page";
 
 const routes: Routes = [
   {
     path: "",
-    component: FormulaListingPage,
-    resolve: {
-      data: FormulaListingResolver,
-    },
+    component: ProductionListingPage,
   },
 ];
 
@@ -30,7 +26,6 @@ const routes: Routes = [
     ComponentsModule,
     TranslateModule,
   ],
-  declarations: [FormulaListingPage],
-  providers: [FormulaListingResolver],
+  declarations: [ProductionListingPage],
 })
-export class FormulaListingPageModule {}
+export class ProductionListingPageModule {}

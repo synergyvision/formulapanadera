@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.production"></ion-icon>
+    <ion-title> {{ 'production.name' | translate }} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="createProduction()" class="create-production">
+        <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="production-content">
+  <p (click)="productionDetails()">Details</p>
+</ion-content>

@@ -2,7 +2,7 @@ import { IonicModule } from "@ionic/angular";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
-import { APP_URL } from 'src/app/config/configuration';
+import { APP_URL } from "src/app/config/configuration";
 
 const routes: Routes = [
   {
@@ -31,4 +31,4 @@ const routes: Routes = [
 @NgModule({
   imports: [IonicModule, CommonModule, RouterModule.forChild(routes)],
 })
-export class IngredientPageModule {}
+export class IngredientModule {}

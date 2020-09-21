@@ -132,7 +132,9 @@
     "logout": "Log out"
   },
   "production": {
-    "name": "Production"
+    "name": "Production",
+    "create": "Create production",
+    "update": "Update production"
   },
   "steps": {
     "1": "Mise en place",

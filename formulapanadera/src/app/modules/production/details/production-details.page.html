@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button
+        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.production.main "
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title> {{'production.name' | translate}} </ion-title>
+    <ion-buttons slot="primary">
+      <ion-button>
+        <ion-icon
+          slot="icon-only"
+          [ios]="ICONS.ellipsis_h"
+          [md]="ICONS.ellipsis_v"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="manage-production-content"></ion-content>

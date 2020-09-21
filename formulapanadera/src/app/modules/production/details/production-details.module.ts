@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { CommonModule, DatePipe } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 
 import { IonicModule } from "@ionic/angular";
@@ -7,12 +7,12 @@ import { TranslateModule } from "@ngx-translate/core";
 import { ComponentsModule } from "src/app/shared/components/components.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { FormulaDetailsPage } from "./formula-details.page";
+import { ProductionDetailsPage } from "./production-details.page";
 
 const routes: Routes = [
   {
     path: "",
-    component: FormulaDetailsPage,
+    component: ProductionDetailsPage,
   },
 ];
 
@@ -26,7 +26,6 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
   ],
-  providers: [DatePipe],
-  declarations: [FormulaDetailsPage],
+  declarations: [ProductionDetailsPage],
 })
-export class FormulaDetailsPageModule {}
+export class ProductionDetailsPageModule {}
