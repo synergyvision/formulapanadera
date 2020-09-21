@@ -1,40 +1,39 @@
 import {
   Component,
   HostBinding,
-  OnInit,
-  OnDestroy,
   Input,
+  OnDestroy,
+  OnInit,
 } from "@angular/core";
-import { IngredientModel } from "../../../core/models/ingredient.model";
-import { ShellModel } from "../../shell/shell.model";
-import { FormGroup, FormControl } from "@angular/forms";
-import { DataStore } from "../../shell/data-store";
-import { Subscription, ReplaySubject, Observable, merge, of } from "rxjs";
-import { IngredientService } from "../../../core/services/ingredient.service";
+import { FormControl, FormGroup } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
-import { switchMap, map } from "rxjs/operators";
-import { IngredientListingResolver } from "src/app/core/resolvers/ingredient-listing.resolver";
-import { IngredientPercentageModel } from "src/app/core/models/formula.model";
+import { merge, Observable, of, ReplaySubject, Subscription } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
+import { FormulaModel } from "src/app/core/models/formula.model";
+import { FormulaNumberModel } from "src/app/core/models/production.model";
+import { FormulaListingResolver } from "src/app/core/resolvers/formula-listing.resolver";
+import { FormulaService } from "src/app/core/services/formula.service";
+import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { DataStore } from "../../shell/data-store";
+import { ShellModel } from "../../shell/shell.model";
 
 @Component({
-  selector: "app-ingredient-picker-modal",
-  templateUrl: "ingredient-picker.modal.html",
+  selector: "app-formula-picker-modal",
+  templateUrl: "formula-picker.modal.html",
   styleUrls: [
-    "./styles/ingredient-picker.modal.scss",
+    "./styles/formula-picker.modal.scss",
     "./../../styles/filter.scss",
   ],
 })
-export class IngredientPickerModal implements OnInit, OnDestroy {
+export class FormulaPickerModal implements OnInit, OnDestroy {
   ICONS = ICONS;
 
-  @Input() selectedIngredients: Array<IngredientPercentageModel>;
-  @Input() limit?: number;
+  @Input() selectedFormulas: Array<FormulaNumberModel>;
 
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
-  isFlourForm: FormGroup;
   searchQuery: string;
   showFilters = false;
   firstLoad = true;
@@ -42,73 +41,65 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
   searchSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
   searchFiltersObservable: Observable<any> = this.searchSubject.asObservable();
 
-  ingredientsDataStore: DataStore<Array<IngredientModel>>;
+  formulaDataStore: DataStore<Array<FormulaModel>>;
   stateSubscription: Subscription;
 
   currency = CURRENCY;
-  ingredients: IngredientModel[] & ShellModel;
+  formulas: FormulaModel[] & ShellModel;
 
-  segment: string = "simple";
+  segment: string = "mine";
 
   @HostBinding("class.is-shell") get isShell() {
-    return this.ingredients && this.ingredients.isShell ? true : false;
+    return this.formulas && this.formulas.isShell ? true : false;
   }
   constructor(
-    private ingredientService: IngredientService,
-    private ingredientResolver: IngredientListingResolver,
-    public modalController: ModalController
+    private formulaService: FormulaService,
+    private formulaResolver: FormulaListingResolver,
+    public modalController: ModalController,
+    private userStorageService: UserStorageService
   ) {}
 
   ngOnDestroy(): void {
     this.stateSubscription.unsubscribe();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.searchQuery = "";
-
     this.hydrationRangeForm = new FormGroup({
-      dual: new FormControl({ lower: 0, upper: 1000 }),
+      dual: new FormControl({ lower: 0, upper: 100 }),
     });
-
     this.costRangeForm = new FormGroup({
       lower: new FormControl(),
       upper: new FormControl(),
     });
 
-    this.isFlourForm = new FormGroup({
-      value: new FormControl("all"),
-    });
+    let user_email: string = (await this.userStorageService.getUser()).email;
 
-    const data = of(this.ingredientResolver.resolve());
+    const data = of(this.formulaResolver.resolve());
 
-    data.subscribe((resolvedRouteData) => {
-      this.ingredientsDataStore = resolvedRouteData;
+    data.subscribe(async (resolvedRouteData) => {
+      this.formulaDataStore = await resolvedRouteData;
 
       const updateSearchObservable = this.searchFiltersObservable.pipe(
         switchMap((filters) => {
-          let filteredDataSource = this.ingredientService.searchIngredientsByHydration(
+          let filteredDataSource = this.formulaService.searchFormulasByHydration(
             filters.hydration.lower,
             filters.hydration.upper
           );
-          filteredDataSource = this.ingredientService.searchIngredientsByCost(
+          filteredDataSource = this.formulaService.searchFormulasByCost(
             filters.cost.lower,
             filters.cost.upper,
             filteredDataSource
           );
-          if (filters.is_flour !== "all") {
-            filteredDataSource = this.ingredientService.searchIngredientsByType(
-              filters.is_flour,
-              filteredDataSource
-            );
-          }
-          filteredDataSource = this.ingredientService.searchIngredientsByFormula(
+          filteredDataSource = this.formulaService.searchFormulasByShared(
             this.segment,
-            filteredDataSource
+            filteredDataSource,
+            user_email
           );
 
           const searchingShellModel = [];
           for (let index = 0; index < LOADING_ITEMS; index++) {
-            searchingShellModel.push(new IngredientModel());
+            searchingShellModel.push(new FormulaModel());
           }
           const dataSourceWithShellObservable = DataStore.AppendShell(
             filteredDataSource,
@@ -135,10 +126,10 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
       );
 
       this.stateSubscription = merge(
-        this.ingredientsDataStore.state,
+        this.formulaDataStore.state,
         updateSearchObservable
       ).subscribe((state) => {
-        this.ingredients = state;
+        this.formulas = state;
         if (state.isShell == false && this.firstLoad == true) {
           this.searchList();
           this.firstLoad = false;
@@ -157,7 +148,6 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
         lower: this.costRangeForm.value.lower,
         upper: this.costRangeForm.value.upper,
       },
-      is_flour: this.isFlourForm.value.value,
       query: this.searchQuery,
     });
   }
@@ -167,31 +157,28 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
     this.searchList();
   }
 
-  clickIngredient(ingredient: IngredientModel) {
-    if (ingredient !== undefined && ingredient.id !== undefined) {
-      if (this.selectedIngredients === undefined) {
-        this.selectedIngredients = [];
+  clickFormula(formula: FormulaModel) {
+    if (formula !== undefined && formula.id !== undefined) {
+      if (this.selectedFormulas === undefined) {
+        this.selectedFormulas = [];
       }
-      if (this.isSelected(ingredient)) {
-        for (let index = 0; index < this.selectedIngredients.length; index++) {
-          if (this.selectedIngredients[index].ingredient.id === ingredient.id)
-            this.selectedIngredients.splice(index, 1);
+      if (this.isSelected(formula)) {
+        for (let index = 0; index < this.selectedFormulas.length; index++) {
+          if (this.selectedFormulas[index].formula.id === formula.id)
+            this.selectedFormulas.splice(index, 1);
         }
       } else {
-        if (this.limit) {
-          this.selectedIngredients = [];
-        }
-        this.selectedIngredients.push({
-          percentage: null,
-          ingredient: ingredient,
+        this.selectedFormulas.push({
+          number: null,
+          formula: formula,
         });
       }
     }
   }
 
-  saveIngredients() {
+  saveFormulas() {
     this.modalController.dismiss({
-      ingredients: this.selectedIngredients,
+      formulas: this.selectedFormulas,
     });
   }
 
@@ -199,11 +186,11 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
     this.modalController.dismiss();
   }
 
-  isSelected(ingredient: IngredientModel): boolean {
+  isSelected(formula: FormulaModel): boolean {
     let isSelected = false;
-    if (this.selectedIngredients !== undefined) {
-      this.selectedIngredients.map((selectedIngredient) => {
-        if (ingredient.id == selectedIngredient.ingredient.id) {
+    if (this.selectedFormulas !== undefined) {
+      this.selectedFormulas.map((selectedFormula) => {
+        if (formula.id == selectedFormula.formula.id) {
           isSelected = true;
         }
       });

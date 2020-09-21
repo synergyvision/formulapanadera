@@ -11,9 +11,9 @@ import { DECIMALS } from "src/app/config/formats";
 })
 export class FormulaItemComponent {
   @Input() formula: FormulaModel;
-  @Input() type: string;
   @Input() clickable: boolean = false;
   @Input() even: boolean = false;
+  @Input() selected: boolean = false;
 
   currency = CURRENCY;
 

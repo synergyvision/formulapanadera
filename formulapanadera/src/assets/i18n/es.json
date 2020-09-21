@@ -134,7 +134,9 @@
   "production": {
     "name": "Producción",
     "create": "Crear producción",
-    "update": "Modificar producción"
+    "update": "Modificar producción",
+    "production_name": "Nombre",
+    "empty": "No se encontraron producciones"
   },
   "steps": {
     "1": "Preparación",

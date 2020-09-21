@@ -15,7 +15,7 @@ import { ICONS } from "src/app/config/icons";
   templateUrl: "ingredient-listing.page.html",
   styleUrls: [
     "./styles/ingredient-listing.page.scss",
-    "./styles/ingredient-listing.filter.scss",
+    "../../../shared/styles/filter.scss",
   ],
 })
 export class IngredientListingPage implements OnInit, OnDestroy {

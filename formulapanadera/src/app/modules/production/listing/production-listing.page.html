@@ -11,5 +11,25 @@
 </ion-header>
 
 <ion-content class="production-content">
-  <p (click)="productionDetails()">Details</p>
+  <span *ngIf="productions?.length > 0; else emptyBlock">
+    <p
+      *ngFor="let production of productions; index as i"
+      (click)="productionDetails(production)"
+    >
+      {{production.name}}
+    </p>
+  </span>
+
+  <ng-template #emptyBlock>
+    <ion-row class="empty-block">
+      <ion-col class="ion-text-center ion-padding">
+        <h5>
+          {{ 'production.empty' | translate }}<br /><a
+            (click)="createProduction()"
+            >{{ 'production.create' | translate }}</a
+          >
+        </h5>
+      </ion-col>
+    </ion-row>
+  </ng-template>
 </ion-content>

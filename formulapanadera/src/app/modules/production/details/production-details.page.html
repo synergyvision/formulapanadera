@@ -7,7 +7,7 @@
     </ion-buttons>
     <ion-title> {{'production.name' | translate}} </ion-title>
     <ion-buttons slot="primary">
-      <ion-button>
+      <ion-button (click)="presentOptions()">
         <ion-icon
           slot="icon-only"
           [ios]="ICONS.ellipsis_h"

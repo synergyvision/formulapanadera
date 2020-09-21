@@ -6,7 +6,8 @@ import { Routes, RouterModule } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
 import { TranslateModule } from "@ngx-translate/core";
 import { ComponentsModule } from "src/app/shared/components/components.module";
-import { ProductionManagePage } from './production-manage.page';
+import { ProductionManagePage } from "./production-manage.page";
+import { FormulaListingResolver } from "src/app/core/resolvers/formula-listing.resolver";
 
 const routes: Routes = [
   {
@@ -26,5 +27,6 @@ const routes: Routes = [
     ComponentsModule,
   ],
   declarations: [ProductionManagePage],
+  providers: [FormulaListingResolver],
 })
 export class ProductionManagePageModule {}

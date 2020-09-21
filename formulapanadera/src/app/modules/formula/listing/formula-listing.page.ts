@@ -16,7 +16,7 @@ import { ICONS } from "src/app/config/icons";
   templateUrl: "formula-listing.page.html",
   styleUrls: [
     "./styles/formula-listing.page.scss",
-    "./styles/formula-listing.filter.scss",
+    "../../../shared/styles/filter.scss",
   ],
 })
 export class FormulaListingPage implements OnInit, OnDestroy {
