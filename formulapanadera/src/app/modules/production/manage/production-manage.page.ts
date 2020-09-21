@@ -129,7 +129,7 @@ export class ProductionManagePage implements OnInit {
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
-        selectedIngredients: formulas,
+        selectedFormulas: formulas,
       },
     });
     await modal.present();

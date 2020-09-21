@@ -57,6 +57,7 @@
     "public": "Pública",
     "can_clone": "Puede ser clonada",
     "cost": {
+      "name": "Costo",
       "unitary": "Costo unitario",
       "total": "Costo total"
     },
@@ -136,6 +137,7 @@
     "create": "Crear producción",
     "update": "Modificar producción",
     "production_name": "Nombre",
+    "details":"Detalles",
     "empty": "No se encontraron producciones"
   },
   "steps": {

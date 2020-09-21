@@ -1,0 +1,66 @@
+:host {
+  --page-margin: var(--app-fair-margin);
+  --page-background: var(--app-background);
+
+  --page-background-shade: var(--app-background-shade);
+  --page-tags-gutter: 5px;
+}
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+.title-row {
+  width: 100%;
+  padding: 0;
+
+  .production-name {
+    text-align: start;
+    color: var(--ion-color-primary);
+  }
+
+  .production-formula-name {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ion-color-secondary);
+  }
+
+  .production-title-name {
+    text-align: center;
+    color: var(--ion-color-secondary);
+  }
+
+  .production-subtitle-name {
+    text-align: start;
+    color: var(--ion-color-secondary);
+    font-size: 13px;
+  }
+}
+
+.present-list {
+  font-size: 13px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.present-ingredients {
+  padding-bottom: 0px;
+  padding-top: 0px;
+  .present-ingredients-col {
+    padding: 0;
+  }
+}
+
+.details-card {
+  .details-content {
+    padding: 10px;
+  }
+}
+
+.arrow-col {
+  align-self: center;
+  text-align: end;
+  ion-icon {
+    vertical-align: bottom;
+  }
+}

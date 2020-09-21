@@ -1,0 +1,27 @@
+.formulas-list {
+  font-size: 13px;
+  border: 1px solid var(--ion-color-primary);
+  text-align: end;
+  margin: 10px 0px;
+
+  .title-row {
+    border-bottom: 1px solid var(--ion-color-primary);
+    font-style: bold;
+    text-align: end;
+    .title-name {
+      text-align: start;
+    }
+  }
+
+  .formulas-row {
+    .formula-name {
+      text-align: start;
+    }
+  }
+
+  .total-row {
+    .total-value {
+      border-top: 1px solid var(--ion-color-light-shade);
+    }
+  }
+}

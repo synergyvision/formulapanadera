@@ -18,4 +18,138 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="manage-production-content"></ion-content>
+<ion-content class="manage-production-content">
+  <section class="production-details-fields fields-section">
+    <ion-list>
+      <ion-item class="production-title">
+        <ion-row class="title-row">
+          <ion-col>
+            <h5 class="production-title-name">
+              <strong>{{production.name}}</strong>
+            </h5>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-list>
+    <ion-row class="present-list">
+      <ion-col>
+        <app-formulas-list [formulas]="formulas"></app-formulas-list>
+      </ion-col>
+    </ion-row>
+    <ion-row class="present-list">
+      <ion-col>
+        <ion-list lines="full" class="present-title">
+          <ion-item
+            class="production-title"
+            (click)="showIngredients = !showIngredients"
+          >
+            <ion-row class="title-row">
+              <ion-col size="9">
+                <h5 class="production-name">
+                  {{'ingredients.name' | translate}}
+                </h5>
+              </ion-col>
+              <ion-col size="3" class="arrow-col">
+                <ion-icon
+                  [name]="showIngredients?ICONS.arrow_up:ICONS.arrow_down"
+                  button
+                ></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+        </ion-list>
+        <app-production-ingredients-list
+          *ngIf="showIngredients"
+          [formulas]="formulas"
+        ></app-production-ingredients-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="present-list">
+      <ion-col>
+        <ion-list lines="full" class="present-title">
+          <ion-item
+            class="production-title"
+            (click)="showDetails = !showDetails"
+          >
+            <ion-row class="title-row">
+              <ion-col size="9">
+                <h5 class="production-name">
+                  {{'production.details' | translate}}
+                </h5>
+              </ion-col>
+              <ion-col size="3" class="arrow-col">
+                <ion-icon
+                  [name]="showDetails?ICONS.arrow_up:ICONS.arrow_down"
+                  button
+                ></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+        </ion-list>
+        <ion-card *ngIf="showDetails" class="details-card">
+          <ion-list lines="full" class="present-title present-ingredients">
+            <ion-row *ngFor="let item of formulas">
+              <ion-col size="12" class="present-ingredients-col">
+                <ion-item
+                  class="production-title present-ingredients-item"
+                  (click)="item.show = !item.show"
+                >
+                  <ion-row class="title-row">
+                    <ion-col size="9">
+                      <h5 class="production-name production-formula-name">
+                        {{item.formula.name}}
+                      </h5>
+                    </ion-col>
+                    <ion-col size="3" class="arrow-col">
+                      <ion-icon
+                        [name]="item.show?ICONS.arrow_up:ICONS.arrow_down"
+                        button
+                      ></ion-icon>
+                    </ion-col>
+                  </ion-row>
+                </ion-item>
+                <div *ngIf="item.show" class="details-content">
+                  <app-ingredients-list
+                    [ingredients]="item.formula.ingredients"
+                    [bakers_percentage]="item.bakers_percentage"
+                  >
+                  </app-ingredients-list>
+                  <span *ngFor="let step of item.formula.steps">
+                    <app-ingredients-list
+                      *ngIf="step.ingredients"
+                      [ingredients]="step.ingredients"
+                      [name]="step.name"
+                      [bakers_percentage]="item.total_weight/100"
+                    >
+                    </app-ingredients-list>
+                  </span>
+                  <span *ngIf="item.ingredients_formula.length>0 && item.show">
+                    <ion-item class="production-subtitle">
+                      <ion-row class="title-row">
+                        <ion-col size="9">
+                          <h5 class="production-subtitle-name">
+                            {{'ingredients.subingredients' | translate}}
+                          </h5>
+                        </ion-col>
+                      </ion-row>
+                    </ion-item>
+                    <span>
+                      <app-ingredients-list
+                        *ngFor="let ingredientFormula of item.ingredients_formula"
+                        [ingredients]="ingredientFormula.ingredient.formula.ingredients"
+                        [bakers_percentage]="ingredientFormula.bakers_percentage"
+                        [compensation]="ingredientFormula.ingredient.formula.compensation_percentage"
+                        [name]="ingredientFormula.ingredient.name"
+                      >
+                      </app-ingredients-list>
+                    </span>
+                  </span>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-list>
+        </ion-card> </ion-col
+    ></ion-row>
+  </section>
+</ion-content>

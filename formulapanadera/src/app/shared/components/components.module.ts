@@ -13,6 +13,8 @@ import { IngredientsListComponent } from "./ingredients-list/ingredients-list.co
 import { FormulaStepComponent } from "./formula-step/formula-step.component";
 import { MixingStepsComponent } from "./mixing-steps/mixing-steps.component";
 import { HydrationBarComponent } from "./hydration-bar/hydration-bar.component";
+import { FormulasListComponent } from "./formulas-list/formulas-list.component";
+import { ProductionIngredientsComponent } from "./production-ingredients/production-ingredients.component";
 
 @NgModule({
   imports: [
@@ -28,8 +30,10 @@ import { HydrationBarComponent } from "./hydration-bar/hydration-bar.component";
     FormulaItemComponent,
     HydrationBarComponent,
     IngredientsListComponent,
+    FormulasListComponent,
     FormulaStepComponent,
     MixingStepsComponent,
+    ProductionIngredientsComponent,
   ],
   exports: [
     ShowHidePasswordComponent,
@@ -37,8 +41,10 @@ import { HydrationBarComponent } from "./hydration-bar/hydration-bar.component";
     FormulaItemComponent,
     HydrationBarComponent,
     IngredientsListComponent,
+    FormulasListComponent,
     FormulaStepComponent,
     MixingStepsComponent,
+    ProductionIngredientsComponent,
     ShellModule,
   ],
 })
