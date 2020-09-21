@@ -1,14 +1,14 @@
 import { Component, HostBinding, OnInit, OnDestroy } from "@angular/core";
 import { IngredientModel } from "../../../core/models/ingredient.model";
 import { ShellModel } from "../../../shared/shell/shell.model";
-import { environment } from "../../../../environments/environment";
 import { FormGroup, FormControl } from "@angular/forms";
 import { DataStore } from "../../../shared/shell/data-store";
 import { Subscription, ReplaySubject, Observable, merge } from "rxjs";
 import { IngredientService } from "../../../core/services/ingredient.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { switchMap, map, finalize } from "rxjs/operators";
-import { CURRENCY } from 'src/app/config/configuration';
+import { switchMap, map } from "rxjs/operators";
+import { APP_URL, CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { ICONS } from "src/app/config/icons";
 
 @Component({
   selector: "app-ingredient-listing",
@@ -19,6 +19,9 @@ import { CURRENCY } from 'src/app/config/configuration';
   ],
 })
 export class IngredientListingPage implements OnInit, OnDestroy {
+  ICONS = ICONS;
+  APP_URL = APP_URL;
+
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
   isFlourForm: FormGroup;
@@ -88,18 +91,11 @@ export class IngredientListingPage implements OnInit, OnDestroy {
             filteredDataSource
           );
 
-          const searchingShellModel = [
-            new IngredientModel(),
-            new IngredientModel(),
-            new IngredientModel(),
-            new IngredientModel(),
-            new IngredientModel(),
-            new IngredientModel(),
-            new IngredientModel(),
-            new IngredientModel(),
-            new IngredientModel(),
-            new IngredientModel(),
-          ];
+          const searchingShellModel = [];
+          for (let index = 0; index < LOADING_ITEMS; index++) {
+            searchingShellModel.push(new IngredientModel());
+          }
+
           const dataSourceWithShellObservable = DataStore.AppendShell(
             filteredDataSource,
             searchingShellModel
@@ -158,14 +154,27 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   }
 
   createIngredient() {
-    this.router.navigateByUrl("menu/ingredient/manage");
+    this.router.navigateByUrl(
+      APP_URL.menu.name +
+        "/" +
+        APP_URL.menu.routes.ingredient.main +
+        "/" +
+        APP_URL.menu.routes.ingredient.routes.management
+    );
   }
 
   ingredientDetails(ingredient: IngredientModel) {
     if (ingredient.id !== undefined) {
-      this.router.navigateByUrl("menu/ingredient/details", {
-        state: { ingredient: ingredient },
-      });
+      this.router.navigateByUrl(
+        APP_URL.menu.name +
+          "/" +
+          APP_URL.menu.routes.ingredient.main +
+          "/" +
+          APP_URL.menu.routes.ingredient.routes.details,
+        {
+          state: { ingredient: ingredient },
+        }
+      );
     }
   }
 }

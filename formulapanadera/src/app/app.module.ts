@@ -15,7 +15,6 @@ import { HttpClientModule, HttpClient } from "@angular/common/http";
 
 import { CoreModule } from "./core/core.module";
 import { AlertModule } from './shared/alert/alert.module';
-import { ComponentsModule } from './shared/components/components.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");

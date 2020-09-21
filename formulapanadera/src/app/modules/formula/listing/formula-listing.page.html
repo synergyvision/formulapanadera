@@ -1,10 +1,10 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-icon slot="start" class="btn-med" name="book-outline"></ion-icon>
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.formula"></ion-icon>
     <ion-title> {{ 'formulas.name' | translate }} </ion-title>
     <ion-buttons slot="end">
       <ion-button class="create-formula" (click)="createFormula()">
-        <ion-icon slot="icon-only" name="add"></ion-icon>
+        <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -27,7 +27,7 @@
           class="filters-btn"
           (click)="showFilters = !showFilters"
         >
-          <ion-icon slot="icon-only" name="options"></ion-icon>
+          <ion-icon slot="icon-only" [name]="ICONS.options"></ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>

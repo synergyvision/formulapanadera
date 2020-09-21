@@ -1,15 +1,17 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="menu/formula"></ion-back-button>
+      <ion-back-button
+        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.formula.main "
+      ></ion-back-button>
     </ion-buttons>
     <ion-title> {{'formulas.name' | translate}} </ion-title>
     <ion-buttons slot="primary">
       <ion-button (click)="presentOptions()">
         <ion-icon
           slot="icon-only"
-          ios="ellipsis-horizontal"
-          md="ellipsis-vertical"
+          [ios]="ICONS.ellipsis_h"
+          [md]="ICONS.ellipsis_v"
         ></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -107,7 +109,7 @@
               </ion-col>
               <ion-col size="3" class="arrow-col"
                 ><ion-icon
-                  [name]="showIngredients?'chevron-up-outline':'chevron-down-outline'"
+                  [name]="showIngredients?ICONS.arrow_up:ICONS.arrow_down"
                   button
                 ></ion-icon
               ></ion-col>
@@ -142,7 +144,7 @@
               </ion-col>
               <ion-col size="3" class="arrow-col">
                 <ion-icon
-                  [name]="showSubIngredients?'chevron-up-outline':'chevron-down-outline'"
+                  [name]="showSubIngredients?ICONS.arrow_up:ICONS.arrow_down"
                   button
                 ></ion-icon>
               </ion-col>
@@ -174,7 +176,7 @@
               </ion-col>
               <ion-col size="3" class="arrow-col">
                 <ion-icon
-                  [name]="showMixing?'chevron-up-outline':'chevron-down-outline'"
+                  [name]="showMixing?ICONS.arrow_up:ICONS.arrow_down"
                   button
                 ></ion-icon>
               </ion-col>
@@ -198,7 +200,7 @@
               </ion-col>
               <ion-col size="3" class="arrow-col">
                 <ion-icon
-                  [name]="showSteps?'chevron-up-outline':'chevron-down-outline'"
+                  [name]="showSteps?ICONS.arrow_up:ICONS.arrow_down"
                   button
                 >
                 </ion-icon>

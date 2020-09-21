@@ -6,6 +6,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { IngredientPickerModal } from "./ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "./mixing/ingredient-mixing.modal";
 import { ComponentsModule } from "../components/components.module";
+import { FormulaStepsModal } from "./steps/formula-steps.modal";
 
 @NgModule({
   imports: [
@@ -16,7 +17,11 @@ import { ComponentsModule } from "../components/components.module";
     TranslateModule,
     ComponentsModule,
   ],
-  declarations: [IngredientPickerModal, IngredientMixingModal],
-  exports: [IngredientPickerModal, IngredientMixingModal],
+  declarations: [
+    IngredientPickerModal,
+    IngredientMixingModal,
+    FormulaStepsModal,
+  ],
+  exports: [IngredientPickerModal, IngredientMixingModal, FormulaStepsModal],
 })
 export class ModalModule {}

@@ -1,22 +1,22 @@
 <ion-tabs>
   <ion-tab-bar slot="bottom" class="tabs-content">
     <ion-tab-button tab="production">
-      <ion-icon name="flame-outline"></ion-icon>
+      <ion-icon [name]="ICONS.production"></ion-icon>
       <ion-label>{{ 'production.name' | translate }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="formula">
-      <ion-icon name="book-outline"></ion-icon>
+      <ion-icon [name]="ICONS.formula"></ion-icon>
       <ion-label>{{ 'formulas.name' | translate }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="ingredient">
-      <ion-icon name="reader-outline"></ion-icon>
+      <ion-icon [name]="ICONS.ingredient"></ion-icon>
       <ion-label>{{ 'ingredients.name' | translate }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="settings">
-      <ion-icon name="settings-outline"></ion-icon>
+      <ion-icon [name]="ICONS.settings"></ion-icon>
       <ion-label>{{ 'settings.name' | translate }}</ion-label>
     </ion-tab-button>
   </ion-tab-bar>

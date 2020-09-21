@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { APP_URL, MAIN_PAGE } from "src/app/config/configuration";
 import { TabsPage } from "./tabs.page";
 
 const routes: Routes = [
@@ -8,26 +9,26 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: "production",
+        path: APP_URL.menu.routes.production.main,
         loadChildren: () =>
           import("../production/production.module").then(
             (m) => m.ProductionPageModule
           ),
       },
       {
-        path: "formula",
+        path: APP_URL.menu.routes.formula.main,
         loadChildren: () =>
           import("../formula/formula.module").then((m) => m.FormulaPageModule),
       },
       {
-        path: "ingredient",
+        path: APP_URL.menu.routes.ingredient.main,
         loadChildren: () =>
           import("../ingredient/ingredient.module").then(
             (m) => m.IngredientPageModule
           ),
       },
       {
-        path: "settings",
+        path: APP_URL.menu.routes.settings.main,
         loadChildren: () =>
           import("../settings/settings.module").then(
             (m) => m.SettingsPageModule
@@ -35,14 +36,14 @@ const routes: Routes = [
       },
       {
         path: "",
-        redirectTo: "/menu/production",
+        redirectTo: MAIN_PAGE,
         pathMatch: "full",
       },
     ],
   },
   {
     path: "",
-    redirectTo: "/menu/production",
+    redirectTo: MAIN_PAGE,
     pathMatch: "full",
   },
 ];

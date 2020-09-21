@@ -4,7 +4,8 @@ import { IngredientModel } from "../../../core/models/ingredient.model";
 import { Router } from "@angular/router";
 import { ActionSheetController } from "@ionic/angular";
 import { LanguageService } from "src/app/core/services/language.service";
-import { CURRENCY } from "src/app/config/configuration";
+import { APP_URL, CURRENCY } from "src/app/config/configuration";
+import { ICONS } from "src/app/config/icons";
 
 @Component({
   selector: "app-ingredient-details",
@@ -12,6 +13,9 @@ import { CURRENCY } from "src/app/config/configuration";
   styleUrls: ["./styles/ingredient-details.page.scss"],
 })
 export class IngredientDetailsPage implements OnInit {
+  APP_URL = APP_URL;
+  ICONS = ICONS;
+
   ingredient: IngredientModel = new IngredientModel();
   type: string = "simple";
 
@@ -34,7 +38,9 @@ export class IngredientDetailsPage implements OnInit {
 
   ngOnInit() {
     if (this.state === undefined) {
-      this.router.navigateByUrl("menu/ingredient");
+      this.router.navigateByUrl(
+        APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+      );
     } else {
       this.ingredient = this.state.ingredient;
       if (this.ingredient.formula) {
@@ -49,7 +55,7 @@ export class IngredientDetailsPage implements OnInit {
       buttons: [
         {
           text: this.languageService.getTerm("action.update"),
-          icon: "create-outline",
+          icon: ICONS.create,
           cssClass: "action-icon",
           handler: () => {
             this.updateIngredient();
@@ -57,7 +63,7 @@ export class IngredientDetailsPage implements OnInit {
         },
         {
           text: this.languageService.getTerm("action.cancel"),
-          icon: "close",
+          icon: ICONS.close,
           role: "cancel",
           cssClass: "cancel-icon",
           handler: () => {},
@@ -68,8 +74,15 @@ export class IngredientDetailsPage implements OnInit {
   }
 
   updateIngredient() {
-    this.router.navigateByUrl("menu/ingredient/manage", {
-      state: { ingredient: this.ingredient },
-    });
+    this.router.navigateByUrl(
+      APP_URL.menu.name +
+        "/" +
+        APP_URL.menu.routes.ingredient.main +
+        "/" +
+        APP_URL.menu.routes.ingredient.routes.management,
+      {
+        state: { ingredient: this.ingredient },
+      }
+    );
   }
 }

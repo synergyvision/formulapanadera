@@ -6,7 +6,9 @@
   <ion-header>
     <ion-toolbar color="secondary">
       <ion-buttons slot="start">
-        <ion-back-button defaultHref="menu/ingredient"></ion-back-button>
+        <ion-back-button
+          [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.ingredient.main"
+        ></ion-back-button>
       </ion-buttons>
       <ion-title *ngIf="!update">
         {{ 'ingredients.create' | translate }}
@@ -193,7 +195,7 @@
                   (click)="pickIngredient()"
                   class="pick-ingredient"
                 >
-                  <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+                  <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
                 </ion-button>
               </ion-item>
             </ion-card-header>
@@ -229,7 +231,7 @@
                   </ion-col>
                 </ion-row>
                 <ion-icon
-                  name="close-outline"
+                  [name]="ICONS.close"
                   class="delete-step"
                   slot="end"
                   color="danger"
@@ -252,7 +254,7 @@
                   class="mix-ingredient"
                   [disabled]="!ingredient.formula.ingredients"
                 >
-                  <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+                  <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
                 </ion-button>
               </ion-item>
             </ion-card-header>

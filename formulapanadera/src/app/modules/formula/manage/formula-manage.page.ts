@@ -10,35 +10,39 @@ import {
   FormulaModel,
   StepDetailsModel,
 } from "src/app/core/models/formula.model";
-import { FormulaStepsModal } from "../steps/formula-steps.modal";
+import { FormulaStepsModal } from "src/app/shared/modal/steps/formula-steps.modal";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { LanguageService } from "src/app/core/services/language.service";
 import { Router } from "@angular/router";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
-import { Plugins } from "@capacitor/core";
 import { BAKERY_STEPS } from "src/app/config/formula";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
-
-const { Storage } = Plugins;
+import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { APP_URL } from "src/app/config/configuration";
+import { ICONS } from "src/app/config/icons";
+import { UserModel } from "src/app/core/models/user.model";
 
 @Component({
   selector: "app-formula-manage",
   templateUrl: "formula-manage.page.html",
   styleUrls: [
     "./styles/formula-manage.page.scss",
-    "./../../../../shared/styles/confirm.alert.scss",
+    "./../../../shared/styles/confirm.alert.scss",
   ],
 })
 export class FormulaManagePage {
+  APP_URL = APP_URL;
+  ICONS = ICONS;
+
   formula: FormulaModel = new FormulaModel();
   manageFormulaForm: FormGroup;
   formulaUnit = "gr";
   temperatureUnit = "C";
   update: boolean = false;
   public = false;
-  current_user;
+  current_user = new UserModel();
 
   constructor(
     private formulaService: FormulaService,
@@ -48,14 +52,12 @@ export class FormulaManagePage {
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
-    private router: Router
+    private router: Router,
+    private userStorageService: UserStorageService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     let state = this.router.getCurrentNavigation().extras.state;
-    Storage.get({ key: "user" }).then((user) => {
-      this.current_user = JSON.parse(user.value);
-    });
     if (state == undefined) {
       this.manageFormulaForm = new FormGroup({
         name: new FormControl(null, Validators.required),
@@ -67,7 +69,7 @@ export class FormulaManagePage {
         can_clone: false,
         cloned: true,
         creator: {
-          name: this.current_user.displayName,
+          name: this.current_user.name,
           email: this.current_user.email,
           date: new Date(),
         },
@@ -102,6 +104,7 @@ export class FormulaManagePage {
         this.formula.steps.push(ingredient);
       });
     }
+    this.current_user = await this.userStorageService.getUser();
   }
 
   changeUnit(ev: any) {
@@ -261,7 +264,7 @@ export class FormulaManagePage {
         this.current_user.email !== this.formula.user.creator.email
       ) {
         this.formula.user.modifiers.push({
-          name: this.current_user.displayName,
+          name: this.current_user.name,
           email: this.current_user.email,
           date: new Date(),
         });
@@ -273,15 +276,30 @@ export class FormulaManagePage {
         this.formula.user.owner = this.current_user.email;
       }
       this.formulaCRUDService.updateFormula(this.formula).then(() => {
-        this.router.navigateByUrl("menu/formula");
+        this.router.navigateByUrl(
+          APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+        );
       });
     } else {
+      this.formula.user = {
+        owner: this.current_user.email,
+        can_clone: this.formula.user.can_clone,
+        cloned: true,
+        creator: {
+          name: this.current_user.name,
+          email: this.current_user.email,
+          date: new Date(),
+        },
+        modifiers: [],
+      };
       if (this.public) {
         this.formula.user.owner = "";
         this.formula.user.cloned = false;
       }
       this.formulaCRUDService.createFormula(this.formula).then(() => {
-        this.router.navigateByUrl("menu/formula");
+        this.router.navigateByUrl(
+          APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+        );
       });
     }
   }
@@ -304,7 +322,9 @@ export class FormulaManagePage {
           cssClass: "confirm-alert-accept",
           handler: () => {
             this.formulaCRUDService.deleteFormula(this.formula.id).then(() => {
-              this.router.navigateByUrl("menu/formula");
+              this.router.navigateByUrl(
+                APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+              );
             });
           },
         },

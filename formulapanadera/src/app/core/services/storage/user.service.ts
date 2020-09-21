@@ -24,4 +24,8 @@ export class UserStorageService {
     let storage_user = JSON.stringify(user);
     Storage.set({ key: this.key, value: storage_user });
   }
+
+  public async clear() {
+    Storage.clear();
+  }
 }

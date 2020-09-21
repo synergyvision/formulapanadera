@@ -66,7 +66,7 @@
               <a
                 class="forgot-btn"
                 fill="clear"
-                [routerLink]="[APP_URL.auth.forgot_password]"
+                [routerLink]="['/'+APP_URL.auth.name+'/'+APP_URL.auth.routes.forgot_password]"
               >
                 {{ 'auth.forgot_password' | translate }}
               </a> </ion-col
@@ -74,7 +74,7 @@
               <a
                 class="signup-btn"
                 fill="clear"
-                [routerLink]="[APP_URL.auth.sign_up]"
+                [routerLink]="['/'+APP_URL.auth.name+'/'+APP_URL.auth.routes.sign_up]"
               >
                 {{ 'auth.sign_up' | translate }}
               </a>

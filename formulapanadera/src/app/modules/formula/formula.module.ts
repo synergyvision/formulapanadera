@@ -2,24 +2,25 @@ import { IonicModule } from "@ionic/angular";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
+import { APP_URL } from "src/app/config/configuration";
 
 const routes: Routes = [
   {
-    path: "",
+    path: APP_URL.menu.routes.formula.routes.listing,
     loadChildren: () =>
       import("./listing/formula-listing.module").then(
         (m) => m.FormulaListingPageModule
       ),
   },
   {
-    path: "manage",
+    path: APP_URL.menu.routes.formula.routes.management,
     loadChildren: () =>
-      import("./management/formula-management.module").then(
-        (m) => m.FormulaManagementModule
+      import("./manage/formula-manage.module").then(
+        (m) => m.FormulaManagePageModule
       ),
   },
   {
-    path: "details",
+    path: APP_URL.menu.routes.formula.routes.details,
     loadChildren: () =>
       import("./details/formula-details.module").then(
         (m) => m.FormulaDetailsPageModule

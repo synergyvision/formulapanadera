@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-icon slot="start" class="btn-med" name="settings-outline"></ion-icon>
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.settings"></ion-icon>
     <ion-title> {{ 'settings.name' | translate }} </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -25,21 +25,25 @@
     <ion-item-divider sticky>
       <ion-label>{{ 'settings.name' | translate }}</ion-label>
     </ion-item-divider>
-    <ion-item button (click)="openLanguageChooser()" class="change-language-option">
-      <ion-icon name="language-outline"></ion-icon>
+    <ion-item
+      button
+      (click)="openLanguageChooser()"
+      class="change-language-option"
+    >
+      <ion-icon [name]="ICONS.language"></ion-icon>
       <ion-label>{{'settings.language.change' | translate}}</ion-label>
     </ion-item>
     <ion-item
       button
-      [routerLink]="['change-password']"
+      [routerLink]="[APP_URL.menu.routes.settings.routes.change_password]"
       routerDirection="forward"
       class="change-password-option"
     >
-      <ion-icon name="lock-closed-outline"></ion-icon>
+      <ion-icon [name]="ICONS.change_password"></ion-icon>
       <ion-label>{{'settings.password.change' | translate}}</ion-label>
     </ion-item>
     <ion-item button (click)="signOut()" class="sign-out-option">
-      <ion-icon name="log-out-outline"></ion-icon>
+      <ion-icon [name]="ICONS.sign_out"></ion-icon>
       <ion-label>{{'settings.logout' | translate}}</ion-label>
     </ion-item>
   </ion-list>

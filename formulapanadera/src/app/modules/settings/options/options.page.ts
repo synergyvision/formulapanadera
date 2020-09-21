@@ -2,10 +2,10 @@ import { Component } from "@angular/core";
 import { AuthService } from "../../../core/services/firebase/auth.service";
 import { Router } from "@angular/router";
 import { UserModel } from "src/app/core/models/user.model";
-import { Plugins } from "@capacitor/core";
-import { LanguageAlert } from 'src/app/shared/alert/language/language.alert';
-
-const { Storage } = Plugins;
+import { LanguageAlert } from "src/app/shared/alert/language/language.alert";
+import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { APP_URL } from "src/app/config/configuration";
+import { ICONS } from "src/app/config/icons";
 
 @Component({
   selector: "app-options",
@@ -16,22 +16,26 @@ const { Storage } = Plugins;
   ],
 })
 export class OptionsPage {
+  ICONS = ICONS;
+  APP_URL = APP_URL;
+
   user: UserModel = new UserModel();
 
   constructor(
     private router: Router,
     private languageAlert: LanguageAlert,
-    private authService: AuthService
+    private authService: AuthService,
+    private userStorageService: UserStorageService
   ) {}
 
   async ngOnInit(): Promise<void> {
-    await Storage.get({ key: "user" }).then((data) => {
-      if (data.value) {
-        this.user = JSON.parse(data.value);
-      } else {
-        this.router.navigate(["auth/sign-in"], { replaceUrl: true });
-      }
-    });
+    this.user = await this.userStorageService.getUser();
+    if (!this.user) {
+      this.router.navigate(
+        [APP_URL.auth.name + "/" + APP_URL.auth.routes.sign_in],
+        { replaceUrl: true }
+      );
+    }
   }
 
   async openLanguageChooser() {
@@ -40,8 +44,11 @@ export class OptionsPage {
 
   signOut() {
     this.authService.signOut().subscribe(() => {
-      Storage.clear();
-      this.router.navigate(["auth/sign-in"], { replaceUrl: true });
+      this.userStorageService.clear();
+      this.router.navigate(
+        [APP_URL.auth.name + "/" + APP_URL.auth.routes.sign_in],
+        { replaceUrl: true }
+      );
     });
   }
 }

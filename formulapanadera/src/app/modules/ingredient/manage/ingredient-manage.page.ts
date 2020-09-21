@@ -7,7 +7,6 @@ import {
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 
 import { IngredientModel } from "../../../core/models/ingredient.model";
-import { IngredientService } from "../../../core/services/ingredient.service";
 import { IngredientCRUDService } from "../../../core/services/firebase/ingredient.service";
 import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
@@ -16,7 +15,8 @@ import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredien
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
 import { FormulaService } from "src/app/core/services/formula.service";
-import { CURRENCY } from "src/app/config/configuration";
+import { APP_URL, CURRENCY } from "src/app/config/configuration";
+import { ICONS } from "src/app/config/icons";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -27,6 +27,9 @@ import { CURRENCY } from "src/app/config/configuration";
   ],
 })
 export class IngredientManagePage implements OnInit {
+  APP_URL = APP_URL;
+  ICONS = ICONS;
+
   ingredient: IngredientModel = new IngredientModel();
   manageIngredientForm: FormGroup;
   update: boolean = false;
@@ -35,7 +38,6 @@ export class IngredientManagePage implements OnInit {
   currency = CURRENCY;
 
   constructor(
-    private ingredientService: IngredientService,
     private ingredientCRUDService: IngredientCRUDService,
     private formulaService: FormulaService,
     private languageService: LanguageService,
@@ -183,11 +185,15 @@ export class IngredientManagePage implements OnInit {
     if (!this.update) {
       this.ingredient.can_be_deleted = true;
       this.ingredientCRUDService.createIngredient(this.ingredient).then(() => {
-        this.router.navigateByUrl("menu/ingredient");
+        this.router.navigateByUrl(
+          APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+        );
       });
     } else {
       this.ingredientCRUDService.updateIngredient(this.ingredient).then(() => {
-        this.router.navigateByUrl("menu/ingredient");
+        this.router.navigateByUrl(
+          APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+        );
       });
     }
   }
@@ -213,7 +219,13 @@ export class IngredientManagePage implements OnInit {
               .deleteIngredient(this.ingredient.id)
               .then(() => {
                 this.ngZone
-                  .run(() => this.router.navigate(["menu/ingredient"]))
+                  .run(() =>
+                    this.router.navigate([
+                      APP_URL.menu.name +
+                        "/" +
+                        APP_URL.menu.routes.ingredient.main,
+                    ])
+                  )
                   .then();
               });
           },

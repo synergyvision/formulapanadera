@@ -7,10 +7,9 @@ import { FormulaService } from "src/app/core/services/formula.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormGroup, FormControl } from "@angular/forms";
 import { switchMap, map } from "rxjs/operators";
-import { Plugins } from "@capacitor/core";
-import { CURRENCY } from "src/app/config/configuration";
-
-const { Storage } = Plugins;
+import { APP_URL, CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { ICONS } from "src/app/config/icons";
 
 @Component({
   selector: "app-formula-listing",
@@ -21,6 +20,9 @@ const { Storage } = Plugins;
   ],
 })
 export class FormulaListingPage implements OnInit, OnDestroy {
+  ICONS = ICONS;
+  APP_URL = APP_URL;
+
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
   searchQuery: string;
@@ -44,7 +46,8 @@ export class FormulaListingPage implements OnInit, OnDestroy {
   constructor(
     private formulaService: FormulaService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private userStorageService: UserStorageService
   ) {}
 
   ngOnDestroy(): void {
@@ -61,11 +64,8 @@ export class FormulaListingPage implements OnInit, OnDestroy {
       upper: new FormControl(),
     });
 
-    let user_email: string;
-    await Storage.get({ key: "user" }).then((user) => {
-      user_email = JSON.parse(user.value).email;
-    });
-
+    let user_email: string = await (await this.userStorageService.getUser())
+      .email;
     this.route.data.subscribe((resolvedRouteData) => {
       this.formulaDataStore = resolvedRouteData["data"];
 
@@ -86,18 +86,10 @@ export class FormulaListingPage implements OnInit, OnDestroy {
             user_email
           );
 
-          const searchingShellModel = [
-            new FormulaModel(),
-            new FormulaModel(),
-            new FormulaModel(),
-            new FormulaModel(),
-            new FormulaModel(),
-            new FormulaModel(),
-            new FormulaModel(),
-            new FormulaModel(),
-            new FormulaModel(),
-            new FormulaModel(),
-          ];
+          const searchingShellModel = [];
+          for (let index = 0; index < LOADING_ITEMS; index++) {
+            searchingShellModel.push(new FormulaModel());
+          }
           const dataSourceWithShellObservable = DataStore.AppendShell(
             filteredDataSource,
             searchingShellModel
@@ -155,14 +147,27 @@ export class FormulaListingPage implements OnInit, OnDestroy {
   }
 
   createFormula() {
-    this.router.navigateByUrl("menu/formula/manage");
+    this.router.navigateByUrl(
+      APP_URL.menu.name +
+        "/" +
+        APP_URL.menu.routes.formula.main +
+        "/" +
+        APP_URL.menu.routes.formula.routes.management
+    );
   }
 
   formulaDetails(formula: FormulaModel) {
     if (formula.id !== undefined) {
-      this.router.navigateByUrl("menu/formula/details", {
-        state: { formula: formula },
-      });
+      this.router.navigateByUrl(
+        APP_URL.menu.name +
+          "/" +
+          APP_URL.menu.routes.formula.main +
+          "/" +
+          APP_URL.menu.routes.formula.routes.details,
+        {
+          state: { formula: formula },
+        }
+      );
     }
   }
 }

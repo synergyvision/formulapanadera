@@ -16,13 +16,46 @@ export const LOADING_ITEMS = 10;
 // Page URLs
 export const APP_URL = {
   auth: {
-    sign_up: "/auth/sign-up",
-    sign_in: "/auth/sign-in",
-    forgot_password: "/auth/forgot-password",
+    name: "auth",
+    routes: {
+      sign_up: "sign-up",
+      sign_in: "sign-in",
+      forgot_password: "forgot-password",
+    },
   },
   menu: {
-    production: {
-      main: "/menu/production",
+    name: "menu",
+    routes: {
+      production: {
+        main: "production",
+      },
+      formula: {
+        main: "formula",
+        routes: {
+          listing: "",
+          details: "details",
+          management: "manage",
+        },
+      },
+      ingredient: {
+        main: "ingredient",
+        routes: {
+          listing: "",
+          details: "details",
+          management: "manage",
+        },
+      },
+      settings: {
+        main: "settings",
+        routes: {
+          settings: "",
+          change_password: "change-password",
+        },
+      },
     },
   },
 };
+
+// Main page
+export const MAIN_PAGE =
+  "/" + APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main;

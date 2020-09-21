@@ -6,7 +6,9 @@
   <ion-header>
     <ion-toolbar color="secondary">
       <ion-buttons slot="start">
-        <ion-back-button defaultHref="menu/formula"></ion-back-button>
+        <ion-back-button
+          [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.formula.main"
+        ></ion-back-button>
       </ion-buttons>
       <ion-title *ngIf="!update"> {{'formulas.create' | translate}} </ion-title>
       <ion-title *ngIf="update"> {{'formulas.update' | translate}} </ion-title>
@@ -63,7 +65,8 @@
             </ion-item>
           </ion-col>
         </ion-row>
-        <ion-row *ngIf="current_user.email === formula.user.creator.email"
+        <ion-row
+          *ngIf="!update || current_user.email === formula.user.creator.email"
           ><ion-col
             ><ion-item class="input-item">
               <ion-label color="primary"
@@ -77,7 +80,9 @@
               >
               </ion-checkbox> </ion-item></ion-col
         ></ion-row>
-        <ion-row *ngIf="current_user.email === formula.user.creator.email">
+        <ion-row
+          *ngIf="!update || current_user.email === formula.user.creator.email"
+        >
           <ion-col>
             <ion-item class="input-item">
               <ion-label color="primary"
@@ -106,7 +111,7 @@
               (click)="pickIngredient()"
               class="pick-ingredient"
             >
-              <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+              <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-item>
           <ion-item class="unit-select-item">
@@ -164,7 +169,7 @@
               </ion-col>
             </ion-row>
             <ion-icon
-              name="close-outline"
+              [name]="ICONS.close"
               class="delete-step"
               slot="end"
               color="danger"
@@ -187,7 +192,7 @@
               class="mix-ingredient"
               [disabled]="!formula.ingredients"
             >
-              <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+              <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-item>
         </ion-card-header>
@@ -204,7 +209,7 @@
               (click)="describeSteps()"
               class="describe-steps"
             >
-              <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+              <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-item>
         </ion-card-header>
@@ -219,8 +224,12 @@
                 (click)="pickStepIngredient(step)"
                 class="add-step-ingredient"
               >
-                <ion-icon button name="add-outline" slot="end"></ion-icon>
-                <ion-icon button name="reader-outline" slot="end"></ion-icon>
+                <ion-icon button [name]="ICONS.add" slot="end"></ion-icon>
+                <ion-icon
+                  button
+                  [name]="ICONS.ingredient"
+                  slot="end"
+                ></ion-icon>
               </span>
             </ion-item-divider>
             <app-formula-step
@@ -263,7 +272,7 @@
                   </ion-col>
                 </ion-row>
                 <ion-icon
-                  name="close-outline"
+                  [name]="ICONS.close"
                   class="delete-step"
                   slot="end"
                   color="danger"

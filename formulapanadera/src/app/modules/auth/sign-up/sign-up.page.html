@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button [defaultHref]="APP_URL.auth.sign_in"></ion-back-button>
+      <ion-back-button
+        [defaultHref]="'/'+APP_URL.auth.name+'/'+APP_URL.auth.routes.sign_in"
+      ></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'auth.sign_up' | translate }}</ion-title>
     <ion-buttons
@@ -91,7 +93,10 @@
           </div>
           <ion-row class="other-auth-options-row">
             <ion-col class="align-text-end">
-              <a class="login-btn" [routerLink]="[APP_URL.auth.sign_in]">
+              <a
+                class="login-btn"
+                [routerLink]="['/'+APP_URL.auth.name+'/'+APP_URL.auth.routes.sign_in]"
+              >
                 {{ 'auth.account_question' | translate }}
               </a>
             </ion-col>

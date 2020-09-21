@@ -16,11 +16,10 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
 import { ModifierModel, UserModel } from "src/app/core/models/user.model";
 import { DATE_FORMAT, DECIMALS } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
-import { Plugins } from "@capacitor/core";
-import { CURRENCY } from "src/app/config/configuration";
+import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
-
-const { Storage } = Plugins;
+import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { ICONS } from "src/app/config/icons";
 
 @Component({
   selector: "app-formula-details",
@@ -32,6 +31,9 @@ const { Storage } = Plugins;
   ],
 })
 export class FormulaDetailsPage implements OnInit, OnDestroy {
+  APP_URL = APP_URL;
+  ICONS = ICONS;
+
   formula: FormulaModel = new FormulaModel();
   formulaUnit = "%";
   temperatureUnit = "C";
@@ -66,7 +68,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private alertController: AlertController,
     private toastController: ToastController,
     private router: Router,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private userStorageService: UserStorageService
   ) {
     this.showIngredients = true;
     this.showSubIngredients = true;
@@ -75,18 +78,18 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.state = this.router.getCurrentNavigation().extras.state;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.state === undefined) {
-      this.router.navigateByUrl("menu/formula");
+      this.router.navigateByUrl(
+        APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+      );
     } else {
       this.formula = this.state.formula;
       this.units = this.formula.units;
       this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
       this.steps = JSON.parse(JSON.stringify(this.formula.steps));
     }
-    Storage.get({ key: "user" }).then((user) => {
-      this.user = JSON.parse(user.value);
-    });
+    this.user = await this.userStorageService.getUser();
   }
 
   ngOnDestroy() {
@@ -210,7 +213,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     ) {
       buttons.push({
         text: this.languageService.getTerm("action.update"),
-        icon: "create-outline",
+        icon: ICONS.create,
         cssClass: "action-icon",
         handler: () => {
           this.updateFormula();
@@ -225,7 +228,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       // If not public but is cloned and was modified or user is creator
       buttons.push({
         text: this.languageService.getTerm("action.share"),
-        icon: "share-outline",
+        icon: ICONS.share,
         cssClass: "action-icon",
         handler: () => {
           this.shareFormula();
@@ -242,7 +245,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ) {
         buttons.push({
           text: this.languageService.getTerm("action.clone"),
-          icon: "add-circle-outline",
+          icon: ICONS.clone,
           cssClass: "action-icon",
           handler: () => {
             this.cloneFormula();
@@ -264,7 +267,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     buttons.push(
       {
         text: this.languageService.getTerm("credits.name"),
-        icon: "people-outline",
+        icon: ICONS.credits,
         cssClass: "action-icon",
         handler: () => {
           this.showCredits();
@@ -272,7 +275,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       },
       {
         text: this.languageService.getTerm("action.cancel"),
-        icon: "close",
+        icon: ICONS.close,
         role: "cancel",
         cssClass: "cancel-icon",
         handler: () => {},
@@ -289,9 +292,16 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   updateFormula() {
     this.units = this.formula.units;
     this.calculateFormula();
-    this.router.navigateByUrl("menu/formula/manage", {
-      state: { formula: this.formula },
-    });
+    this.router.navigateByUrl(
+      APP_URL.menu.name +
+        "/" +
+        APP_URL.menu.routes.formula.main +
+        "/" +
+        APP_URL.menu.routes.formula.routes.management,
+      {
+        state: { formula: this.formula },
+      }
+    );
   }
 
   async shareFormula() {
@@ -356,7 +366,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
               this.formula.name
             } (${this.languageService.getTerm("action.copy")})`;
             this.formulaCRUDService.createFormula(formula).then(() => {
-              this.router.navigateByUrl("menu/formula");
+              this.router.navigateByUrl(
+                APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+              );
             });
           },
         },
@@ -383,7 +395,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           cssClass: "confirm-alert-accept",
           handler: () => {
             this.formulaCRUDService.deleteFormula(this.formula.id).then(() => {
-              this.router.navigateByUrl("menu/formula");
+              this.router.navigateByUrl(
+                APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+              );
             });
           },
         },
@@ -437,7 +451,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       duration: 5000,
       buttons: [
         {
-          icon: "close",
+          icon: ICONS.close,
           role: "cancel",
           handler: () => {},
         },
