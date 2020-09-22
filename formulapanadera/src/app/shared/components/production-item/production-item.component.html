@@ -1,0 +1,33 @@
+<ion-item
+  detail="true"
+  button="true"
+  class="production-item"
+  [ngClass]="{ 'background-gray': even }"
+>
+  <ion-row class="production-item-wrapper">
+    <ion-col class="productions-wrapper">
+      <ion-row>
+        <ion-col>
+          <h2 class="productions-name">
+            <app-text-shell
+              animation="bouncing"
+              lines="3"
+              [data]="production.name"
+            ></app-text-shell>
+          </h2>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="production.id !== undefined">
+        <ion-col size="6" class="properties-col"> </ion-col>
+        <ion-col size="6" class="cost-col">
+          <p class="productions-description production-cost">
+            {{ totalCost() }}
+            <span class="production-currency"
+              >{{ currency }}/{{ "formulas.unit_letter" | translate }}</span
+            >
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+</ion-item>

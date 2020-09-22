@@ -25,6 +25,7 @@ export class ProductionDetailsPage implements OnInit {
   showDetails: boolean;
 
   production: ProductionModel = new ProductionModel();
+  original_production: ProductionModel = new ProductionModel();
   formulas: Array<FormulaPresentModel & { show: boolean }>;
 
   state;
@@ -47,13 +48,17 @@ export class ProductionDetailsPage implements OnInit {
         APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
       );
     } else {
-      this.production = this.state.production;
-      this.formulas = [];
+      this.production = JSON.parse(JSON.stringify(this.state.production));
+      this.original_production = JSON.parse(
+        JSON.stringify(this.state.production)
+      );
       this.calculateFormulas();
     }
   }
 
   calculateFormulas() {
+    this.formulas = [];
+    this.production = JSON.parse(JSON.stringify(this.original_production));
     let presentFormula: FormulaPresentModel;
     this.production.formulas.forEach((formula) => {
       presentFormula = this.calculateFormula(formula);

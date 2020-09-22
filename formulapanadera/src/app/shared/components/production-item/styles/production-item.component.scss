@@ -1,4 +1,4 @@
-.formula-item {
+.production-item {
   color: var(--ion-color-medium);
 }
 
@@ -6,24 +6,20 @@
   --background: rgba(221, 221, 221, 0.322) !important;
 }
 
-.background-selected {
-  --background: var(--ion-color-tertiary) !important;
-}
-
-.formula-item-wrapper {
+.production-item-wrapper {
   --ion-grid-column-padding: 0px;
   padding: 10px 0 10px 0;
   width: 100%;
   align-items: center;
 }
 
-.formulas-wrapper {
+.productions-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   padding-left: 0;
 
-  .formulas-name {
+  .productions-name {
     margin: 0px;
     font-size: 16px;
     font-weight: bold;
@@ -35,7 +31,7 @@
     align-self: flex-end;
   }
 
-  .formulas-description {
+  .productions-description {
     font-size: 15px;
     margin: 0px;
   }
@@ -45,24 +41,14 @@
     align-self: flex-end;
     padding-bottom: 2px;
 
-    .formula-cost {
+    .production-cost {
       color: var(--ion-color-secondary) !important;
       font-size: 17px !important;
       margin: 0;
-      .formula-currency {
+      .production-currency {
         font-size: 12px !important;
         color: var(--ion-color-medium);
       }
     }
   }
-}
-
-.properties-icon {
-  color: cornflowerblue !important;
-  margin-bottom: -2px;
-}
-
-.formula-user {
-  font-size: 12px;
-  margin: 0px 0 5px 0;
 }

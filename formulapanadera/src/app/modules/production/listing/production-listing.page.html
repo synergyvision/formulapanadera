@@ -8,18 +8,86 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
+  <ion-toolbar class="filters-toolbar">
+    <ion-row class="searchbar-row" align-items-center>
+      <ion-col>
+        <ion-searchbar
+          class="items-searchbar"
+          animated
+          [(ngModel)]="searchQuery"
+          (ionChange)="searchList()"
+          placeholder="{{'ingredients.filter.name' | translate}}"
+        ></ion-searchbar>
+      </ion-col>
+      <ion-col class="call-to-action-col">
+        <ion-button
+          fill="clear"
+          color="secondary"
+          class="filters-btn"
+          (click)="showFilters = !showFilters"
+        >
+          <ion-icon slot="icon-only" [name]="ICONS.options"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <form [formGroup]="costRangeForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row">
+        <ion-col size="12">
+          <div class="range-header cost-range-header">
+            <span class="range-label"
+              >{{'ingredients.filter.cost' | translate}} ({{currency}})</span
+            >
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="cost-input">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="floating"
+              >{{'ingredients.filter.min' | translate}}</ion-label
+            >
+            <ion-input
+              type="number"
+              formControlName="lower"
+              class="ingredient-cost-lower"
+              (ionChange)="searchList()"
+            >
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col class="cost-input">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="floating"
+              >{{'ingredients.filter.max' | translate}}
+            </ion-label>
+            <ion-input
+              type="number"
+              formControlName="upper"
+              class="ingredient-cost-upper"
+              (ionChange)="searchList()"
+            >
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </form>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="production-content">
-  <span *ngIf="productions?.length > 0; else emptyBlock">
-    <p
+  <ion-list
+    lines="none"
+    class="productions-list"
+    *ngIf="productions?.length > 0; else emptyBlock"
+  >
+    <app-production-item
       *ngFor="let production of productions; index as i"
       (click)="productionDetails(production)"
-    >
-      {{production.name}}
-    </p>
-  </span>
-
+      [production]="production"
+      [even]="(i%2==0)"
+    ></app-production-item>
+  </ion-list>
   <ng-template #emptyBlock>
     <ion-row class="empty-block">
       <ion-col class="ion-text-center ion-padding">

@@ -15,6 +15,7 @@ import { MixingStepsComponent } from "./mixing-steps/mixing-steps.component";
 import { HydrationBarComponent } from "./hydration-bar/hydration-bar.component";
 import { FormulasListComponent } from "./formulas-list/formulas-list.component";
 import { ProductionIngredientsComponent } from "./production-ingredients/production-ingredients.component";
+import { ProductionItemComponent } from "./production-item/production-item.component";
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { ProductionIngredientsComponent } from "./production-ingredients/product
     FormulasListComponent,
     FormulaStepComponent,
     MixingStepsComponent,
+    ProductionItemComponent,
     ProductionIngredientsComponent,
   ],
   exports: [
@@ -44,6 +46,7 @@ import { ProductionIngredientsComponent } from "./production-ingredients/product
     FormulasListComponent,
     FormulaStepComponent,
     MixingStepsComponent,
+    ProductionItemComponent,
     ProductionIngredientsComponent,
     ShellModule,
   ],

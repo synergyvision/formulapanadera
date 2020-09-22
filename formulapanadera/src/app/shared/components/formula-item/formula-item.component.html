@@ -23,11 +23,6 @@
             {{ formula.user.creator.name }}
           </p>
           <p class="formulas-description">
-            <ion-icon
-              class="shared-icon"
-              *ngIf="formula.user.cloned == true"
-              name="people"
-            ></ion-icon>
             <ion-icon class="properties-icon" name="water"></ion-icon
             >{{ hydration() }}%
           </p>

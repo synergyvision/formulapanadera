@@ -64,7 +64,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
       upper: new FormControl(),
     });
 
-    let user_email: string = await (await this.userStorageService.getUser())
+    let user_email: string = (await this.userStorageService.getUser())
       .email;
     this.route.data.subscribe((resolvedRouteData) => {
       this.formulaDataStore = resolvedRouteData["data"];
