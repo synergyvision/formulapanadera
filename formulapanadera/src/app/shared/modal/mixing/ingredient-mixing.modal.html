@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" name="list-outline"></ion-icon>
+    <ion-title> {{'formulas.mixing_order' | translate}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()" class="create-ingredient">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ingredient-content">
+  <ion-list lines="full" class="ingredients-list">
+    <span *ngFor="let mixStep of formulaMixing; index as i">
+      <ion-item-divider class="divider">
+        <ion-label>{{'formulas.step' | translate}} {{i+1}}</ion-label>
+        <ion-icon
+          name="close-outline"
+          class="delete-step"
+          slot="end"
+          color="danger"
+          button
+          *ngIf="mixStep.ingredients.length==0"
+          (click)="deleteStep(mixStep)"
+        ></ion-icon>
+      </ion-item-divider>
+      <ion-item
+        *ngFor="let item of mixStep.ingredients"
+        class="ingredient-item"
+      >
+        <ion-row class="ingredient-item-wrapper">
+          <ion-col size="9" class="ingredients-wrapper">
+            <ion-row>
+              <ion-col>
+                <h2 class="ingredients-name">{{item.ingredient.name}}</h2>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+          <ion-col size="3" *ngIf="editable">
+            <ion-select
+              [value]="i"
+              (ionChange)="changeMixingOrder($event, i, item)"
+              class="step-selector"
+            >
+              <ion-select-option
+                *ngFor="let index of formulaMixing; index as j"
+                [value]="j"
+                >{{j+1}}</ion-select-option
+              >
+            </ion-select>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+
+      <ion-item *ngIf="editable || mixStep.description">
+        <ion-label color="primary" position="floating"
+          >{{'formulas.description' | translate}}</ion-label
+        >
+        <ion-textarea
+          class="step-description"
+          [autoGrow]="!editable"
+          type="text"
+          [(ngModel)]="mixStep.description"
+          [readonly]="!editable"
+        ></ion-textarea>
+      </ion-item>
+    </span>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="editable">
+    <ion-fab-button (click)="addStep()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<ion-footer *ngIf="editable">
+  <ion-row class="form-actions-wrapper">
+    <ion-col>
+      <ion-button
+        class="submit-btn"
+        expand="block"
+        color="primary"
+        (click)="saveMixing()"
+        fill="solid"
+        [disabled]="stepsEmpty()"
+      >
+        {{ 'action.confirm' | translate }}</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-footer>

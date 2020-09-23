@@ -1,9 +1,10 @@
 import { Component, NgZone } from "@angular/core";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 import { PasswordValidator } from "../../../core/validators/password.validator";
-import { AuthService } from "../../../core/services/auth.service";
-import { LanguageService } from "../../../core/services/language.service";
+import { AuthService } from "../../../core/services/firebase/auth.service";
 import { Router } from "@angular/router";
+import { APP_URL } from "src/app/config/configuration";
+import { ICONS } from "src/app/config/icons";
 
 @Component({
   selector: "app-change-password",
@@ -11,15 +12,16 @@ import { Router } from "@angular/router";
   styleUrls: ["./styles/change-password.page.scss"],
 })
 export class ChangePasswordPage {
+  APP_URL = APP_URL;
+  ICONS = ICONS;
+
   passwordForm: FormGroup;
   matching_passwords_group: FormGroup;
   submitError: string;
-  validation_messages: Object;
   redirectLoader: HTMLIonLoadingElement;
 
   constructor(
     private authService: AuthService,
-    private languageService: LanguageService,
     private router: Router,
     private ngZone: NgZone
   ) {
@@ -39,8 +41,6 @@ export class ChangePasswordPage {
     this.passwordForm = new FormGroup({
       matching_passwords: this.matching_passwords_group,
     });
-
-    this.validation_messages = this.getValidationMessages();
   }
 
   async dismissLoading() {
@@ -52,7 +52,8 @@ export class ChangePasswordPage {
   redirectToSettingsPage() {
     this.dismissLoading();
     this.ngZone.run(() => {
-      const previousUrl = "menu/settings";
+      const previousUrl =
+        APP_URL.menu.name + "/" + APP_URL.menu.routes.settings.main;
       this.router.navigate([previousUrl], { replaceUrl: true });
     });
   }
@@ -72,41 +73,5 @@ export class ChangePasswordPage {
       .catch((error) => {
         this.submitError = error.message;
       });
-  }
-
-  getValidationMessages(): Object {
-    return {
-      password: [
-        {
-          type: "required",
-          message: this.languageService.getTerm("validation.required.password"),
-        },
-        {
-          type: "minlength",
-          message: this.languageService.getTerm(
-            "validation.minlength.password",
-            {
-              number: "6",
-            }
-          ),
-        },
-      ],
-      confirm_password: [
-        {
-          type: "required",
-          message: this.languageService.getTerm(
-            "validation.required.confirm_password"
-          ),
-        },
-      ],
-      matching_passwords: [
-        {
-          type: "areNotEqual",
-          message: this.languageService.getTerm(
-            "validation.areNotEqual.password"
-          ),
-        },
-      ],
-    };
   }
 }

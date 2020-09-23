@@ -5,8 +5,7 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { IonicModule } from "@ionic/angular";
 import { ChangePasswordPage } from "./change-password.page";
-import { ComponentsModule } from "../../../components/components.module";
-import { LanguageService } from "src/app/core/services/language.service";
+import { ComponentsModule } from "../../../shared/components/components.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 const routes: Routes = [
@@ -27,6 +26,5 @@ const routes: Routes = [
     ComponentsModule,
   ],
   declarations: [ChangePasswordPage],
-  providers: [LanguageService],
 })
 export class ChangePasswordPageModule {}

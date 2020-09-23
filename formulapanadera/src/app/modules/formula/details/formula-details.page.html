@@ -1,0 +1,235 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button
+        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.formula.main "
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title> {{'formulas.name' | translate}} </ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentOptions()">
+        <ion-icon
+          slot="icon-only"
+          [ios]="ICONS.ellipsis_h"
+          [md]="ICONS.ellipsis_v"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="manage-formula-content">
+  <section class="formula-details-fields fields-section">
+    <ion-list>
+      <ion-item class="formula-title">
+        <ion-row class="title-row">
+          <ion-col
+            ><h5 class="formula-title-name">
+              <strong>{{formula.name}}</strong>
+            </h5></ion-col
+          >
+        </ion-row>
+      </ion-item>
+    </ion-list>
+    <app-hydration-bar [hydration]="hydration/100"></app-hydration-bar>
+    <ion-row>
+      <ion-col class="detail-col">
+        <ion-item class="formula-detail">
+          <ion-label color="primary" position="floating"
+            >{{'formulas.units' | translate}}</ion-label
+          >
+          <ion-input
+            [(ngModel)]="units"
+            (ionChange)="changeUnits($event)"
+          ></ion-input>
+        </ion-item>
+      </ion-col> </ion-row
+    ><ion-row>
+      <ion-col size="6" class="detail-col">
+        <ion-item class="formula-detail">
+          <ion-label color="secondary" position="floating" class="label"
+            >{{'formulas.unit_weight' | translate}}</ion-label
+          >
+          <p>{{formula.unit_weight}} {{'ingredients.grams' | translate}}</p>
+        </ion-item> </ion-col
+      ><ion-col size="6" class="detail-col">
+        <ion-item class="formula-detail">
+          <ion-label color="secondary" position="floating" class="label"
+            >{{'formulas.total_weight' | translate}}</ion-label
+          >
+          <p>{{total_weight}} {{'ingredients.grams' | translate}}</p>
+        </ion-item>
+      </ion-col></ion-row
+    ><ion-row
+      ><ion-col class="detail-col">
+        <ion-item class="formula-detail">
+          <ion-label color="secondary" position="floating" class="label"
+            >{{'formulas.bakers_percentage' | translate}}</ion-label
+          >
+          <p>{{bakers_percentage}} {{'ingredients.grams' | translate}}/%</p>
+        </ion-item> </ion-col
+      ><ion-col class="detail-col">
+        <ion-item class="formula-detail">
+          <ion-label color="secondary" position="floating" class="label"
+            >{{'ingredients.hydration' | translate}}</ion-label
+          >
+          <p>{{hydration}} %</p>
+        </ion-item>
+      </ion-col></ion-row
+    >
+    <ion-row>
+      <ion-col class="detail-col">
+        <ion-item class="formula-detail">
+          <ion-label color="secondary" position="floating" class="label"
+            >{{'formulas.cost.unitary' | translate}}</ion-label
+          >
+          <p>{{unitary_cost}} {{currency}}</p>
+        </ion-item>
+      </ion-col>
+      <ion-col class="detail-col">
+        <ion-item class="formula-detail">
+          <ion-label color="secondary" position="floating" class="label"
+            >{{'formulas.cost.total' | translate}}</ion-label
+          >
+          <p>{{total_cost}} {{currency}}</p>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="steps-list">
+      <ion-col>
+        <ion-list>
+          <ion-item
+            class="formula-title"
+            (click)="showIngredients = !showIngredients"
+          >
+            <ion-row class="title-row">
+              <ion-col size="9">
+                <h5 class="formula-name">{{'ingredients.name' | translate}}</h5>
+              </ion-col>
+              <ion-col size="3" class="arrow-col"
+                ><ion-icon
+                  [name]="showIngredients?ICONS.arrow_up:ICONS.arrow_down"
+                  button
+                ></ion-icon
+              ></ion-col>
+            </ion-row>
+          </ion-item>
+        </ion-list>
+        <app-ingredients-list
+          *ngIf="showIngredients"
+          [ingredients]="ingredients"
+          [bakers_percentage]="bakers_percentage"
+        >
+        </app-ingredients-list>
+        <span *ngFor="let step of steps">
+          <app-ingredients-list
+            *ngIf="step.ingredients"
+            [ingredients]="step.ingredients"
+            [name]="step.name"
+            [bakers_percentage]="total_weight/100"
+          >
+          </app-ingredients-list>
+        </span>
+        <span *ngIf="ingredients_formula.length>0 && showIngredients">
+          <ion-item
+            class="formula-subtitle"
+            (click)="showSubIngredients = !showSubIngredients"
+          >
+            <ion-row class="title-row">
+              <ion-col size="9">
+                <h5 class="formula-subtitle-name">
+                  {{'ingredients.subingredients' | translate}}
+                </h5>
+              </ion-col>
+              <ion-col size="3" class="arrow-col">
+                <ion-icon
+                  [name]="showSubIngredients?ICONS.arrow_up:ICONS.arrow_down"
+                  button
+                ></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+          <span *ngIf="showSubIngredients">
+            <app-ingredients-list
+              *ngFor="let ingredientFormula of ingredients_formula"
+              [ingredients]="ingredientFormula.ingredient.formula.ingredients"
+              [bakers_percentage]="ingredientFormula.bakers_percentage"
+              [compensation]="ingredientFormula.ingredient.formula.compensation_percentage"
+              [name]="ingredientFormula.ingredient.name"
+            >
+            </app-ingredients-list
+          ></span>
+        </span>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="steps-list">
+      <ion-col>
+        <ion-list>
+          <ion-item class="formula-title" (click)="showMixing = !showMixing">
+            <ion-row class="title-row">
+              <ion-col size="9">
+                <h5 class="formula-name">
+                  {{'formulas.mixing_order' | translate}}
+                </h5>
+              </ion-col>
+              <ion-col size="3" class="arrow-col">
+                <ion-icon
+                  [name]="showMixing?ICONS.arrow_up:ICONS.arrow_down"
+                  button
+                ></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+        </ion-list>
+        <app-mixing-steps
+          *ngIf="showMixing"
+          [steps]="formula.mixing"
+        ></app-mixing-steps>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="steps-list"
+      ><ion-col>
+        <ion-list>
+          <ion-item class="formula-title" (click)="showSteps = !showSteps">
+            <ion-row class="title-row">
+              <ion-col size="9">
+                <h5 class="formula-name">{{'formulas.steps' | translate}}</h5>
+              </ion-col>
+              <ion-col size="3" class="arrow-col">
+                <ion-icon
+                  [name]="showSteps?ICONS.arrow_up:ICONS.arrow_down"
+                  button
+                >
+                </ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+        </ion-list>
+        <ion-select
+          *ngIf="showSteps"
+          [value]="temperatureUnit"
+          class="temperature-selector"
+          (ionChange)="changeTemperature($event)"
+        >
+          <ion-select-option value="C">ºC</ion-select-option>
+          <ion-select-option value="F">ºF</ion-select-option>
+        </ion-select>
+        <ion-list lines="full" class="steps-list" *ngIf="showSteps">
+          <span *ngFor="let step of steps; index as i">
+            <ion-item-divider class="divider">
+              <ion-label
+                >{{ "formulas.step" | translate }} {{ step.number + 1 }}: {{
+                step.name }}</ion-label
+              >
+            </ion-item-divider>
+            <app-formula-step
+              [step]="step"
+              [temperatureUnit]="temperatureUnit"
+            ></app-formula-step> </span
+        ></ion-list> </ion-col
+    ></ion-row>
+  </section>
+</ion-content>

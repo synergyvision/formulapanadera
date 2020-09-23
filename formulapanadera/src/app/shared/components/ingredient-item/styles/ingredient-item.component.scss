@@ -1,0 +1,74 @@
+.ingredient-item {
+  color: var(--ion-color-medium);
+}
+
+.background-gray {
+  --background: rgba(221, 221, 221, 0.322) !important;
+}
+
+.background-selected {
+  --background: var(--ion-color-tertiary) !important;
+}
+
+.ingredient-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  align-items: center;
+}
+
+.ingredients-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 0;
+
+  .ingredients-name {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+    color: var(--ion-color-primary);
+  }
+
+  .ingredients-description {
+    font-size: 15px;
+    margin: 0px;
+  }
+
+  .ingredient-hydration {
+    ion-icon {
+      color: cornflowerblue !important;
+    }
+  }
+
+  .properties-col {
+    align-self: flex-end;
+  }
+
+  .cost-col {
+    text-align: center;
+    align-self: flex-end;
+    padding-bottom: 2px;
+
+    .ingredient-cost {
+      color: var(--ion-color-secondary) !important;
+      font-size: 17px;
+      margin: 0;
+      .ingredient-currency {
+        font-size: 12px !important;
+        color: var(--ion-color-medium);
+      }
+    }
+  }
+}
+
+.properties-icon {
+  margin-bottom: -2px;
+}
+
+.image-icon {
+  padding: 2px 5px 0px 2px !important;
+  margin-top: -5px;
+}

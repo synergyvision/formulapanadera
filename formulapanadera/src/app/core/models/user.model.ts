@@ -1,10 +1,8 @@
-import { ShellModel } from "../../utils/shell/shell.model";
-
-export class UserModel extends ShellModel {
+export class UserModel {
   name: string;
   email: string;
+}
 
-  constructor() {
-    super();
-  }
+export class ModifierModel extends UserModel {
+  date: any;
 }

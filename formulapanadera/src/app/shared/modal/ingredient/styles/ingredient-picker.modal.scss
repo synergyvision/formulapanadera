@@ -1,0 +1,37 @@
+:host {
+  --page-margin: var(--app-narrow-margin);
+}
+
+.btn-med {
+  font-size: 26px;
+  margin: 0 0 0 10px;
+}
+
+.ingredients-list {
+  padding-top: 0;
+  ion-icon {
+    padding-right: 16px;
+    color: var(--ion-color-primary);
+  }
+}
+
+.empty-block {
+  height: 100%;
+
+  ion-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+}
+
+ion-select {
+  width: 100%;
+
+  justify-content: center;
+}
+
+.ios.title-default {
+  padding: 0 0;
+}

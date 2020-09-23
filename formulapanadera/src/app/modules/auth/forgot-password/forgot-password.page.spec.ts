@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { IonicModule } from "@ionic/angular";
 
@@ -6,7 +6,7 @@ import { ForgotPasswordPage } from "./forgot-password.page";
 import { TranslateModule } from "@ngx-translate/core";
 import { SignInPageModule } from "../sign-in/sign-in.module";
 import { LanguageService } from "src/app/core/services/language.service";
-import { AuthService } from "src/app/core/services/auth.service";
+import { AuthService } from "src/app/core/services/firebase/auth.service";
 
 describe("ForgotPasswordPage", () => {
   let component: ForgotPasswordPage;
@@ -14,7 +14,7 @@ describe("ForgotPasswordPage", () => {
   let languageServiceSpy: any;
   let authServiceSpy: any;
 
-  beforeEach(async(() => {
+  beforeEach((() => {
     languageServiceSpy = jasmine.createSpyObj("LanguageService", {
       initLanguages: 0,
       openLanguageChooser: 0,

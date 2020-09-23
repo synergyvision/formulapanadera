@@ -1,0 +1,32 @@
+.step-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  align-items: center;
+  font-size: 14px;
+}
+
+.step-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: var(--page-margin);
+}
+
+.item-description {
+  font-size: 14px;
+  margin-left: -16px;
+  .label {
+    font-size: 12px;
+    margin-top: -10px;
+  }
+}
+
+.step-properties {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.step-description {
+  margin-left: -15px;
+}

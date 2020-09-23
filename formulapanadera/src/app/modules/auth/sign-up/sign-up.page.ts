@@ -1,32 +1,42 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+import { Component, NgZone, OnInit } from "@angular/core";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import { PasswordValidator } from "../../../core/validators/password.validator";
-import { AuthService } from "../../../core/services/auth.service";
+import { AuthService } from "../../../core/services/firebase/auth.service";
 import { Subscription } from "rxjs";
 import { LanguageService } from "../../../core/services/language.service";
+import { LanguageAlert } from "src/app/shared/alert/language/language.alert";
+import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { APP_URL } from "src/app/config/configuration";
+import { ICONS } from "src/app/config/icons";
+import { ASSETS } from "src/app/config/assets";
 
 @Component({
   selector: "app-sign-up",
   templateUrl: "./sign-up.page.html",
   styleUrls: [
     "./styles/sign-up.page.scss",
-    "./../../../utils/styles/change-language.alert.scss",
+    "./../../../shared/alert/language/styles/language.alert.scss",
   ],
 })
 export class SignUpPage implements OnInit {
+  APP_URL = APP_URL;
+  ICONS = ICONS;
+  ASSETS = ASSETS;
+
   signupForm: FormGroup;
   matching_passwords_group: FormGroup;
   submitError: string;
   redirectLoader: HTMLIonLoadingElement;
   authRedirectResult: Subscription;
-  validation_messages: Object;
 
   constructor(
     private router: Router,
     private authService: AuthService,
     private ngZone: NgZone,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private languageAlert: LanguageAlert,
+    private userStorageService: UserStorageService
   ) {
     this.matching_passwords_group = new FormGroup(
       {
@@ -52,11 +62,9 @@ export class SignUpPage implements OnInit {
       ),
       matching_passwords: this.matching_passwords_group,
     });
-
-    this.validation_messages = this.getValidationMessages();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.languageService.initLanguages();
   }
 
@@ -68,7 +76,8 @@ export class SignUpPage implements OnInit {
     // As we are calling the Angular router navigation inside a subscribe method, the navigation will be triggered outside Angular zone.
     // That's why we need to wrap the router navigation call inside an ngZone wrapper
     this.ngZone.run(() => {
-      const previousUrl = "menu/production";
+      const previousUrl =
+        APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main;
 
       // No need to store in the navigation history the sign-in page with redirect params (it's justa a mandatory mid-step)
       this.router.navigate([previousUrl], { replaceUrl: true });
@@ -90,8 +99,12 @@ export class SignUpPage implements OnInit {
     const values = this.signupForm.value;
     this.authService
       .signUp(values.email, values.matching_passwords.password)
-      .then((result) => {
-        result.user.updateProfile({ displayName: values.fullName });
+      .then(async (result) => {
+        await result.user.updateProfile({ displayName: values.fullName });
+        this.userStorageService.setUser({
+          name: values.fullName,
+          email: values.email,
+        });
         this.redirectLoggedUserToMainPage();
       })
       .catch((error) => {
@@ -100,58 +113,6 @@ export class SignUpPage implements OnInit {
   }
 
   async openLanguageChooser() {
-    await this.languageService.openLanguageChooser();
-  }
-
-  getValidationMessages(): Object {
-    return {
-      fullName: [
-        {
-          type: "required",
-          message: this.languageService.getTerm("validation.required.name"),
-        },
-      ],
-      email: [
-        {
-          type: "required",
-          message: this.languageService.getTerm("validation.required.email"),
-        },
-        {
-          type: "pattern",
-          message: this.languageService.getTerm("validation.pattern.email"),
-        },
-      ],
-      password: [
-        {
-          type: "required",
-          message: this.languageService.getTerm("validation.required.password"),
-        },
-        {
-          type: "minlength",
-          message: this.languageService.getTerm(
-            "validation.minlength.password",
-            {
-              number: "6",
-            }
-          ),
-        },
-      ],
-      confirm_password: [
-        {
-          type: "required",
-          message: this.languageService.getTerm(
-            "validation.required.confirm_password"
-          ),
-        },
-      ],
-      matching_passwords: [
-        {
-          type: "areNotEqual",
-          message: this.languageService.getTerm(
-            "validation.areNotEqual.password"
-          ),
-        },
-      ],
-    };
+    await this.languageAlert.openLanguageChooser();
   }
 }

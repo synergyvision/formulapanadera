@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { IonicModule } from "@ionic/angular";
 
 import { SignUpPage } from "./sign-up.page";
 import { TranslateModule } from "@ngx-translate/core";
 import { LanguageService } from "src/app/core/services/language.service";
-import { AuthService } from "src/app/core/services/auth.service";
+import { AuthService } from "src/app/core/services/firebase/auth.service";
 import { ProductionPageModule } from "../../production/production.module";
 
 describe("SignUpPage", () => {
@@ -14,7 +14,7 @@ describe("SignUpPage", () => {
   let languageServiceSpy: any;
   let authServiceSpy: any;
 
-  beforeEach(async(() => {
+  beforeEach((() => {
     languageServiceSpy = jasmine.createSpyObj("LanguageService", {
       initLanguages: 0,
       openLanguageChooser: 0,

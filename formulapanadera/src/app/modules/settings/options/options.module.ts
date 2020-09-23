@@ -4,17 +4,12 @@ import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 
 import { TranslateModule } from "@ngx-translate/core";
-import { LanguageService } from "../../../core/services/language.service";
 import { OptionsPage } from "./options.page";
-import { ProfileResolver } from "../../../core/resolvers/profile.resolver";
 
 const routes: Routes = [
   {
     path: "",
     component: OptionsPage,
-    resolve: {
-      data: ProfileResolver,
-    },
   },
 ];
 
@@ -26,6 +21,5 @@ const routes: Routes = [
     TranslateModule,
   ],
   declarations: [OptionsPage],
-  providers: [LanguageService, ProfileResolver],
 })
-export class SettingsPageModule {}
+export class OptionsPageModule {}

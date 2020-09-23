@@ -1,0 +1,24 @@
+@import "../../../theme/mixins/inputs/select-alert.scss";
+
+::ng-deep .confirm-alert {
+  @include select-alert();
+
+  // Variables should be in a deeper selector or after the mixin include to override default values
+  --select-alert-color: var(--ion-color-lightest);
+  --select-alert-background: var(--ion-color-danger);
+  --select-alert-margin: var(--app-fair-margin);
+
+  .alert-message {
+    display: block;
+    --select-alert-background: var(--ion-color-lightest);
+    padding-top: 20px !important;
+  }
+
+  .alert-button {
+    color: var(--ion-color-dark);
+  }
+
+  .alert-button-group {
+    justify-content: space-around;
+  }
+}

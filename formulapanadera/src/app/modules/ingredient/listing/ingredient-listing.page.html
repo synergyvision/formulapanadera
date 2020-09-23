@@ -1,0 +1,161 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.ingredient"></ion-icon>
+    <ion-title> {{ 'ingredients.name' | translate }} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="createIngredient()" class="create-ingredient">
+        <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="filters-toolbar">
+    <ion-row class="searchbar-row" align-items-center>
+      <ion-col>
+        <ion-searchbar
+          class="items-searchbar"
+          animated
+          [(ngModel)]="searchQuery"
+          (ionChange)="searchList()"
+          placeholder="{{'ingredients.filter.name' | translate}}"
+        ></ion-searchbar>
+      </ion-col>
+      <ion-col class="call-to-action-col">
+        <ion-button
+          fill="clear"
+          color="secondary"
+          class="filters-btn"
+          (click)="showFilters = !showFilters"
+        >
+          <ion-icon slot="icon-only" [name]="ICONS.options"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <form [formGroup]="hydrationRangeForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row">
+        <ion-col size="12">
+          <div class="range-header">
+            <span class="range-value"
+              >{{ hydrationRangeForm.controls.dual.value.lower }}</span
+            >
+            <span class="range-label"
+              >{{'ingredients.filter.hydration' | translate}}</span
+            >
+            <span class="range-value"
+              >{{ hydrationRangeForm.controls.dual.value.upper }}</span
+            >
+          </div>
+        </ion-col>
+        <ion-col size="12">
+          <ion-range
+            class="range-control"
+            formControlName="dual"
+            color="secondary"
+            pin="true"
+            dualKnobs="true"
+            (ionChange)="searchList()"
+            min="0"
+            max="100"
+            step="1"
+            debounce="400"
+          ></ion-range>
+        </ion-col>
+      </ion-row>
+    </form>
+    <form [formGroup]="costRangeForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row">
+        <ion-col size="12">
+          <div class="range-header cost-range-header">
+            <span class="range-label"
+              >{{'ingredients.filter.cost' | translate}}
+              ({{currency}}/{{'ingredients.grams' | translate}})</span
+            >
+          </div>
+        </ion-col> </ion-row
+      ><ion-row>
+        <ion-col class="cost-input">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="floating"
+              >{{'ingredients.filter.min' | translate}}</ion-label
+            ><ion-input
+              type="number"
+              formControlName="lower"
+              class="ingredient-cost-lower"
+              (ionChange)="searchList()"
+            ></ion-input
+          ></ion-item> </ion-col
+        ><ion-col class="cost-input">
+          <ion-item class="input-item"
+            ><ion-label color="primary" position="floating"
+              >{{'ingredients.filter.max' | translate}}
+            </ion-label>
+            <ion-input
+              type="number"
+              formControlName="upper"
+              class="ingredient-cost-upper"
+              (ionChange)="searchList()"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </form>
+    <form [formGroup]="isFlourForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row"
+        ><ion-col>
+          <ion-item lines="full">
+            <ion-label>{{'ingredients.filter.flour' | translate}}</ion-label>
+            <ion-select formControlName="value" (ionChange)="searchList()">
+              <ion-select-option value="all"
+                >{{'ingredients.filter.all' | translate}}</ion-select-option
+              >
+              <ion-select-option value="flour"
+                >{{'ingredients.filter.isFlour' | translate}}</ion-select-option
+              >
+              <ion-select-option value="notFlour"
+                >{{'ingredients.filter.notFlour' |
+                translate}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col></ion-row
+      >
+    </form>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ingredient-content">
+  <ion-segment (ionChange)="segmentChanged($event)" [value]="segment">
+    <ion-segment-button value="simple">
+      <ion-label>{{'ingredients.type.simple' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="compound">
+      <ion-label>{{'ingredients.type.compound' | translate}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-list
+    class="ingredients-list"
+    lines="none"
+    *ngIf="ingredients?.length > 0; else emptyBlock"
+  >
+    <app-ingredient-item
+      *ngFor="let ingredient of ingredients; index as i"
+      (click)="ingredientDetails(ingredient)"
+      [ingredient]="ingredient"
+      [clickable]="true"
+      [even]="(i%2==0)"
+    >
+    </app-ingredient-item>
+  </ion-list>
+  <ng-template #emptyBlock>
+    <ion-row class="empty-block">
+      <ion-col class="ion-text-center ion-padding">
+        <h5>
+          {{ 'ingredients.empty' | translate }}<br /><a
+            (click)="createIngredient()"
+            >{{ 'ingredients.create' | translate }}</a
+          >
+        </h5>
+      </ion-col>
+    </ion-row>
+  </ng-template>
+</ion-content>

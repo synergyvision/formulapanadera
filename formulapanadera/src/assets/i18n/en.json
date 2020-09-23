@@ -1,7 +1,17 @@
 {
   "action": {
     "ok": "OK",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "share": "Share",
+    "clone": "Clone",
+    "copy": "Copy",
+    "create": "Create",
+    "update": "Update",
+    "delete": "Delete",
+    "delete_question": "Do you want to delete {{item}}?",
+    "yes": "Yes",
+    "no": "No"
   },
   "input": {
     "fullName": "Full name",
@@ -9,20 +19,10 @@
     "password": "Password",
     "confirm_password": "Confirm password"
   },
-  "validation": {
-    "required": {
-      "name": "Name is required.",
-      "email": "Email is required.",
-      "password": "Password is required.",
-      "confirm_password": "Confirm password is required."
-    },
-    "pattern": {
-      "email": "Enter a valid email."
-    },
-    "minlength": {
-      "password": "Password must be at least {{number}} characters long."
-    },
-    "areNotEqual": { "password": "Passwords mismatch." }
+  "credits": {
+    "name": "Credits",
+    "creator": "Creator",
+    "modifiers": "Modified by"
   },
   "auth": {
     "sign_up": "Sign up",
@@ -33,6 +33,94 @@
     "recover": "Recover",
     "recover_indications": "Please enter your email address and we'll send you an email to reset your password.",
     "reset_password": "Reset password"
+  },
+  "formulas": {
+    "name": "Formulas",
+    "create": "Create formula",
+    "update": "Update formula",
+    "bakers_percentage": "Baker's percentage",
+    "formula_name": "Name",
+    "unit": "Unit",
+    "units": "Units",
+    "unit_letter": "u",
+    "weight": "Weight",
+    "unit_weight": "Unit weight",
+    "total_weight": "Total weight",
+    "ingredients": { "value": "Value" },
+    "mixing_order": "Mixing order",
+    "steps": "Steps",
+    "step": "Step",
+    "time": "Time",
+    "minutes": "Min.",
+    "temperature": "Temperature",
+    "description": "Description",
+    "public": "Public",
+    "can_clone": "Can be cloned",
+    "cost": {
+      "unitary": "Unitary cost",
+      "total": "Total cost"
+    },
+    "range": {
+      "min": "Min.",
+      "max": "Max."
+    },
+    "temperature_options": {
+      "no": "Doesn't require",
+      "yes": "Choose",
+      "range": "Choose range"
+    },
+    "hydration": {
+      "hard": "Hard",
+      "standard": "Standard",
+      "rustic": "Rustic"
+    },
+    "empty": "No formulas found",
+    "share": {
+      "instructions": "Enter the email address of the user to whom you wish to share the formula",
+      "success": "Formula shared",
+      "error": "An error ocurred. Try again",
+      "mine": "Mine",
+      "shared": "Shared",
+      "public": "Public"
+    },
+    "clone": {
+      "instructions": "By cloning this formula you can modify it, it will appear among your formulas. The original version will be in the shared section"
+    }
+  },
+  "ingredients": {
+    "name": "Ingredients",
+    "subingredients": "Compound ingredients",
+    "create": "Create ingredient",
+    "update": "Update ingredient",
+    "ingredient_name": "Name",
+    "is_flour": "Is flour",
+    "hydration": "Hydration",
+    "cost": "Cost",
+    "grams": "gr",
+    "empty": "No ingredients found",
+    "compensation_percentage": "Compensation factor",
+    "suggested_values": "Suggested values",
+    "type": {
+      "simple": "Simple",
+      "compound": "Compound"
+    },
+    "proportion_factor": {
+      "name": "Calculated from",
+      "flour": "Flour",
+      "dough": "Dough",
+      "ingredient": "Ingredient"
+    },
+    "filter": {
+      "name": "Filter by name...",
+      "hydration": "Filter by hydration (%)",
+      "cost": "Filter by cost",
+      "min": "Min.",
+      "max": "Max.",
+      "flour": "Show",
+      "all": "All",
+      "isFlour": "Flours",
+      "notFlour": "Others"
+    }
   },
   "settings": {
     "name": "Settings",
@@ -46,12 +134,18 @@
   "production": {
     "name": "Production"
   },
-  "formulas": {
-    "name": "Formulas",
-    "mine": "Mine",
-    "shared": "Shared"
-  },
-  "ingredients": {
-    "name": "Ingredients"
+  "steps": {
+    "1": "Mise en place",
+    "2": "Mixing and kneading",
+    "3": "Primary fermentation",
+    "4": "Punching down",
+    "5": "Dividing",
+    "6": "Rounding",
+    "7": "Rest/Benching",
+    "8": "Shaping",
+    "9": "Coverings",
+    "10": "Proofing",
+    "11": "Baking",
+    "12": "Cooling"
   }
 }

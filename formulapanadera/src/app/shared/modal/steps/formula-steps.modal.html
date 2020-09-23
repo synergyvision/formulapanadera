@@ -1,0 +1,141 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" name="list-outline"></ion-icon>
+    <ion-title> {{'formulas.steps' | translate}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()" class="create-ingredient">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ingredient-content">
+  <ion-select
+    [value]="temperatureUnit"
+    class="temperature-unit-selector"
+    (ionChange)="changeTemperature($event)"
+  >
+    <ion-select-option value="C">ºC</ion-select-option>
+    <ion-select-option value="F">ºF</ion-select-option>
+  </ion-select>
+
+  <ion-list lines="full" class="steps-list">
+    <span *ngFor="let step of formulaSteps">
+      <ion-item-divider class="divider">
+        <ion-label>
+          {{'formulas.step' | translate}} {{step.number+1}}: {{step.name}}
+        </ion-label>
+      </ion-item-divider>
+      <ion-row>
+        <ion-col>
+          <ion-item
+            ><ion-label color="primary" position="floating"
+              >{{'formulas.time' | translate}} ({{'formulas.minutes' |
+              translate}})</ion-label
+            ><ion-input
+              type="number"
+              inputmode="numeric"
+              [(ngModel)]="step.time"
+              (ionBlur)="formatTime(step)"
+            ></ion-input
+          ></ion-item>
+        </ion-col> </ion-row
+      ><ion-row>
+        <ion-col>
+          <ion-item
+            ><ion-label color="primary" position="floating"
+              >{{'formulas.temperature' | translate}}</ion-label
+            >
+            <ion-select
+              [value]="selectValue(step)"
+              (ionChange)="changeTemperatureOption($event, step)"
+              class="temperature-selector"
+            >
+              <ion-select-option value="no"
+                >{{'formulas.temperature_options.no' |
+                translate}}</ion-select-option
+              >
+              <ion-select-option value="yes"
+                >{{'formulas.temperature_options.yes' |
+                translate}}</ion-select-option
+              >
+              <ion-select-option value="range"
+                >{{'formulas.temperature_options.range' |
+                translate}}</ion-select-option
+              >
+            </ion-select></ion-item
+          >
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="step.temperature !== null">
+        <ion-col>
+          <ion-item>
+            <ion-label
+              color="primary"
+              position="floating"
+              *ngIf="step.temperature.max !== -1"
+              >{{'formulas.range.min' | translate}}
+              (º{{temperatureUnit}})</ion-label
+            >
+            <ion-label
+              color="primary"
+              position="floating"
+              *ngIf="step.temperature.max === -1"
+              >{{'formulas.temperature' | translate}} (º{{temperatureUnit}})
+            </ion-label>
+            <ion-input
+              type="number"
+              inputmode="numeric"
+              [(ngModel)]="step.temperature.min"
+              (ionBlur)="formatTemperature('min', step)"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item *ngIf="step.temperature.max !== -1">
+            <ion-label color="primary" position="floating"
+              >{{'formulas.range.max' | translate}}
+              (º{{temperatureUnit}})</ion-label
+            >
+            <ion-input
+              type="number"
+              inputmode="numeric"
+              [(ngModel)]="step.temperature.max"
+              (ionBlur)="formatTemperature('max', step)"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label color="primary" position="floating"
+              >{{'formulas.description' | translate}}</ion-label
+            >
+            <ion-textarea
+              type="text"
+              [(ngModel)]="step.description"
+            ></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </span>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-row class="form-actions-wrapper">
+    <ion-col>
+      <ion-button
+        class="submit-btn"
+        expand="block"
+        color="primary"
+        (click)="saveSteps()"
+        fill="solid"
+      >
+        {{ 'action.confirm' | translate }}</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-footer>

@@ -1,5 +1,3 @@
-import { async } from "@angular/core/testing";
-
 import { LanguageService } from "./language.service";
 
 describe("LanguageService", () => {
@@ -7,7 +5,7 @@ describe("LanguageService", () => {
   let translateServiceSpy: any;
   let alertControllerSpy: any;
 
-  beforeEach(async(() => {
+  beforeEach((() => {
     translateServiceSpy = jasmine.createSpyObj("TranslateService", {
       getTranslation: {
         subscribe: (callback: any) => {

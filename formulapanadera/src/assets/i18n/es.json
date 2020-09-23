@@ -1,7 +1,17 @@
 {
   "action": {
     "ok": "Aceptar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "share": "Compartir",
+    "clone": "Clonar",
+    "copy": "Copia",
+    "create": "Crear",
+    "update": "Modificar",
+    "delete": "Eliminar",
+    "delete_question": "¿Desea eliminar {{item}}?",
+    "yes": "Sí",
+    "no": "No"
   },
   "input": {
     "fullName": "Nombre completo",
@@ -9,23 +19,13 @@
     "password": "Contraseña",
     "confirm_password": "Confirmación de contraseña"
   },
-  "validation": {
-    "required": {
-      "name": "Nombre requerido.",
-      "email": "Correo requerido.",
-      "password": "Contraseña requerida.",
-      "confirm_password": "Confirmación de contraseña requerida."
-    },
-    "pattern": {
-      "email": "Ingresa un correo válido."
-    },
-    "minlength": {
-      "password": "La contraseña debe contener mínimo {{number}} carácteres."
-    },
-    "areNotEqual": { "password": "Las contraseñas no coinciden." }
+  "credits": {
+    "name": "Créditos",
+    "creator": "Creador",
+    "modifiers": "Modificado por"
   },
   "auth": {
-    "sign_up": "Registrarse",
+    "sign_up": "Regístrate",
     "sign_in": "Iniciar sesión",
     "account_question": "¿Ya tienes una cuenta?",
     "forgot_password": "¿Olvidaste tu contraseña?",
@@ -33,6 +33,94 @@
     "recover": "Recuperar",
     "recover_indications": "Por favor ingresa tu dirección de correo electrónico y te enviaremos un correo para restablecer tu contraseña.",
     "reset_password": "Restablecer contraseña"
+  },
+  "formulas": {
+    "name": "Fórmulas",
+    "create": "Crear fórmula",
+    "update": "Modificar fórmula",
+    "bakers_percentage": "Factor panadero",
+    "formula_name": "Nombre",
+    "unit": "Unidad",
+    "units": "Unidades",
+    "unit_letter": "u",
+    "weight": "Peso",
+    "unit_weight": "Peso por unidad",
+    "total_weight": "Peso total",
+    "ingredients": { "value": "Valor" },
+    "mixing_order": "Orden de mezclado",
+    "steps": "Pasos",
+    "step": "Paso",
+    "time": "Tiempo",
+    "minutes": "Min.",
+    "temperature": "Temperatura",
+    "description": "Descripción",
+    "public": "Pública",
+    "can_clone": "Puede ser clonada",
+    "cost": {
+      "unitary": "Costo unitario",
+      "total": "Costo total"
+    },
+    "range": {
+      "min": "Min.",
+      "max": "Máx."
+    },
+    "temperature_options": {
+      "no": "No requiere",
+      "yes": "Escoger",
+      "range": "Escoger rango"
+    },
+    "hydration": {
+      "hard": "Duro",
+      "standard": "Estándar",
+      "rustic": "Rústico"
+    },
+    "empty": "No se encontraron fórmulas",
+    "share": {
+      "instructions": "Ingresa el correo electrónico del usuario al que deseas compartir la fórmula",
+      "success": "Fórmula compartida",
+      "error": "Ocurrió un error. Intente de nuevo",
+      "mine": "Propias",
+      "shared": "Compartidas",
+      "public": "Públicas"
+    },
+    "clone": {
+      "instructions": "Al clonar esta fórmula podrás modificarla, esta aparecerá entre tus fórmulas. La versión original se conservará en la sección de compartidos"
+    }
+  },
+  "ingredients": {
+    "name": "Ingredientes",
+    "subingredients": "Ingredientes compuestos",
+    "create": "Crear ingrediente",
+    "update": "Modificar ingrediente",
+    "ingredient_name": "Nombre",
+    "is_flour": "Es harina",
+    "hydration": "Hidratación",
+    "cost": "Costo",
+    "grams": "gr",
+    "empty": "No se encontraron ingredientes",
+    "compensation_percentage": "Factor de compensación",
+    "suggested_values": "Valores sugeridos",
+    "type": {
+      "simple": "Simple",
+      "compound": "Compuesto"
+    },
+    "proportion_factor": {
+      "name": "En relación a",
+      "flour": "Harina",
+      "dough": "Masa",
+      "ingredient": "Ingrediente"
+    },
+    "filter": {
+      "name": "Filtra por nombre...",
+      "hydration": "Filtra por hidratación (%)",
+      "cost": "Filtra por costo",
+      "min": "Mín.",
+      "max": "Máx.",
+      "flour": "Mostrar",
+      "all": "Todos",
+      "isFlour": "Harinas",
+      "notFlour": "Otros"
+    }
   },
   "settings": {
     "name": "Configuración",
@@ -46,12 +134,18 @@
   "production": {
     "name": "Producción"
   },
-  "formulas": {
-    "name": "Fórmulas",
-    "mine": "Mias",
-    "shared": "Compartidas"
-  },
-  "ingredients": {
-    "name": "Ingredientes"
+  "steps": {
+    "1": "Preparación",
+    "2": "Mezcla/Amasado",
+    "3": "Fermentación en bloque",
+    "4": "Manipulación",
+    "5": "División",
+    "6": "Preformado",
+    "7": "Descanso en mesa",
+    "8": "Formado",
+    "9": "Barnices, Coberturas y Greñado",
+    "10": "Maduración",
+    "11": "Horneado",
+    "12": "Enfriamiento"
   }
 }

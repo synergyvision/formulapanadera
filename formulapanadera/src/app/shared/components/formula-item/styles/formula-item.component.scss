@@ -1,0 +1,69 @@
+.formula-item {
+  color: var(--ion-color-medium);
+}
+
+.background-gray {
+  --background: rgba(221, 221, 221, 0.322) !important;
+}
+
+.formula-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  align-items: center;
+}
+
+.formulas-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 0;
+
+  .formulas-name {
+    margin: 0px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+    color: var(--ion-color-primary);
+  }
+
+  .properties-col {
+    align-self: flex-end;
+  }
+
+  .formulas-description {
+    font-size: 15px;
+    margin: 0px;
+  }
+
+  .cost-col {
+    text-align: center;
+    align-self: flex-end;
+    padding-bottom: 2px;
+
+    .formula-cost {
+      color: var(--ion-color-secondary) !important;
+      font-size: 17px !important;
+      margin: 0;
+      .formula-currency {
+        font-size: 12px !important;
+        color: var(--ion-color-medium);
+      }
+    }
+  }
+}
+
+.properties-icon {
+  color: cornflowerblue !important;
+  margin-bottom: -2px;
+}
+
+.shared-icon {
+  padding-right: 5px !important;
+  margin-bottom: -2px;
+}
+
+.formula-user {
+  font-size: 12px;
+  margin: 0px 0 5px 0;
+}

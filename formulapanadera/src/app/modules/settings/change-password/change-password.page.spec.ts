@@ -5,9 +5,9 @@ import { IonicModule } from "@ionic/angular";
 import { ChangePasswordPage } from "./change-password.page";
 import { TranslateModule } from "@ngx-translate/core";
 
-import { AuthService } from "src/app/core/services/auth.service";
+import { AuthService } from "src/app/core/services/firebase/auth.service";
 import { LanguageService } from "src/app/core/services/language.service";
-import { SettingsPageModule } from "../options/options.module";
+import { OptionsPageModule } from "../options/options.module";
 
 describe("ChangePasswordPage", () => {
   let component: ChangePasswordPage;
@@ -29,7 +29,7 @@ describe("ChangePasswordPage", () => {
         IonicModule.forRoot(),
         TranslateModule.forRoot(),
         RouterTestingModule.withRoutes([
-          { path: "menu/settings", component: SettingsPageModule },
+          { path: "menu/settings", component: OptionsPageModule },
         ]),
       ],
       providers: [

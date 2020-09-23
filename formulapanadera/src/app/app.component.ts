@@ -6,7 +6,7 @@ import { StatusBar } from "@ionic-native/status-bar/ngx";
 
 import { TranslateService } from "@ngx-translate/core";
 
-import { environment } from "../environments/environment";
+import { LANGUAGE } from "./config/configuration";
 
 @Component({
   selector: "app-root",
@@ -31,7 +31,7 @@ export class AppComponent {
     });
   }
   setLanguage() {
-    this.translate.setDefaultLang(environment.language.default);
-    this.translate.use(environment.language.default);
+    this.translate.setDefaultLang(LANGUAGE.default);
+    this.translate.use(LANGUAGE.default);
   }
 }

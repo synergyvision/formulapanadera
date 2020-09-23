@@ -5,12 +5,19 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ModuleLoadedOnceGuard } from "./guards/module-loaded-once.guard";
 
-import { AngularFireModule } from "@angular/fire";
 import { environment } from "src/environments/environment";
+import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
+import { AngularFirestoreModule } from "@angular/fire/firestore";
 
 import { LanguageService } from "./services/language.service";
-import { AuthService } from "./services/auth.service";
+import { FormatNumberService } from "./services/format-number.service";
+import { AuthService } from "./services/firebase/auth.service";
+import { IngredientService } from "./services/ingredient.service";
+import { FormulaService } from "./services/formula.service";
+import { IngredientCRUDService } from "./services/firebase/ingredient.service";
+import { FormulaCRUDService } from "./services/firebase/formula.service";
+import { UserStorageService } from "./services/storage/user.service";
 
 @NgModule({
   imports: [
@@ -18,11 +25,21 @@ import { AuthService } from "./services/auth.service";
     CommonModule,
     FormsModule,
     RouterModule,
-    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(environment.connection),
     AngularFireAuthModule,
+    AngularFirestoreModule,
   ],
   exports: [RouterModule, FormsModule],
-  providers: [AuthService, LanguageService],
+  providers: [
+    AuthService,
+    FormatNumberService,
+    FormulaService,
+    FormulaCRUDService,
+    IngredientService,
+    IngredientCRUDService,
+    LanguageService,
+    UserStorageService,
+  ],
 })
 export class CoreModule extends ModuleLoadedOnceGuard {
   // Ensure that CoreModule is only loaded into AppModule

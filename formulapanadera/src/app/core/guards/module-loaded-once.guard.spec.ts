@@ -1,5 +1,3 @@
-import { async } from "@angular/core/testing";
-
 import {
   ModuleLoadedOnceGuard,
   throwIfAlreadyLoaded,
@@ -9,7 +7,7 @@ describe("ModuleLoadedOnceGuard", () => {
   let guard: any;
   let moduleSpy: any;
 
-  beforeAll(async(() => {
+  beforeAll((() => {
     guard = new ModuleLoadedOnceGuard(undefined);
   }));
 
