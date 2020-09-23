@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 import { APP_URL } from "src/app/config/configuration";
+import { StateHasDataGuard } from "src/app/core/guards/store-has-data.guard";
 
 const routes: Routes = [
   {
@@ -21,6 +22,7 @@ const routes: Routes = [
   },
   {
     path: APP_URL.menu.routes.formula.routes.details,
+    canLoad: [StateHasDataGuard],
     loadChildren: () =>
       import("./details/formula-details.module").then(
         (m) => m.FormulaDetailsPageModule
@@ -30,5 +32,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [IonicModule, CommonModule, RouterModule.forChild(routes)],
+  providers: [StateHasDataGuard],
 })
 export class FormulaModule {}

@@ -71,21 +71,3 @@
   font-size: 13px;
   margin-top: -10px;
 }
-
-.arrow-col {
-  align-self: center;
-  text-align: end;
-  ion-icon {
-    vertical-align: bottom;
-  }
-}
-
-.title-row {
-  width: 100%;
-  padding: 0;
-
-  .formula-name {
-    text-align: start;
-    color: var(--ion-color-primary);
-  }
-}

@@ -1,0 +1,32 @@
+.content-title {
+  --padding-start: 0px;
+}
+
+.title-row {
+  width: 100%;
+  padding: 0;
+
+  .content-name {
+    text-align: start;
+    color: var(--ion-color-primary);
+  }
+
+  .content-title-name {
+    text-align: center;
+    color: var(--ion-color-secondary);
+  }
+
+  .content-subtitle-name {
+    text-align: start;
+    color: var(--ion-color-secondary);
+    font-size: 15px;
+  }
+}
+
+.arrow-col {
+  align-self: center;
+  text-align: end;
+  ion-icon {
+    vertical-align: bottom;
+  }
+}

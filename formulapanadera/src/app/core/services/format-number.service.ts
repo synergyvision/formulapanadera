@@ -8,7 +8,11 @@ export class FormatNumberService {
 
   formatNumberDecimals(value: number, decimals: number = 1): string {
     if (value != null) {
-      return (Math.round(value * 100) / 100).toFixed(decimals);
+      if (value < 1) {
+        return (Math.round(value * 100) / 100).toFixed(2);
+      } else {
+        return (Math.round(value * 100) / 100).toFixed(decimals);
+      }
     } else {
       return "";
     }

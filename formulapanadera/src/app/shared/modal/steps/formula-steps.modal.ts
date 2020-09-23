@@ -73,8 +73,8 @@ export class FormulaStepsModal {
   formatTime(step: StepDetailsModel) {
     let index = this.formulaSteps.indexOf(step);
     this.formulaSteps[index].time = Number(
-      this.formatNumberService.formatNonZeroPositiveNumber(
-        this.formulaSteps[index].time
+      this.formatNumberService.formatNumberDecimals(
+        this.formulaSteps[index].time,0
       )
     );
   }

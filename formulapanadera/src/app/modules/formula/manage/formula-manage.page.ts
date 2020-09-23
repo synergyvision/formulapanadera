@@ -208,7 +208,7 @@ export class FormulaManagePage {
         steps.push({
           number: i,
           name: this.languageService.getTerm("steps." + (i + 1)),
-          time: 1,
+          time: 0,
           temperature: null,
           description: "",
         });

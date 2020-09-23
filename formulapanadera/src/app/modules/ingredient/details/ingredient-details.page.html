@@ -96,26 +96,12 @@
         </ion-item>
         <ion-row class="steps-list">
           <ion-col>
-            <ion-list>
-              <ion-item
-                class="formula-title"
-                (click)="showIngredients = !showIngredients"
-              >
-                <ion-row class="title-row">
-                  <ion-col size="9">
-                    <h5 class="formula-name">
-                      {{'ingredients.name' | translate}}
-                    </h5>
-                  </ion-col>
-                  <ion-col size="3" class="arrow-col">
-                    <ion-icon
-                      [name]="showIngredients?ICONS.arrow_up:ICONS.arrow_down"
-                      button
-                    ></ion-icon>
-                  </ion-col>
-                </ion-row>
-              </ion-item>
-            </ion-list>
+            <app-show-hide-content
+              (click)="showIngredients = !showIngredients"
+              [show]="showIngredients"
+              [title]="'ingredients.name' | translate"
+            >
+            </app-show-hide-content>
             <app-ingredients-list
               *ngIf="showIngredients"
               [ingredients]="ingredient.formula.ingredients"
@@ -126,26 +112,12 @@
         </ion-row>
         <ion-row class="steps-list">
           <ion-col>
-            <ion-list>
-              <ion-item
-                class="formula-title"
-                (click)="showMixing = !showMixing"
-              >
-                <ion-row class="title-row">
-                  <ion-col size="9">
-                    <h5 class="formula-name">
-                      {{'formulas.mixing_order' | translate}}
-                    </h5>
-                  </ion-col>
-                  <ion-col size="3" class="arrow-col">
-                    <ion-icon
-                      [name]="showMixing?ICONS.arrow_up:ICONS.arrow_down"
-                      button
-                    ></ion-icon>
-                  </ion-col>
-                </ion-row>
-              </ion-item>
-            </ion-list>
+            <app-show-hide-content
+              (click)="showMixing = !showMixing"
+              [show]="showMixing"
+              [title]="'formulas.mixing_order' | translate"
+            >
+            </app-show-hide-content>
             <app-mixing-steps
               *ngIf="showMixing"
               [steps]="ingredient.formula.mixing"

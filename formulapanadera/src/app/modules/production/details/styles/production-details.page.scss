@@ -29,12 +29,6 @@
     text-align: center;
     color: var(--ion-color-secondary);
   }
-
-  .production-subtitle-name {
-    text-align: start;
-    color: var(--ion-color-secondary);
-    font-size: 13px;
-  }
 }
 
 .present-list {
@@ -43,24 +37,6 @@
   margin-right: 10px;
 }
 
-.present-ingredients {
-  padding-bottom: 0px;
-  padding-top: 0px;
-  .present-ingredients-col {
-    padding: 0;
-  }
-}
-
-.details-card {
-  .details-content {
-    padding: 10px;
-  }
-}
-
-.arrow-col {
-  align-self: center;
-  text-align: end;
-  ion-icon {
-    vertical-align: bottom;
-  }
+.list-col {
+  padding: 0;
 }

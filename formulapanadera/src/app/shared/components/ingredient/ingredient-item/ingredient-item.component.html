@@ -1,0 +1,71 @@
+<ion-item
+  class="ingredient-item"
+  [ngClass]="{ 'background-gray': even, 'background-selected': selected }"
+  [detail]="clickable"
+  [button]="true"
+>
+  <ion-row class="ingredient-item-wrapper">
+    <ion-col class="ingredients-wrapper">
+      <ion-row>
+        <ion-col>
+          <h2 class="ingredients-name">
+            <app-text-shell
+              animation="bouncing"
+              lines="3"
+              [data]="ingredient.name"
+            ></app-text-shell>
+          </h2>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="8" class="properties-col">
+          <p
+            class="ingredients-description ingredient-hydration"
+            *ngIf="ingredient.hydration > 0"
+          >
+            <ion-icon class="properties-icon" name="water"></ion-icon
+            >{{ ingredient.hydration }}%
+          </p>
+          <p class="ingredients-description" *ngIf="ingredient.is_flour">
+            <img
+              class="properties-icon image-icon"
+              src="assets/icon/wheat.png"
+              width="18"
+              height="18"
+            />
+          </p>
+        </ion-col>
+        <ion-col size="4" *ngIf="ingredient.cost" class="cost-col">
+          <p class="ingredients-description ingredient-cost">
+            {{ ingredient.cost }}
+            <span class="ingredient-currency"
+              >{{ currency }}/{{ "ingredients.grams" | translate }}</span
+            >
+          </p>
+        </ion-col>
+        <ion-col size="4" class="cost-col">
+          <span *ngIf="ingredient.formula">
+            <p
+              class="ingredients-description"
+              *ngIf="ingredient.formula.suggested_values"
+            >
+              <span *ngIf="ingredient.formula.suggested_values.min">
+                {{ ingredient.formula.suggested_values.min }}%
+              </span>
+              <span
+                *ngIf="
+                  ingredient.formula.suggested_values.min &&
+                  ingredient.formula.suggested_values.max
+                "
+                >-
+              </span>
+              <span *ngIf="ingredient.formula.suggested_values.max"
+                >{{ ingredient.formula.suggested_values.max }}%</span
+              >
+            </p>
+          </span>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row></ion-item
+>

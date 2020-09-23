@@ -81,3 +81,17 @@
     margin: 0px;
   }
 }
+
+.formula-number {
+  --padding-end: 0 !important;
+}
+
+.title-row {
+  margin-left: 15px;
+  color: black;
+
+  .title-col {
+    border-bottom: 1px solid var(--ion-color-light-shade);
+    padding-bottom: 10px;
+  }
+}
