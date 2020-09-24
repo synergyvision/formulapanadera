@@ -183,8 +183,7 @@ export class FormulaService {
     weight: number,
     bakers_percentage: number,
     item: IngredientPercentageModel,
-    ingredients: Array<IngredientPercentageModel>,
-    ingredients_proportions?: boolean
+    ingredients: Array<IngredientPercentageModel>
   ): number {
     if (item.ingredient.formula.proportion_factor.factor == "dough") {
       return (item.percentage / 100) * Number(weight);
@@ -199,12 +198,7 @@ export class FormulaService {
           ingredient.ingredient.id ==
           item.ingredient.formula.proportion_factor.ingredient.id
         ) {
-          if (ingredients_proportions) {
-            ingredientWeight =
-              ingredient.percentage * Number(bakers_percentage);
-          } else {
-            ingredientWeight = ingredient.percentage;
-          }
+          ingredientWeight = ingredient.percentage * Number(bakers_percentage);
         }
       });
       return (item.percentage / 100) * ingredientWeight;
@@ -289,8 +283,7 @@ export class FormulaService {
           formula_weight,
           original_bakers_percentage,
           item,
-          original_ingredients,
-          true
+          original_ingredients
         );
       } else {
         proportion_factor = item.prop_factor;
