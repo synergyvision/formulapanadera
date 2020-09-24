@@ -1,6 +1,8 @@
 import { Component, Input } from "@angular/core";
 import { CURRENCY } from "src/app/config/configuration";
+import { DECIMALS } from "src/app/config/formats";
 import { ProductionModel } from "src/app/core/models/production.model";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { ProductionService } from "src/app/core/services/production.service";
 
 @Component({
@@ -14,9 +16,15 @@ export class ProductionItemComponent {
 
   currency = CURRENCY;
 
-  constructor(private productionService: ProductionService) {}
+  constructor(
+    private productionService: ProductionService,
+    private formatNumberService: FormatNumberService
+  ) {}
 
   totalCost() {
-    return this.productionService.calculateProductionCost(this.production);
+    return this.formatNumberService.formatNumberDecimals(
+      this.productionService.calculateProductionCost(this.production),
+      DECIMALS.cost
+    );
   }
 }

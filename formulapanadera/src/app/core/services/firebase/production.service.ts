@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 
 import { ProductionModel } from "../../models/production.model";
 import { COLLECTIONS } from "src/app/config/firebase";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class ProductionCRUDService {
@@ -21,7 +22,19 @@ export class ProductionCRUDService {
       .collection<ProductionModel>(this.collection, (ref) =>
         ref.where("owner.email", "==", user_email)
       )
-      .valueChanges({ idField: "id" });
+      .get()
+      .pipe(
+        map((a) => {
+          const productions: ProductionModel[] = [];
+          a.forEach((production) => {
+            productions.push({
+              id: production.id,
+              ...production.data(),
+            } as ProductionModel);
+          });
+          return productions;
+        })
+      );
   }
 
   /*

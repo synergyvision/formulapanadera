@@ -16,6 +16,7 @@ import { UserModel } from "src/app/core/models/user.model";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { LanguageService } from "src/app/core/services/language.service";
+import { ProductionStorageService } from "src/app/core/services/storage/production.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { FormulaPickerModal } from "src/app/shared/modal/formula/formula-picker.modal";
 
@@ -40,6 +41,7 @@ export class ProductionManagePage implements OnInit {
 
   constructor(
     private productionCRUDService: ProductionCRUDService,
+    private productionStorageService: ProductionStorageService,
     public modalController: ModalController,
     private alertController: AlertController,
     private routerOutlet: IonRouterOutlet,
@@ -73,22 +75,35 @@ export class ProductionManagePage implements OnInit {
   sendProduction() {
     this.production.name = this.manageProductionForm.value.name;
     if (this.update) {
-      this.productionCRUDService.updateProduction(this.production).then(() => {
-        this.router.navigateByUrl(
-          APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
-        );
-      });
+      this.productionCRUDService
+        .updateProduction(this.production)
+        .then(async () => {
+          await this.productionStorageService
+            .updateProduction(this.production)
+            .then(() => {
+              this.router.navigateByUrl(
+                APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
+              );
+            });
+        });
     } else {
       this.production.owner = {
         name: this.current_user.name,
         email: this.current_user.email,
         date: new Date(),
       };
-      this.productionCRUDService.createProduction(this.production).then(() => {
-        this.router.navigateByUrl(
-          APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
-        );
-      });
+      this.productionCRUDService
+        .createProduction(this.production)
+        .then(async (document) => {
+          this.production.id = document.id;
+          await this.productionStorageService
+            .createProduction(this.production)
+            .then(() => {
+              this.router.navigateByUrl(
+                APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
+              );
+            });
+        });
     }
   }
 
@@ -111,10 +126,16 @@ export class ProductionManagePage implements OnInit {
           handler: () => {
             this.productionCRUDService
               .deleteProduction(this.production.id)
-              .then(() => {
-                this.router.navigateByUrl(
-                  APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
-                );
+              .then(async () => {
+                await this.productionStorageService
+                  .deleteProduction(this.production.id)
+                  .then(() => {
+                    this.router.navigateByUrl(
+                      APP_URL.menu.name +
+                        "/" +
+                        APP_URL.menu.routes.production.main
+                    );
+                  });
               });
           },
         },

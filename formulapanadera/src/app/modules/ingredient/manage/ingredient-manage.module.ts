@@ -5,9 +5,8 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { IonicModule } from "@ionic/angular";
 import { TranslateModule } from "@ngx-translate/core";
-import { IngredientListingResolver } from "src/app/core/resolvers/ingredient-listing.resolver";
 import { ComponentsModule } from "src/app/shared/components/components.module";
-import { IngredientManagePage } from './ingredient-manage.page';
+import { IngredientManagePage } from "./ingredient-manage.page";
 
 const routes: Routes = [
   {
@@ -26,9 +25,6 @@ const routes: Routes = [
     TranslateModule,
     ComponentsModule,
   ],
-  declarations: [
-    IngredientManagePage,
-  ],
-  providers: [IngredientListingResolver],
+  declarations: [IngredientManagePage],
 })
-export class IngredientManagePageModule { }
+export class IngredientManagePageModule {}

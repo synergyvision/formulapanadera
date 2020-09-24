@@ -1,22 +1,16 @@
-import {
-  Component,
-  HostBinding,
-  OnInit,
-  OnDestroy,
-  Input,
-} from "@angular/core";
+import { Component, HostBinding, OnInit, Input } from "@angular/core";
 import { IngredientModel } from "../../../core/models/ingredient.model";
 import { ShellModel } from "../../shell/shell.model";
 import { FormGroup, FormControl } from "@angular/forms";
 import { DataStore } from "../../shell/data-store";
-import { Subscription, ReplaySubject, Observable, merge, of } from "rxjs";
+import { of } from "rxjs";
 import { IngredientService } from "../../../core/services/ingredient.service";
 import { ModalController } from "@ionic/angular";
-import { switchMap, map } from "rxjs/operators";
-import { IngredientListingResolver } from "src/app/core/resolvers/ingredient-listing.resolver";
+import { map } from "rxjs/operators";
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 
 @Component({
   selector: "app-ingredient-picker-modal",
@@ -26,7 +20,7 @@ import { ICONS } from "src/app/config/icons";
     "./../../styles/filter.scss",
   ],
 })
-export class IngredientPickerModal implements OnInit, OnDestroy {
+export class IngredientPickerModal implements OnInit {
   ICONS = ICONS;
 
   @Input() selectedIngredients: Array<IngredientPercentageModel>;
@@ -37,13 +31,6 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
   isFlourForm: FormGroup;
   searchQuery: string;
   showFilters = false;
-  firstLoad = true;
-
-  searchSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
-  searchFiltersObservable: Observable<any> = this.searchSubject.asObservable();
-
-  ingredientsDataStore: DataStore<Array<IngredientModel>>;
-  stateSubscription: Subscription;
 
   currency = CURRENCY;
   ingredients: IngredientModel[] & ShellModel;
@@ -55,100 +42,44 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
   }
   constructor(
     private ingredientService: IngredientService,
-    private ingredientResolver: IngredientListingResolver,
+    private ingredientCRUDService: IngredientCRUDService,
     public modalController: ModalController
   ) {}
 
-  ngOnDestroy(): void {
-    this.stateSubscription.unsubscribe();
-  }
-
   ngOnInit() {
     this.searchQuery = "";
-
     this.hydrationRangeForm = new FormGroup({
       dual: new FormControl({ lower: 0, upper: 1000 }),
     });
-
     this.costRangeForm = new FormGroup({
       lower: new FormControl(),
       upper: new FormControl(),
     });
-
     this.isFlourForm = new FormGroup({
       value: new FormControl("all"),
     });
 
-    const data = of(this.ingredientResolver.resolve());
+    this.searchingState();
 
-    data.subscribe((resolvedRouteData) => {
-      this.ingredientsDataStore = resolvedRouteData;
-
-      const updateSearchObservable = this.searchFiltersObservable.pipe(
-        switchMap((filters) => {
-          let filteredDataSource = this.ingredientService.searchIngredientsByHydration(
-            filters.hydration.lower,
-            filters.hydration.upper
+    if (!this.ingredientService.getIngredients()) {
+      this.ingredientCRUDService
+        .getIngredientsDataSource()
+        .subscribe((ingredients) => {
+          this.ingredientService.setIngredients(
+            ingredients as IngredientModel[] & ShellModel
           );
-          filteredDataSource = this.ingredientService.searchIngredientsByCost(
-            filters.cost.lower,
-            filters.cost.upper,
-            filteredDataSource
-          );
-          if (filters.is_flour !== "all") {
-            filteredDataSource = this.ingredientService.searchIngredientsByType(
-              filters.is_flour,
-              filteredDataSource
-            );
-          }
-          filteredDataSource = this.ingredientService.searchIngredientsByFormula(
-            this.segment,
-            filteredDataSource
-          );
-
-          const searchingShellModel = [];
-          for (let index = 0; index < LOADING_ITEMS; index++) {
-            searchingShellModel.push(new IngredientModel());
-          }
-          const dataSourceWithShellObservable = DataStore.AppendShell(
-            filteredDataSource,
-            searchingShellModel
-          );
-
-          return dataSourceWithShellObservable.pipe(
-            map((filteredItems) => {
-              // Just filter items by name if there is a search query and they are not shell values
-              if (filters.query !== "" && !filteredItems.isShell) {
-                const queryFilteredItems = filteredItems.filter((item) =>
-                  item.name.toLowerCase().includes(filters.query.toLowerCase())
-                );
-                // While filtering we strip out the isShell property, add it again
-                return Object.assign(queryFilteredItems, {
-                  isShell: filteredItems.isShell,
-                });
-              } else {
-                return filteredItems;
-              }
-            })
-          );
-        })
-      );
-
-      this.stateSubscription = merge(
-        this.ingredientsDataStore.state,
-        updateSearchObservable
-      ).subscribe((state) => {
-        this.ingredients = state;
-        if (state.isShell == false && this.firstLoad == true) {
           this.searchList();
-          this.firstLoad = false;
-        }
-      });
-    });
+        });
+    } else {
+      this.searchList();
+    }
   }
 
   searchList() {
-    this.searchSubject.next({
+    let filteredIngredients = JSON.parse(
+      JSON.stringify(this.ingredientService.getIngredients())
+    );
+    let filters = {
       hydration: {
         lower: this.hydrationRangeForm.controls.dual.value.lower,
         upper: this.hydrationRangeForm.controls.dual.value.upper,
@@ -159,6 +90,53 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
       },
       is_flour: this.isFlourForm.value.value,
       query: this.searchQuery,
+    };
+
+    filteredIngredients = this.ingredientService.searchIngredientsByHydration(
+      filters.hydration.lower,
+      filters.hydration.upper,
+      filteredIngredients
+    );
+    filteredIngredients = this.ingredientService.searchIngredientsByCost(
+      filters.cost.lower,
+      filters.cost.upper,
+      filteredIngredients
+    );
+    if (filters.is_flour !== "all") {
+      filteredIngredients = this.ingredientService.searchIngredientsByType(
+        filters.is_flour,
+        filteredIngredients
+      );
+    }
+    filteredIngredients = this.ingredientService.searchIngredientsByFormula(
+      this.segment,
+      filteredIngredients
+    );
+
+    const dataSourceWithShellObservable = DataStore.AppendShell(
+      of(filteredIngredients),
+      this.searchingState()
+    );
+
+    let updateSearchObservable = dataSourceWithShellObservable.pipe(
+      map((filteredItems) => {
+        // Just filter items by name if there is a search query and they are not shell values
+        if (filters.query !== "" && !filteredItems.isShell) {
+          const queryFilteredItems = filteredItems.filter((item) =>
+            item.name.toLowerCase().includes(filters.query.toLowerCase())
+          );
+          // While filtering we strip out the isShell property, add it again
+          return Object.assign(queryFilteredItems, {
+            isShell: filteredItems.isShell,
+          });
+        } else {
+          return filteredItems;
+        }
+      })
+    );
+
+    updateSearchObservable.subscribe((value) => {
+      this.ingredients = value;
     });
   }
 
@@ -209,5 +187,16 @@ export class IngredientPickerModal implements OnInit, OnDestroy {
       });
     }
     return isSelected;
+  }
+
+  searchingState() {
+    let searchingShellModel: IngredientModel[] &
+      ShellModel = [] as IngredientModel[] & ShellModel;
+    for (let index = 0; index < LOADING_ITEMS; index++) {
+      searchingShellModel.push(new IngredientModel());
+    }
+    searchingShellModel.isShell = true;
+    this.ingredients = searchingShellModel;
+    return searchingShellModel;
   }
 }

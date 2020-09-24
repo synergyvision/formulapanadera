@@ -8,15 +8,11 @@ import { TranslateModule } from "@ngx-translate/core";
 import { ComponentsModule } from "src/app/shared/components/components.module";
 
 import { FormulaListingPage } from "./formula-listing.page";
-import { FormulaListingResolver } from "src/app/core/resolvers/formula-listing.resolver";
 
 const routes: Routes = [
   {
     path: "",
     component: FormulaListingPage,
-    resolve: {
-      data: FormulaListingResolver,
-    },
   },
 ];
 
@@ -31,6 +27,5 @@ const routes: Routes = [
     TranslateModule,
   ],
   declarations: [FormulaListingPage],
-  providers: [FormulaListingResolver],
 })
 export class FormulaListingPageModule {}
