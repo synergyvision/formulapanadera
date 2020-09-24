@@ -1,40 +1,28 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-
-import { DataStore } from "src/app/shared/shell/data-store";
 import {
   FormulaModel,
   IngredientPercentageModel,
 } from "../models/formula.model";
 
-import { LOADING_ITEMS } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
+import { ShellModel } from "src/app/shared/shell/shell.model";
 
 @Injectable()
 export class FormulaService {
-  private formulaDataStore: DataStore<Array<FormulaModel>>;
+  private formulas: FormulaModel[] & ShellModel;
 
   constructor() {}
 
-  /*
-    Formula Listing
-  */
-  public getFormulasStore(
-    dataSource: Observable<Array<FormulaModel>>
-  ): DataStore<Array<FormulaModel>> {
-    // Use cache if available
-    if (!this.formulaDataStore) {
-      // Initialize the model specifying that it is a shell model
-      const shellModel: Array<FormulaModel> = [];
-      for (let index = 0; index < LOADING_ITEMS; index++) {
-        shellModel.push(new FormulaModel());
-      }
+  public setFormulas(formulas: FormulaModel[] & ShellModel) {
+    this.formulas = formulas;
+  }
 
-      this.formulaDataStore = new DataStore(shellModel);
-      // Trigger the loading mechanism (with shell) in the dataStore
-      this.formulaDataStore.load(dataSource);
-    }
-    return this.formulaDataStore;
+  public getFormulas() {
+    return this.formulas;
+  }
+
+  public clearFormulas() {
+    this.formulas = null;
   }
 
   /*
@@ -42,75 +30,70 @@ export class FormulaService {
   */
   public searchFormulasByHydration(
     lower: number,
-    upper: number
-  ): Observable<Array<FormulaModel>> {
+    upper: number,
+    formulas: FormulaModel[] & ShellModel
+  ): FormulaModel[] & ShellModel {
     const filtered = [];
     let hydration: number;
-    this.formulaDataStore.state.forEach((formula) => {
-      formula.forEach((item) => {
-        hydration = Number(this.calculateHydration(item.ingredients));
-        if (hydration >= lower && hydration <= upper) {
-          filtered.push(item);
-        }
-      });
+    formulas.forEach((item) => {
+      hydration = Number(this.calculateHydration(item.ingredients));
+      if (hydration >= lower && hydration <= upper) {
+        filtered.push(item);
+      }
     });
-    return of(filtered);
+    return filtered as FormulaModel[] & ShellModel;
   }
 
   public searchFormulasByCost(
     lower: number,
     upper: number,
-    formulas: Observable<Array<FormulaModel>>
-  ): Observable<Array<FormulaModel>> {
+    formulas: FormulaModel[] & ShellModel
+  ): FormulaModel[] & ShellModel {
     const filtered = [];
     let bakers_percentage: number;
     let cost: number;
-    formulas.forEach((formula) => {
-      formula.forEach((item) => {
-        bakers_percentage = Number(
-          this.calculateBakersPercentage(
-            item.units * item.unit_weight,
-            item.ingredients
-          )
-        );
-        cost =
-          Number(this.calculateTotalCost(item.ingredients, bakers_percentage)) /
-          item.units;
-        if (
-          (cost >= lower || lower == null) &&
-          (cost <= upper || upper == null)
-        ) {
-          filtered.push(item);
-        }
-      });
+    formulas.forEach((item) => {
+      bakers_percentage = Number(
+        this.calculateBakersPercentage(
+          item.units * item.unit_weight,
+          item.ingredients
+        )
+      );
+      cost =
+        Number(this.calculateTotalCost(item.ingredients, bakers_percentage)) /
+        item.units;
+      if (
+        (cost >= lower || lower == null) &&
+        (cost <= upper || upper == null)
+      ) {
+        filtered.push(item);
+      }
     });
-    return of(filtered);
+    return filtered as FormulaModel[] & ShellModel;
   }
 
   public searchFormulasByShared(
     type: string,
-    formulas: Observable<Array<FormulaModel>>,
+    formulas: FormulaModel[] & ShellModel,
     user_email: string
-  ): Observable<Array<FormulaModel>> {
+  ): FormulaModel[] & ShellModel {
     const filtered = [];
-    formulas.forEach((formula) => {
-      formula.forEach((item) => {
-        if (
-          (type == "mine" &&
-            (item.user.creator.email == user_email || // creator or
-              item.user.cloned)) || // owner that cloned the formula
-          (type == "shared" &&
-            item.user.owner == user_email &&
-            !item.user.cloned) ||
-          (type == "public" &&
-            item.user.creator.email !== user_email && // public formulas, current user is not the creator
-            !item.user.owner)
-        ) {
-          filtered.push(item);
-        }
-      });
+    formulas.forEach((item) => {
+      if (
+        (type == "mine" &&
+          (item.user.creator.email == user_email || // creator or
+            item.user.cloned)) || // owner that cloned the formula
+        (type == "shared" &&
+          item.user.owner == user_email &&
+          !item.user.cloned) ||
+        (type == "public" &&
+          item.user.creator.email !== user_email && // public formulas, current user is not the creator
+          !item.user.owner)
+      ) {
+        filtered.push(item);
+      }
     });
-    return of(filtered);
+    return filtered as FormulaModel[] & ShellModel;
   }
 
   /*
@@ -200,8 +183,7 @@ export class FormulaService {
     weight: number,
     bakers_percentage: number,
     item: IngredientPercentageModel,
-    ingredients: Array<IngredientPercentageModel>,
-    ingredients_proportions?: boolean
+    ingredients: Array<IngredientPercentageModel>
   ): number {
     if (item.ingredient.formula.proportion_factor.factor == "dough") {
       return (item.percentage / 100) * Number(weight);
@@ -216,12 +198,7 @@ export class FormulaService {
           ingredient.ingredient.id ==
           item.ingredient.formula.proportion_factor.ingredient.id
         ) {
-          if (ingredients_proportions) {
-            ingredientWeight =
-              ingredient.percentage * Number(bakers_percentage);
-          } else {
-            ingredientWeight = ingredient.percentage;
-          }
+          ingredientWeight = ingredient.percentage * Number(bakers_percentage);
         }
       });
       return (item.percentage / 100) * ingredientWeight;
@@ -306,8 +283,7 @@ export class FormulaService {
           formula_weight,
           original_bakers_percentage,
           item,
-          original_ingredients,
-          true
+          original_ingredients
         );
       } else {
         proportion_factor = item.prop_factor;

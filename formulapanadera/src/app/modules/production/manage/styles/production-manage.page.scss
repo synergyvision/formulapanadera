@@ -1,0 +1,97 @@
+:host {
+  --page-margin: var(--app-fair-margin);
+  --page-background: var(--app-background);
+
+  --page-background-shade: var(--app-background-shade);
+  --page-tags-gutter: 5px;
+}
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+.manage-production-content {
+  --background: var(--page-background);
+
+  .production-details-fields {
+    height: 100%;
+
+    .inputs-list {
+      padding: 0px var(--page-margin);
+    }
+
+    .input-item {
+      --padding-start: 0px;
+      --padding-end: 0px;
+      --inner-padding-start: 0px;
+      --inner-padding-end: 0px;
+      font-size: 14px;
+    }
+  }
+}
+
+.card-title {
+  font-size: 15px;
+}
+
+.formula-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  align-items: center;
+}
+
+.formulas-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 0;
+
+  .formulas-name {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    color: black;
+  }
+}
+
+.formula-number {
+  margin: 0;
+  font-size: 14px;
+  text-align: end;
+}
+
+.formula-number-units {
+  margin: 0;
+  font-size: 10px;
+  text-align: end;
+}
+
+.form-actions-wrapper {
+  --ion-grid-column-padding: calc(var(--page-margin) / 2);
+  padding: calc(var(--page-margin) / 2);
+
+  .submit-btn {
+    margin: 0px;
+  }
+
+  .delete-btn {
+    margin: 0px;
+  }
+}
+
+.formula-number {
+  --padding-end: 0 !important;
+}
+
+.title-row {
+  margin-left: 15px;
+  color: black;
+
+  .title-col {
+    border-bottom: 1px solid var(--ion-color-light-shade);
+    padding-bottom: 10px;
+  }
+}

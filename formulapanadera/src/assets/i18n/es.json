@@ -57,6 +57,7 @@
     "public": "Pública",
     "can_clone": "Puede ser clonada",
     "cost": {
+      "name": "Costo",
       "unitary": "Costo unitario",
       "total": "Costo total"
     },
@@ -106,8 +107,8 @@
     },
     "proportion_factor": {
       "name": "En relación a",
-      "flour": "Harina",
-      "dough": "Masa",
+      "flour": "Harina total",
+      "dough": "Masa total",
       "ingredient": "Ingrediente"
     },
     "filter": {
@@ -132,7 +133,12 @@
     "logout": "Cerrar sesión"
   },
   "production": {
-    "name": "Producción"
+    "name": "Producción",
+    "create": "Crear producción",
+    "update": "Modificar producción",
+    "production_name": "Nombre",
+    "details": "Detalles",
+    "empty": "No se encontraron producciones"
   },
   "steps": {
     "1": "Preparación",

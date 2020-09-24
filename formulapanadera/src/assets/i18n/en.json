@@ -57,6 +57,7 @@
     "public": "Public",
     "can_clone": "Can be cloned",
     "cost": {
+      "name": "Cost",
       "unitary": "Unitary cost",
       "total": "Total cost"
     },
@@ -106,8 +107,8 @@
     },
     "proportion_factor": {
       "name": "Calculated from",
-      "flour": "Flour",
-      "dough": "Dough",
+      "flour": "Total flour",
+      "dough": "Total dough",
       "ingredient": "Ingredient"
     },
     "filter": {
@@ -132,7 +133,12 @@
     "logout": "Log out"
   },
   "production": {
-    "name": "Production"
+    "name": "Production",
+    "create": "Create production",
+    "update": "Update production",
+    "production_name": "Name",
+    "details": "Details",
+    "empty": "No productions found"
   },
   "steps": {
     "1": "Mise en place",

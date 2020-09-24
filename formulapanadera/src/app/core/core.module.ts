@@ -17,7 +17,10 @@ import { IngredientService } from "./services/ingredient.service";
 import { FormulaService } from "./services/formula.service";
 import { IngredientCRUDService } from "./services/firebase/ingredient.service";
 import { FormulaCRUDService } from "./services/firebase/formula.service";
+import { ProductionCRUDService } from "./services/firebase/production.service";
 import { UserStorageService } from "./services/storage/user.service";
+import { ProductionService } from "./services/production.service";
+import { ProductionStorageService } from "./services/storage/production.service";
 
 @NgModule({
   imports: [
@@ -37,6 +40,9 @@ import { UserStorageService } from "./services/storage/user.service";
     FormulaCRUDService,
     IngredientService,
     IngredientCRUDService,
+    ProductionService,
+    ProductionCRUDService,
+    ProductionStorageService,
     LanguageService,
     UserStorageService,
   ],

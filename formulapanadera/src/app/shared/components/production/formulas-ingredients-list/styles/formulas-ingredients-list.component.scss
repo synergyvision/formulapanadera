@@ -1,0 +1,45 @@
+.details-card {
+  margin: 0;
+
+  .present-ingredients {
+    padding-bottom: 0px;
+    padding-top: 0px;
+    .present-ingredients-col {
+      padding: 0;
+    }
+  }
+
+  .title-row {
+    width: 100%;
+    padding: 0;
+
+    .production-name {
+      text-align: start;
+      color: var(--ion-color-primary);
+    }
+
+    .production-formula-name {
+      margin: 0;
+      font-size: 14px;
+      color: var(--ion-color-secondary);
+    }
+
+    .production-subtitle-name {
+      text-align: start;
+      color: var(--ion-color-secondary);
+      font-size: 13px;
+    }
+  }
+
+  .arrow-col {
+    align-self: center;
+    text-align: end;
+    ion-icon {
+      vertical-align: bottom;
+    }
+  }
+
+  .details-content {
+    padding: 10px;
+  }
+}

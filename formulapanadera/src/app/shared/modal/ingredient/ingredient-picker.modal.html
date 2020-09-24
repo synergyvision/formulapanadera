@@ -1,10 +1,10 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-icon slot="start" class="btn-med" name="reader-outline"></ion-icon>
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.ingredient"></ion-icon>
     <ion-title> {{ 'ingredients.name' | translate }} </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="dismissModal()" class="create-ingredient">
-        <ion-icon slot="icon-only" name="close"></ion-icon>
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -27,7 +27,7 @@
           class="filters-btn"
           (click)="showFilters = !showFilters"
         >
-          <ion-icon slot="icon-only" name="options"></ion-icon>
+          <ion-icon slot="icon-only" [name]="ICONS.options"></ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>
@@ -133,18 +133,17 @@
     </ion-segment-button>
   </ion-segment>
   <ion-list
-    lines="full"
+    lines="none"
     class="ingredients-list"
     *ngIf="ingredients?.length > 0; else emptyBlock"
   >
-    <span *ngFor="let ingredient of ingredients; index as i">
-      <app-ingredient-item
-        [selected]="isSelected(ingredient)"
-        (click)="clickIngredient(ingredient)"
-        [ingredient]="ingredient"
-        [even]="(i%2==0)"
-      ></app-ingredient-item>
-    </span>
+    <app-ingredient-item
+      *ngFor="let ingredient of ingredients; index as i"
+      [selected]="isSelected(ingredient)"
+      (click)="clickIngredient(ingredient)"
+      [ingredient]="ingredient"
+      [even]="(i%2==0)"
+    ></app-ingredient-item>
   </ion-list>
   <ng-template #emptyBlock>
     <ion-row class="empty-block">

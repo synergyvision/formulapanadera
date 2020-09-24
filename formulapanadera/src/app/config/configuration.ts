@@ -28,6 +28,11 @@ export const APP_URL = {
     routes: {
       production: {
         main: "production",
+        routes: {
+          listing: "",
+          details: "details",
+          management: "manage",
+        },
       },
       formula: {
         main: "formula",

@@ -126,7 +126,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       Number(this.total_weight)
     );
 
-    let ing_formula;
+    let ing_formula: IngredientPercentageModel[];
     this.steps.forEach((step) => {
       ing_formula = [];
       if (step.ingredients) {
@@ -138,7 +138,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         this.formulaService.getIngredientsCalculatedPercentages(
           Number(this.total_weight),
           Number(this.bakers_percentage),
-          step.ingredients,
+          JSON.parse(JSON.stringify(this.ingredients)),
           ing_formula,
           this.ingredients_formula
         );

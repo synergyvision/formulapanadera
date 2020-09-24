@@ -6,13 +6,19 @@ import { TranslateModule } from "@ngx-translate/core";
 
 import { ShellModule } from "../shell/shell.module";
 
-import { ShowHidePasswordComponent } from "./show-hide-password/show-hide-password.component";
-import { IngredientItemComponent } from "./ingredient-item/ingredient-item.component";
-import { FormulaItemComponent } from "./formula-item/formula-item.component";
-import { IngredientsListComponent } from "./ingredients-list/ingredients-list.component";
-import { FormulaStepComponent } from "./formula-step/formula-step.component";
-import { MixingStepsComponent } from "./mixing-steps/mixing-steps.component";
-import { HydrationBarComponent } from "./hydration-bar/hydration-bar.component";
+import { ShowHidePasswordComponent } from "./auth/show-hide-password/show-hide-password.component";
+import { ShowHideContentComponent } from "./general/show-hide-content/show-hide-content.component";
+import { IngredientItemComponent } from "./ingredient/ingredient-item/ingredient-item.component";
+import { FormulaItemComponent } from "./formula/formula-item/formula-item.component";
+import { IngredientsListComponent } from "./ingredient/ingredients-list/ingredients-list.component";
+import { FormulaStepComponent } from "./formula/formula-step/formula-step.component";
+import { MixingStepsComponent } from "./formula/mixing-steps/mixing-steps.component";
+import { HydrationBarComponent } from "./formula/hydration-bar/hydration-bar.component";
+import { FormulasListComponent } from "./production/formulas-list/formulas-list.component";
+import { ProductionIngredientsComponent } from "./production/production-ingredients/production-ingredients.component";
+import { ProductionItemComponent } from "./production/production-item/production-item.component";
+import { FormulasIngredientsListComponent } from "./production/formulas-ingredients-list/formulas-ingredients-list.component";
+import { TitleComponent } from "./general/title/title.component";
 
 @NgModule({
   imports: [
@@ -23,22 +29,34 @@ import { HydrationBarComponent } from "./hydration-bar/hydration-bar.component";
     TranslateModule,
   ],
   declarations: [
+    TitleComponent,
     ShowHidePasswordComponent,
+    ShowHideContentComponent,
     IngredientItemComponent,
     FormulaItemComponent,
     HydrationBarComponent,
     IngredientsListComponent,
+    FormulasListComponent,
     FormulaStepComponent,
     MixingStepsComponent,
+    ProductionItemComponent,
+    ProductionIngredientsComponent,
+    FormulasIngredientsListComponent,
   ],
   exports: [
+    TitleComponent,
     ShowHidePasswordComponent,
+    ShowHideContentComponent,
     IngredientItemComponent,
     FormulaItemComponent,
     HydrationBarComponent,
     IngredientsListComponent,
+    FormulasListComponent,
     FormulaStepComponent,
     MixingStepsComponent,
+    ProductionItemComponent,
+    ProductionIngredientsComponent,
+    FormulasIngredientsListComponent,
     ShellModule,
   ],
 })

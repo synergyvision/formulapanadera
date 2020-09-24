@@ -12,27 +12,25 @@ const routes: Routes = [
         path: APP_URL.menu.routes.production.main,
         loadChildren: () =>
           import("../production/production.module").then(
-            (m) => m.ProductionPageModule
+            (m) => m.ProductionModule
           ),
       },
       {
         path: APP_URL.menu.routes.formula.main,
         loadChildren: () =>
-          import("../formula/formula.module").then((m) => m.FormulaPageModule),
+          import("../formula/formula.module").then((m) => m.FormulaModule),
       },
       {
         path: APP_URL.menu.routes.ingredient.main,
         loadChildren: () =>
           import("../ingredient/ingredient.module").then(
-            (m) => m.IngredientPageModule
+            (m) => m.IngredientModule
           ),
       },
       {
         path: APP_URL.menu.routes.settings.main,
         loadChildren: () =>
-          import("../settings/settings.module").then(
-            (m) => m.SettingsPageModule
-          ),
+          import("../settings/settings.module").then((m) => m.SettingsModule),
       },
       {
         path: "",

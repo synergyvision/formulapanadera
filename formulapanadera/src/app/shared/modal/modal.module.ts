@@ -7,6 +7,7 @@ import { IngredientPickerModal } from "./ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "./mixing/ingredient-mixing.modal";
 import { ComponentsModule } from "../components/components.module";
 import { FormulaStepsModal } from "./steps/formula-steps.modal";
+import { FormulaPickerModal } from "./formula/formula-picker.modal";
 
 @NgModule({
   imports: [
@@ -20,8 +21,14 @@ import { FormulaStepsModal } from "./steps/formula-steps.modal";
   declarations: [
     IngredientPickerModal,
     IngredientMixingModal,
+    FormulaPickerModal,
     FormulaStepsModal,
   ],
-  exports: [IngredientPickerModal, IngredientMixingModal, FormulaStepsModal],
+  exports: [
+    IngredientPickerModal,
+    IngredientMixingModal,
+    FormulaPickerModal,
+    FormulaStepsModal,
+  ],
 })
 export class ModalModule {}

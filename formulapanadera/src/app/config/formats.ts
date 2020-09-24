@@ -5,7 +5,7 @@ export const DECIMALS = {
   cost: 2,
   bakers_percentage: 2,
   formula_percentage: 1,
-  formula_grams: 2,
+  formula_grams: 1,
   hydration: 1,
   weight: 1,
 };

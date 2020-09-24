@@ -3,19 +3,20 @@ import { IngredientModel } from "../../../core/models/ingredient.model";
 import { ShellModel } from "../../../shared/shell/shell.model";
 import { FormGroup, FormControl } from "@angular/forms";
 import { DataStore } from "../../../shared/shell/data-store";
-import { Subscription, ReplaySubject, Observable, merge } from "rxjs";
+import { of } from "rxjs";
 import { IngredientService } from "../../../core/services/ingredient.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { switchMap, map } from "rxjs/operators";
+import { Router } from "@angular/router";
+import { map } from "rxjs/operators";
 import { APP_URL, CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 
 @Component({
   selector: "app-ingredient-listing",
   templateUrl: "ingredient-listing.page.html",
   styleUrls: [
     "./styles/ingredient-listing.page.scss",
-    "./styles/ingredient-listing.filter.scss",
+    "../../../shared/styles/filter.scss",
   ],
 })
 export class IngredientListingPage implements OnInit, OnDestroy {
@@ -27,13 +28,6 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   isFlourForm: FormGroup;
   searchQuery: string;
   showFilters = false;
-  firstLoad = true;
-
-  searchSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
-  searchFiltersObservable: Observable<any> = this.searchSubject.asObservable();
-
-  ingredientsDataStore: DataStore<Array<IngredientModel>>;
-  stateSubscription: Subscription;
 
   currency = CURRENCY;
   ingredients: IngredientModel[] & ShellModel;
@@ -45,13 +39,9 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   }
   constructor(
     private ingredientService: IngredientService,
-    private route: ActivatedRoute,
+    private ingredientCRUDService: IngredientCRUDService,
     private router: Router
   ) {}
-
-  ngOnDestroy(): void {
-    this.stateSubscription.unsubscribe();
-  }
 
   ngOnInit() {
     this.searchQuery = "";
@@ -66,75 +56,27 @@ export class IngredientListingPage implements OnInit, OnDestroy {
       value: new FormControl("all"),
     });
 
-    this.route.data.subscribe((resolvedRouteData) => {
-      this.ingredientsDataStore = resolvedRouteData["data"];
+    this.searchingState();
 
-      const updateSearchObservable = this.searchFiltersObservable.pipe(
-        switchMap((filters) => {
-          let filteredDataSource = this.ingredientService.searchIngredientsByHydration(
-            filters.hydration.lower,
-            filters.hydration.upper
-          );
-          filteredDataSource = this.ingredientService.searchIngredientsByCost(
-            filters.cost.lower,
-            filters.cost.upper,
-            filteredDataSource
-          );
-          if (filters.is_flour !== "all") {
-            filteredDataSource = this.ingredientService.searchIngredientsByType(
-              filters.is_flour,
-              filteredDataSource
-            );
-          }
-          filteredDataSource = this.ingredientService.searchIngredientsByFormula(
-            this.segment,
-            filteredDataSource
-          );
-
-          const searchingShellModel = [];
-          for (let index = 0; index < LOADING_ITEMS; index++) {
-            searchingShellModel.push(new IngredientModel());
-          }
-
-          const dataSourceWithShellObservable = DataStore.AppendShell(
-            filteredDataSource,
-            searchingShellModel
-          );
-
-          return dataSourceWithShellObservable.pipe(
-            map((filteredItems) => {
-              // Just filter items by name if there is a search query and they are not shell values
-              if (filters.query !== "" && !filteredItems.isShell) {
-                const queryFilteredItems = filteredItems.filter((item) =>
-                  item.name.toLowerCase().includes(filters.query.toLowerCase())
-                );
-                // While filtering we strip out the isShell property, add it again
-                return Object.assign(queryFilteredItems, {
-                  isShell: filteredItems.isShell,
-                });
-              } else {
-                return filteredItems;
-              }
-            })
-          );
-        })
-      );
-
-      this.stateSubscription = merge(
-        this.ingredientsDataStore.state,
-        updateSearchObservable
-      ).subscribe((state) => {
-        this.ingredients = state;
-        if (state.isShell == false && this.firstLoad == true) {
-          this.searchList();
-          this.firstLoad = false;
-        }
+    this.ingredientCRUDService
+      .getIngredientsDataSource()
+      .subscribe((ingredients) => {
+        this.ingredientService.setIngredients(
+          ingredients as IngredientModel[] & ShellModel
+        );
+        this.searchList();
       });
-    });
+  }
+
+  ngOnDestroy(): void {
+    this.ingredientService.clearIngredients();
   }
 
   searchList() {
-    this.searchSubject.next({
+    let filteredIngredients = JSON.parse(
+      JSON.stringify(this.ingredientService.getIngredients())
+    );
+    let filters = {
       hydration: {
         lower: this.hydrationRangeForm.controls.dual.value.lower,
         upper: this.hydrationRangeForm.controls.dual.value.upper,
@@ -145,6 +87,53 @@ export class IngredientListingPage implements OnInit, OnDestroy {
       },
       is_flour: this.isFlourForm.value.value,
       query: this.searchQuery,
+    };
+
+    filteredIngredients = this.ingredientService.searchIngredientsByHydration(
+      filters.hydration.lower,
+      filters.hydration.upper,
+      filteredIngredients
+    );
+    filteredIngredients = this.ingredientService.searchIngredientsByCost(
+      filters.cost.lower,
+      filters.cost.upper,
+      filteredIngredients
+    );
+    if (filters.is_flour !== "all") {
+      filteredIngredients = this.ingredientService.searchIngredientsByType(
+        filters.is_flour,
+        filteredIngredients
+      );
+    }
+    filteredIngredients = this.ingredientService.searchIngredientsByFormula(
+      this.segment,
+      filteredIngredients
+    );
+
+    const dataSourceWithShellObservable = DataStore.AppendShell(
+      of(filteredIngredients),
+      this.searchingState()
+    );
+
+    let updateSearchObservable = dataSourceWithShellObservable.pipe(
+      map((filteredItems) => {
+        // Just filter items by name if there is a search query and they are not shell values
+        if (filters.query !== "" && !filteredItems.isShell) {
+          const queryFilteredItems = filteredItems.filter((item) =>
+            item.name.toLowerCase().includes(filters.query.toLowerCase())
+          );
+          // While filtering we strip out the isShell property, add it again
+          return Object.assign(queryFilteredItems, {
+            isShell: filteredItems.isShell,
+          });
+        } else {
+          return filteredItems;
+        }
+      })
+    );
+
+    updateSearchObservable.subscribe((value) => {
+      this.ingredients = value;
     });
   }
 
@@ -176,5 +165,16 @@ export class IngredientListingPage implements OnInit, OnDestroy {
         }
       );
     }
+  }
+
+  searchingState() {
+    let searchingShellModel: IngredientModel[] &
+      ShellModel = [] as IngredientModel[] & ShellModel;
+    for (let index = 0; index < LOADING_ITEMS; index++) {
+      searchingShellModel.push(new IngredientModel());
+    }
+    searchingShellModel.isShell = true;
+    this.ingredients = searchingShellModel;
+    return searchingShellModel;
   }
 }

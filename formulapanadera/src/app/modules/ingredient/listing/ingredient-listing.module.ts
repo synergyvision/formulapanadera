@@ -8,15 +8,11 @@ import { TranslateModule } from "@ngx-translate/core";
 import { ComponentsModule } from "../../../shared/components/components.module";
 
 import { IngredientListingPage } from "./ingredient-listing.page";
-import { IngredientListingResolver } from "../../../core/resolvers/ingredient-listing.resolver";
 
 const routes: Routes = [
   {
     path: "",
     component: IngredientListingPage,
-    resolve: {
-      data: IngredientListingResolver,
-    },
   },
 ];
 
@@ -31,6 +27,5 @@ const routes: Routes = [
     ReactiveFormsModule,
   ],
   declarations: [IngredientListingPage],
-  providers: [IngredientListingResolver],
 })
 export class IngredientListingPageModule {}

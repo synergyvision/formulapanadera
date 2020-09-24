@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button
+        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.production.main "
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title> {{'production.name' | translate}} </ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentOptions()">
+        <ion-icon
+          slot="icon-only"
+          [ios]="ICONS.ellipsis_h"
+          [md]="ICONS.ellipsis_v"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="manage-production-content">
+  <section class="production-details-fields fields-section">
+    <app-title [title]="production.name"></app-title>
+    <ion-row class="present-list">
+      <ion-col class="list-col">
+        <app-formulas-list [formulas]="formulas"></app-formulas-list>
+      </ion-col>
+    </ion-row>
+    <ion-row class="present-list">
+      <ion-col class="list-col">
+        <app-show-hide-content
+          (click)="showIngredients = !showIngredients"
+          [show]="showIngredients"
+          [title]="'ingredients.name' | translate"
+        >
+        </app-show-hide-content>
+        <app-production-ingredients-list
+          *ngIf="showIngredients"
+          [formulas]="formulas"
+        ></app-production-ingredients-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="present-list">
+      <ion-col class="list-col">
+        <app-show-hide-content
+          (click)="showDetails = !showDetails"
+          [show]="showDetails"
+          [title]="'production.details' | translate"
+        >
+        </app-show-hide-content>
+        <app-formulas-ingredients-list
+          *ngIf="showDetails"
+          [formulas]="formulas"
+        ></app-formulas-ingredients-list> </ion-col
+    ></ion-row>
+  </section>
+</ion-content>

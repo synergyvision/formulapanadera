@@ -127,7 +127,6 @@
       *ngFor="let formula of formulas; index as i"
       (click)="formulaDetails(formula)"
       [formula]="formula"
-      [type]="segment"
       [clickable]="true"
       [even]="(i%2==0)"
     ></app-formula-item>
