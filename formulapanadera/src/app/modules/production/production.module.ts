@@ -28,6 +28,14 @@ const routes: Routes = [
         (m) => m.ProductionDetailsPageModule
       ),
   },
+  {
+    path: APP_URL.menu.routes.production.routes.start,
+    canLoad: [StateHasDataGuard],
+    loadChildren: () =>
+      import("./start/production-start.module").then(
+        (m) => m.ProductionStartPageModule
+      ),
+  },
 ];
 
 @NgModule({

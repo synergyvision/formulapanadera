@@ -37,15 +37,9 @@ export class IngredientDetailsPage implements OnInit {
   }
 
   ngOnInit() {
-    if (this.state === undefined) {
-      this.router.navigateByUrl(
-        APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-      );
-    } else {
-      this.ingredient = this.state.ingredient;
-      if (this.ingredient.formula) {
-        this.type = "compound";
-      }
+    this.ingredient = this.state.ingredient;
+    if (this.ingredient.formula) {
+      this.type = "compound";
     }
   }
 

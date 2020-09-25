@@ -20,7 +20,20 @@
 
 <ion-content class="manage-production-content">
   <section class="production-details-fields fields-section">
-    <app-title [title]="production.name"></app-title>
+    <ion-row>
+      <ion-col class="list-col" size="9"
+        ><app-title [title]="production.name"></app-title
+      ></ion-col>
+      <ion-col class="list-col start-button-col" size="3">
+        <ion-icon
+          name="play-circle"
+          button
+          class="start-button"
+          (click)="startProduction()"
+        ></ion-icon>
+      </ion-col>
+    </ion-row>
+
     <ion-row class="present-list">
       <ion-col class="list-col">
         <app-formulas-list [formulas]="formulas"></app-formulas-list>

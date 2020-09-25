@@ -40,3 +40,16 @@
 .list-col {
   padding: 0;
 }
+
+.start-button-col {
+  border-bottom: 1px solid lightgrey;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  .start-button {
+    color: var(--ion-color-primary-shade);
+    width: 70%;
+    height: 70%;
+  }
+}

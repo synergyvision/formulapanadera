@@ -45,17 +45,11 @@ export class ProductionDetailsPage implements OnInit {
   }
 
   async ngOnInit() {
-    if (this.state === undefined) {
-      this.router.navigateByUrl(
-        APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
-      );
-    } else {
-      this.production = JSON.parse(JSON.stringify(this.state.production));
-      this.original_production = JSON.parse(
-        JSON.stringify(this.state.production)
-      );
-      this.calculateFormulas();
-    }
+    this.production = JSON.parse(JSON.stringify(this.state.production));
+    this.original_production = JSON.parse(
+      JSON.stringify(this.state.production)
+    );
+    this.calculateFormulas();
   }
 
   calculateFormulas() {
@@ -176,6 +170,19 @@ export class ProductionDetailsPage implements OnInit {
         APP_URL.menu.routes.production.main +
         "/" +
         APP_URL.menu.routes.production.routes.management,
+      {
+        state: { production: this.production },
+      }
+    );
+  }
+
+  startProduction() {
+    this.router.navigateByUrl(
+      APP_URL.menu.name +
+        "/" +
+        APP_URL.menu.routes.production.main +
+        "/" +
+        APP_URL.menu.routes.production.routes.start,
       {
         state: { production: this.production },
       }

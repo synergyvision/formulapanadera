@@ -79,16 +79,11 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    if (this.state === undefined) {
-      this.router.navigateByUrl(
-        APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-      );
-    } else {
-      this.formula = this.state.formula;
-      this.units = this.formula.units;
-      this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
-      this.steps = JSON.parse(JSON.stringify(this.formula.steps));
-    }
+    this.formula = this.state.formula;
+    this.units = this.formula.units;
+    this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
+    this.steps = JSON.parse(JSON.stringify(this.formula.steps));
+
     this.user = await this.userStorageService.getUser();
   }
 
