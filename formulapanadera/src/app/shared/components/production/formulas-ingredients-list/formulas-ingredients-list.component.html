@@ -1,4 +1,4 @@
-<ion-card class="details-card">
+<ion-card class="details-card" [ngClass]="{ highlight: highlight }">
   <ion-list lines="full" class="present-title present-ingredients">
     <ion-row *ngFor="let item of formulas">
       <ion-col size="12" class="present-ingredients-col">
@@ -21,11 +21,17 @@
           </ion-row>
         </ion-item>
         <div *ngIf="item.show" class="details-content">
+          <!-- Main ingredients -->
           <app-ingredients-list
             [ingredients]="item.formula.ingredients"
             [bakers_percentage]="item.bakers_percentage"
           >
           </app-ingredients-list>
+          <app-mixing-steps
+            *ngIf="showMixing"
+            [steps]="item.formula.mixing"
+          ></app-mixing-steps>
+          <!-- Step ingredients -->
           <span *ngFor="let step of item.formula.steps">
             <app-ingredients-list
               *ngIf="step.ingredients"
@@ -35,6 +41,7 @@
             >
             </app-ingredients-list>
           </span>
+          <!-- Compound ingredients -->
           <span *ngIf="item.ingredients_formula.length > 0 && item.show">
             <ion-item class="production-subtitle">
               <ion-row class="title-row">
@@ -45,9 +52,8 @@
                 </ion-col>
               </ion-row>
             </ion-item>
-            <span>
+            <span *ngFor="let ingredientFormula of item.ingredients_formula">
               <app-ingredients-list
-                *ngFor="let ingredientFormula of item.ingredients_formula"
                 [ingredients]="ingredientFormula.ingredient.formula.ingredients"
                 [bakers_percentage]="ingredientFormula.bakers_percentage"
                 [compensation]="
@@ -56,6 +62,10 @@
                 [name]="ingredientFormula.ingredient.name"
               >
               </app-ingredients-list>
+              <app-mixing-steps
+                *ngIf="showMixing"
+                [steps]="ingredientFormula.ingredient.formula.mixing"
+              ></app-mixing-steps>
             </span>
           </span>
         </div>

@@ -5,8 +5,28 @@
     </ion-buttons>
     <ion-title> {{'production.name' | translate}} </ion-title>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="segment" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="ingredients" class="segment-button">
+        <ion-label>{{'ingredients.name' | translate}}</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="steps" class="segment-button">
+        <ion-label>{{'formulas.steps' | translate}}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="start-production-content">
-  <section></section>
+  <section>
+    <ion-row *ngIf="segment=='ingredients'" class="present-list">
+      <ion-col class="list-col">
+        <app-formulas-ingredients-list
+          [formulas]="formulas"
+          [highlight]="true"
+          [showMixing]="true"
+        ></app-formulas-ingredients-list>
+      </ion-col>
+    </ion-row>
+  </section>
 </ion-content>

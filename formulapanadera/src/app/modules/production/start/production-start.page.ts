@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { APP_URL } from "src/app/config/configuration";
-import { ProductionModel } from "src/app/core/models/production.model";
+import { FormulaPresentModel, ProductionModel } from "src/app/core/models/production.model";
 
 @Component({
   selector: "app-production-start",
@@ -10,6 +10,8 @@ import { ProductionModel } from "src/app/core/models/production.model";
 })
 export class ProductionStartPage implements OnInit {
   production: ProductionModel;
+  formulas: Array<FormulaPresentModel & { show: boolean }>;
+  segment = "steps";
 
   state;
 
@@ -19,6 +21,11 @@ export class ProductionStartPage implements OnInit {
 
   async ngOnInit() {
     this.production = JSON.parse(JSON.stringify(this.state.production));
+    this.formulas = JSON.parse(JSON.stringify(this.state.formulas));
+  }
+
+  segmentChanged(ev: any) {
+    this.segment = ev.detail.value;
   }
 
   productionDetails() {
