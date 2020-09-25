@@ -54,5 +54,22 @@
           [formulas]="formulas"
         ></app-formulas-ingredients-list> </ion-col
     ></ion-row>
+
+    <ion-row class="present-list">
+      <ion-col class="list-col">
+        <app-show-hide-content
+          (click)="showTimes = !showTimes"
+          [show]="showTimes"
+          [title]="'production.times' | translate"
+        >
+        </app-show-hide-content>
+        <span *ngIf="showTimes">
+          <app-formula-time-table
+            *ngFor="let formula of formulas"
+            [formula]="formula"
+          ></app-formula-time-table>
+        </span>
+      </ion-col>
+    </ion-row>
   </section>
 </ion-content>

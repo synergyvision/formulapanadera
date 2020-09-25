@@ -1,6 +1,6 @@
-.formulas-list {
-  font-size: 12px;
-  border: 1px solid var(--ion-color-primary);
+.formulas-table {
+  font-size: 11px;
+  border: 1px solid var(--ion-color-secondary);
   text-align: end;
   margin: 10px 0px;
 
@@ -9,7 +9,7 @@
   }
 
   .title-row {
-    border-bottom: 1px solid var(--ion-color-primary);
+    border-bottom: 1px solid var(--ion-color-secondary);
     font-style: bold;
     text-align: end;
     .title-name {

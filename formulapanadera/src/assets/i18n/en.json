@@ -138,6 +138,8 @@
     "update": "Update production",
     "production_name": "Name",
     "details": "Details",
+    "total": "Total",
+    "times": "Times",
     "empty": "No productions found"
   },
   "steps": {

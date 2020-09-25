@@ -19,6 +19,7 @@ import { ProductionIngredientsComponent } from "./production/production-ingredie
 import { ProductionItemComponent } from "./production/production-item/production-item.component";
 import { FormulasIngredientsListComponent } from "./production/formulas-ingredients-list/formulas-ingredients-list.component";
 import { TitleComponent } from "./general/title/title.component";
+import { FormulaTimeTableComponent } from "./production/formula-time-table/formula-time-table.component";
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { TitleComponent } from "./general/title/title.component";
     HydrationBarComponent,
     IngredientsListComponent,
     FormulasListComponent,
+    FormulaTimeTableComponent,
     FormulaStepComponent,
     MixingStepsComponent,
     ProductionItemComponent,
@@ -52,6 +54,7 @@ import { TitleComponent } from "./general/title/title.component";
     HydrationBarComponent,
     IngredientsListComponent,
     FormulasListComponent,
+    FormulaTimeTableComponent,
     FormulaStepComponent,
     MixingStepsComponent,
     ProductionItemComponent,

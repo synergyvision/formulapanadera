@@ -23,6 +23,7 @@ export class ProductionDetailsPage implements OnInit {
 
   showIngredients: boolean;
   showDetails: boolean;
+  showTimes: boolean;
 
   production: ProductionModel = new ProductionModel();
   original_production: ProductionModel = new ProductionModel();
@@ -38,6 +39,7 @@ export class ProductionDetailsPage implements OnInit {
   ) {
     this.showIngredients = true;
     this.showDetails = true;
+    this.showTimes = true;
 
     this.state = this.router.getCurrentNavigation().extras.state;
   }

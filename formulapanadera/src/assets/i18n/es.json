@@ -138,6 +138,8 @@
     "update": "Modificar producción",
     "production_name": "Nombre",
     "details": "Detalles",
+    "total": "Total",
+    "times": "Tiempos",
     "empty": "No se encontraron producciones"
   },
   "steps": {

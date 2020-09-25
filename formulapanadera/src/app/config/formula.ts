@@ -1,4 +1,6 @@
 export const BAKERY_STEPS = 12;
+// Oven step needs to be less than the total bakery steps
+export const OVEN_STEP = 11;
 
 export const PROPORTION_FACTOR = ["flour", "dough", "ingredient"] as const;
 
