@@ -1,0 +1,48 @@
+.background-gray {
+  --background: rgba(221, 221, 221, 0.322) !important;
+}
+
+.step-item {
+  color: var(--ion-color-medium);
+
+  .step-item-wrapper {
+    --ion-grid-column-padding: 0px;
+    padding: 10px 0 10px 0;
+    width: 100%;
+    align-items: center;
+
+    .step-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding-left: 0;
+
+      .step-name {
+        margin: 0px;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 0.2px;
+        color: var(--ion-color-primary);
+      }
+
+      .details-col {
+        align-self: flex-end;
+
+        .step-formula {
+          font-size: 12px;
+          margin: 0px 0 5px 0;
+        }
+
+        .step-description {
+          font-size: 15px;
+          margin: 0px;
+
+          .details-icon {
+            color: var(--ion-color-dark) !important;
+            margin-bottom: -2px;
+          }
+        }
+      }
+    }
+  }
+}

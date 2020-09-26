@@ -5,7 +5,25 @@
     </ion-buttons>
     <ion-title> {{'production.name' | translate}} </ion-title>
   </ion-toolbar>
-  <ion-toolbar>
+</ion-header>
+
+<ion-content class="start-production-content">
+  <section>
+    <!-- Title and play button -->
+    <ion-row>
+      <ion-col class="list-col" size="9">
+        <app-title [title]="production.name"></app-title>
+      </ion-col>
+      <ion-col class="list-col action-button-col" size="3">
+        <ion-icon
+          [name]="in_process ? 'stop-circle-outline' : 'play-circle-outline'"
+          button
+          class="action-button"
+          (click)="in_process = !in_process"
+        ></ion-icon>
+      </ion-col>
+    </ion-row>
+    <!-- Segment -->
     <ion-segment [value]="segment" (ionChange)="segmentChanged($event)">
       <ion-segment-button value="ingredients" class="segment-button">
         <ion-label>{{'ingredients.name' | translate}}</ion-label>
@@ -14,11 +32,7 @@
         <ion-label>{{'formulas.steps' | translate}}</ion-label>
       </ion-segment-button>
     </ion-segment>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="start-production-content">
-  <section>
+    <!-- Ingredients content -->
     <ion-row *ngIf="segment=='ingredients'" class="present-list">
       <ion-col class="list-col">
         <app-formulas-ingredients-list
@@ -28,5 +42,13 @@
         ></app-formulas-ingredients-list>
       </ion-col>
     </ion-row>
+    <!-- Steps content -->
+    <ion-list lines="none" class="steps-list" *ngIf="segment=='steps'">
+      <app-production-step-item
+        *ngFor="let step of production_in_process.steps; index as i"
+        [step]="step"
+        [even]="(i%2==0)"
+      ></app-production-step-item>
+    </ion-list>
   </section>
 </ion-content>

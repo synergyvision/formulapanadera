@@ -1,3 +1,25 @@
 .segment-button {
   width: 50%;
 }
+
+.list-col {
+  padding: 0;
+}
+
+.action-button-col {
+  border-bottom: 1px solid lightgrey;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  .action-button {
+    color: var(--ion-color-primary-shade);
+    width: 70%;
+    height: 70%;
+  }
+}
+
+.steps-list {
+  padding-top: 0;
+  padding-bottom: 0;
+}

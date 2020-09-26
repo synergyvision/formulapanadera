@@ -1,16 +1,26 @@
 import { Injectable } from "@angular/core";
 import {
   FormulaPresentModel,
+  ProductionInProcessModel,
   ProductionModel,
+  ProductionStepModel,
+  TimeModel,
 } from "../models/production.model";
-import { IngredientPercentageModel } from "../models/formula.model";
+import {
+  IngredientPercentageModel,
+  StepDetailsModel,
+} from "../models/formula.model";
 import { DECIMALS } from "src/app/config/formats";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { FormulaService } from "./formula.service";
+import { TimeService } from "./time.service";
 
 @Injectable()
 export class ProductionService {
-  constructor(private formulaService: FormulaService) {}
+  constructor(
+    private formulaService: FormulaService,
+    private timeService: TimeService
+  ) {}
 
   /*
   Production filters
@@ -106,5 +116,57 @@ export class ProductionService {
       item.percentage = Number(item.percentage.toFixed(DECIMALS.formula_grams));
     });
     return ingredients;
+  }
+
+  public getProductionInProcess(
+    production: ProductionModel
+  ): ProductionInProcessModel {
+    let date: Date = this.timeService.currentDate();
+    let production_steps: Array<ProductionStepModel> = [];
+    let previous_end_date: Date = null;
+    let estimated_time: TimeModel;
+    production.formulas.forEach((item) => {
+      previous_end_date = null;
+      item.formula.steps.forEach((step) => {
+        estimated_time = this.calculateEstimatedTime(
+          date,
+          step,
+          previous_end_date
+        );
+        production_steps.push({
+          status: "PENDING",
+          formula: {
+            id: item.formula.id,
+            name: item.formula.name,
+          },
+          step: step,
+          time: estimated_time,
+        });
+        previous_end_date = estimated_time.end;
+      });
+    });
+    return {
+      time: date,
+      steps: production_steps,
+    };
+  }
+
+  public calculateEstimatedTime(
+    start_date: Date,
+    step: StepDetailsModel,
+    previous_end_date?: Date
+  ): TimeModel {
+    let estimated_start: Date;
+    let estimated_end: Date;
+    if (previous_end_date) {
+      estimated_start = previous_end_date;
+    } else {
+      estimated_start = start_date;
+    }
+    estimated_end = this.timeService.addTime(estimated_start, step.time, "m");
+    return {
+      start: estimated_start,
+      end: estimated_end,
+    };
   }
 }

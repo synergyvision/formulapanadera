@@ -4,6 +4,12 @@ export const OVEN_STEP = 11;
 
 export const PROPORTION_FACTOR = ["flour", "dough", "ingredient"] as const;
 
+export const PRODUCTION_STEP_STATUS = [
+  "PENDING",
+  "IN PROCESS",
+  "DONE",
+] as const;
+
 // Classification names need to be a key on "formulas.hydration" i18n files
 // Values need to be from 0-1
 export const HYDRATION_CLASSIFICATION = [
