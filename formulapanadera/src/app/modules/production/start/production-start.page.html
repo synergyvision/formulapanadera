@@ -16,13 +16,31 @@
       </ion-col>
       <ion-col class="list-col action-button-col" size="3">
         <ion-icon
-          [name]="in_process ? 'stop-circle-outline' : 'play-circle-outline'"
+          [name]="in_process ? ICONS.production_stop : ICONS.production_start"
           button
           class="action-button"
-          (click)="in_process = !in_process"
+          (click)="changeProcessStatus()"
         ></ion-icon>
       </ion-col>
     </ion-row>
+    <ion-row
+      ><ion-col class="list-col" size="12">
+        <ion-item class="time-item">
+          <ion-row class="time-row">
+            <ion-col size="6"
+              ><b>{{ 'production.time.current' | translate}}</b><br />
+              {{currentTime()}}</ion-col
+            >
+            <ion-col size="6">
+              <span *ngIf="production_in_process.time">
+                <b>{{ 'production.time.start' | translate}}</b> <br />
+                {{productionStartTime()}}</span
+              >
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-col></ion-row
+    >
     <!-- Segment -->
     <ion-segment [value]="segment" (ionChange)="segmentChanged($event)">
       <ion-segment-button value="ingredients" class="segment-button">
@@ -45,10 +63,23 @@
     <!-- Steps content -->
     <ion-list lines="none" class="steps-list" *ngIf="segment=='steps'">
       <app-production-step-item
-        *ngFor="let step of production_in_process.steps; index as i"
+        *ngFor="let step of stepsFiltered(false); index as i"
         [step]="step"
         [even]="(i%2==0)"
       ></app-production-step-item>
+    </ion-list>
+    <ion-item-divider class="divider">
+      <ion-label class="divider-label"
+        >{{ "production.done" | translate }}</ion-label
+      >
+    </ion-item-divider>
+    <ion-list lines="none" class="steps-list" *ngIf="segment=='steps'">
+      <app-production-step-item
+        *ngFor="let step of stepsFiltered(true); index as i"
+        [step]="step"
+        [even]="(i%2==0)"
+      >
+      </app-production-step-item>
     </ion-list>
   </section>
 </ion-content>

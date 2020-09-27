@@ -6,6 +6,14 @@
   padding: 0;
 }
 
+.time-item {
+  font-size: 13px;
+  color: var(--ion-color-secondary);
+  .time-row {
+    width: 100%;
+  }
+}
+
 .action-button-col {
   border-bottom: 1px solid lightgrey;
   display: flex;

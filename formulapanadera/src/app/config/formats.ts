@@ -1,6 +1,7 @@
 export const DATE_FORMAT = "short";
 
 export const TIME_FORMAT = "hh:mm a";
+export const SPECIFIC_TIME_FORMAT = "hh:mm:ss a";
 
 export const DECIMALS = {
   temperature: 0,

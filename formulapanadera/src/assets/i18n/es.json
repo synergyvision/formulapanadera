@@ -140,7 +140,12 @@
     "details": "Detalles",
     "total": "Total",
     "times": "Tiempos",
-    "empty": "No se encontraron producciones"
+    "empty": "No se encontraron producciones",
+    "done": "Hecho",
+    "time": {
+      "current": "Hora actual",
+      "start": "Hora de inicio"
+    }
   },
   "steps": {
     "1": "Preparación",

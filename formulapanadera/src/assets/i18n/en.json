@@ -140,7 +140,12 @@
     "details": "Details",
     "total": "Total",
     "times": "Times",
-    "empty": "No productions found"
+    "empty": "No productions found",
+    "done": "done",
+    "time": {
+      "current": "Current time",
+      "start": "Start time"
+    }
   },
   "steps": {
     "1": "Mise en place",

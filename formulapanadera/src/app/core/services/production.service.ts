@@ -118,21 +118,12 @@ export class ProductionService {
     return ingredients;
   }
 
-  public getProductionInProcess(
+  public getProductionSteps(
     production: ProductionModel
   ): ProductionInProcessModel {
-    let date: Date = this.timeService.currentDate();
     let production_steps: Array<ProductionStepModel> = [];
-    let previous_end_date: Date = null;
-    let estimated_time: TimeModel;
     production.formulas.forEach((item) => {
-      previous_end_date = null;
       item.formula.steps.forEach((step) => {
-        estimated_time = this.calculateEstimatedTime(
-          date,
-          step,
-          previous_end_date
-        );
         production_steps.push({
           status: "PENDING",
           formula: {
@@ -140,15 +131,36 @@ export class ProductionService {
             name: item.formula.name,
           },
           step: step,
-          time: estimated_time,
+          time: null,
         });
-        previous_end_date = estimated_time.end;
       });
     });
     return {
-      time: date,
+      time: null,
       steps: production_steps,
     };
+  }
+
+  public startProduction(
+    production_in_process: ProductionInProcessModel
+  ): ProductionInProcessModel {
+    let date: Date = this.timeService.currentDate();
+    production_in_process.time = date;
+
+    let previous_end_date: Date = null;
+    let estimated_time: TimeModel;
+
+    previous_end_date = null;
+    production_in_process.steps.forEach((step) => {
+      estimated_time = this.calculateEstimatedTime(
+        date,
+        step.step,
+        previous_end_date
+      );
+      step.time = estimated_time;
+      previous_end_date = estimated_time.end;
+    });
+    return production_in_process;
   }
 
   public calculateEstimatedTime(

@@ -5,6 +5,11 @@
 .step-item {
   color: var(--ion-color-medium);
 
+  .step-action-icon {
+    margin-right: 12px;
+    color: var(--ion-color-primary);
+  }
+
   .step-item-wrapper {
     --ion-grid-column-padding: 0px;
     padding: 10px 0 10px 0;
@@ -40,9 +45,26 @@
           .details-icon {
             color: var(--ion-color-dark) !important;
             margin-bottom: -2px;
+            margin-right: 2px;
           }
         }
       }
     }
+  }
+}
+
+.step-danger {
+  animation-name: dangerAnimation;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes dangerAnimation {
+  0% {
+    color: var(--ion-color-primary);
+  }
+  100% {
+    color: var(--ion-color-danger);
   }
 }

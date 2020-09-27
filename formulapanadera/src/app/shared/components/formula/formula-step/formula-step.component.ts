@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { ICONS } from "src/app/config/icons";
 import { StepDetailsModel } from "src/app/core/models/formula.model";
 
 @Component({
@@ -7,8 +8,11 @@ import { StepDetailsModel } from "src/app/core/models/formula.model";
   styleUrls: ["./styles/formula-step.component.scss"],
 })
 export class FormulaStepComponent {
+  ICONS = ICONS;
+
   @Input() step: StepDetailsModel;
   @Input() temperatureUnit: string;
+  @Input() details: boolean = false;
 
   constructor() {}
 }

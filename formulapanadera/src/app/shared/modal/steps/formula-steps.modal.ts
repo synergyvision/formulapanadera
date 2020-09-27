@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { ModalController } from "@ionic/angular";
+import { ICONS } from "src/app/config/icons";
 import { StepDetailsModel } from "src/app/core/models/formula.model";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 
@@ -9,6 +10,8 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
   styleUrls: ["./styles/formula-steps.modal.scss"],
 })
 export class FormulaStepsModal {
+  ICONS = ICONS;
+
   @Input() formulaSteps: Array<StepDetailsModel>;
 
   temperatureUnit: string = "C";
@@ -74,7 +77,8 @@ export class FormulaStepsModal {
     let index = this.formulaSteps.indexOf(step);
     this.formulaSteps[index].time = Number(
       this.formatNumberService.formatNumberDecimals(
-        this.formulaSteps[index].time,0
+        this.formulaSteps[index].time,
+        0
       )
     );
   }

@@ -1,16 +1,16 @@
-<ion-item class="step-description">
+<ion-item class="step-description" [ngClass]="{ 'step-details': details }">
   <ion-row class="step-item-wrapper">
     <ion-col class="step-wrapper">
       <ion-row
         ><ion-col
           ><p class="step-properties">
-            <ion-icon name="timer-outline" color="dark"></ion-icon>
+            <ion-icon [name]="ICONS.timer" color="dark"></ion-icon>
             {{ step.time }} {{ "formulas.minutes" | translate }}
           </p>
         </ion-col>
         <ion-col *ngIf="step.temperature">
           <p class="step-properties">
-            <ion-icon name="thermometer-outline" color="danger"></ion-icon>
+            <ion-icon [name]="ICONS.thermometer" color="danger"></ion-icon>
             {{ step.temperature.min }} º{{ temperatureUnit }}
             <span *ngIf="step.temperature.max !== -1">
               - {{ step.temperature.max }} º{{ temperatureUnit }}</span

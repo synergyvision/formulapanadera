@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { ModalController } from "@ionic/angular";
+import { ICONS } from "src/app/config/icons";
 import {
   IngredientMixingModel,
   IngredientPercentageModel,
@@ -11,6 +12,8 @@ import {
   styleUrls: ["./styles/ingredient-mixing.modal.scss"],
 })
 export class IngredientMixingModal {
+  ICONS = ICONS;
+
   @Input() formulaMixing: Array<IngredientMixingModel>;
   @Input() editable: boolean;
 

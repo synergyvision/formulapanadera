@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-icon slot="start" class="btn-med" name="list-outline"></ion-icon>
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.list"></ion-icon>
     <ion-title> {{'formulas.steps' | translate}} </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="dismissModal()" class="create-ingredient">

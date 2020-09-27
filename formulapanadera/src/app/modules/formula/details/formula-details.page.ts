@@ -252,7 +252,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       // If not public or cloned
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
-        icon: "trash-outline",
+        icon: ICONS.trash,
         cssClass: "delete-icon",
         handler: () => {
           this.deleteFormula();
