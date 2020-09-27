@@ -6,7 +6,7 @@ import { SPECIFIC_TIME_FORMAT, TIME_FORMAT } from "src/app/config/formats";
 
 @Injectable()
 export class TimeService {
-  time: Date;
+  private time: Date;
   constructor() {}
 
   currentDate(): Date {
@@ -30,11 +30,19 @@ export class TimeService {
     return moment(initial_date).add(type, time).toDate();
   }
 
+  subtractTime(initial_date: Date, time: any, type: string): Date {
+    return moment(initial_date).subtract(type, time).toDate();
+  }
+
   formatTime(date: Date, format: string = TIME_FORMAT): string {
     return moment(date).format(format);
   }
 
   dateIsAfterNow(date: Date): boolean {
     return moment(date).isAfter(this.time, "minute");
+  }
+
+  difference(start: Date, end: Date) {
+    return moment.duration(moment(end).diff(start)).asMinutes();
   }
 }

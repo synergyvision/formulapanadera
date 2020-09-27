@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import {
   FormulaNumberModel,
   FormulaPresentModel,
+  ProductionFormulaStepsModel,
   ProductionInProcessModel,
   ProductionModel,
   ProductionStepModel,
@@ -15,6 +16,7 @@ import { DECIMALS } from "src/app/config/formats";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { FormulaService } from "./formula.service";
 import { TimeService } from "./time.service";
+import { OVEN_STEP } from "src/app/config/formula";
 
 @Injectable()
 export class ProductionService {
@@ -24,7 +26,7 @@ export class ProductionService {
   ) {}
 
   /*
-  Production filters
+    Production filters
   */
   searchProductionsByCost(
     lower: number,
@@ -46,7 +48,7 @@ export class ProductionService {
   }
 
   /*
-  Production calculations
+    Production calculations
   */
   public calculateTotalUnits(formulas: Array<FormulaPresentModel>): number {
     let units: number = 0;
@@ -119,6 +121,22 @@ export class ProductionService {
     return ingredients;
   }
 
+  private calculateTimeBeforeOven(steps: Array<ProductionStepModel>): number {
+    let time: number = 0;
+    for (let index = 0; index < OVEN_STEP - 1; index++) {
+      time = time + steps[index].step.time;
+    }
+    return time;
+  }
+
+  private calculateTimeAfterOven(steps: Array<ProductionStepModel>): number {
+    let time_before: number = this.calculateTimeBeforeOven(steps);
+    return time_before + steps[OVEN_STEP].step.time;
+  }
+
+  /*
+    Production steps
+  */
   public getProductionSteps(
     production: ProductionModel
   ): ProductionInProcessModel {
@@ -146,27 +164,66 @@ export class ProductionService {
     formulas: Array<FormulaNumberModel>,
     production_in_process: ProductionInProcessModel
   ): ProductionInProcessModel {
+    // Production start time
     let date: Date = this.timeService.currentDate();
     production_in_process.time = date;
 
-    let previous_end_date: Date = null;
-    let estimated_time: TimeModel;
-
+    // Production organized in its formulas
     let production_formulas = this.getProductionFormulasWithSteps(
       formulas,
       production_in_process
     );
+    // Organize production formulas by oven order
+    production_formulas = this.getProductionOvenOrder(production_formulas);
 
+    // Set variables and start production times calculations
+    let previous_formula_start: Date = null;
+    let previous_end_date: Date = null;
+    let estimated_time: TimeModel;
     production_in_process.steps = [];
-    production_formulas.forEach((formula) => {
-      previous_end_date = null;
-      formula.steps.forEach((step) => {
+    production_formulas.forEach((formula, index) => {
+      // If it's different from the first formula
+      if (index !== 0) {
+        // Check previous oven end time
+        let previous_time_after_oven = this.calculateTimeAfterOven(
+          production_formulas[index - 1].steps
+        );
+        let new_time_before_oven = this.calculateTimeBeforeOven(
+          production_formulas[index].steps
+        );
+        // Set this formula oven time after previous oven time
+        // Get previous formula oven ending
+        let previous_formula_oven_end = this.timeService.addTime(
+          previous_formula_start,
+          previous_time_after_oven,
+          "m"
+        );
+
+        let new_formula_start = this.timeService.subtractTime(
+          previous_formula_oven_end,
+          new_time_before_oven,
+          "m"
+        );
+
+        // If oven time was already after previous oven end start now, else set calculated start
+        if (this.timeService.dateIsAfterNow(new_formula_start)) {
+          previous_end_date = new_formula_start;
+        } else {
+          previous_end_date = null;
+        }
+      } else {
+        previous_end_date = null;
+      }
+      formula.steps.forEach((step, index) => {
         estimated_time = this.calculateEstimatedTime(
           date,
           step.step,
           previous_end_date
         );
         step.time = estimated_time;
+        if (index == 0) {
+          previous_formula_start = estimated_time.start;
+        }
         previous_end_date = estimated_time.end;
         production_in_process.steps.push(step);
       });
@@ -197,14 +254,8 @@ export class ProductionService {
   public getProductionFormulasWithSteps(
     formulas: Array<FormulaNumberModel>,
     production_in_process: ProductionInProcessModel
-  ): Array<{
-    formula: { id: string; name: string };
-    steps: Array<ProductionStepModel>;
-  }> {
-    let formulas_steps: Array<{
-      formula: { id: string; name: string };
-      steps: Array<ProductionStepModel>;
-    }> = [];
+  ): Array<ProductionFormulaStepsModel> {
+    let formulas_steps: Array<ProductionFormulaStepsModel> = [];
     formulas.forEach((formula) => {
       let result = [];
       production_in_process.steps.forEach((step) => {
@@ -218,5 +269,51 @@ export class ProductionService {
       });
     });
     return formulas_steps;
+  }
+
+  /*
+    Production sort
+  */
+  // Sorts formulas by oven order (asc)
+  public getProductionOvenOrder(
+    formula_steps: Array<ProductionFormulaStepsModel>
+  ): Array<ProductionFormulaStepsModel> {
+    return formula_steps.sort(
+      (a: ProductionFormulaStepsModel, b: ProductionFormulaStepsModel) => {
+        let num = 0;
+        if (
+          this.calculateTimeBeforeOven(a.steps) >
+          this.calculateTimeBeforeOven(b.steps)
+        ) {
+          num = 1;
+        } else {
+          num = -1;
+        }
+        return num;
+      }
+    );
+  }
+
+  public sortStepsByTime(
+    steps: Array<ProductionStepModel>
+  ): Array<ProductionStepModel> {
+    return steps.sort((a: ProductionStepModel, b: ProductionStepModel) => {
+      let num = 0;
+      if (a.time.start >= b.time.start) {
+        num = 1;
+      } else {
+        num = -1;
+      }
+      if (
+        this.timeService.difference(a.time.start, a.time.end) >
+        this.timeService.difference(b.time.start, b.time.end)
+      ) {
+        num = num - 0.1;
+      } else {
+        num = num + 0.1;
+      }
+
+      return num;
+    });
   }
 }

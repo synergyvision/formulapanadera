@@ -45,3 +45,9 @@ export class ProductionInProcessModel {
   time: Date;
   steps: Array<ProductionStepModel>;
 }
+
+// Time sorting steps
+export class ProductionFormulaStepsModel {
+  formula: { id: string; name: string };
+  steps: Array<ProductionStepModel>;
+}
