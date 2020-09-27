@@ -68,7 +68,7 @@
         [even]="(i%2==0)"
       ></app-production-step-item>
     </ion-list>
-    <ion-item-divider class="divider">
+    <ion-item-divider class="divider" *ngIf="stepsFiltered(true).length>0">
       <ion-label class="divider-label"
         >{{ "production.done" | translate }}</ion-label
       >

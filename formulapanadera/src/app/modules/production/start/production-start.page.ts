@@ -55,7 +55,10 @@ export class ProductionStartPage implements OnInit {
     this.in_process = !this.in_process;
 
     if (this.in_process) {
-      this.productionService.startProduction(this.production_in_process);
+      this.productionService.startProduction(
+        this.production.formulas,
+        this.production_in_process
+      );
     } else {
       this.production_in_process.time = null;
       this.production_in_process.steps.forEach((step) => {

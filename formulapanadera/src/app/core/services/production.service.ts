@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import {
+  FormulaNumberModel,
   FormulaPresentModel,
   ProductionInProcessModel,
   ProductionModel,
@@ -142,6 +143,7 @@ export class ProductionService {
   }
 
   public startProduction(
+    formulas: Array<FormulaNumberModel>,
     production_in_process: ProductionInProcessModel
   ): ProductionInProcessModel {
     let date: Date = this.timeService.currentDate();
@@ -150,16 +152,26 @@ export class ProductionService {
     let previous_end_date: Date = null;
     let estimated_time: TimeModel;
 
-    previous_end_date = null;
-    production_in_process.steps.forEach((step) => {
-      estimated_time = this.calculateEstimatedTime(
-        date,
-        step.step,
-        previous_end_date
-      );
-      step.time = estimated_time;
-      previous_end_date = estimated_time.end;
+    let production_formulas = this.getProductionFormulasWithSteps(
+      formulas,
+      production_in_process
+    );
+
+    production_in_process.steps = [];
+    production_formulas.forEach((formula) => {
+      previous_end_date = null;
+      formula.steps.forEach((step) => {
+        estimated_time = this.calculateEstimatedTime(
+          date,
+          step.step,
+          previous_end_date
+        );
+        step.time = estimated_time;
+        previous_end_date = estimated_time.end;
+        production_in_process.steps.push(step);
+      });
     });
+
     return production_in_process;
   }
 
@@ -173,12 +185,38 @@ export class ProductionService {
     if (previous_end_date) {
       estimated_start = previous_end_date;
     } else {
-      estimated_start = start_date;
+      estimated_start = this.timeService.addTime(start_date, 1, "m");
     }
     estimated_end = this.timeService.addTime(estimated_start, step.time, "m");
     return {
       start: estimated_start,
       end: estimated_end,
     };
+  }
+
+  public getProductionFormulasWithSteps(
+    formulas: Array<FormulaNumberModel>,
+    production_in_process: ProductionInProcessModel
+  ): Array<{
+    formula: { id: string; name: string };
+    steps: Array<ProductionStepModel>;
+  }> {
+    let formulas_steps: Array<{
+      formula: { id: string; name: string };
+      steps: Array<ProductionStepModel>;
+    }> = [];
+    formulas.forEach((formula) => {
+      let result = [];
+      production_in_process.steps.forEach((step) => {
+        if (step.formula.id === formula.formula.id) {
+          result.push(step);
+        }
+      });
+      formulas_steps.push({
+        formula: { id: formula.formula.id, name: formula.formula.name },
+        steps: result,
+      });
+    });
+    return formulas_steps;
   }
 }
