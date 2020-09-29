@@ -42,6 +42,10 @@ export class TimeService {
     return moment(date).isAfter(this.time, "minute");
   }
 
+  dateIsBeforeNow(date: Date): boolean {
+    return moment(date).isSameOrBefore(this.time, "minute");
+  }
+
   difference(start: Date, end: Date) {
     return moment.duration(moment(end).diff(start)).asMinutes();
   }

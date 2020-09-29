@@ -145,6 +145,10 @@
     "time": {
       "current": "Current time",
       "start": "Start time"
+    },
+    "warning": {
+      "name": "Warning",
+      "start": "We recommend starting this formula in the suggested order"
     }
   },
   "steps": {

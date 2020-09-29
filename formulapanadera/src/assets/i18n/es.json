@@ -145,6 +145,10 @@
     "time": {
       "current": "Hora actual",
       "start": "Hora de inicio"
+    },
+    "warning": {
+      "name": "Alerta",
+      "start": "Recomendamos iniciar esta fórmula con el orden sugerido"
     }
   },
   "steps": {

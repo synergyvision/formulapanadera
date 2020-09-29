@@ -11,6 +11,7 @@ import {
 } from "src/app/core/models/production.model";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { LanguageService } from "src/app/core/services/language.service";
+import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
 
 @Component({
   selector: "app-production-details",
@@ -29,13 +30,16 @@ export class ProductionDetailsPage implements OnInit {
   original_production: ProductionModel = new ProductionModel();
   formulas: Array<FormulaPresentModel & { show: boolean }>;
 
+  production_in_process: boolean = false;
+
   state;
 
   constructor(
     private formulaService: FormulaService,
     private languageService: LanguageService,
     private router: Router,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private productionInProcessStorageService: ProductionInProcessStorageService
   ) {
     this.showIngredients = true;
     this.showDetails = true;
@@ -46,10 +50,19 @@ export class ProductionDetailsPage implements OnInit {
 
   async ngOnInit() {
     this.production = JSON.parse(JSON.stringify(this.state.production));
+    this.production = JSON.parse(JSON.stringify(this.state.production));
     this.original_production = JSON.parse(
       JSON.stringify(this.state.production)
     );
     this.calculateFormulas();
+
+    let existing_production = await this.productionInProcessStorageService.getProduction();
+    if (
+      existing_production &&
+      this.production.id !== existing_production.production.id
+    ) {
+      this.production_in_process = true;
+    }
   }
 
   calculateFormulas() {
@@ -177,15 +190,17 @@ export class ProductionDetailsPage implements OnInit {
   }
 
   startProduction() {
-    this.router.navigateByUrl(
-      APP_URL.menu.name +
-        "/" +
-        APP_URL.menu.routes.production.main +
-        "/" +
-        APP_URL.menu.routes.production.routes.start,
-      {
-        state: { production: this.production, formulas: this.formulas },
-      }
-    );
+    if (!this.production_in_process) {
+      this.router.navigateByUrl(
+        APP_URL.menu.name +
+          "/" +
+          APP_URL.menu.routes.production.main +
+          "/" +
+          APP_URL.menu.routes.production.routes.start,
+        {
+          state: { production: this.production, formulas: this.formulas },
+        }
+      );
+    }
   }
 }

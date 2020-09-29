@@ -29,6 +29,7 @@
           [name]="ICONS.production_play"
           button
           class="start-button"
+          [ngClass]="{ blocked: production_in_process }"
           (click)="startProduction()"
         ></ion-icon>
       </ion-col>

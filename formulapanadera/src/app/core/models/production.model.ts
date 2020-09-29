@@ -28,15 +28,17 @@ export class TimeModel {
   end: Date;
 }
 
+export class FormulaResumeModel {
+  id: string;
+  name: string;
+}
+
 // If status is pending: start and end time are estimated
 // If status is in process: start time is real time and end time is estimated
 // If status is done: start and end time are real time of activities
 export class ProductionStepModel {
   status: typeof PRODUCTION_STEP_STATUS[number];
-  formula: {
-    id: string;
-    name: string;
-  };
+  formula: FormulaResumeModel;
   step: StepDetailsModel;
   time?: TimeModel;
 }
@@ -48,6 +50,13 @@ export class ProductionInProcessModel {
 
 // Time sorting steps
 export class ProductionFormulaStepsModel {
-  formula: { id: string; name: string };
+  formula: FormulaResumeModel;
   steps: Array<ProductionStepModel>;
+}
+
+/* Storage production */
+export class ProductionStorageModel {
+  production: ProductionModel;
+  production_in_process: ProductionInProcessModel;
+  formulas: Array<FormulaPresentModel & { show: boolean }>;
 }

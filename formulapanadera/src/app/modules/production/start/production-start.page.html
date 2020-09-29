@@ -23,6 +23,7 @@
         ></ion-icon>
       </ion-col>
     </ion-row>
+    <!-- Time -->
     <ion-row
       ><ion-col class="list-col" size="12">
         <ion-item class="time-item">
@@ -66,6 +67,8 @@
         *ngFor="let step of stepsFiltered(false); index as i"
         [step]="step"
         [even]="(i%2==0)"
+        [production_in_process]="production_in_process"
+        [blocked]="stepBlocked(step)"
       ></app-production-step-item>
     </ion-list>
     <ion-item-divider class="divider" *ngIf="stepsFiltered(true).length>0">
@@ -78,6 +81,8 @@
         *ngFor="let step of stepsFiltered(true); index as i"
         [step]="step"
         [even]="(i%2==0)"
+        [production_in_process]="production_in_process"
+        [blocked]="stepBlocked(step)"
       >
       </app-production-step-item>
     </ion-list>
