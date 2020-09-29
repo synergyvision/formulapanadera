@@ -26,3 +26,11 @@
 .ios.title-default {
   padding: 0 0;
 }
+
+.production-in-process {
+  --background: var(--ion-color-secondary);
+  --color: white;
+  ion-icon {
+    color: white;
+  }
+}

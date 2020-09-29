@@ -142,9 +142,10 @@
     "times": "Tiempos",
     "empty": "No se encontraron producciones",
     "done": "Hecho",
+    "executing": "Producción en ejecución",
     "time": {
-      "current": "Hora actual",
-      "start": "Hora de inicio"
+      "start": "Inicio",
+      "end": "Finalización"
     },
     "warning": {
       "name": "Alerta",

@@ -142,9 +142,10 @@
     "times": "Times",
     "empty": "No productions found",
     "done": "done",
+    "executing": "Production in process",
     "time": {
-      "current": "Current time",
-      "start": "Start time"
+      "start": "Start",
+      "end": "End"
     },
     "warning": {
       "name": "Warning",

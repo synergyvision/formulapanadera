@@ -289,7 +289,8 @@ export class ProductionService {
   public startProduction(production_in_process: ProductionInProcessModel) {
     // Production start time
     let date: Date = this.timeService.currentDate();
-    production_in_process.time = date;
+    production_in_process.time = new TimeModel();
+    production_in_process.time.start = date;
 
     this.orderProduction(production_in_process);
   }
@@ -340,7 +341,14 @@ export class ProductionService {
       });
     });
 
-    this.setProductionInProcess(this.sortStepsByTime(production_in_process));
+    production_in_process = this.sortStepsByTime(production_in_process);
+
+    let last_index: number;
+    last_index = production_in_process.steps.length - 1;
+    production_in_process.time.end =
+      production_in_process.steps[last_index].time.end;
+
+    this.setProductionInProcess(production_in_process);
   }
 
   public calculateEstimatedTime(

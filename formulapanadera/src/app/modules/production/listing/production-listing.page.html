@@ -9,6 +9,16 @@
     </ion-buttons>
   </ion-toolbar>
 
+  <ion-item *ngIf="production_in_process" class="production-in-process">
+    <ion-label>{{'production.executing' | translate}}</ion-label>
+    <ion-icon
+      [name]="ICONS.go"
+      slot="end"
+      button
+      (click)="navigateToProductionInProcess(production_in_process)"
+    ></ion-icon>
+  </ion-item>
+
   <ion-toolbar class="filters-toolbar">
     <ion-row class="searchbar-row" align-items-center>
       <ion-col>

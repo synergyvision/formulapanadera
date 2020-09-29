@@ -24,18 +24,18 @@
       </ion-col>
     </ion-row>
     <!-- Time -->
-    <ion-row
+    <ion-row *ngIf="production_in_process.time"
       ><ion-col class="list-col" size="12">
         <ion-item class="time-item">
           <ion-row class="time-row">
             <ion-col size="6"
-              ><b>{{ 'production.time.current' | translate}}</b><br />
-              {{currentTime()}}</ion-col
+              ><b>{{ 'production.time.start' | translate}}</b><br />
+              {{productionStartTime()}}</ion-col
             >
             <ion-col size="6">
-              <span *ngIf="production_in_process.time">
-                <b>{{ 'production.time.start' | translate}}</b> <br />
-                {{productionStartTime()}}</span
+              <span>
+                <b>{{ 'production.time.end' | translate}}</b> <br />
+                {{productionEndTime()}}</span
               >
             </ion-col>
           </ion-row>

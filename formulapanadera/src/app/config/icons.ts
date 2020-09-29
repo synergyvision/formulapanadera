@@ -15,6 +15,7 @@ export const ICONS = {
   eye_off: "eye-off-outline",
   eye_on: "eye-outline",
   formula: "book-outline",
+  go: "arrow-forward-outline",
   information: "information-circle-outline",
   ingredient: "reader-outline",
   language: "language-outline",

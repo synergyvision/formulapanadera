@@ -44,7 +44,7 @@ export class ProductionStepModel {
 }
 
 export class ProductionInProcessModel {
-  time: Date;
+  time: TimeModel;
   steps: Array<ProductionStepModel>;
 }
 

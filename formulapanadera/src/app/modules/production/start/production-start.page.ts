@@ -99,7 +99,14 @@ export class ProductionStartPage implements OnInit {
 
   productionStartTime(): string {
     return this.timeService.formatTime(
-      this.production_in_process.time,
+      this.production_in_process.time.start,
+      SPECIFIC_TIME_FORMAT
+    );
+  }
+
+  productionEndTime(): string {
+    return this.timeService.formatTime(
+      this.production_in_process.time.end,
       SPECIFIC_TIME_FORMAT
     );
   }
