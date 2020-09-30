@@ -3,6 +3,7 @@ import { FormulaModel } from "../../../../core/models/formula.model";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { CURRENCY } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
+import { ICONS } from 'src/app/config/icons';
 
 @Component({
   selector: "app-formula-item",
@@ -16,6 +17,7 @@ export class FormulaItemComponent {
   @Input() selected: boolean = false;
 
   currency = CURRENCY;
+  ICONS = ICONS
 
   constructor(private formulaService: FormulaService) {}
 

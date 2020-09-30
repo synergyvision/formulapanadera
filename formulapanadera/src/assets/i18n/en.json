@@ -150,6 +150,11 @@
     "warning": {
       "name": "Warning",
       "start": "We recommend starting this formula in the suggested order"
+    },
+    "invalid_steps": {
+      "verify": "Check working hours",
+      "name": "Invalid steps",
+      "text": "The following steps are outside the specified times, ¿Continue anyway?"
     }
   },
   "steps": {

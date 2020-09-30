@@ -23,8 +23,28 @@
         ></ion-icon>
       </ion-col>
     </ion-row>
+    <!-- Range picker -->
+    <ion-item *ngIf="!in_process" lines="full">
+      <ion-checkbox [(ngModel)]="specify_time" slot="start"></ion-checkbox>
+      <ion-label>{{'production.invalid_steps.verify'| translate}}</ion-label>
+    </ion-item>
+    <span *ngIf="!in_process && specify_time">
+      <ion-item>
+        <ion-label>{{ 'production.time.start' | translate}}</ion-label>
+        <ion-datetime
+          displayFormat="h:mm a"
+          (ionChange)="laboralTimeChanged($event, 'start')"
+        ></ion-datetime> </ion-item
+      ><ion-item>
+        <ion-label>{{ 'production.time.end' | translate}}</ion-label>
+        <ion-datetime
+          displayFormat="h:mm a"
+          (ionChange)="laboralTimeChanged($event, 'end')"
+        ></ion-datetime>
+      </ion-item>
+    </span>
     <!-- Time -->
-    <ion-row *ngIf="production_in_process.time"
+    <ion-row *ngIf="in_process"
       ><ion-col class="list-col" size="12">
         <ion-item class="time-item">
           <ion-row class="time-row">

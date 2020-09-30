@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import * as moment from "moment";
 import { interval } from "rxjs";
 import { SPECIFIC_TIME_FORMAT, TIME_FORMAT } from "src/app/config/formats";
+import { TimeModel } from "../models/production.model";
 
 @Injectable()
 export class TimeService {
@@ -48,5 +49,27 @@ export class TimeService {
 
   difference(start: Date, end: Date) {
     return moment.duration(moment(end).diff(start)).asMinutes();
+  }
+
+  getMinutesOfDay(date: Date) {
+    return moment(date).minutes() + moment(date).hours() * 60;
+  }
+
+  timeIsInRange(time: Date, range: TimeModel): boolean {
+    range.start = moment(range.start).toDate();
+    range.end = moment(range.end).toDate();
+
+    // If hours cover different days
+    if (range.start > range.end) {
+      return (
+        this.getMinutesOfDay(time) >= this.getMinutesOfDay(range.start) ||
+        this.getMinutesOfDay(time) <= this.getMinutesOfDay(range.end)
+      );
+    } else {
+      return (
+        this.getMinutesOfDay(time) >= this.getMinutesOfDay(range.start) &&
+        this.getMinutesOfDay(time) <= this.getMinutesOfDay(range.end)
+      );
+    }
   }
 }

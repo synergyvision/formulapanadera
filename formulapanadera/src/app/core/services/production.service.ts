@@ -373,6 +373,22 @@ export class ProductionService {
     };
   }
 
+  public verifyLaboralTime(
+    production_in_process: ProductionInProcessModel,
+    laboral_time: TimeModel
+  ): Array<ProductionStepModel> {
+    let invalid_steps: Array<ProductionStepModel> = [];
+    production_in_process.steps.forEach((step) => {
+      if (
+        !this.timeService.timeIsInRange(step.time.start, laboral_time) ||
+        !this.timeService.timeIsInRange(step.time.end, laboral_time)
+      ) {
+        invalid_steps.push(step);
+      }
+    });
+    return invalid_steps;
+  }
+
   /*
     Production sort
   */

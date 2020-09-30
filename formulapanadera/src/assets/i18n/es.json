@@ -150,6 +150,11 @@
     "warning": {
       "name": "Alerta",
       "start": "Recomendamos iniciar esta fórmula con el orden sugerido"
+    },
+    "invalid_steps": {
+      "verify": "Verificar jornada laboral",
+      "name": "Pasos invalidos",
+      "text": "Los siguientes pasos estan fuera de su jornada laboral, ¿Continuar de todas formas?"
     }
   },
   "steps": {
