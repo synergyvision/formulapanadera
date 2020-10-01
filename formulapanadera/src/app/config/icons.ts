@@ -32,4 +32,5 @@ export const ICONS = {
   thermometer: "thermometer-outline",
   timer: "timer-outline",
   trash: "trash-outline",
+  water: "water",
 };

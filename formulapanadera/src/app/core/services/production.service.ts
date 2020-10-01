@@ -286,22 +286,20 @@ export class ProductionService {
     return formulas_steps;
   }
 
-  public startProduction(production_in_process: ProductionInProcessModel) {
+  public orderProduction(production_in_process: ProductionInProcessModel) {
     // Production start time
     let date: Date = this.timeService.currentDate();
     production_in_process.time = new TimeModel();
     production_in_process.time.start = date;
 
-    this.orderProduction(production_in_process);
-  }
-
-  public orderProduction(production_in_process: ProductionInProcessModel) {
-    // Production organized in its formulas
+    // Get production organized in its formulas
     let production_formulas = this.getProductionFormulasWithSteps(
       production_in_process
     );
 
-    if (this.productionStarted(production_in_process.steps)) {
+    let userStarted: boolean = this.productionStarted(production_in_process.steps);
+    if (userStarted) {
+      // Organize production formulas by user order
       production_formulas = this.getProductionUserOrder(production_formulas);
     } else {
       // Organize production formulas by oven order

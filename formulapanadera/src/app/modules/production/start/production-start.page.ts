@@ -95,7 +95,7 @@ export class ProductionStartPage implements OnInit {
     this.in_process = !this.in_process;
 
     if (this.in_process) {
-      this.productionService.startProduction(this.production_in_process);
+      this.productionService.orderProduction(this.production_in_process);
       if (this.specify_time) {
         this.verifyLaboralTime();
       }
