@@ -12,6 +12,7 @@ import {
   TimeModel,
 } from "src/app/core/models/production.model";
 import { LanguageService } from "src/app/core/services/language.service";
+import { ProductionInProcessService } from "src/app/core/services/production-in-process.service";
 import { ProductionService } from "src/app/core/services/production.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
 import { TimeService } from "src/app/core/services/time.service";
@@ -41,6 +42,7 @@ export class ProductionStartPage implements OnInit {
   constructor(
     private router: Router,
     private productionService: ProductionService,
+    private productionInProcessService: ProductionInProcessService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
     private timeService: TimeService,
     private alertController: AlertController,
@@ -59,30 +61,34 @@ export class ProductionStartPage implements OnInit {
     ) {
       this.production = existing_production.production;
       this.formulas = existing_production.formulas;
-      this.productionService.setProductionInProcess(
+      this.productionInProcessService.setProductionInProcess(
         existing_production.production_in_process
       );
       this.in_process = true;
     } else {
       this.formulas = JSON.parse(JSON.stringify(this.state.formulas));
-      this.productionService.getProductionSteps(this.production);
+      this.productionInProcessService.getProductionSteps(this.production);
     }
 
-    this.productionService.getProductionInProcess().subscribe((value) => {
-      this.production_in_process = value;
-      if (this.in_process) {
-        this.productionInProcessStorageService.setProduction({
-          formulas: this.formulas,
-          production: this.production,
-          production_in_process: value,
-        });
-      }
-      if (
-        this.productionService.productionEnded(this.production_in_process.steps)
-      ) {
-        this.changeProcessStatus();
-      }
-    });
+    this.productionInProcessService
+      .getProductionInProcess()
+      .subscribe((value) => {
+        this.production_in_process = value;
+        if (this.in_process) {
+          this.productionInProcessStorageService.setProduction({
+            formulas: this.formulas,
+            production: this.production,
+            production_in_process: value,
+          });
+        }
+        if (
+          this.productionInProcessService.productionEnded(
+            this.production_in_process.steps
+          )
+        ) {
+          this.changeProcessStatus();
+        }
+      });
   }
 
   // Change
@@ -95,12 +101,14 @@ export class ProductionStartPage implements OnInit {
     this.in_process = !this.in_process;
 
     if (this.in_process) {
-      this.productionService.orderProduction(this.production_in_process);
+      this.productionInProcessService.orderProduction(
+        this.production_in_process
+      );
       if (this.specify_time) {
         this.verifyLaboralTime();
       }
     } else {
-      this.productionService.getProductionSteps(this.production);
+      this.productionInProcessService.getProductionSteps(this.production);
       await this.productionInProcessStorageService.deleteProduction();
     }
   }
@@ -114,7 +122,7 @@ export class ProductionStartPage implements OnInit {
   }
 
   verifyLaboralTime() {
-    let invalid_steps = this.productionService.verifyLaboralTime(
+    let invalid_steps = this.productionInProcessService.verifyLaboralTime(
       this.production_in_process,
       this.laboral_time
     );
@@ -160,7 +168,7 @@ export class ProductionStartPage implements OnInit {
   }
 
   stepBlocked(step: ProductionStepModel): boolean {
-    return this.productionService.stepIsBlocked(
+    return this.productionInProcessService.stepIsBlocked(
       this.production_in_process,
       step
     );

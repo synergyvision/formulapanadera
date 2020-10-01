@@ -6,6 +6,7 @@ import {
   ProductionStepModel,
 } from "src/app/core/models/production.model";
 import { LanguageService } from "src/app/core/services/language.service";
+import { ProductionInProcessService } from "src/app/core/services/production-in-process.service";
 import { ProductionService } from "src/app/core/services/production.service";
 import { TimeService } from "src/app/core/services/time.service";
 
@@ -30,6 +31,7 @@ export class ProductionStepItemComponent {
   constructor(
     private timeService: TimeService,
     private productionService: ProductionService,
+    private productionInProcessService: ProductionInProcessService,
     private alertController: AlertController,
     private languageService: LanguageService
   ) {}
@@ -68,7 +70,7 @@ export class ProductionStepItemComponent {
   }
 
   productionStarted(): boolean {
-    return this.productionService.productionStarted(
+    return this.productionInProcessService.productionStarted(
       this.production_in_process.steps
     );
   }
@@ -97,7 +99,9 @@ export class ProductionStepItemComponent {
         step.status = "DONE";
       }
 
-      this.productionService.setProductionInProcess(this.production_in_process);
+      this.productionInProcessService.setProductionInProcess(
+        this.production_in_process
+      );
     }
   }
 
@@ -117,7 +121,7 @@ export class ProductionStepItemComponent {
           cssClass: "confirm-alert-accept",
           handler: () => {
             step.status = "IN PROCESS";
-            this.productionService.orderProduction(
+            this.productionInProcessService.orderProduction(
               JSON.parse(JSON.stringify(this.production_in_process))
             );
           },
