@@ -30,7 +30,6 @@ export class ProductionStepItemComponent {
 
   constructor(
     private timeService: TimeService,
-    private productionService: ProductionService,
     private productionInProcessService: ProductionInProcessService,
     private alertController: AlertController,
     private languageService: LanguageService
@@ -49,11 +48,10 @@ export class ProductionStepItemComponent {
   stepOnTime(type: string): boolean {
     let on_time: boolean = true;
     if (this.step.time && this.step.status !== "DONE") {
-      this.timeService.getCurrentTime();
       if (type == "start") {
-        on_time = this.timeService.dateIsBeforeNow(this.step.time.start);
+        on_time = this.timeService.dateIsSameOrBeforeNow(this.step.time.start);
       } else if (type == "end") {
-        on_time = this.timeService.dateIsAfterNow(this.step.time.end);
+        on_time = this.timeService.dateIsSameOrAfterNow(this.step.time.end);
       }
     }
     return on_time;
@@ -85,6 +83,10 @@ export class ProductionStepItemComponent {
 
   changeStepStatus(step: ProductionStepModel): void {
     if (!this.stepBlocked()) {
+      this.productionInProcessService.recalculateProduction(
+        this.production_in_process,
+        this.step
+      );
       if (step.status == "PENDING") {
         if (step.step.number == 0 && !this.productionStarted()) {
           if (step !== this.production_in_process.steps[0]) {

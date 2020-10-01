@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import {
-  FormulaPresentModel,
   FormulaResumeModel,
   ProductionFormulaStepsModel,
   ProductionInProcessModel,
@@ -8,17 +7,10 @@ import {
   ProductionStepModel,
   TimeModel,
 } from "../models/production.model";
-import {
-  IngredientPercentageModel,
-  StepDetailsModel,
-} from "../models/formula.model";
-import { DECIMALS } from "src/app/config/formats";
-import { ShellModel } from "src/app/shared/shell/shell.model";
-import { FormulaService } from "./formula.service";
+import { StepDetailsModel } from "../models/formula.model";
 import { TimeService } from "./time.service";
-import { OVEN_STEP } from "src/app/config/formula";
 import { BehaviorSubject } from "rxjs";
-import { ProductionService } from './production.service';
+import { ProductionService } from "./production.service";
 
 @Injectable()
 export class ProductionInProcessService {
@@ -190,7 +182,9 @@ export class ProductionInProcessService {
       production_in_process
     );
 
-    let userStarted: boolean = this.productionStarted(production_in_process.steps);
+    let userStarted: boolean = this.productionStarted(
+      production_in_process.steps
+    );
     if (userStarted) {
       // Organize production formulas by user order
       production_formulas = this.getProductionUserOrder(production_formulas);
@@ -278,6 +272,57 @@ export class ProductionInProcessService {
       }
     });
     return invalid_steps;
+  }
+
+  public recalculateProduction(
+    production_in_process: ProductionInProcessModel,
+    selected_step: ProductionStepModel
+  ) {
+    let difference: number = 0;
+    let is_different: boolean = false;
+    let current_date = this.timeService.currentDate();
+
+    if (
+      selected_step.status == "PENDING" &&
+      this.timeService.dateIsDifferentFromNow(selected_step.time.start)
+    ) {
+      is_different = true;
+      difference = this.timeService.difference(
+        selected_step.time.start,
+        current_date
+      );
+    }
+    if (
+      selected_step.status == "IN PROCESS" &&
+      this.timeService.dateIsDifferentFromNow(selected_step.time.end)
+    ) {
+      is_different = true;
+      difference = this.timeService.difference(
+        selected_step.time.end,
+        current_date
+      );
+    }
+    // When user starts or ends before or after calculated time
+    if (is_different) {
+      production_in_process.steps.forEach((step) => {
+        if (step.status == "PENDING") {
+          step.time.start = this.timeService.addTime(
+            step.time.start,
+            difference,
+            "m"
+          );
+        }
+        if (step.status !== "DONE") {
+          step.time.end = this.timeService.addTime(
+            step.time.end,
+            difference,
+            "m"
+          );
+        }
+      });
+    }
+
+    this.setProductionInProcess(production_in_process);
   }
 
   /*

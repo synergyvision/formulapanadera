@@ -44,6 +44,14 @@ export class TimeService {
   }
 
   dateIsBeforeNow(date: Date): boolean {
+    return moment(date).isBefore(this.time, "minute");
+  }
+
+  dateIsSameOrAfterNow(date: Date): boolean {
+    return moment(date).isSameOrAfter(this.time, "minute");
+  }
+
+  dateIsSameOrBeforeNow(date: Date): boolean {
     return moment(date).isSameOrBefore(this.time, "minute");
   }
 
@@ -51,7 +59,11 @@ export class TimeService {
     return moment.duration(moment(end).diff(start)).asMinutes();
   }
 
-  getMinutesOfDay(date: Date) {
+  dateIsDifferentFromNow(date: Date) {
+    return this.dateIsBeforeNow(date) || this.dateIsAfterNow(date);
+  }
+
+  private getMinutesOfDay(date: Date) {
     return moment(date).minutes() + moment(date).hours() * 60;
   }
 
