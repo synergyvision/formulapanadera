@@ -145,7 +145,7 @@
     "executing": "Production in process",
     "time": {
       "start": "Start",
-      "end": "End"
+      "end": "Estimated completion"
     },
     "warning": {
       "name": "Warning",

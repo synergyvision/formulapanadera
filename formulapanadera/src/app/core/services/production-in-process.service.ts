@@ -93,14 +93,36 @@ export class ProductionInProcessService {
 
   public stepIsBlocked(
     production: ProductionInProcessModel,
-    step: ProductionStepModel
+    selected_step: ProductionStepModel
   ): boolean {
     let is_blocked: boolean = true;
+    let formulas: Array<ProductionFormulaStepsModel> = this.getProductionFormulasWithSteps(
+      production
+    );
+    let number: number = 1;
+    let step_before: ProductionStepModel;
 
-    if (!this.productionStarted(production.steps)) {
-      if (step.step.number === 0) {
-        is_blocked = false;
-      }
+    // Unblock first possible step of each formula
+    if (selected_step.step.number == 0) {
+      is_blocked = false;
+    } else if (this.productionStarted(production.steps)) {
+      // Unblock if previous step is done
+      formulas.forEach((formula) => {
+        if (selected_step.formula.id == formula.formula.id) {
+          formula.steps.forEach((step, index) => {
+            if (selected_step.step.number - 1 == step.step.number) {
+              step_before = step;
+              while (step_before.step.time <= 0) {
+                step_before = formula.steps[index - number];
+                number = number + 1;
+              }
+              if (step_before.status == "DONE") {
+                is_blocked = false;
+              }
+            }
+          });
+        }
+      });
     }
 
     return is_blocked;

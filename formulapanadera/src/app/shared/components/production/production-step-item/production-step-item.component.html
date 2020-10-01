@@ -2,7 +2,7 @@
   <ion-icon
     *ngIf="step.time"
     class="step-action-icon"
-    [ngClass]="{ blocked: stepBlocked() }"
+    [ngClass]="{ blocked: blocked }"
     [name]="stepIcon(step)"
     slot="start"
     button
@@ -12,10 +12,7 @@
     <ion-col class="step-wrapper">
       <ion-row>
         <ion-col>
-          <h2
-            class="step-name"
-            [ngClass]="{ 'step-danger': !stepOnTime('end') }"
-          >
+          <h2 class="step-name" [ngClass]="{ 'step-danger': !stepOnTime() }">
             {{ step.step.name }}
           </h2>
         </ion-col>

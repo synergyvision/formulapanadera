@@ -45,12 +45,12 @@ export class ProductionStepItemComponent {
     }
   }
 
-  stepOnTime(type: string): boolean {
+  stepOnTime(): boolean {
     let on_time: boolean = true;
     if (this.step.time && this.step.status !== "DONE") {
-      if (type == "start") {
-        on_time = this.timeService.dateIsSameOrBeforeNow(this.step.time.start);
-      } else if (type == "end") {
+      if (this.step.status == "PENDING") {
+        on_time = this.timeService.dateIsSameOrAfterNow(this.step.time.start);
+      } else if (this.step.status == "IN PROCESS") {
         on_time = this.timeService.dateIsSameOrAfterNow(this.step.time.end);
       }
     }
@@ -73,16 +73,8 @@ export class ProductionStepItemComponent {
     );
   }
 
-  stepBlocked(): boolean {
-    if (this.productionStarted()) {
-      return !this.stepOnTime("start");
-    } else {
-      return this.blocked;
-    }
-  }
-
   changeStepStatus(step: ProductionStepModel): void {
-    if (!this.stepBlocked()) {
+    if (!this.blocked) {
       this.productionInProcessService.recalculateProduction(
         this.production_in_process,
         this.step
