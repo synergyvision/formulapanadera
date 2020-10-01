@@ -1,5 +1,6 @@
 export const BAKERY_STEPS = 12;
-// Oven step needs to be less than the total bakery steps
+export const FERMENTATION_STEP = 3;
+export const MANIPULATION_STEP = 4;
 export const OVEN_STEP = 11;
 
 // Oven start minutes, before first formula gets in the oven

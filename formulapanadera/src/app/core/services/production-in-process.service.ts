@@ -12,6 +12,7 @@ import { TimeService } from "./time.service";
 import { BehaviorSubject } from "rxjs";
 import { ProductionService } from "./production.service";
 import {
+  MANIPULATION_STEP,
   OVEN_STARTING_TIME,
   OVEN_START_TIME,
   OVEN_STEP,
@@ -263,6 +264,44 @@ export class ProductionInProcessService {
     return warming_step;
   }
 
+  private getManipulationSteps(
+    manipulation_step: ProductionStepModel,
+    fermentation_step: ProductionStepModel
+  ): Array<ProductionStepModel> {
+    let manipulation_steps: Array<ProductionStepModel> = [];
+    let time_difference: number = this.timeService.difference(
+      fermentation_step.time.start,
+      fermentation_step.time.end
+    );
+    time_difference = time_difference / (manipulation_step.step.times + 1);
+
+    for (let index = 0; index < manipulation_step.step.times; index++) {
+      let step: ProductionStepModel = {
+        status: "PENDING",
+        formula: manipulation_step.formula,
+        step: manipulation_step.step,
+      };
+
+      step.time = new TimeModel();
+      step.time.start = this.timeService.addTime(
+        fermentation_step.time.start,
+        time_difference,
+        "m"
+      );
+      step.time.end = this.timeService.addTime(
+        step.time.start,
+        manipulation_step.step.time,
+        "m"
+      );
+
+      manipulation_steps.push(step);
+
+      time_difference += time_difference;
+    }
+
+    return manipulation_steps;
+  }
+
   public orderProduction(production_in_process: ProductionInProcessModel) {
     // Production start time
     let date: Date = this.timeService.currentDate();
@@ -323,7 +362,22 @@ export class ProductionInProcessService {
         }
 
         previous_end_date = step.time.end;
-        production_in_process.steps.push(step);
+
+        // If step is manipulation step, insert multiple manipulations while formula fermentation
+        if (step.step.number == MANIPULATION_STEP - 1 && step.step.time != 0) {
+          let fermentation_step: ProductionStepModel =
+            formula.steps[step_index - 1];
+          let manipulation_steps: Array<ProductionStepModel> = this.getManipulationSteps(
+            step,
+            fermentation_step
+          );
+          manipulation_steps.forEach((step) => {
+            production_in_process.steps.push(step);
+          });
+        } else {
+          // Insert step
+          production_in_process.steps.push(step);
+        }
       });
     });
 

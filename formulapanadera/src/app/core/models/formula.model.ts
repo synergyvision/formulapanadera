@@ -22,6 +22,8 @@ export class StepDetailsModel {
   };
   ingredients?: Array<IngredientPercentageModel>;
   description: string;
+  // If step gets repeated, works with manipulation step
+  times?: number;
 }
 
 export class FormulaModel {

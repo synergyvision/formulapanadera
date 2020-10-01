@@ -57,6 +57,7 @@
     "public": "Pública",
     "can_clone": "Puede ser clonada",
     "warming_time": "Temperado del horno",
+    "manipulation_times": "Cantidad de manipulaciones",
     "cost": {
       "name": "Costo",
       "unitary": "Costo unitario",

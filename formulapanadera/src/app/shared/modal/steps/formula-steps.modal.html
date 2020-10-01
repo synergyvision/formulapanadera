@@ -21,7 +21,7 @@
   </ion-select>
 
   <ion-list lines="full" class="steps-list">
-    <span *ngFor="let step of formulaSteps">
+    <span *ngFor="let step of formulaSteps; index as i">
       <ion-item-divider class="divider">
         <ion-label>
           {{'formulas.step' | translate}} {{step.number+1}}: {{step.name}}
@@ -103,6 +103,21 @@
               inputmode="numeric"
               [(ngModel)]="step.temperature.max"
               (ionBlur)="formatTemperature('max', step)"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="i == (MANIPULATION_STEP-1)">
+        <ion-col>
+          <ion-item>
+            <ion-label color="primary" position="floating"
+              >{{'formulas.manipulation_times' | translate}}</ion-label
+            >
+            <ion-input
+              type="number"
+              inputmode="numeric"
+              [(ngModel)]="step.times"
+              (ionBlur)="formatManipulationTimes(step)"
             ></ion-input>
           </ion-item>
         </ion-col>

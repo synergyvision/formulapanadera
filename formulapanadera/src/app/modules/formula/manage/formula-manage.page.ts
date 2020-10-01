@@ -202,7 +202,7 @@ export class FormulaManagePage {
   }
 
   async describeSteps() {
-    let steps = [];
+    let steps: Array<StepDetailsModel> = [];
     if (!this.formula.steps) {
       for (let i = 0; i < BAKERY_STEPS; i++) {
         steps.push({
@@ -211,6 +211,7 @@ export class FormulaManagePage {
           time: 0,
           temperature: null,
           description: "",
+          times: 1,
         });
       }
     } else {
