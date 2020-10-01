@@ -9,10 +9,14 @@ import { DECIMALS } from "src/app/config/formats";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { FormulaService } from "./formula.service";
 import { OVEN_STEP } from "src/app/config/formula";
+import { FormatNumberService } from "./format-number.service";
 
 @Injectable()
 export class ProductionService {
-  constructor(private formulaService: FormulaService) {}
+  constructor(
+    private formulaService: FormulaService,
+    private formatNumberService: FormatNumberService
+  ) {}
 
   /*
     Production filters
@@ -52,7 +56,9 @@ export class ProductionService {
     formulas.forEach((data) => {
       cost = cost + Number(data.total_cost);
     });
-    return cost;
+    return Number(
+      this.formatNumberService.formatNumberDecimals(cost, DECIMALS.cost)
+    );
   }
 
   public calculateProductionCost(production: ProductionModel): number {

@@ -6,6 +6,7 @@ import { ModifierModel } from "./user.model";
 export class FormulaNumberModel {
   formula: FormulaModel;
   number: number;
+  warming_time?: number;
 }
 
 export class ProductionModel {
@@ -31,6 +32,7 @@ export class TimeModel {
 export class FormulaResumeModel {
   id: string;
   name: string;
+  warming_time: number;
 }
 
 // If status is pending: start and end time are estimated

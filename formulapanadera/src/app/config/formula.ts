@@ -2,6 +2,14 @@ export const BAKERY_STEPS = 12;
 // Oven step needs to be less than the total bakery steps
 export const OVEN_STEP = 11;
 
+// Oven start minutes, before first formula gets in the oven
+export const OVEN_START_TIME = 30;
+// OVen change temperature minutes
+export const FORMULA_WARMING_TIME = 10;
+
+// Minutes to start or change oven temperature
+export const OVEN_STARTING_TIME = 1;
+
 export const PROPORTION_FACTOR = ["flour", "dough", "ingredient"] as const;
 
 export const PRODUCTION_STEP_STATUS = [

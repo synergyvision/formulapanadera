@@ -103,6 +103,55 @@
           </ion-item>
         </ion-list>
       </ion-card>
+
+      <ion-card>
+        <ion-list lines="full" class="formulas-list">
+          <ion-row
+            class="title-row"
+            *ngIf="production.formulas && production.formulas.length>0"
+          >
+            <ion-col size="7" class="title-col">
+              {{'formulas.formula_name' | translate}}
+            </ion-col>
+            <ion-col size="4" class="title-col">
+              {{'formulas.warming_time' | translate}}
+            </ion-col>
+            <ion-col size="1"></ion-col>
+          </ion-row>
+          <ion-item
+            *ngFor="let item of production.formulas"
+            class="formula-item"
+          >
+            <ion-row class="formula-item-wrapper">
+              <ion-col size="7" class="formulas-wrapper">
+                <ion-row>
+                  <ion-col>
+                    <h2 class="formulas-name">{{item.formula.name}}</h2>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col size="3">
+                <ion-item>
+                  <ion-input
+                    class="formula-number"
+                    [(ngModel)]="item.warming_time"
+                    [ngModelOptions]="{standalone: true}"
+                    type="number"
+                    inputmode="numeric"
+                    (ionBlur)="formatFormulaNumber(item)"
+                  ></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="2" class="formulas-wrapper">
+                <h2 class="formulas-name">
+                  {{'formulas.minutes'|translate}}
+                </h2></ion-col
+              >
+            </ion-row>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+
       <ion-row class="form-actions-wrapper" *ngIf="!update">
         <ion-col>
           <ion-button

@@ -11,6 +11,12 @@ import { StepDetailsModel } from "../models/formula.model";
 import { TimeService } from "./time.service";
 import { BehaviorSubject } from "rxjs";
 import { ProductionService } from "./production.service";
+import {
+  OVEN_STARTING_TIME,
+  OVEN_START_TIME,
+  OVEN_STEP,
+} from "src/app/config/formula";
+import { LanguageService } from "./language.service";
 
 @Injectable()
 export class ProductionInProcessService {
@@ -19,7 +25,8 @@ export class ProductionInProcessService {
 
   constructor(
     private productionService: ProductionService,
-    private timeService: TimeService
+    private timeService: TimeService,
+    private languageService: LanguageService
   ) {
     this.behaviorSubject = new BehaviorSubject<ProductionInProcessModel>(
       new ProductionInProcessModel()
@@ -46,9 +53,9 @@ export class ProductionInProcessService {
     let previous_time_after_oven = this.productionService.calculateTimeAfterOven(
       previous_formula.steps
     );
-    let new_time_before_oven = this.productionService.calculateTimeBeforeOven(
-      current_formula.steps
-    );
+    let new_time_before_oven =
+      this.productionService.calculateTimeBeforeOven(current_formula.steps) -
+      current_formula.formula.warming_time;
     // Set this formula oven time after previous oven time
     // Get previous formula oven ending
     let previous_formula_oven_end = this.timeService.addTime(
@@ -100,7 +107,11 @@ export class ProductionInProcessService {
       production
     );
     let number: number = 1;
+    let step_before_number = 1;
     let step_before: ProductionStepModel;
+    if (OVEN_STEP - 1 == selected_step.step.number) {
+      step_before_number = 0.5;
+    }
 
     // Unblock first possible step of each formula
     if (selected_step.step.number == 0) {
@@ -110,7 +121,10 @@ export class ProductionInProcessService {
       formulas.forEach((formula) => {
         if (selected_step.formula.id == formula.formula.id) {
           formula.steps.forEach((step, index) => {
-            if (selected_step.step.number - 1 == step.step.number) {
+            if (
+              selected_step.step.number - step_before_number ==
+              step.step.number
+            ) {
               step_before = step;
               while (step_before.step.time <= 0) {
                 step_before = formula.steps[index - number];
@@ -159,6 +173,7 @@ export class ProductionInProcessService {
           formula: {
             id: item.formula.id,
             name: item.formula.name,
+            warming_time: item.warming_time,
           },
           step: step,
           time: null,
@@ -186,11 +201,66 @@ export class ProductionInProcessService {
         }
       });
       formulas_steps.push({
-        formula: { id: formula.id, name: formula.name },
+        formula: {
+          id: formula.id,
+          name: formula.name,
+          warming_time: formula.warming_time,
+        },
         steps: result,
       });
     });
     return formulas_steps;
+  }
+
+  private getWarmingStep(
+    oven_step: ProductionStepModel,
+    formula_warming_time: number,
+    is_first_formula: boolean
+  ): ProductionStepModel {
+    let warming_step: ProductionStepModel = new ProductionStepModel();
+    warming_step.status = "PENDING";
+    warming_step.formula = oven_step.formula;
+    warming_step.step = {
+      number: OVEN_STEP - 0.5,
+      name: "",
+      description: "",
+      time: OVEN_STARTING_TIME,
+      temperature: oven_step.step.temperature,
+    };
+    if (is_first_formula) {
+      warming_step.step.name = this.languageService.getTerm(
+        "production.oven.start"
+      );
+      warming_step.time = {
+        start: this.timeService.subtractTime(
+          oven_step.time.start,
+          OVEN_START_TIME,
+          "m"
+        ),
+        end: this.timeService.subtractTime(
+          oven_step.time.start,
+          OVEN_START_TIME - OVEN_STARTING_TIME,
+          "m"
+        ),
+      };
+    } else {
+      warming_step.step.name = this.languageService.getTerm(
+        "production.oven.change_temperature"
+      );
+      warming_step.time = {
+        start: this.timeService.subtractTime(
+          oven_step.time.start,
+          formula_warming_time,
+          "m"
+        ),
+        end: this.timeService.subtractTime(
+          oven_step.time.start,
+          formula_warming_time - OVEN_STARTING_TIME,
+          "m"
+        ),
+      };
+    }
+    return warming_step;
   }
 
   public orderProduction(production_in_process: ProductionInProcessModel) {
@@ -220,27 +290,36 @@ export class ProductionInProcessService {
     let previous_end_date: Date = null;
     let estimated_time: TimeModel;
     production_in_process.steps = [];
-    production_formulas.forEach((formula, index) => {
+    production_formulas.forEach((formula, formula_index) => {
       // If it's different from the first formula
-      if (index !== 0) {
+      if (formula_index !== 0) {
         previous_end_date = this.calculateFormulaTimes(
-          production_formulas[index - 1],
-          production_formulas[index],
+          production_formulas[formula_index - 1],
+          production_formulas[formula_index],
           previous_formula_start
         );
       } else {
         previous_end_date = null;
       }
-      formula.steps.forEach((step, index) => {
-        if (step.status !== "DONE") {
-          estimated_time = this.calculateEstimatedTime(
-            step.step,
-            previous_end_date
-          );
-          step.time = estimated_time;
-        }
-        if (index == 0) {
+      formula.steps.forEach((step, step_index) => {
+        estimated_time = this.calculateEstimatedTime(
+          step.step,
+          previous_end_date
+        );
+        step.time = estimated_time;
+
+        if (step_index == 0) {
           previous_formula_start = step.time.start;
+        }
+
+        // If step is oven step, insert oven warming step before
+        if (step.step.number == OVEN_STEP - 1) {
+          let warming_step = this.getWarmingStep(
+            step,
+            formula.formula.warming_time,
+            formula_index == 0
+          );
+          production_in_process.steps.push(warming_step);
         }
 
         previous_end_date = step.time.end;

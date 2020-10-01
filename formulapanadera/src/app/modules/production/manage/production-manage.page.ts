@@ -199,5 +199,8 @@ export class ProductionManagePage implements OnInit {
     formula.number = Number(
       this.formatNumberService.formatNonZeroPositiveNumber(formula.number)
     );
+    formula.warming_time = Number(
+      this.formatNumberService.formatNonZeroPositiveNumber(formula.warming_time)
+    );
   }
 }

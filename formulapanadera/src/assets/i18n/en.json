@@ -56,6 +56,7 @@
     "description": "Description",
     "public": "Public",
     "can_clone": "Can be cloned",
+    "warming_time": "Oven warming time",
     "cost": {
       "name": "Cost",
       "unitary": "Unitary cost",
@@ -155,6 +156,10 @@
       "verify": "Check working hours",
       "name": "Invalid steps",
       "text": "The following steps are outside the specified times, ¿Continue anyway?"
+    },
+    "oven": {
+      "start": "Start oven",
+      "change_temperature": "Change oven temperature"
     }
   },
   "steps": {

@@ -4,6 +4,7 @@ import { ModalController } from "@ionic/angular";
 import { of } from "rxjs";
 import { map } from "rxjs/operators";
 import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { FORMULA_WARMING_TIME } from "src/app/config/formula";
 import { ICONS } from "src/app/config/icons";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { FormulaNumberModel } from "src/app/core/models/production.model";
@@ -153,6 +154,7 @@ export class FormulaPickerModal implements OnInit {
         this.selectedFormulas.push({
           number: null,
           formula: formula,
+          warming_time: FORMULA_WARMING_TIME,
         });
       }
     }
