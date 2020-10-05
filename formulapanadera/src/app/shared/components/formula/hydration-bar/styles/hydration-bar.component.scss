@@ -12,7 +12,7 @@
 
 .hydration-bar {
   height: 10px;
-  --progress-background: cornflowerblue;
+  --progress-background: var(--ion-color-hydration);
 }
 
 .hydration-legend {

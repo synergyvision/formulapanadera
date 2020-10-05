@@ -7,7 +7,7 @@
 }
 
 .background-selected {
-  --background: var(--ion-color-tertiary) !important;
+  --background: var(--ion-color-selected) !important;
 }
 
 .formula-item-wrapper {
@@ -58,7 +58,7 @@
 }
 
 .properties-icon {
-  color: cornflowerblue !important;
+  color: var(--ion-color-hydration) !important;
   margin-bottom: -2px;
 }
 
