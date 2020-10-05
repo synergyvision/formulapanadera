@@ -7,7 +7,6 @@ import {
 } from "src/app/core/models/production.model";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessService } from "src/app/core/services/production-in-process.service";
-import { ProductionService } from "src/app/core/services/production.service";
 import { TimeService } from "src/app/core/services/time.service";
 
 @Component({

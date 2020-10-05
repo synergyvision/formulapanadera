@@ -162,26 +162,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   //Change
   changeTemperature(event: any) {
     this.temperatureUnit = event.detail.value;
-    if (this.temperatureUnit == "F") {
-      this.steps.forEach((step) => {
-        if (step.temperature !== null) {
-          step.temperature.min = Number(
-            this.formatNumberService.fromCelsiusToFahrenheit(
-              step.temperature.min
-            )
-          );
-          if (step.temperature.max !== -1) {
-            step.temperature.max = Number(
-              this.formatNumberService.fromCelsiusToFahrenheit(
-                step.temperature.max
-              )
-            );
-          }
-        }
-      });
-    } else {
-      this.steps = JSON.parse(JSON.stringify(this.formula.steps));
-    }
   }
 
   changeUnits(event: any) {

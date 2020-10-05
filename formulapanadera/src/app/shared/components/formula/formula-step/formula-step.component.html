@@ -11,9 +11,11 @@
         <ion-col *ngIf="step.temperature">
           <p class="step-properties">
             <ion-icon [name]="ICONS.thermometer" color="danger"></ion-icon>
-            {{ step.temperature.min }} º{{ temperatureUnit }}
+            {{ changeTemperature(step.temperature.min) }} º{{ temperatureUnit }}
             <span *ngIf="step.temperature.max !== -1">
-              - {{ step.temperature.max }} º{{ temperatureUnit }}</span
+              - {{ changeTemperature(step.temperature.max) }} º{{
+                temperatureUnit
+              }}</span
             >
           </p></ion-col
         ></ion-row

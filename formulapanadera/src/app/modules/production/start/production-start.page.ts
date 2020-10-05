@@ -73,6 +73,7 @@ export class ProductionStartPage implements OnInit {
       this.original_production = this.productionInProcessService.getProductionSteps(
         this.production
       );
+      this.temperatureUnit = "C";
     }
 
     this.productionInProcessService
@@ -116,6 +117,7 @@ export class ProductionStartPage implements OnInit {
       this.original_production = this.productionInProcessService.getProductionSteps(
         this.production
       );
+      this.temperatureUnit = "C";
       await this.productionInProcessStorageService.deleteProduction();
     }
   }
@@ -140,41 +142,6 @@ export class ProductionStartPage implements OnInit {
 
   changeTemperature(event: any) {
     this.temperatureUnit = event.detail.value;
-    if (this.temperatureUnit == "F") {
-      this.production_in_process.steps.forEach((step) => {
-        if (step.step.temperature !== null) {
-          step.step.temperature.min = Number(
-            this.formatNumberService.fromCelsiusToFahrenheit(
-              step.step.temperature.min
-            )
-          );
-          if (step.step.temperature.max !== -1) {
-            step.step.temperature.max = Number(
-              this.formatNumberService.fromCelsiusToFahrenheit(
-                step.step.temperature.max
-              )
-            );
-          }
-        }
-      });
-    } else {
-      this.production_in_process.steps.forEach((step) => {
-        if (step.step.temperature !== null) {
-          step.step.temperature.min = Number(
-            this.formatNumberService.fromFahrenheitToCelsius(
-              step.step.temperature.min
-            )
-          );
-          if (step.step.temperature.max !== -1) {
-            step.step.temperature.max = Number(
-              this.formatNumberService.fromFahrenheitToCelsius(
-                step.step.temperature.max
-              )
-            );
-          }
-        }
-      });
-    }
   }
 
   // Get / Format
