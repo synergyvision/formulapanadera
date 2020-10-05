@@ -165,7 +165,9 @@ export class ProductionInProcessService {
     return formulas;
   }
 
-  public getProductionSteps(production: ProductionModel) {
+  public getProductionSteps(
+    production: ProductionModel
+  ): ProductionInProcessModel {
     let production_steps: Array<ProductionStepModel> = [];
     production.formulas.forEach((item) => {
       item.formula.steps.forEach((step) => {
@@ -185,6 +187,10 @@ export class ProductionInProcessService {
       time: null,
       steps: production_steps,
     });
+    return {
+      time: null,
+      steps: production_steps,
+    };
   }
 
   public getProductionFormulasWithSteps(
@@ -197,7 +203,10 @@ export class ProductionInProcessService {
     formulas.forEach((formula) => {
       let result = [];
       production_in_process.steps.forEach((step) => {
-        if (step.formula.id === formula.id) {
+        if (
+          step.formula.id === formula.id &&
+          step.step.number !== OVEN_STEP - 0.5
+        ) {
           result.push(step);
         }
       });
@@ -285,7 +294,7 @@ export class ProductionInProcessService {
       step.time = new TimeModel();
       step.time.start = this.timeService.addTime(
         fermentation_step.time.start,
-        time_difference,
+        time_difference - manipulation_step.step.time,
         "m"
       );
       step.time.end = this.timeService.addTime(
@@ -302,7 +311,10 @@ export class ProductionInProcessService {
     return manipulation_steps;
   }
 
-  public orderProduction(production_in_process: ProductionInProcessModel) {
+  public orderProduction(
+    production_in_process: ProductionInProcessModel,
+    formula?: string
+  ) {
     // Production start time
     let date: Date = this.timeService.currentDate();
     production_in_process.time = new TimeModel();
@@ -313,12 +325,12 @@ export class ProductionInProcessService {
       production_in_process
     );
 
-    let userStarted: boolean = this.productionStarted(
-      production_in_process.steps
-    );
-    if (userStarted) {
+    if (formula) {
       // Organize production formulas by user order
-      production_formulas = this.getProductionUserOrder(production_formulas);
+      production_formulas = this.getProductionUserOrder(
+        production_formulas,
+        formula
+      );
     } else {
       // Organize production formulas by oven order
       production_formulas = this.getProductionOvenOrder(production_formulas);
@@ -361,8 +373,6 @@ export class ProductionInProcessService {
           production_in_process.steps.push(warming_step);
         }
 
-        previous_end_date = step.time.end;
-
         // If step is manipulation step, insert multiple manipulations while formula fermentation
         if (step.step.number == MANIPULATION_STEP - 1 && step.step.time != 0) {
           let fermentation_step: ProductionStepModel =
@@ -375,6 +385,7 @@ export class ProductionInProcessService {
             production_in_process.steps.push(step);
           });
         } else {
+          previous_end_date = step.time.end;
           // Insert step
           production_in_process.steps.push(step);
         }
@@ -387,6 +398,10 @@ export class ProductionInProcessService {
     last_index = production_in_process.steps.length - 1;
     production_in_process.time.end =
       production_in_process.steps[last_index].time.end;
+
+    if (formula) {
+      production_in_process.steps[0].status == "IN PROCESS";
+    }
 
     this.setProductionInProcess(production_in_process);
   }
@@ -504,11 +519,12 @@ export class ProductionInProcessService {
   }
 
   public getProductionUserOrder(
-    formula_steps: Array<ProductionFormulaStepsModel>
+    formula_steps: Array<ProductionFormulaStepsModel>,
+    formula_key: string
   ): Array<ProductionFormulaStepsModel> {
     let new_order: Array<ProductionFormulaStepsModel> = [];
     formula_steps.forEach((formula) => {
-      if (this.productionStarted(formula.steps)) {
+      if (formula.formula.id == formula_key) {
         new_order.push(formula);
         formula_steps.splice(formula_steps.indexOf(formula), 1);
       }

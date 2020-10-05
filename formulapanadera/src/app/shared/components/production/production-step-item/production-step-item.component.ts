@@ -25,6 +25,7 @@ export class ProductionStepItemComponent {
   @Input() even: boolean = false;
   @Input() temperatureUnit: string = "C";
   @Input() production_in_process: ProductionInProcessModel;
+  @Input() original_production: ProductionInProcessModel;
   @Input() blocked: boolean = false;
   show_description: boolean = false;
 
@@ -81,7 +82,15 @@ export class ProductionStepItemComponent {
       );
       if (step.status == "PENDING") {
         if (step.step.number == 0 && !this.productionStarted()) {
-          if (step !== this.production_in_process.steps[0]) {
+          let difference = Number(
+            this.timeService
+              .difference(
+                step.time.start,
+                this.production_in_process.steps[0].time.start
+              )
+              .toFixed(0)
+          );
+          if (difference !== 0) {
             this.startFormulaAlert(step);
           } else {
             step.status = "IN PROCESS";
@@ -114,9 +123,10 @@ export class ProductionStepItemComponent {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: () => {
-            step.status = "IN PROCESS";
+            console.log(this.original_production);
             this.productionInProcessService.orderProduction(
-              JSON.parse(JSON.stringify(this.production_in_process))
+              JSON.parse(JSON.stringify(this.original_production)),
+              step.formula.id
             );
           },
         },

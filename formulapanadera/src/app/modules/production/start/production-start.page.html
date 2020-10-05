@@ -68,6 +68,16 @@
         </ion-item>
       </ion-col></ion-row
     >
+    <!-- Temperature -->
+    <ion-select
+      *ngIf="in_process"
+      [value]="temperatureUnit"
+      class="temperature-selector"
+      (ionChange)="changeTemperature($event)"
+    >
+      <ion-select-option value="C">ºC</ion-select-option>
+      <ion-select-option value="F">ºF</ion-select-option>
+    </ion-select>
     <!-- Segment -->
     <ion-segment [value]="segment" (ionChange)="segmentChanged($event)">
       <ion-segment-button value="ingredients" class="segment-button">
@@ -94,7 +104,9 @@
         [step]="step"
         [even]="(i%2==0)"
         [production_in_process]="production_in_process"
+        [original_production]="original_production"
         [blocked]="stepBlocked(step)"
+        [temperatureUnit]="temperatureUnit"
       ></app-production-step-item>
     </ion-list>
     <ion-item-divider class="divider" *ngIf="stepsFiltered(true).length>0">
@@ -108,7 +120,9 @@
         [step]="step"
         [even]="(i%2==0)"
         [production_in_process]="production_in_process"
+        [original_production]="original_production"
         [blocked]="stepBlocked(step)"
+        [temperatureUnit]="temperatureUnit"
       >
       </app-production-step-item>
     </ion-list>

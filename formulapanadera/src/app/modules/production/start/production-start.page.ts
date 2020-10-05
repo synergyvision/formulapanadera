@@ -11,9 +11,9 @@ import {
   ProductionStepModel,
   TimeModel,
 } from "src/app/core/models/production.model";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessService } from "src/app/core/services/production-in-process.service";
-import { ProductionService } from "src/app/core/services/production.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
 import { TimeService } from "src/app/core/services/time.service";
 
@@ -30,6 +30,7 @@ export class ProductionStartPage implements OnInit {
 
   production: ProductionModel = new ProductionModel();
   production_in_process: ProductionInProcessModel = new ProductionInProcessModel();
+  original_production: ProductionInProcessModel = new ProductionInProcessModel();
   formulas: Array<FormulaPresentModel & { show: boolean }> = [];
   segment: string = "steps";
   in_process: boolean = false;
@@ -37,11 +38,13 @@ export class ProductionStartPage implements OnInit {
   specify_time: boolean = false;
   laboral_time: TimeModel = new TimeModel();
 
+  temperatureUnit = "C";
+
   state;
 
   constructor(
     private router: Router,
-    private productionService: ProductionService,
+    private formatNumberService: FormatNumberService,
     private productionInProcessService: ProductionInProcessService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
     private timeService: TimeService,
@@ -67,7 +70,9 @@ export class ProductionStartPage implements OnInit {
       this.in_process = true;
     } else {
       this.formulas = JSON.parse(JSON.stringify(this.state.formulas));
-      this.productionInProcessService.getProductionSteps(this.production);
+      this.original_production = this.productionInProcessService.getProductionSteps(
+        this.production
+      );
     }
 
     this.productionInProcessService
@@ -108,7 +113,9 @@ export class ProductionStartPage implements OnInit {
         this.verifyLaboralTime();
       }
     } else {
-      this.productionInProcessService.getProductionSteps(this.production);
+      this.original_production = this.productionInProcessService.getProductionSteps(
+        this.production
+      );
       await this.productionInProcessStorageService.deleteProduction();
     }
   }
@@ -128,6 +135,45 @@ export class ProductionStartPage implements OnInit {
     );
     if (invalid_steps.length > 0) {
       this.invalidStepsAlert(invalid_steps);
+    }
+  }
+
+  changeTemperature(event: any) {
+    this.temperatureUnit = event.detail.value;
+    if (this.temperatureUnit == "F") {
+      this.production_in_process.steps.forEach((step) => {
+        if (step.step.temperature !== null) {
+          step.step.temperature.min = Number(
+            this.formatNumberService.fromCelsiusToFahrenheit(
+              step.step.temperature.min
+            )
+          );
+          if (step.step.temperature.max !== -1) {
+            step.step.temperature.max = Number(
+              this.formatNumberService.fromCelsiusToFahrenheit(
+                step.step.temperature.max
+              )
+            );
+          }
+        }
+      });
+    } else {
+      this.production_in_process.steps.forEach((step) => {
+        if (step.step.temperature !== null) {
+          step.step.temperature.min = Number(
+            this.formatNumberService.fromFahrenheitToCelsius(
+              step.step.temperature.min
+            )
+          );
+          if (step.step.temperature.max !== -1) {
+            step.step.temperature.max = Number(
+              this.formatNumberService.fromFahrenheitToCelsius(
+                step.step.temperature.max
+              )
+            );
+          }
+        }
+      });
     }
   }
 
