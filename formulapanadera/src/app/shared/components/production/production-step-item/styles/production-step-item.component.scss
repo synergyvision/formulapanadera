@@ -3,7 +3,7 @@
 }
 
 .step-item {
-  color: var(--ion-color-medium);
+  color: var(--ion-color-secondary);
 
   .step-action-icon {
     margin-right: 12px;
@@ -31,7 +31,7 @@
         font-size: 16px;
         font-weight: bold;
         letter-spacing: 0.2px;
-        color: var(--ion-color-primary);
+        color: var(--ion-color-secondary);
       }
 
       .details-col {
@@ -66,9 +66,9 @@
 
 @keyframes dangerAnimation {
   0% {
-    color: var(--ion-color-primary);
+    color: var(--ion-color-secondary);
   }
   100% {
-    color: var(--ion-color-danger);
+    color: var(--ion-color-primary);
   }
 }

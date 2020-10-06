@@ -36,7 +36,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   formula: FormulaModel = new FormulaModel();
   formulaUnit = "%";
-  temperatureUnit = "C";
   units: number;
 
   bakers_percentage: string;
@@ -157,11 +156,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       );
     });
     this.ingredients = this.formulaService.sortIngredients(this.ingredients);
-  }
-
-  //Change
-  changeTemperature(event: any) {
-    this.temperatureUnit = event.detail.value;
   }
 
   changeUnits(event: any) {

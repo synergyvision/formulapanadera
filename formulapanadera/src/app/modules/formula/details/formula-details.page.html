@@ -152,15 +152,6 @@
           [title]="'formulas.steps' | translate"
         >
         </app-show-hide-content>
-        <ion-select
-          *ngIf="showSteps"
-          [value]="temperatureUnit"
-          class="temperature-selector"
-          (ionChange)="changeTemperature($event)"
-        >
-          <ion-select-option value="C">ºC</ion-select-option>
-          <ion-select-option value="F">ºF</ion-select-option>
-        </ion-select>
         <ion-list lines="full" class="steps-list" *ngIf="showSteps">
           <span *ngFor="let step of steps; index as i">
             <ion-item-divider class="divider">
@@ -169,10 +160,7 @@
                 step.name }}</ion-label
               >
             </ion-item-divider>
-            <app-formula-step
-              [step]="step"
-              [temperatureUnit]="temperatureUnit"
-            ></app-formula-step> </span
+            <app-formula-step [step]="step"></app-formula-step> </span
         ></ion-list> </ion-col
     ></ion-row>
   </section>

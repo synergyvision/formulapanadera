@@ -38,8 +38,6 @@ export class ProductionStartPage implements OnInit {
   specify_time: boolean = false;
   laboral_time: TimeModel = new TimeModel();
 
-  temperatureUnit = "C";
-
   state;
 
   constructor(
@@ -73,7 +71,6 @@ export class ProductionStartPage implements OnInit {
       this.original_production = this.productionInProcessService.getProductionSteps(
         this.production
       );
-      this.temperatureUnit = "C";
     }
 
     this.productionInProcessService
@@ -117,7 +114,6 @@ export class ProductionStartPage implements OnInit {
       this.original_production = this.productionInProcessService.getProductionSteps(
         this.production
       );
-      this.temperatureUnit = "C";
       await this.productionInProcessStorageService.deleteProduction();
     }
   }
@@ -138,10 +134,6 @@ export class ProductionStartPage implements OnInit {
     if (invalid_steps.length > 0) {
       this.invalidStepsAlert(invalid_steps);
     }
-  }
-
-  changeTemperature(event: any) {
-    this.temperatureUnit = event.detail.value;
   }
 
   // Get / Format

@@ -12,15 +12,14 @@ export class FormulaStepComponent {
   ICONS = ICONS;
 
   @Input() step: StepDetailsModel;
-  @Input() temperatureUnit: string;
   @Input() details: boolean = false;
+  @Input() temperatureUnit: string = "C";
+  @Input() read: boolean = true;
 
   constructor(private formatNumberService: FormatNumberService) {}
 
-  changeTemperature(value) {
-    if (this.temperatureUnit == "F") {
-      value = this.formatNumberService.fromCelsiusToFahrenheit(value);
-    }
+  fahrenheitTemperature(value) {
+    value = this.formatNumberService.fromCelsiusToFahrenheit(value);
     return value;
   }
 }

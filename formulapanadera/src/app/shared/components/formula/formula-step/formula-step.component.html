@@ -2,20 +2,32 @@
   <ion-row class="step-item-wrapper">
     <ion-col class="step-wrapper">
       <ion-row
-        ><ion-col
+        ><ion-col size="4"
           ><p class="step-properties">
             <ion-icon [name]="ICONS.timer" color="dark"></ion-icon>
             {{ step.time }} {{ "formulas.minutes" | translate }}
           </p>
         </ion-col>
-        <ion-col *ngIf="step.temperature">
-          <p class="step-properties">
+        <ion-col *ngIf="step.temperature" size="8">
+          <p class="step-properties" *ngIf="read">
             <ion-icon [name]="ICONS.thermometer" color="danger"></ion-icon>
-            {{ changeTemperature(step.temperature.min) }} º{{ temperatureUnit }}
+            {{ step.temperature.min }}ºC<span
+              *ngIf="step.temperature.max !== -1"
+            >
+              - {{ step.temperature.max }}ºC</span
+            >
+            /
+            {{ fahrenheitTemperature(step.temperature.min) }}ºF<span
+              *ngIf="step.temperature.max !== -1"
+            >
+              - {{ fahrenheitTemperature(step.temperature.max) }}ºF</span
+            >
+          </p>
+          <p class="step-properties" *ngIf="!read">
+            <ion-icon [name]="ICONS.thermometer" color="danger"></ion-icon>
+            {{ step.temperature.min }}º{{ temperatureUnit }}
             <span *ngIf="step.temperature.max !== -1">
-              - {{ changeTemperature(step.temperature.max) }} º{{
-                temperatureUnit
-              }}</span
+              - {{ step.temperature.max }}º{{ temperatureUnit }}</span
             >
           </p></ion-col
         ></ion-row

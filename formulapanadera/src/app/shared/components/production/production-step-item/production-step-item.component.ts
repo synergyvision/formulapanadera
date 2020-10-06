@@ -22,7 +22,6 @@ export class ProductionStepItemComponent {
 
   @Input() step: ProductionStepModel;
   @Input() even: boolean = false;
-  @Input() temperatureUnit: string = "C";
   @Input() production_in_process: ProductionInProcessModel;
   @Input() original_production: ProductionInProcessModel;
   @Input() blocked: boolean = false;
