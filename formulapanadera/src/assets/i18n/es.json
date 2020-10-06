@@ -147,7 +147,8 @@
     "executing": "Producción en ejecución",
     "time": {
       "start": "Inicio",
-      "end": "Finalización estimada"
+      "end": "Finalización estimada",
+      "current": "Hora actual"
     },
     "warning": {
       "name": "Alerta",

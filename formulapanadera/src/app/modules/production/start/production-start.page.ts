@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { AlertController } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
-import { SPECIFIC_TIME_FORMAT } from "src/app/config/formats";
 import { ICONS } from "src/app/config/icons";
 import {
   FormulaPresentModel,
@@ -143,17 +142,11 @@ export class ProductionStartPage implements OnInit {
   }
 
   productionStartTime(): string {
-    return this.timeService.formatTime(
-      this.production_in_process.time.start,
-      SPECIFIC_TIME_FORMAT
-    );
+    return this.timeService.formatTime(this.production_in_process.time.start);
   }
 
   productionEndTime(): string {
-    return this.timeService.formatTime(
-      this.production_in_process.time.end,
-      SPECIFIC_TIME_FORMAT
-    );
+    return this.timeService.formatTime(this.production_in_process.time.end);
   }
 
   stepsFiltered(done: boolean): Array<ProductionStepModel> {

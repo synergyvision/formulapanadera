@@ -147,7 +147,8 @@
     "executing": "Production in process",
     "time": {
       "start": "Start",
-      "end": "Estimated completion"
+      "end": "Estimated completion",
+      "current": "Current time"
     },
     "warning": {
       "name": "Warning",

@@ -50,6 +50,19 @@
       </ion-item>
     </span>
     <!-- Time -->
+    <ion-row>
+      <ion-col class="list-col" size="12">
+        <ion-item class="time-item">
+          <ion-row class="time-row">
+            <ion-col size="12">
+              <b>{{ 'production.time.current' | translate}}</b>
+              <br />
+              {{currentTime()}}
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-col>
+    </ion-row>
     <ion-row *ngIf="in_process"
       ><ion-col class="list-col" size="12">
         <ion-item class="time-item">
