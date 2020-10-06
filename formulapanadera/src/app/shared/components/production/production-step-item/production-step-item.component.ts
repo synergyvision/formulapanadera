@@ -1,5 +1,10 @@
 import { Component, Input } from "@angular/core";
 import { AlertController } from "@ionic/angular";
+import {
+  FERMENTATION_STEP,
+  MANIPULATION_STEP,
+  OVEN_STEP,
+} from "src/app/config/formula";
 import { ICONS } from "src/app/config/icons";
 import {
   ProductionInProcessModel,
@@ -19,6 +24,8 @@ import { TimeService } from "src/app/core/services/time.service";
 })
 export class ProductionStepItemComponent {
   ICONS = ICONS;
+  OVEN_STEP = OVEN_STEP - 1;
+  FERMENTATION_STEP = FERMENTATION_STEP - 1;
 
   @Input() step: ProductionStepModel;
   @Input() even: boolean = false;
@@ -56,6 +63,23 @@ export class ProductionStepItemComponent {
     return on_time;
   }
 
+  stepProgress() {
+    let progress: number = 100;
+    if (this.step.time && this.step.status !== "DONE") {
+      if (this.step.status == "PENDING") {
+        progress = 0;
+      } else if (this.step.status == "IN PROCESS") {
+        let total = this.timeService.difference(
+          this.step.time.start,
+          this.step.time.end
+        );
+        let current = this.timeService.differenceWithNow(this.step.time.start);
+        progress = Number(((current * 100) / total).toFixed(1));
+      }
+    }
+    return progress;
+  }
+
   stepIcon(step: ProductionStepModel): string {
     if (step.status == "PENDING") {
       return ICONS.play;
@@ -74,10 +98,6 @@ export class ProductionStepItemComponent {
 
   changeStepStatus(step: ProductionStepModel): void {
     if (!this.blocked) {
-      this.productionInProcessService.recalculateProduction(
-        this.production_in_process,
-        this.step
-      );
       if (step.status == "PENDING") {
         if (step.step.number == 0 && !this.productionStarted()) {
           let difference = Number(
@@ -91,13 +111,35 @@ export class ProductionStepItemComponent {
           if (difference !== 0) {
             this.startFormulaAlert(step);
           } else {
+            this.productionInProcessService.recalculateProduction(
+              this.production_in_process,
+              this.step
+            );
             step.status = "IN PROCESS";
           }
         } else {
+          this.productionInProcessService.recalculateProduction(
+            this.production_in_process,
+            this.step
+          );
           step.status = "IN PROCESS";
         }
       } else if (step.status == "IN PROCESS") {
+        this.productionInProcessService.recalculateProduction(
+          this.production_in_process,
+          this.step
+        );
         step.status = "DONE";
+        if (step.step.number == FERMENTATION_STEP - 1) {
+          this.production_in_process.steps.forEach((production_step) => {
+            if (
+              step.formula.id == production_step.formula.id &&
+              production_step.step.number == MANIPULATION_STEP - 1
+            ) {
+              production_step.status = "DONE";
+            }
+          });
+        }
       }
 
       this.productionInProcessService.setProductionInProcess(
@@ -121,7 +163,6 @@ export class ProductionStepItemComponent {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: () => {
-            console.log(this.original_production);
             this.productionInProcessService.orderProduction(
               JSON.parse(JSON.stringify(this.original_production)),
               step.formula.id

@@ -59,6 +59,10 @@ export class TimeService {
     return moment.duration(moment(end).diff(start)).asMinutes();
   }
 
+  differenceWithNow(date: Date) {
+    return moment.duration(moment(this.time).diff(date)).asMinutes();
+  }
+
   dateIsDifferentFromNow(date: Date) {
     return this.dateIsBeforeNow(date) || this.dateIsAfterNow(date);
   }

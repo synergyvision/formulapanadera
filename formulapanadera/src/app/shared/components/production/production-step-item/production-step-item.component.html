@@ -26,6 +26,20 @@
           </p>
         </ion-col>
       </ion-row>
+      <ion-row
+        *ngIf="
+          step.time &&
+          (step.step.number == OVEN_STEP ||
+            step.step.number == FERMENTATION_STEP)
+        "
+      >
+        <ion-col size="12">
+          <ion-progress-bar
+            class="progress-bar"
+            [value]="stepProgress() / 100"
+          ></ion-progress-bar>
+        </ion-col>
+      </ion-row>
     </ion-col>
   </ion-row>
   <ion-icon

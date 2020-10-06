@@ -12,6 +12,7 @@ import { TimeService } from "./time.service";
 import { BehaviorSubject } from "rxjs";
 import { ProductionService } from "./production.service";
 import {
+  FERMENTATION_STEP,
   MANIPULATION_STEP,
   OVEN_STARTING_TIME,
   OVEN_START_TIME,
@@ -110,8 +111,15 @@ export class ProductionInProcessService {
     let number: number = 1;
     let step_before_number = 1;
     let step_before: ProductionStepModel;
-    if (OVEN_STEP - 1 == selected_step.step.number) {
+
+    if (
+      OVEN_STEP - 1 == selected_step.step.number ||
+      OVEN_STEP - 1.5 == selected_step.step.number
+    ) {
       step_before_number = 0.5;
+    }
+    if (MANIPULATION_STEP == selected_step.step.number) {
+      step_before_number = 2;
     }
 
     // Unblock first possible step of each formula
@@ -131,7 +139,11 @@ export class ProductionInProcessService {
                 step_before = formula.steps[index - number];
                 number = number + 1;
               }
-              if (step_before.status == "DONE") {
+              if (
+                step_before.status == "DONE" ||
+                (step_before.step.number == FERMENTATION_STEP - 1 &&
+                  step_before.status == "IN PROCESS")
+              ) {
                 is_blocked = false;
               }
             }
@@ -203,10 +215,7 @@ export class ProductionInProcessService {
     formulas.forEach((formula) => {
       let result = [];
       production_in_process.steps.forEach((step) => {
-        if (
-          step.formula.id === formula.id &&
-          step.step.number !== OVEN_STEP - 0.5
-        ) {
+        if (step.formula.id === formula.id) {
           result.push(step);
         }
       });
@@ -231,7 +240,7 @@ export class ProductionInProcessService {
     warming_step.status = "PENDING";
     warming_step.formula = oven_step.formula;
     warming_step.step = {
-      number: OVEN_STEP - 0.5,
+      number: OVEN_STEP - 1.5,
       name: "",
       description: "",
       time: OVEN_STARTING_TIME,
