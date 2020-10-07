@@ -3,6 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button
         [defaultHref]="'/'+APP_URL.auth.name+'/'+APP_URL.auth.routes.sign_in"
+        mode="md"
       ></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'auth.sign_up' | translate }}</ion-title>
@@ -83,7 +84,7 @@
             expand="block"
             [disabled]="!signupForm.valid"
           >
-            {{ 'auth.sign_up' | translate }}</ion-button
+            {{ 'auth.sign_up_now' | translate }}</ion-button
           >
           <div class="error-container" *ngIf="submitError">
             <div class="error-message">

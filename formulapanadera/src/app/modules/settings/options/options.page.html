@@ -23,7 +23,7 @@
       </ion-row>
     </ion-item>
     <ion-item-divider sticky>
-      <ion-label>{{ 'settings.name' | translate }}</ion-label>
+      <ion-label></ion-label>
     </ion-item-divider>
     <ion-item
       button
@@ -31,7 +31,9 @@
       class="change-language-option"
     >
       <ion-icon [name]="ICONS.language"></ion-icon>
-      <ion-label>{{'settings.language.change' | translate}}</ion-label>
+      <ion-label class="option"
+        >{{'settings.language.change' | translate}}</ion-label
+      >
     </ion-item>
     <ion-item
       button
@@ -40,11 +42,13 @@
       class="change-password-option"
     >
       <ion-icon [name]="ICONS.change_password"></ion-icon>
-      <ion-label>{{'settings.password.change' | translate}}</ion-label>
+      <ion-label class="option"
+        >{{'settings.password.change' | translate}}</ion-label
+      >
     </ion-item>
     <ion-item button (click)="signOut()" class="sign-out-option">
       <ion-icon [name]="ICONS.sign_out"></ion-icon>
-      <ion-label>{{'settings.logout' | translate}}</ion-label>
+      <ion-label class="option">{{'settings.logout' | translate}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

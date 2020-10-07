@@ -5,7 +5,7 @@
 
   // Variables should be in a deeper selector or after the mixin include to override default values
   --select-alert-color: var(--ion-color-lightest);
-  --select-alert-background: var(--ion-color-primary-shade);
+  --select-alert-background: var(--ion-color-primary);
   --select-alert-margin: var(--app-fair-margin);
 
   .alert-button {
@@ -14,5 +14,13 @@
 
   .alert-button-group {
     justify-content: space-around;
+  }
+
+  .alert-message.sc-ion-alert-ios {
+    display: none;
+  }
+
+  .alert-radio-label.sc-ion-alert-ios {
+    color: var(--ion-color-medium);
   }
 }

@@ -1,7 +1,6 @@
 :host {
-  --page-margin: var(--app-fair-margin);
+  --page-margin: var(--app-narrow-margin);
   --page-background: var(--app-background);
-
   --page-background-shade: var(--app-background-shade);
   --page-tags-gutter: 5px;
 }
@@ -65,9 +64,10 @@
 .value {
   margin-bottom: 5px;
   padding-top: 5px;
+  font-size: 16px;
 }
 
 .steps-list {
-  font-size: 13px;
+  font-size: 12px;
   margin-top: -10px;
 }

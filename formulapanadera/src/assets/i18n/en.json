@@ -26,6 +26,9 @@
   },
   "auth": {
     "sign_up": "Sign up",
+    "sign_up_now": "Sign up",
+    "sign_up_question": "Don't have an account?",
+    "sign_up_link": "Sign up now",
     "sign_in": "Sign in",
     "account_question": "Already have an account?",
     "forgot_password": "Forgot password?",

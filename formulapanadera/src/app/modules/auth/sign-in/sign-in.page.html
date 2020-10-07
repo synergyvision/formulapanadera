@@ -71,13 +71,16 @@
                 {{ 'auth.forgot_password' | translate }}
               </a> </ion-col
             ><ion-col class="align-text-end">
-              <a
-                class="signup-btn"
-                fill="clear"
-                [routerLink]="['/'+APP_URL.auth.name+'/'+APP_URL.auth.routes.sign_up]"
-              >
-                {{ 'auth.sign_up' | translate }}
-              </a>
+              <p class="signup-btn">
+                {{ 'auth.sign_up_question' | translate }}
+                <a
+                  class="signup-btn"
+                  fill="clear"
+                  [routerLink]="['/'+APP_URL.auth.name+'/'+APP_URL.auth.routes.sign_up]"
+                >
+                  {{ 'auth.sign_up_link' | translate }}
+                </a>
+              </p>
             </ion-col>
           </ion-row>
         </form>
