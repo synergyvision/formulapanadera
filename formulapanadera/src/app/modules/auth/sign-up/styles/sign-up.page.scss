@@ -3,6 +3,10 @@
   --page-background: white;
 }
 
+ion-back-button {
+  height: 0;
+}
+
 .signup-content {
   --background: var(--page-background);
   --padding-start: var(--page-margin);

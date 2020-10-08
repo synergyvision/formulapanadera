@@ -1,3 +1,9 @@
+.mixing-list {
+  .mixing-item {
+    --padding-start: 0;
+  }
+}
+
 .ingredient-item-wrapper {
   --ion-grid-column-padding: 0px;
   padding: 10px 0 10px 0;
@@ -10,6 +16,10 @@
   flex-direction: column;
   justify-content: space-around;
   padding-left: 0;
+
+  .ingredients-list {
+    padding-left: var(--app-narrow-margin);
+  }
 }
 .ingredients-name {
   margin: 0 !important;
@@ -31,13 +41,5 @@
   background-color: rgba(221, 221, 221, 0.322) !important;
   color: black;
   font-size: 13px;
-}
-
-.item-description {
-  font-size: 14px;
-  margin-left: -16px;
-  .label {
-    font-size: 12px;
-    margin-top: -10px;
-  }
+  padding-left: var(--app-narrow-margin);
 }

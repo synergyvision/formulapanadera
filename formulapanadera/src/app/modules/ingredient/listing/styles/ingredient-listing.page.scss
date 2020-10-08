@@ -2,36 +2,45 @@
 
 :host {
   --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
 }
 
 // Styles
+
+.ios.title-default {
+  padding: 0 0;
+}
 
 .btn-med {
   font-size: 26px;
   margin: 0 0 0 10px;
 }
 
-.segment {
-  padding: 0 var(--page-margin) 0 var(--page-margin);
-}
-
-.ingredients-list {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.empty-block {
-  height: 100%;
-
-  ion-col {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-  }
-}
-
 ion-select {
   width: 100%;
   justify-content: center;
+}
+
+.ingredient-content {
+  --background: var(--page-background);
+
+  .segment {
+    padding: 0 var(--page-margin) 0 var(--page-margin);
+  }
+
+  .ingredients-list {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .empty-block {
+    height: 100%;
+
+    ion-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+  }
 }

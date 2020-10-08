@@ -31,8 +31,8 @@ export class IngredientDetailsPage implements OnInit {
     private actionSheetController: ActionSheetController,
     private languageService: LanguageService
   ) {
-    this.showIngredients = true;
-    this.showMixing = true;
+    this.showIngredients = false;
+    this.showMixing = false;
     this.state = this.router.getCurrentNavigation().extras.state;
   }
 
@@ -78,5 +78,23 @@ export class IngredientDetailsPage implements OnInit {
         state: { ingredient: this.ingredient },
       }
     );
+  }
+
+  getProportionFactor(): string {
+    if (this.ingredient.formula.proportion_factor.factor == "dough") {
+      return this.languageService.getTerm(
+        "ingredients.proportion_factor.dough"
+      );
+    } else if (this.ingredient.formula.proportion_factor.factor == "flour") {
+      return this.languageService.getTerm(
+        "ingredients.proportion_factor.flour"
+      );
+    } else if (
+      this.ingredient.formula.proportion_factor.factor == "ingredient"
+    ) {
+      return this.ingredient.formula.proportion_factor.ingredient.name;
+    } else {
+      return "";
+    }
   }
 }

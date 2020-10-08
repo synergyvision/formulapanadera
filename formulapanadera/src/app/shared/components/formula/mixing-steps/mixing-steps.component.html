@@ -3,11 +3,11 @@
     <ion-item-divider class="divider">
       <ion-label>{{ "formulas.step" | translate }} {{ i + 1 }}</ion-label>
     </ion-item-divider>
-    <ion-item>
+    <ion-item class="mixing-item">
       <ion-row class="ingredient-item-wrapper">
         <ion-col class="ingredients-wrapper">
           <ion-row>
-            <ion-col>
+            <ion-col class="ingredients-list">
               <p
                 class="ingredients-name ingredient-item"
                 *ngFor="let item of mixStep.ingredients; index as i"
@@ -19,14 +19,10 @@
           </ion-row>
           <ion-row *ngIf="mixStep.description">
             <ion-col>
-              <ion-item class="item-description" lines="full">
-                <ion-label color="primary" position="floating" class="label">{{
-                  "formulas.description" | translate
-                }}</ion-label>
-                <p>
-                  {{ mixStep.description }}
-                </p>
-              </ion-item>
+              <app-data-item
+                [title]="'formulas.description' | translate"
+                [data]="mixStep.description"
+              ></app-data-item>
             </ion-col>
           </ion-row>
         </ion-col>
