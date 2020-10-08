@@ -6,6 +6,8 @@ import { LanguageAlert } from "src/app/shared/alert/language/language.alert";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
+import { AlertController } from "@ionic/angular";
+import { LanguageService } from "src/app/core/services/language.service";
 
 @Component({
   selector: "app-options",
@@ -13,6 +15,7 @@ import { ICONS } from "src/app/config/icons";
   styleUrls: [
     "./styles/options.page.scss",
     "./../../../shared/alert/language/styles/language.alert.scss",
+    "./../../../shared/styles/confirm.alert.scss",
   ],
 })
 export class OptionsPage {
@@ -25,7 +28,9 @@ export class OptionsPage {
     private router: Router,
     private languageAlert: LanguageAlert,
     private authService: AuthService,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private alertController: AlertController,
+    private languageService: LanguageService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -42,13 +47,32 @@ export class OptionsPage {
     await this.languageAlert.openLanguageChooser();
   }
 
-  signOut() {
-    this.authService.signOut().subscribe(() => {
-      this.userStorageService.clear();
-      this.router.navigate(
-        [APP_URL.auth.name + "/" + APP_URL.auth.routes.sign_in],
-        { replaceUrl: true }
-      );
+  async signOut() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.confirm"),
+      message: this.languageService.getTerm("action.sign_out_question"),
+      cssClass: "confirm-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            this.authService.signOut().subscribe(() => {
+              this.userStorageService.clear();
+              this.router.navigate(
+                [APP_URL.auth.name + "/" + APP_URL.auth.routes.sign_in],
+                { replaceUrl: true }
+              );
+            });
+          },
+        },
+      ],
     });
+    await alert.present();
   }
 }

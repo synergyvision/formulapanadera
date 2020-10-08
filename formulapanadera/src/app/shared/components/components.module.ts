@@ -22,6 +22,7 @@ import { TitleComponent } from "./general/title/title.component";
 import { FormulaTimeTableComponent } from "./production/formula-time-table/formula-time-table.component";
 import { ProductionStepItemComponent } from "./production/production-step-item/production-step-item.component";
 import { DataItemComponent } from "./general/data-item/data-item.component";
+import { DividerComponent } from "./general/divider/divider.component";
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { DataItemComponent } from "./general/data-item/data-item.component";
   declarations: [
     TitleComponent,
     DataItemComponent,
+    DividerComponent,
     ShowHidePasswordComponent,
     ShowHideContentComponent,
     IngredientItemComponent,
@@ -52,6 +54,7 @@ import { DataItemComponent } from "./general/data-item/data-item.component";
   exports: [
     TitleComponent,
     DataItemComponent,
+    DividerComponent,
     ShowHidePasswordComponent,
     ShowHideContentComponent,
     IngredientItemComponent,

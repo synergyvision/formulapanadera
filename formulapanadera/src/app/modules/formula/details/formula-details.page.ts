@@ -12,7 +12,6 @@ import {
 } from "src/app/core/models/formula.model";
 import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
-import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { ModifierModel, UserModel } from "src/app/core/models/user.model";
 import { DATE_FORMAT, DECIMALS } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
@@ -62,7 +61,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
     private languageService: LanguageService,
-    private formatNumberService: FormatNumberService,
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
     private toastController: ToastController,

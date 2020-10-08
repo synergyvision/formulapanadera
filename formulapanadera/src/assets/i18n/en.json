@@ -10,6 +10,7 @@
     "update": "Update",
     "delete": "Delete",
     "delete_question": "Do you want to delete {{item}}?",
+    "sign_out_question": "Sign out?",
     "yes": "Yes",
     "no": "No"
   },
@@ -17,7 +18,13 @@
     "fullName": "Full name",
     "email": "Email",
     "password": "Password",
-    "confirm_password": "Confirm password"
+    "confirm_password": "Confirm password",
+    "actual_password": "Actual password"
+  },
+  "loading": "Please wait...",
+  "send": {
+    "success": "Successful action",
+    "error": "An error ocurred. Verify and try again"
   },
   "credits": {
     "name": "Credits",

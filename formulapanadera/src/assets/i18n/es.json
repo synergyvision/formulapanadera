@@ -10,6 +10,7 @@
     "update": "Modificar",
     "delete": "Eliminar",
     "delete_question": "¿Desea eliminar {{item}}?",
+    "sign_out_question": "¿Cerrar sesión?",
     "yes": "Sí",
     "no": "No"
   },
@@ -17,7 +18,13 @@
     "fullName": "Nombre completo",
     "email": "Correo electrónico",
     "password": "Contraseña",
-    "confirm_password": "Confirmación de contraseña"
+    "confirm_password": "Confirmación de contraseña",
+    "actual_password": "Contraseña actual"
+  },
+  "loading": "Espere un momento...",
+  "send": {
+    "success": "Acción exitosa",
+    "error": "Ocurrió un error. Verifique e intente de nuevo"
   },
   "credits": {
     "name": "Créditos",
