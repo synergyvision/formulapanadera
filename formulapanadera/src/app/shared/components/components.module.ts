@@ -21,6 +21,7 @@ import { FormulasIngredientsListComponent } from "./production/formulas-ingredie
 import { TitleComponent } from "./general/title/title.component";
 import { FormulaTimeTableComponent } from "./production/formula-time-table/formula-time-table.component";
 import { ProductionStepItemComponent } from "./production/production-step-item/production-step-item.component";
+import { DataItemComponent } from "./general/data-item/data-item.component";
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import { ProductionStepItemComponent } from "./production/production-step-item/p
   ],
   declarations: [
     TitleComponent,
+    DataItemComponent,
     ShowHidePasswordComponent,
     ShowHideContentComponent,
     IngredientItemComponent,
@@ -49,6 +51,7 @@ import { ProductionStepItemComponent } from "./production/production-step-item/p
   ],
   exports: [
     TitleComponent,
+    DataItemComponent,
     ShowHidePasswordComponent,
     ShowHideContentComponent,
     IngredientItemComponent,

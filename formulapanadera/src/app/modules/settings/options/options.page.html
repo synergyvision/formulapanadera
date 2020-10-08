@@ -7,21 +7,14 @@
 
 <ion-content class="options-content">
   <ion-list lines="full" class="settings-list">
-    <ion-item class="info-item">
-      <ion-row class="info-item-wrapper">
-        <ion-col class="details-wrapper">
-          <h2 class="details-name">{{ 'input.fullName' | translate }}</h2>
-          <p class="details-description">{{user.name}}</p>
-        </ion-col>
-      </ion-row> </ion-item
-    ><ion-item class="info-item">
-      <ion-row class="info-item-wrapper">
-        <ion-col class="details-wrapper">
-          <h2 class="details-name">{{ 'input.email' | translate }}</h2>
-          <p class="details-description">{{user.email}}</p>
-        </ion-col>
-      </ion-row>
-    </ion-item>
+    <app-data-item
+      [title]="'input.fullName' | translate"
+      [data]="user.name"
+    ></app-data-item>
+    <app-data-item
+      [title]="'input.email' | translate"
+      [data]="user.email"
+    ></app-data-item>
     <ion-item-divider sticky>
       <ion-label></ion-label>
     </ion-item-divider>
