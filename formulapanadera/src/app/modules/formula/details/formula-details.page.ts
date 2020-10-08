@@ -68,10 +68,10 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private userStorageService: UserStorageService
   ) {
-    this.showIngredients = true;
+    this.showIngredients = false;
     this.showSubIngredients = true;
-    this.showMixing = true;
-    this.showSteps = true;
+    this.showMixing = false;
+    this.showSteps = false;
     this.state = this.router.getCurrentNavigation().extras.state;
   }
 

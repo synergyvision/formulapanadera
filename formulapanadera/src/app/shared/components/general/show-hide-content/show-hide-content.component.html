@@ -1,4 +1,10 @@
-<ion-item class="content-title">
+<ion-item
+  class="content-title"
+  [ngClass]="{
+    'border-top': subtitle
+  }"
+  lines="full"
+>
   <ion-row class="title-row">
     <ion-col size="9" class="no-padding">
       <h5

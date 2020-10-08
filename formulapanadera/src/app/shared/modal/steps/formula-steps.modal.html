@@ -28,9 +28,9 @@
         </ion-label>
       </ion-item-divider>
       <ion-row>
-        <ion-col>
-          <ion-item
-            ><ion-label color="primary" position="floating"
+        <ion-col class="no-padding">
+          <ion-item class="input-item"
+            ><ion-label color="primary" position="stacked"
               >{{'formulas.time' | translate}} ({{'formulas.minutes' |
               translate}})</ion-label
             ><ion-input
@@ -42,9 +42,9 @@
           ></ion-item>
         </ion-col> </ion-row
       ><ion-row>
-        <ion-col>
-          <ion-item
-            ><ion-label color="primary" position="floating"
+        <ion-col class="no-padding">
+          <ion-item class="input-item"
+            ><ion-label color="primary" position="stacked"
               >{{'formulas.temperature' | translate}}</ion-label
             >
             <ion-select
@@ -69,18 +69,18 @@
         </ion-col>
       </ion-row>
       <ion-row *ngIf="step.temperature !== null">
-        <ion-col>
-          <ion-item>
+        <ion-col class="no-padding">
+          <ion-item class="input-item">
             <ion-label
               color="primary"
-              position="floating"
+              position="stacked"
               *ngIf="step.temperature.max !== -1"
               >{{'formulas.range.min' | translate}}
               (º{{temperatureUnit}})</ion-label
             >
             <ion-label
               color="primary"
-              position="floating"
+              position="stacked"
               *ngIf="step.temperature.max === -1"
               >{{'formulas.temperature' | translate}} (º{{temperatureUnit}})
             </ion-label>
@@ -92,9 +92,9 @@
             ></ion-input>
           </ion-item>
         </ion-col>
-        <ion-col>
-          <ion-item *ngIf="step.temperature.max !== -1">
-            <ion-label color="primary" position="floating"
+        <ion-col class="no-padding">
+          <ion-item *ngIf="step.temperature.max !== -1" class="input-item">
+            <ion-label color="primary" position="stacked"
               >{{'formulas.range.max' | translate}}
               (º{{temperatureUnit}})</ion-label
             >
@@ -108,9 +108,9 @@
         </ion-col>
       </ion-row>
       <ion-row *ngIf="i == (MANIPULATION_STEP-1)">
-        <ion-col>
-          <ion-item>
-            <ion-label color="primary" position="floating"
+        <ion-col class="no-padding">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="stacked"
               >{{'formulas.manipulation_times' | translate}}</ion-label
             >
             <ion-input
@@ -123,9 +123,9 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
-          <ion-item>
-            <ion-label color="primary" position="floating"
+        <ion-col class="no-padding">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="stacked"
               >{{'formulas.description' | translate}}</ion-label
             >
             <ion-textarea

@@ -2,6 +2,8 @@
   <ion-row class="step-item-wrapper">
     <ion-col class="step-wrapper">
       <ion-row
+        class="step-stats"
+        [ngClass]="{ 'only-stats': !step.description }"
         ><ion-col size="4"
           ><p class="step-properties">
             <ion-icon [name]="ICONS.timer" color="dark"></ion-icon>
@@ -34,14 +36,10 @@
       >
       <ion-row *ngIf="step.description">
         <ion-col>
-          <ion-item class="item-description" lines="full">
-            <ion-label color="primary" position="floating" class="label">{{
-              "formulas.description" | translate
-            }}</ion-label>
-            <p>
-              {{ step.description }}
-            </p>
-          </ion-item>
+          <app-data-item
+            [title]="'formulas.description' | translate"
+            [data]="step.description"
+          ></app-data-item>
         </ion-col>
       </ion-row>
     </ion-col>

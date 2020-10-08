@@ -77,7 +77,6 @@ ion-back-button {
       margin-bottom: 5px;
       font-size: 14px;
       font-weight: 400;
-      letter-spacing: 0.2px;
       color: black;
     }
   }
@@ -101,7 +100,6 @@ ion-back-button {
 
 .form-actions-wrapper {
   --ion-grid-column-padding: calc(var(--page-margin) / 2);
-
   padding: calc(var(--page-margin) / 2);
 
   .submit-btn {

@@ -1,9 +1,14 @@
-:host {
-  --page-margin: var(--app-fair-margin);
-  --page-background: var(--app-background);
+// Variables
 
-  --page-background-shade: var(--app-background-shade);
-  --page-tags-gutter: 5px;
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
 }
 
 ion-back-button {
@@ -13,6 +18,40 @@ ion-back-button {
 .manage-formula-content {
   --background: var(--page-background);
 
+  .input-item {
+    --padding-start: var(--page-margin);
+    font-size: 14px;
+  }
+
+  .inputs-list {
+    padding: 0;
+
+    .no-padding {
+      padding: 0;
+    }
+  }
+
+  .card {
+    margin: 0;
+
+    .card-header {
+      padding: 0;
+      padding-top: 5px;
+
+      .card-title {
+        font-size: 16px;
+      }
+    }
+
+    .ingredient-input {
+      font-size: 16px;
+    }
+
+    .delete-step {
+      margin: 0;
+    }
+  }
+
   .fields-section {
     .section-header {
       padding: 0px var(--page-margin);
@@ -20,72 +59,31 @@ ion-back-button {
       margin-bottom: var(--page-margin);
     }
   }
-
-  .formula-details-fields {
-    height: 100%;
-    .inputs-list {
-      padding: 0px var(--page-margin);
-    }
-
-    .input-item {
-      --padding-start: 0px;
-      --padding-end: 0px;
-      --inner-padding-start: 0px;
-      --inner-padding-end: 0px;
-      font-size: 14px;
-    }
-  }
-}
-
-.form-actions-wrapper {
-  --ion-grid-column-padding: calc(var(--page-margin) / 2);
-
-  padding: calc(var(--page-margin) / 2);
-
-  .submit-btn {
-    margin: 0px;
-  }
-
-  .delete-btn {
-    margin: 0px;
-  }
-}
-
-.ios.title-default {
-  padding: 0 0;
-}
-
-.card-title {
-  font-size: 15px;
-}
-
-.ingredient-percentage {
-  margin: 0;
-  font-size: 14px;
-  text-align: end;
 }
 
 .ingredient-item-wrapper {
   --ion-grid-column-padding: 0px;
-  padding: 10px 0 10px 0;
+  font-size: 16px;
   width: 100%;
-  align-items: center;
+
+  .ingredients-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-left: 0;
+
+    .ingredients-name {
+      margin-top: 0px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      font-weight: 400;
+      color: black;
+    }
+  }
 }
 
-.ingredients-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding-left: 0;
-
-  .ingredients-name {
-    margin-top: 0px;
-    margin-bottom: 5px;
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0.2px;
-    color: black;
-  }
+.ingredient-percentage {
+  text-align: end;
 }
 
 .unit-select-item {
@@ -95,7 +93,8 @@ ion-back-button {
 .divider {
   background-color: rgba(221, 221, 221, 0.322) !important;
   color: black;
-  font-size: 13px;
+  font-size: 12px;
+  padding-left: var(--app-narrow-margin);
 
   .divider-label {
     width: 90%;
@@ -106,4 +105,17 @@ ion-back-button {
 .add-step-ingredient {
   width: 11%;
   text-align: end;
+}
+
+.form-actions-wrapper {
+  --ion-grid-column-padding: calc(var(--page-margin) / 2);
+  padding: calc(var(--page-margin) / 2);
+
+  .submit-btn {
+    margin: 0px;
+  }
+
+  .delete-btn {
+    margin: 0px;
+  }
 }

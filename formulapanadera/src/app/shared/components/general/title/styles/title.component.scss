@@ -1,16 +1,17 @@
 .title {
-  --padding-start: 10px;
+  --padding-start: var(--app-narrow-margin);
 
   .title-row {
     width: 100%;
     padding: 0;
 
     .title-col {
-      padding-left: 0;
+      padding: 0;
 
       .title-name {
         text-align: start;
         color: var(--ion-color-secondary);
+        margin: 10px 0 10px 0;
       }
     }
   }

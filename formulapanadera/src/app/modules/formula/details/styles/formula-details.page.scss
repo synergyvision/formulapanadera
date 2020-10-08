@@ -1,57 +1,41 @@
-:host {
-  --page-margin: var(--app-fair-margin);
-  --page-background: var(--app-background);
+// Variables
 
-  --page-background-shade: var(--app-background-shade);
-  --page-tags-gutter: 5px;
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
 }
 
 ion-back-button {
   height: 0;
 }
 
-.ios.title-default {
-  padding: 0 0;
-}
+.formula-detail-content {
+  background-color: var(--page-background);
 
-.formula-detail {
-  font-size: 14px;
-}
+  .formula-detail {
+    font-size: 14px;
+    --padding-start: var(--page-margin);
 
-.detail-col {
-  padding: 0;
-}
-
-.steps-list {
-  font-size: 13px;
-  margin: 10px;
-}
-
-.label {
-  margin-top: -8px;
-  padding-bottom: 20px;
-}
-
-.divider {
-  background-color: rgba(221, 221, 221, 0.322) !important;
-  color: black;
-  font-size: 12px;
-}
-
-.item-description {
-  font-size: 14px;
-  margin-left: -16px;
-  .label {
-    font-size: 12px;
-    margin-top: -15px;
+    .editable-field {
+      color: var(--ion-color-primary);
+      font-size: 16px;
+    }
   }
-}
 
-.ingredients-name {
-  margin: 0 !important;
-  display: inline !important;
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: 0.2px;
-  color: black;
+  .detail-col {
+    padding: 0;
+
+    .divider {
+      background-color: rgba(221, 221, 221, 0.322) !important;
+      color: black;
+      font-size: 12px;
+      padding-left: var(--app-narrow-margin);
+    }
+  }
 }
