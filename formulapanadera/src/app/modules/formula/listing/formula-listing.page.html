@@ -107,7 +107,11 @@
 </ion-header>
 
 <ion-content class="formula-content">
-  <ion-segment (ionChange)="segmentChanged($event)" [value]="segment">
+  <ion-segment
+    (ionChange)="segmentChanged($event)"
+    [value]="segment"
+    class="segment"
+  >
     <ion-segment-button value="mine">
       <ion-label>{{'formulas.share.mine' | translate}}</ion-label>
     </ion-segment-button>

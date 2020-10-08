@@ -1,5 +1,14 @@
+// Variables
+
 :host {
   --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
 }
 
 .btn-med {
@@ -7,30 +16,33 @@
   margin: 0 0 0 10px;
 }
 
-.productions-list {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.empty-block {
-  height: 100%;
-
-  ion-col {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-  }
-}
-
-.ios.title-default {
-  padding: 0 0;
-}
-
 .production-in-process {
   --background: var(--ion-color-secondary);
   --color: white;
+  --padding-start: var(--page-margin);
+
   ion-icon {
     color: white;
+    margin: 0;
+  }
+}
+
+.production-content {
+  --background: var(--page-background);
+
+  .productions-list {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .empty-block {
+    height: 100%;
+
+    ion-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
   }
 }
