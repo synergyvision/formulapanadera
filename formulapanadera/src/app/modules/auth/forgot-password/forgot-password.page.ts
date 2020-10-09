@@ -8,6 +8,7 @@ import { LanguageService } from "../../../core/services/language.service";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { ASSETS } from "src/app/config/assets";
+import { LoadingController, ToastController } from "@ionic/angular";
 
 @Component({
   selector: "app-forgot-password",
@@ -29,7 +30,9 @@ export class ForgotPasswordPage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private languageService: LanguageService,
-    private languageAlert: LanguageAlert
+    private languageAlert: LanguageAlert,
+    private loadingController: LoadingController,
+    private toastController: ToastController
   ) {
     this.forgotPasswordForm = new FormGroup({
       email: new FormControl(
@@ -50,7 +53,13 @@ export class ForgotPasswordPage implements OnInit {
     this.submitError = null;
   }
 
-  recoverPassword(): void {
+  async recoverPassword() {
+    const loading = await this.loadingController.create({
+      cssClass: "app-send-loading",
+      message: this.languageService.getTerm("loading"),
+    });
+    await loading.present();
+
     this.resetSubmitError();
     this.authService
       .recoverPassword(this.forgotPasswordForm.value.email)
@@ -60,11 +69,36 @@ export class ForgotPasswordPage implements OnInit {
         );
       })
       .catch((error) => {
-        this.submitError = error.message;
+        this.presentToast(error.code);
+      })
+      .finally(async () => {
+        await loading.dismiss();
       });
   }
 
   async openLanguageChooser() {
     await this.languageAlert.openLanguageChooser();
+  }
+
+  async presentToast(type: string) {
+    let message = this.languageService.getTerm("send.error");
+    if (type == "auth/user-not-found") {
+      message = this.languageService.getTerm("send.user_error");
+    }
+
+    const toast = await this.toastController.create({
+      message: message,
+      color: "secondary",
+      duration: 5000,
+      position: "top",
+      buttons: [
+        {
+          icon: ICONS.close,
+          role: "cancel",
+          handler: () => {},
+        },
+      ],
+    });
+    toast.present();
   }
 }

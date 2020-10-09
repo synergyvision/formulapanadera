@@ -184,7 +184,7 @@ export class ProductionDetailsPage implements OnInit {
         "/" +
         APP_URL.menu.routes.production.routes.management,
       {
-        state: { production: this.production },
+        state: { production: this.original_production },
       }
     );
   }

@@ -24,7 +24,10 @@
   "loading": "Please wait...",
   "send": {
     "success": "Successful action",
-    "error": "An error ocurred. Verify and try again"
+    "error": "An error ocurred. Verify and try again",
+    "password_error": "Invalid password. Verify and try again",
+    "user_error": "Invalid user. Verify and try again",
+    "user_exists_error": "Email already in use. Verify and try again"
   },
   "credits": {
     "name": "Credits",

@@ -24,7 +24,10 @@
   "loading": "Espere un momento...",
   "send": {
     "success": "Acción exitosa",
-    "error": "Ocurrió un error. Verifique e intente de nuevo"
+    "error": "Ocurrió un error. Verifique e intente de nuevo",
+    "password_error": "Contraseña inválida. Verifique e intente de nuevo",
+    "user_error": "Usuario inválido. Verifique e intente de nuevo",
+    "user_exists_error": "Correo electrónico en uso. Verifique e intente de nuevo"
   },
   "credits": {
     "name": "Créditos",

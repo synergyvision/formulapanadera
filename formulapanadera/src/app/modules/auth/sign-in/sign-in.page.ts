@@ -9,6 +9,8 @@ import { ASSETS } from "src/app/config/assets";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { LoadingController, ToastController } from "@ionic/angular";
+import { LanguageService } from "src/app/core/services/language.service";
 
 @Component({
   selector: "app-sign-in",
@@ -24,7 +26,6 @@ export class SignInPage implements OnInit {
   ASSETS = ASSETS;
 
   loginForm: FormGroup;
-  submitError: string;
   redirectLoader: HTMLIonLoadingElement;
   authRedirectResult: Subscription;
 
@@ -33,7 +34,10 @@ export class SignInPage implements OnInit {
     private authService: AuthService,
     private ngZone: NgZone,
     private languageAlert: LanguageAlert,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private loadingController: LoadingController,
+    private languageService: LanguageService,
+    private toastController: ToastController
   ) {
     this.loginForm = new FormGroup({
       email: new FormControl(
@@ -79,12 +83,13 @@ export class SignInPage implements OnInit {
     }
   }
 
-  resetSubmitError() {
-    this.submitError = null;
-  }
+  async signIn() {
+    const loading = await this.loadingController.create({
+      cssClass: "app-send-loading",
+      message: this.languageService.getTerm("loading"),
+    });
+    await loading.present();
 
-  signIn() {
-    this.resetSubmitError();
     this.authService
       .signIn(this.loginForm.value["email"], this.loginForm.value["password"])
       .then((loggedUser) => {
@@ -95,12 +100,39 @@ export class SignInPage implements OnInit {
         this.redirectLoggedUserToMainPage();
       })
       .catch((error) => {
-        this.submitError = error.message;
         this.dismissLoading();
+        this.presentToast(error.code);
+      })
+      .finally(async () => {
+        await loading.dismiss();
       });
   }
 
   async openLanguageChooser() {
     await this.languageAlert.openLanguageChooser();
+  }
+
+  async presentToast(type: string) {
+    let message = this.languageService.getTerm("send.error");
+    if (type == "auth/wrong-password") {
+      message = this.languageService.getTerm("send.password_error");
+    } else if (type == "auth/user-not-found") {
+      message = this.languageService.getTerm("send.user_error");
+    }
+
+    const toast = await this.toastController.create({
+      message: message,
+      color: "secondary",
+      duration: 5000,
+      position: "top",
+      buttons: [
+        {
+          icon: ICONS.close,
+          role: "cancel",
+          handler: () => {},
+        },
+      ],
+    });
+    toast.present();
   }
 }

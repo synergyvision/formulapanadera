@@ -31,19 +31,6 @@ ion-back-button {
     }
   }
 
-  .error-container {
-    .error-message {
-      display: flex;
-      align-items: center;
-      color: var(--ion-color-danger);
-      font-size: 12px;
-
-      ion-icon {
-        padding-inline-end: calc(var(--page-margin) / 2);
-      }
-    }
-  }
-
   .signup-btn {
     margin: calc(var(--page-margin) / 2) 0px;
   }
