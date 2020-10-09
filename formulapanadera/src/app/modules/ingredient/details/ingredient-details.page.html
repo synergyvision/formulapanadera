@@ -3,10 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button
         [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.ingredient.main "
+        mode="md"
       ></ion-back-button>
     </ion-buttons>
     <ion-title> {{ 'ingredients.name' | translate }} </ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons
+      slot="primary"
+      *ngIf="user.email === ingredient.creator || ingredient.can_be_modified"
+    >
       <ion-button (click)="presentOptions()">
         <ion-icon
           slot="icon-only"
@@ -19,112 +23,83 @@
 </ion-header>
 
 <ion-content class="manage-ingredient-content">
-  <section class="ingredient-details-fields fields-section">
-    <ion-list class="inputs-list" lines="full">
+  <ion-list class="inputs-list" lines="full">
+    <app-data-item
+      [title]="'ingredients.ingredient_name' | translate"
+      [data]="ingredient.name"
+    ></app-data-item>
+    <span *ngIf="type == 'simple'">
+      <app-data-item
+        title="{{'ingredients.hydration' | translate}} (%)"
+        [data]="ingredient.hydration"
+      ></app-data-item>
       <ion-item class="input-item">
-        <ion-label color="primary" position="floating" class="label"
-          >{{'ingredients.ingredient_name' | translate}}</ion-label
+        <ion-label color="primary" class="flour-label"
+          >{{'ingredients.is_flour' | translate}}</ion-label
         >
-        <p class="value">{{ingredient.name}}</p>
+        <ion-checkbox
+          color="primary"
+          class="flour-checkbox"
+          [checked]="ingredient.is_flour"
+          [disabled]="true"
+        >
+        </ion-checkbox>
       </ion-item>
-      <span *ngIf="type == 'simple'">
-        <ion-item class="input-item">
-          <ion-label color="primary" position="floating" class="label"
-            >{{'ingredients.hydration' | translate}} (%)</ion-label
+      <app-data-item
+        title="{{'ingredients.cost' | translate}}
+          ({{currency}}/{{'ingredients.grams' | translate}})"
+        [data]="ingredient.cost"
+      ></app-data-item>
+    </span>
+    <span *ngIf="type == 'compound'">
+      <app-data-item
+        *ngIf="ingredient.formula.suggested_values.min"
+        title="{{'ingredients.suggested_values' | translate}} (%)"
+        [data]="ingredient.formula.suggested_values.min
+          + ((ingredient.formula.suggested_values.max)
+          ? ' - ' + ingredient.formula.suggested_values.max
+          : '')"
+      >
+      </app-data-item>
+      <app-data-item
+        title="{{'ingredients.compensation_percentage' | translate}} (%)"
+        [data]="ingredient.formula.compensation_percentage"
+      ></app-data-item>
+      <app-data-item
+        [title]="'ingredients.proportion_factor.name' | translate"
+        [data]="getProportionFactor()"
+      ></app-data-item>
+      <app-divider></app-divider>
+      <ion-row>
+        <ion-col class="no-padding">
+          <app-show-hide-content
+            (click)="showIngredients = !showIngredients"
+            [show]="showIngredients"
+            [title]="'ingredients.name' | translate"
           >
-          <p class="value">{{ingredient.hydration}}</p>
-        </ion-item>
-        <ion-item class="input-item">
-          <ion-label color="primary"
-            >{{'ingredients.is_flour' | translate}}</ion-label
+          </app-show-hide-content>
+          <app-ingredients-list
+            *ngIf="showIngredients"
+            [ingredients]="ingredient.formula.ingredients"
+            [bakers_percentage]="0"
           >
-          <ion-checkbox
-            class="ingredient-is-flour"
-            color="primary"
-            [checked]="ingredient.is_flour"
-            disabled="true"
+          </app-ingredients-list>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="no-padding">
+          <app-show-hide-content
+            (click)="showMixing = !showMixing"
+            [show]="showMixing"
+            [title]="'formulas.mixing_order' | translate"
           >
-          </ion-checkbox>
-        </ion-item>
-        <ion-item class="input-item">
-          <ion-label color="primary" position="floating" class="label"
-            >{{'ingredients.cost' | translate}}
-            ({{currency}}/{{'ingredients.grams' | translate}})
-          </ion-label>
-          <p class="value">{{ingredient.cost}}</p>
-        </ion-item>
-      </span>
-      <span *ngIf="type == 'compound'">
-        <ion-item
-          class="input-item"
-          *ngIf="ingredient.formula.suggested_values"
-        >
-          <ion-label color="primary" position="floating" class="label"
-            >{{'ingredients.suggested_values' | translate}} (%)</ion-label
-          >
-          <p class="value">
-            {{ingredient.formula.suggested_values.min}}
-            <span
-              *ngIf="ingredient.formula.suggested_values.min && ingredient.formula.suggested_values.max"
-              >- </span
-            >{{ingredient.formula.suggested_values.max}}
-          </p>
-        </ion-item>
-        <ion-item class="input-item">
-          <ion-label color="primary" position="floating" class="label"
-            >{{'ingredients.compensation_percentage' | translate}}
-            (%)</ion-label
-          >
-          <p class="value">{{ingredient.formula.compensation_percentage}}</p>
-        </ion-item>
-        <ion-item class="input-item">
-          <ion-label color="primary" position="floating" class="label"
-            >{{'ingredients.proportion_factor.name' | translate}}</ion-label
-          >
-          <p
-            class="value"
-            *ngIf="ingredient.formula.proportion_factor.factor == 'dough'"
-          >
-            {{'ingredients.proportion_factor.dough' | translate}}
-          </p>
-          <p
-            class="value"
-            *ngIf="ingredient.formula.proportion_factor.factor == 'flour'"
-          >
-            {{'ingredients.proportion_factor.flour' | translate}}
-          </p>
-        </ion-item>
-        <ion-row class="steps-list">
-          <ion-col>
-            <app-show-hide-content
-              (click)="showIngredients = !showIngredients"
-              [show]="showIngredients"
-              [title]="'ingredients.name' | translate"
-            >
-            </app-show-hide-content>
-            <app-ingredients-list
-              *ngIf="showIngredients"
-              [ingredients]="ingredient.formula.ingredients"
-              [bakers_percentage]="0"
-            >
-            </app-ingredients-list>
-          </ion-col>
-        </ion-row>
-        <ion-row class="steps-list">
-          <ion-col>
-            <app-show-hide-content
-              (click)="showMixing = !showMixing"
-              [show]="showMixing"
-              [title]="'formulas.mixing_order' | translate"
-            >
-            </app-show-hide-content>
-            <app-mixing-steps
-              *ngIf="showMixing"
-              [steps]="ingredient.formula.mixing"
-            ></app-mixing-steps>
-          </ion-col>
-        </ion-row>
-      </span>
-    </ion-list>
-  </section>
+          </app-show-hide-content>
+          <app-mixing-steps
+            *ngIf="showMixing"
+            [steps]="ingredient.formula.mixing"
+          ></app-mixing-steps>
+        </ion-col>
+      </ion-row>
+    </span>
+  </ion-list>
 </ion-content>

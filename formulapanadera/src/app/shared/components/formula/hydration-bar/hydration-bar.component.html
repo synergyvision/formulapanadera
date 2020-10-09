@@ -1,13 +1,15 @@
-<ion-row>
-  <ion-col size="12" class="hydration-bar-col">
-    <p class="hydration-legend">{{ breadType() }} ({{ hydration * 100 }}%)</p>
-    <ion-progress-bar
-      class="hydration-bar"
-      [value]="hydration"
-    ></ion-progress-bar>
-    <p class="hydration-percentage">
-      <span>0%</span>
-      <span>100%</span>
-    </p>
-  </ion-col>
-</ion-row>
+<ion-item lines="full" class="hydration-item">
+  <ion-row class="hydration-bar-row">
+    <ion-col size="12" class="hydration-bar-col">
+      <p class="hydration-legend">{{ breadType() }} ({{ hydration * 100 }}%)</p>
+      <ion-progress-bar
+        class="hydration-bar"
+        [value]="hydration"
+      ></ion-progress-bar>
+      <p class="hydration-percentage">
+        <span>0%</span>
+        <span>100%</span>
+      </p>
+    </ion-col>
+  </ion-row>
+</ion-item>

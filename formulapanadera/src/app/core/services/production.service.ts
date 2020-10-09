@@ -2,20 +2,26 @@ import { Injectable } from "@angular/core";
 import {
   FormulaPresentModel,
   ProductionModel,
+  ProductionStepModel,
 } from "../models/production.model";
 import { IngredientPercentageModel } from "../models/formula.model";
 import { DECIMALS } from "src/app/config/formats";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { FormulaService } from "./formula.service";
+import { OVEN_STEP } from "src/app/config/formula";
+import { FormatNumberService } from "./format-number.service";
 
 @Injectable()
 export class ProductionService {
-  constructor(private formulaService: FormulaService) {}
+  constructor(
+    private formulaService: FormulaService,
+    private formatNumberService: FormatNumberService
+  ) {}
 
   /*
-  Production filters
+    Production filters
   */
-  searchProductionsByCost(
+  public searchProductionsByCost(
     lower: number,
     upper: number,
     productions: ProductionModel[] & ShellModel
@@ -35,7 +41,7 @@ export class ProductionService {
   }
 
   /*
-  Production calculations
+    Production calculations
   */
   public calculateTotalUnits(formulas: Array<FormulaPresentModel>): number {
     let units: number = 0;
@@ -50,7 +56,9 @@ export class ProductionService {
     formulas.forEach((data) => {
       cost = cost + Number(data.total_cost);
     });
-    return cost;
+    return Number(
+      this.formatNumberService.formatNumberDecimals(cost, DECIMALS.cost)
+    );
   }
 
   public calculateProductionCost(production: ProductionModel): number {
@@ -106,5 +114,20 @@ export class ProductionService {
       item.percentage = Number(item.percentage.toFixed(DECIMALS.formula_grams));
     });
     return ingredients;
+  }
+
+  public calculateTimeBeforeOven(steps: Array<ProductionStepModel>): number {
+    let time: number = 0;
+    for (let index = 0; index < OVEN_STEP - 1; index++) {
+      if (steps[index].status !== "DONE") {
+        time = time + steps[index].step.time;
+      }
+    }
+    return time;
+  }
+
+  public calculateTimeAfterOven(steps: Array<ProductionStepModel>): number {
+    let time_before: number = this.calculateTimeBeforeOven(steps);
+    return time_before + steps[OVEN_STEP - 1].step.time;
   }
 }

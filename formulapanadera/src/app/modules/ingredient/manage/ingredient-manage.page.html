@@ -4,10 +4,11 @@
   (ngSubmit)="sendIngredient()"
 >
   <ion-header>
-    <ion-toolbar color="secondary">
+    <ion-toolbar color="primary">
       <ion-buttons slot="start">
         <ion-back-button
           [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.ingredient.main"
+          mode="md"
         ></ion-back-button>
       </ion-buttons>
       <ion-title *ngIf="!update">
@@ -20,251 +21,276 @@
   </ion-header>
 
   <ion-content class="manage-ingredient-content">
-    <section class="ingredient-details-fields fields-section">
-      <ion-list class="inputs-list" lines="full">
-        <ion-item class="input-item">
-          <ion-label color="primary" position="floating"
-            >{{'ingredients.ingredient_name' | translate}}</ion-label
-          >
-          <ion-input
-            type="text"
-            formControlName="name"
-            class="ingredient-name"
-            required
-          ></ion-input>
-        </ion-item>
-        <ion-select
-          [value]="type"
-          class="type-selector"
-          (ionChange)="changeType($event)"
+    <ion-list class="inputs-list" lines="full">
+      <ion-item class="input-item">
+        <ion-label color="primary" position="stacked"
+          >{{'ingredients.ingredient_name' | translate}}</ion-label
         >
-          <ion-select-option value="simple"
-            >{{'ingredients.type.simple' | translate}}</ion-select-option
-          >
-          <ion-select-option value="compound"
-            >{{'ingredients.type.compound' | translate}}</ion-select-option
-          >
-        </ion-select>
-        <span *ngIf="type == 'simple'">
-          <ion-item class="input-item">
-            <ion-label color="primary" position="floating"
-              >{{'ingredients.hydration' | translate}} (%)</ion-label
-            >
-            <ion-input
-              type="number"
-              inputmode="numeric"
-              step="0.1"
-              min="0"
-              max="100"
-              formControlName="hydration"
-              class="ingredient-hydration"
-              (ionBlur)="formatNumberPercentage(manageIngredientForm.value.hydration)"
-              required
-            >
-            </ion-input>
-          </ion-item>
+        <ion-input
+          type="text"
+          formControlName="name"
+          class="ingredient-name"
+          required
+        ></ion-input>
+      </ion-item>
+
+      <ion-row *ngIf="!update || user.email === ingredient.creator">
+        <ion-col class="no-padding">
           <ion-item class="input-item">
             <ion-label color="primary"
-              >{{'ingredients.is_flour' | translate}}</ion-label
+              >{{'ingredients.can_be_modified' | translate}}</ion-label
             >
             <ion-checkbox
-              class="ingredient-is-flour"
+              class="ingredient-is-modificable"
               color="primary"
-              formControlName="is_flour"
-              (ionChange)="changeFlourIngredient()"
+              [(ngModel)]="public"
+              [ngModelOptions]="{standalone: true}"
             >
             </ion-checkbox>
           </ion-item>
-          <ion-item class="input-item">
-            <ion-label color="primary" position="floating"
-              >{{'ingredients.cost' | translate}}
-              ({{currency}}/{{'ingredients.grams' | translate}})
-            </ion-label>
-            <ion-input
-              type="number"
-              inputmode="numeric"
-              min="0"
-              formControlName="cost"
-              class="ingredient-cost"
-              step="0.01"
-              required
-              (ionBlur)="formatNumberDecimals(manageIngredientForm.value.cost)"
-            ></ion-input>
-          </ion-item>
-        </span>
-        <span *ngIf="type == 'compound'">
-          <ion-item class="input-item">
-            <ion-label color="primary" position="floating"
-              >{{'ingredients.suggested_values' | translate}} (%)</ion-label
-            >
-            <ion-row
-              ><ion-col>
-                <ion-item>
-                  <ion-label color="primary" position="floating"
-                    >{{'formulas.range.min' | translate}}</ion-label
-                  >
-                  <ion-input
-                    type="number"
-                    inputmode="numeric"
-                    [(ngModel)]="ingredient.formula.suggested_values.min"
-                    [ngModelOptions]="{standalone: true}"
-                    (ionBlur)="formatSuggestedValues('min', ingredient.formula.suggested_values.min)"
-                  ></ion-input>
-                </ion-item>
-              </ion-col>
-              <ion-col>
-                <ion-item>
-                  <ion-label color="primary" position="floating"
-                    >{{'formulas.range.max' | translate}}</ion-label
-                  >
-                  <ion-input
-                    type="number"
-                    inputmode="numeric"
-                    [(ngModel)]="ingredient.formula.suggested_values.max"
-                    [ngModelOptions]="{standalone: true}"
-                    (ionBlur)="formatSuggestedValues('max', ingredient.formula.suggested_values.max)"
-                  ></ion-input>
-                </ion-item> </ion-col></ion-row
-          ></ion-item>
-          <ion-item class="input-item">
-            <ion-label color="primary" position="floating"
-              >{{'ingredients.compensation_percentage' | translate}}
-              (%)</ion-label
-            >
-            <ion-input
-              type="number"
-              inputmode="numeric"
-              step="0.1"
-              min="0"
-              max="100"
-              class="ingredient-compensation"
-              [(ngModel)]="ingredient.formula.compensation_percentage"
-              [ngModelOptions]="{standalone: true}"
-              (ionBlur)="formatPercentage()"
-              required
-            >
-            </ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label
-              >{{'ingredients.proportion_factor.name' | translate}}</ion-label
-            >
-            <ion-select
-              [(ngModel)]="ingredient.formula.proportion_factor.factor"
-              [ngModelOptions]="{standalone: true}"
-              class="proportion-selector"
-              (ionChange)="changeProportionFactor()"
-            >
-              <ion-select-option value="dough"
-                >{{'ingredients.proportion_factor.dough' |
-                translate}}</ion-select-option
-              >
-              <ion-select-option value="flour"
-                >{{'ingredients.proportion_factor.flour' |
-                translate}}</ion-select-option
-              >
-              <ion-select-option value="ingredient"
-                >{{'ingredients.proportion_factor.ingredient' |
-                translate}}</ion-select-option
-              >
-            </ion-select>
-          </ion-item>
-          <ion-item *ngIf="ingredient.formula.proportion_factor.ingredient">
-            <ion-row class="ingredient-item-wrapper">
-              <ion-col size="12" class="ingredients-wrapper">
-                <ion-row>
-                  <ion-col>
-                    <h2 class="ingredients-name">
-                      {{ingredient.formula.proportion_factor.ingredient.name}}
-                    </h2>
-                  </ion-col>
-                </ion-row>
-              </ion-col>
-            </ion-row>
-          </ion-item>
+        </ion-col>
+      </ion-row>
 
-          <ion-card>
-            <ion-card-header>
+      <ion-select
+        [value]="type"
+        class="type-selector"
+        (ionChange)="changeType($event)"
+      >
+        <ion-select-option value="simple"
+          >{{'ingredients.type.simple' | translate}}</ion-select-option
+        >
+        <ion-select-option value="compound"
+          >{{'ingredients.type.compound' | translate}}</ion-select-option
+        >
+      </ion-select>
+
+      <app-divider></app-divider>
+
+      <span *ngIf="type == 'simple'">
+        <ion-item class="input-item">
+          <ion-label color="primary" position="stacked"
+            >{{'ingredients.hydration' | translate}} (%)</ion-label
+          >
+          <ion-input
+            type="number"
+            inputmode="numeric"
+            step="0.1"
+            min="0"
+            max="100"
+            formControlName="hydration"
+            class="ingredient-hydration"
+            (ionBlur)="formatNumberPercentage(manageIngredientForm.value.hydration)"
+            required
+          >
+          </ion-input>
+        </ion-item>
+        <ion-item class="input-item">
+          <ion-label color="primary"
+            >{{'ingredients.is_flour' | translate}}</ion-label
+          >
+          <ion-checkbox
+            class="ingredient-is-flour"
+            color="primary"
+            formControlName="is_flour"
+            (ionChange)="changeFlourIngredient()"
+          >
+          </ion-checkbox>
+        </ion-item>
+        <ion-item class="input-item">
+          <ion-label color="primary" position="stacked"
+            >{{'ingredients.cost' | translate}}
+            ({{currency}}/{{'ingredients.grams' | translate}})
+          </ion-label>
+          <ion-input
+            type="number"
+            inputmode="numeric"
+            min="0"
+            formControlName="cost"
+            class="ingredient-cost"
+            step="0.01"
+            required
+            (ionBlur)="formatNumberDecimals(manageIngredientForm.value.cost)"
+          ></ion-input>
+        </ion-item>
+      </span>
+      <span *ngIf="type == 'compound'">
+        <ion-item class="input-item">
+          <ion-label color="primary" position="floating"
+            >{{'ingredients.suggested_values' | translate}} (%)</ion-label
+          >
+          <ion-row
+            ><ion-col>
               <ion-item>
-                <ion-label class="card-title">
-                  {{'ingredients.name' | translate}}
-                </ion-label>
-
-                <ion-button
-                  size="small"
-                  (click)="pickIngredient()"
-                  class="pick-ingredient"
+                <ion-label color="primary" position="floating"
+                  >{{'formulas.range.min' | translate}}</ion-label
                 >
-                  <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
-                </ion-button>
+                <ion-input
+                  type="number"
+                  inputmode="numeric"
+                  [(ngModel)]="ingredient.formula.suggested_values.min"
+                  [ngModelOptions]="{standalone: true}"
+                  (ionBlur)="formatSuggestedValues('min', ingredient.formula.suggested_values.min)"
+                ></ion-input>
               </ion-item>
-            </ion-card-header>
-            <ion-list lines="full" class="ingredients-list">
-              <ion-item
-                *ngFor="let item of ingredient.formula.ingredients"
-                class="ingredient-item"
-              >
-                <ion-row class="ingredient-item-wrapper">
-                  <ion-col size="7" class="ingredients-wrapper">
-                    <ion-row>
-                      <ion-col>
-                        <h2 class="ingredients-name">
-                          {{item.ingredient.name}}
-                        </h2>
-                      </ion-col>
-                    </ion-row>
-                  </ion-col>
-                  <ion-col size="4">
-                    <ion-item>
-                      <ion-input
-                        class="ingredient-percentage"
-                        [(ngModel)]="item.percentage"
-                        [ngModelOptions]="{standalone: true}"
-                        type="number"
-                        inputmode="numeric"
-                        (ionBlur)="formatDecimals(item)"
-                      ></ion-input>
-                    </ion-item>
-                  </ion-col>
-                  <ion-col size="1">
-                    <p class="ingredient-percentage">%</p>
-                  </ion-col>
-                </ion-row>
-                <ion-icon
-                  [name]="ICONS.close"
-                  class="delete-step"
-                  slot="end"
-                  color="danger"
-                  button
-                  (click)="deleteSelectedIngredient(item)"
-                ></ion-icon>
-              </ion-item>
-            </ion-list>
-          </ion-card>
-          <ion-card>
-            <ion-card-header>
+            </ion-col>
+            <ion-col>
               <ion-item>
-                <ion-label class="card-title">
-                  {{'formulas.mixing_order' | translate}}
-                </ion-label>
-
-                <ion-button
-                  size="small"
-                  (click)="mixIngredients()"
-                  class="mix-ingredient"
-                  [disabled]="!ingredient.formula.ingredients"
+                <ion-label color="primary" position="floating"
+                  >{{'formulas.range.max' | translate}}</ion-label
                 >
-                  <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
-                </ion-button>
-              </ion-item>
-            </ion-card-header>
-            <app-mixing-steps
-              [steps]="ingredient.formula.mixing"
-            ></app-mixing-steps>
-          </ion-card>
-        </span>
-      </ion-list>
-    </section>
+                <ion-input
+                  type="number"
+                  inputmode="numeric"
+                  [(ngModel)]="ingredient.formula.suggested_values.max"
+                  [ngModelOptions]="{standalone: true}"
+                  (ionBlur)="formatSuggestedValues('max', ingredient.formula.suggested_values.max)"
+                ></ion-input>
+              </ion-item> </ion-col></ion-row
+        ></ion-item>
+        <ion-item class="input-item">
+          <ion-label color="primary" position="floating"
+            >{{'ingredients.compensation_percentage' | translate}}
+            (%)</ion-label
+          >
+          <ion-input
+            type="number"
+            inputmode="numeric"
+            step="0.1"
+            min="0"
+            max="100"
+            class="ingredient-compensation"
+            [(ngModel)]="ingredient.formula.compensation_percentage"
+            [ngModelOptions]="{standalone: true}"
+            (ionBlur)="formatPercentage()"
+            required
+          >
+          </ion-input>
+        </ion-item>
+        <ion-item class="input-item">
+          <ion-label class="proportion-label"
+            >{{'ingredients.proportion_factor.name' | translate}}</ion-label
+          >
+          <ion-select
+            [(ngModel)]="ingredient.formula.proportion_factor.factor"
+            [ngModelOptions]="{standalone: true}"
+            class="proportion-selector"
+            (ionChange)="changeProportionFactor()"
+          >
+            <ion-select-option value="dough"
+              >{{'ingredients.proportion_factor.dough' |
+              translate}}</ion-select-option
+            >
+            <ion-select-option value="flour"
+              >{{'ingredients.proportion_factor.flour' |
+              translate}}</ion-select-option
+            >
+            <ion-select-option value="ingredient"
+              >{{'ingredients.proportion_factor.ingredient' |
+              translate}}</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+        <ion-item
+          *ngIf="ingredient.formula.proportion_factor.ingredient"
+          class="input-item"
+        >
+          <ion-row class="ingredient-item-wrapper">
+            <ion-col size="12" class="ingredients-wrapper">
+              <ion-row>
+                <ion-col>
+                  <h2 class="ingredients-name">
+                    {{ingredient.formula.proportion_factor.ingredient.name}}
+                  </h2>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+
+        <app-divider></app-divider>
+
+        <ion-card class="card">
+          <ion-card-header class="card-header">
+            <ion-item class="input-item">
+              <ion-label class="card-title">
+                {{'ingredients.name' | translate}}
+              </ion-label>
+
+              <ion-button
+                size="small"
+                (click)="pickIngredient()"
+                class="pick-ingredient"
+              >
+                <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-card-header>
+          <ion-list lines="full" class="ingredients-list">
+            <ion-item
+              *ngFor="let item of ingredient.formula.ingredients"
+              class="input-item"
+            >
+              <ion-row class="ingredient-item-wrapper">
+                <ion-col size="7" class="ingredients-wrapper">
+                  <ion-row>
+                    <ion-col>
+                      <h2 class="ingredients-name">{{item.ingredient.name}}</h2>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-item class="ingredient-input">
+                    <ion-input
+                      class="ingredient-percentage"
+                      [(ngModel)]="item.percentage"
+                      [ngModelOptions]="{standalone: true}"
+                      type="number"
+                      inputmode="numeric"
+                      (ionBlur)="formatDecimals(item)"
+                    ></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="1">
+                  <p class="ingredient-percentage">%</p>
+                </ion-col>
+              </ion-row>
+              <ion-icon
+                [name]="ICONS.close"
+                class="delete-step"
+                slot="end"
+                color="danger"
+                button
+                (click)="deleteSelectedIngredient(item)"
+              ></ion-icon>
+            </ion-item>
+          </ion-list>
+        </ion-card>
+
+        <app-divider></app-divider>
+
+        <ion-card class="card">
+          <ion-card-header class="card-header">
+            <ion-item class="input-item">
+              <ion-label class="card-title">
+                {{'formulas.mixing_order' | translate}}
+              </ion-label>
+
+              <ion-button
+                size="small"
+                (click)="mixIngredients()"
+                class="mix-ingredient"
+                [disabled]="!ingredient.formula.ingredients"
+              >
+                <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-card-header>
+          <app-mixing-steps
+            [steps]="ingredient.formula.mixing"
+          ></app-mixing-steps>
+        </ion-card>
+      </span>
+    </ion-list>
   </ion-content>
 
   <ion-footer>
@@ -289,7 +315,6 @@
           color="danger"
           fill="solid"
           (click)="deleteIngredient()"
-          [disabled]="!ingredient.can_be_deleted"
           >{{ 'action.delete' | translate }}
         </ion-button>
       </ion-col>

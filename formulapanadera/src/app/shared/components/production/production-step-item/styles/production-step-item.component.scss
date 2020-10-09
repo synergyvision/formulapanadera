@@ -1,0 +1,84 @@
+.background-gray {
+  --background: rgba(221, 221, 221, 0.322) !important;
+}
+
+.step-item {
+  color: var(--ion-color-secondary);
+  --padding-start: var(--app-narrow-margin);
+
+  .step-action-icon {
+    margin-right: 12px;
+    color: var(--ion-color-primary);
+    margin-left: -2px;
+  }
+
+  .blocked {
+    color: var(--ion-color-secondary);
+  }
+
+  .step-item-wrapper {
+    --ion-grid-column-padding: 0px;
+    padding: 10px 0 10px 0;
+    width: 100%;
+    align-items: center;
+
+    .step-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding-left: 0;
+
+      .step-name {
+        margin: 0px;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 0.2px;
+        color: var(--ion-color-secondary);
+      }
+
+      .details-col {
+        align-self: flex-end;
+
+        .step-formula {
+          font-size: 12px;
+          margin: 0px 0 5px 0;
+        }
+
+        .step-description {
+          font-size: 15px;
+          margin: 0px;
+
+          .details-icon {
+            color: var(--ion-color-dark) !important;
+            margin-bottom: -2px;
+            margin-right: 2px;
+          }
+        }
+      }
+
+      .progress-bar {
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .description-icon {
+    margin: 0;
+  }
+}
+
+.step-danger {
+  animation-name: dangerAnimation;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes dangerAnimation {
+  0% {
+    color: var(--ion-color-secondary);
+  }
+  100% {
+    color: var(--ion-color-primary);
+  }
+}

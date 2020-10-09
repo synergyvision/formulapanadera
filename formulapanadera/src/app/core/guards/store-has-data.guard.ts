@@ -10,6 +10,9 @@ export class StateHasDataGuard implements CanLoad {
     if (state) {
       return true;
     } else {
+      this.router.navigateByUrl(
+        this.router.url.substring(0, this.router.url.lastIndexOf("/"))
+      );
       return false;
     }
   }

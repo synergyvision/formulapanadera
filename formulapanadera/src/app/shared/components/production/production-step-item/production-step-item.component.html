@@ -1,0 +1,58 @@
+<ion-item class="step-item" [ngClass]="{ 'background-gray': even }">
+  <ion-icon
+    *ngIf="step.time"
+    class="step-action-icon"
+    [ngClass]="{ blocked: blocked }"
+    [name]="stepIcon(step)"
+    slot="start"
+    button
+    (click)="changeStepStatus(step)"
+  ></ion-icon>
+  <ion-row class="step-item-wrapper">
+    <ion-col class="step-wrapper">
+      <ion-row>
+        <ion-col>
+          <h2 class="step-name" [ngClass]="{ 'step-danger': !stepOnTime() }">
+            {{ step.step.name }}
+          </h2>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" class="details-col">
+          <p class="step-formula">{{ step.formula.name }}</p>
+          <p class="step-description" *ngIf="step.time">
+            <ion-icon class="details-icon" [name]="ICONS.alarm"></ion-icon
+            >{{ formatTime(step.time.start) }} - {{ formatTime(step.time.end) }}
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row
+        *ngIf="
+          step.time &&
+          (step.step.number == OVEN_STEP ||
+            step.step.number == FERMENTATION_STEP)
+        "
+      >
+        <ion-col size="12">
+          <ion-progress-bar
+            class="progress-bar"
+            [value]="stepProgress() / 100"
+          ></ion-progress-bar>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+  <ion-icon
+    *ngIf="step.time"
+    class="description-icon"
+    [name]="show_description ? ICONS.arrow_up : ICONS.arrow_down"
+    slot="end"
+    button
+    (click)="showDescription()"
+  ></ion-icon>
+</ion-item>
+<app-formula-step
+  *ngIf="show_description"
+  [details]="true"
+  [step]="step.step"
+></app-formula-step>

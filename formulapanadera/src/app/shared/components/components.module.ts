@@ -19,6 +19,10 @@ import { ProductionIngredientsComponent } from "./production/production-ingredie
 import { ProductionItemComponent } from "./production/production-item/production-item.component";
 import { FormulasIngredientsListComponent } from "./production/formulas-ingredients-list/formulas-ingredients-list.component";
 import { TitleComponent } from "./general/title/title.component";
+import { FormulaTimeTableComponent } from "./production/formula-time-table/formula-time-table.component";
+import { ProductionStepItemComponent } from "./production/production-step-item/production-step-item.component";
+import { DataItemComponent } from "./general/data-item/data-item.component";
+import { DividerComponent } from "./general/divider/divider.component";
 
 @NgModule({
   imports: [
@@ -30,6 +34,8 @@ import { TitleComponent } from "./general/title/title.component";
   ],
   declarations: [
     TitleComponent,
+    DataItemComponent,
+    DividerComponent,
     ShowHidePasswordComponent,
     ShowHideContentComponent,
     IngredientItemComponent,
@@ -37,14 +43,18 @@ import { TitleComponent } from "./general/title/title.component";
     HydrationBarComponent,
     IngredientsListComponent,
     FormulasListComponent,
+    FormulaTimeTableComponent,
     FormulaStepComponent,
     MixingStepsComponent,
     ProductionItemComponent,
+    ProductionStepItemComponent,
     ProductionIngredientsComponent,
     FormulasIngredientsListComponent,
   ],
   exports: [
     TitleComponent,
+    DataItemComponent,
+    DividerComponent,
     ShowHidePasswordComponent,
     ShowHideContentComponent,
     IngredientItemComponent,
@@ -52,9 +62,11 @@ import { TitleComponent } from "./general/title/title.component";
     HydrationBarComponent,
     IngredientsListComponent,
     FormulasListComponent,
+    FormulaTimeTableComponent,
     FormulaStepComponent,
     MixingStepsComponent,
     ProductionItemComponent,
+    ProductionStepItemComponent,
     ProductionIngredientsComponent,
     FormulasIngredientsListComponent,
     ShellModule,

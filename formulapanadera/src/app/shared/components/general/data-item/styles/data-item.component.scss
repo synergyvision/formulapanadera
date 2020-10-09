@@ -1,0 +1,39 @@
+:host {
+  --title-size: 16px;
+  --description-size: 12px;
+}
+
+.info-item {
+  color: var(--ion-color-medium);
+  padding: 0;
+  --inner-padding-top: 10px;
+  --inner-padding-bottom: 10px;
+  --padding-start: var(--app-narrow-margin);
+  font-size: var(--title-size);
+
+  .info-item-wrapper {
+    --ion-grid-column-padding: 0px;
+    width: 100%;
+    align-items: center;
+
+    .details-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+      .details-name {
+        margin-top: 0px;
+        margin-bottom: 5px;
+        font-size: var(--description-size);
+        font-weight: 400;
+      }
+
+      .details-description {
+        color: var(--ion-color-primary);
+        font-size: var(--title-size);
+
+        margin: 0px;
+      }
+    }
+  }
+}

@@ -32,6 +32,7 @@ export const APP_URL = {
           listing: "",
           details: "details",
           management: "manage",
+          start: "start",
         },
       },
       formula: {

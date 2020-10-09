@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
-import { CURRENCY } from 'src/app/config/configuration';
+import { CURRENCY } from "src/app/config/configuration";
+import { ICONS } from "src/app/config/icons";
 import { IngredientModel } from "src/app/core/models/ingredient.model";
 
 @Component({
@@ -14,6 +15,7 @@ export class IngredientItemComponent {
   @Input() selected: boolean = false;
 
   currency = CURRENCY;
+  ICONS = ICONS;
 
   constructor() {}
 }

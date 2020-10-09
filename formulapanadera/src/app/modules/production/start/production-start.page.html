@@ -1,0 +1,138 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button
+        (click)="productionDetails()"
+        mode="md"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title> {{'production.name' | translate}} </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="start-production-content">
+  <!-- Title and play button -->
+  <ion-row>
+    <ion-col class="list-col" size="9">
+      <app-title [title]="production.name"></app-title>
+    </ion-col>
+    <ion-col class="list-col action-button-col" size="3">
+      <ion-icon
+        [name]="in_process ? ICONS.production_stop : ICONS.production_start"
+        button
+        class="action-button"
+        (click)="changeProcessStatus()"
+      ></ion-icon>
+    </ion-col>
+  </ion-row>
+  <!-- Time -->
+  <ion-row>
+    <ion-col class="list-col" size="12">
+      <ion-item class="time-item" lines="full">
+        <ion-row class="time-row">
+          <ion-col size="12" class="list-col">
+            <b>{{ 'production.time.current' | translate}}</b>
+            <br />
+            {{currentTime()}}
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <!-- Range picker -->
+  <ion-item *ngIf="!in_process" lines="full" class="input-item">
+    <ion-checkbox [(ngModel)]="specify_time" slot="start"></ion-checkbox>
+    <ion-label>{{'production.invalid_steps.verify'| translate}}</ion-label>
+  </ion-item>
+  <span *ngIf="!in_process && specify_time">
+    <ion-item lines="full" class="input-item">
+      <ion-label>{{ 'production.time.start' | translate}}</ion-label>
+      <ion-datetime
+        [cancelText]="'action.cancel'|translate"
+        [doneText]="'action.ok'|translate"
+        displayFormat="HH:mm"
+        (ionChange)="laboralTimeChanged($event, 'start')"
+        mode="md"
+      ></ion-datetime>
+    </ion-item>
+    <ion-item lines="full" class="input-item">
+      <ion-label>{{ 'production.time.end' | translate}}</ion-label>
+      <ion-datetime
+        [cancelText]="'action.cancel'|translate"
+        [doneText]="'action.ok'|translate"
+        displayFormat="HH:mm"
+        (ionChange)="laboralTimeChanged($event, 'end')"
+        mode="md"
+      ></ion-datetime>
+    </ion-item>
+  </span>
+  <!-- Production times -->
+  <ion-row *ngIf="in_process"
+    ><ion-col class="list-col" size="12">
+      <ion-item class="time-item">
+        <ion-row class="time-row">
+          <ion-col size="6" class="list-col"
+            ><b>{{ 'production.time.start' | translate}}</b><br />
+            {{productionStartTime()}}</ion-col
+          >
+          <ion-col size="6" class="list-col">
+            <span>
+              <b>{{ 'production.time.end' | translate}}</b> <br />
+              {{productionEndTime()}}</span
+            >
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-col></ion-row
+  >
+  <!-- Segment -->
+  <ion-segment
+    [value]="segment"
+    (ionChange)="segmentChanged($event)"
+    class="segment"
+  >
+    <ion-segment-button value="ingredients" class="segment-button">
+      <ion-label>{{'ingredients.name' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="steps" class="segment-button">
+      <ion-label>{{'formulas.steps' | translate}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <!-- Ingredients content -->
+  <ion-row *ngIf="segment=='ingredients'" class="present-list">
+    <ion-col class="list-col">
+      <app-formulas-ingredients-list
+        [formulas]="formulas"
+        [highlight]="true"
+        [showMixing]="true"
+      ></app-formulas-ingredients-list>
+    </ion-col>
+  </ion-row>
+  <!-- Steps content -->
+  <ion-list lines="none" class="steps-list" *ngIf="segment=='steps'">
+    <app-production-step-item
+      *ngFor="let step of stepsFiltered(false); index as i"
+      [step]="step"
+      [even]="(i%2==0)"
+      [production_in_process]="production_in_process"
+      [original_production]="original_production"
+      [blocked]="stepBlocked(step)"
+    ></app-production-step-item>
+  </ion-list>
+  <ion-item-divider class="divider" *ngIf="stepsFiltered(true).length>0">
+    <ion-label class="divider-label"
+      >{{ "production.done" | translate }}</ion-label
+    >
+  </ion-item-divider>
+  <ion-list lines="none" class="steps-list" *ngIf="segment=='steps'">
+    <app-production-step-item
+      *ngFor="let step of stepsFiltered(true); index as i"
+      [step]="step"
+      [even]="(i%2==0)"
+      [production_in_process]="production_in_process"
+      [original_production]="original_production"
+      [blocked]="stepBlocked(step)"
+    >
+    </app-production-step-item>
+  </ion-list>
+</ion-content>

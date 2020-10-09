@@ -21,6 +21,9 @@ import { ProductionCRUDService } from "./services/firebase/production.service";
 import { UserStorageService } from "./services/storage/user.service";
 import { ProductionService } from "./services/production.service";
 import { ProductionStorageService } from "./services/storage/production.service";
+import { TimeService } from "./services/time.service";
+import { ProductionInProcessStorageService } from "./services/storage/production-in-process.service";
+import { ProductionInProcessService } from "./services/production-in-process.service";
 
 @NgModule({
   imports: [
@@ -36,13 +39,16 @@ import { ProductionStorageService } from "./services/storage/production.service"
   providers: [
     AuthService,
     FormatNumberService,
+    TimeService,
     FormulaService,
     FormulaCRUDService,
     IngredientService,
     IngredientCRUDService,
     ProductionService,
+    ProductionInProcessService,
     ProductionCRUDService,
     ProductionStorageService,
+    ProductionInProcessStorageService,
     LanguageService,
     UserStorageService,
   ],

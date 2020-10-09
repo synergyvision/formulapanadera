@@ -3,6 +3,10 @@
   --page-background: var(--app-background);
 }
 
+ion-back-button {
+  height: 0;
+}
+
 .signup-content {
   --background: var(--page-background);
   --padding-start: var(--page-margin);
@@ -24,19 +28,6 @@
       --padding-start: 0px;
       --padding-end: 0px;
       --inner-padding-end: 0px;
-    }
-  }
-
-  .error-container {
-    .error-message {
-      display: flex;
-      align-items: center;
-      color: var(--ion-color-danger);
-      font-size: 12px;
-
-      ion-icon {
-        padding-inline-end: calc(var(--page-margin) / 2);
-      }
     }
   }
 

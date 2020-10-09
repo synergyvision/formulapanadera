@@ -23,7 +23,7 @@
             class="ingredients-description ingredient-hydration"
             *ngIf="ingredient.hydration > 0"
           >
-            <ion-icon class="properties-icon" name="water"></ion-icon
+            <ion-icon class="properties-icon" [name]="ICONS.water"></ion-icon
             >{{ ingredient.hydration }}%
           </p>
           <p class="ingredients-description" *ngIf="ingredient.is_flour">

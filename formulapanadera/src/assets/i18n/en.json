@@ -10,6 +10,7 @@
     "update": "Update",
     "delete": "Delete",
     "delete_question": "Do you want to delete {{item}}?",
+    "sign_out_question": "Sign out?",
     "yes": "Yes",
     "no": "No"
   },
@@ -17,7 +18,16 @@
     "fullName": "Full name",
     "email": "Email",
     "password": "Password",
-    "confirm_password": "Confirm password"
+    "confirm_password": "Confirm password",
+    "actual_password": "Actual password"
+  },
+  "loading": "Please wait...",
+  "send": {
+    "success": "Successful action",
+    "error": "An error ocurred. Verify and try again",
+    "password_error": "Invalid password. Verify and try again",
+    "user_error": "Invalid user. Verify and try again",
+    "user_exists_error": "Email already in use. Verify and try again"
   },
   "credits": {
     "name": "Credits",
@@ -26,6 +36,9 @@
   },
   "auth": {
     "sign_up": "Sign up",
+    "sign_up_now": "Sign up",
+    "sign_up_question": "Don't have an account?",
+    "sign_up_link": "Sign up now",
     "sign_in": "Sign in",
     "account_question": "Already have an account?",
     "forgot_password": "Forgot password?",
@@ -56,6 +69,8 @@
     "description": "Description",
     "public": "Public",
     "can_clone": "Can be cloned",
+    "warming_time": "Oven warming time",
+    "manipulation_times": "Number of manipulations",
     "cost": {
       "name": "Cost",
       "unitary": "Unitary cost",
@@ -96,6 +111,7 @@
     "ingredient_name": "Name",
     "is_flour": "Is flour",
     "hydration": "Hydration",
+    "can_be_modified": "Modificable by other users",
     "cost": "Cost",
     "grams": "gr",
     "empty": "No ingredients found",
@@ -138,7 +154,29 @@
     "update": "Update production",
     "production_name": "Name",
     "details": "Details",
-    "empty": "No productions found"
+    "total": "Total",
+    "times": "Times",
+    "empty": "No productions found",
+    "done": "done",
+    "executing": "Production in process",
+    "time": {
+      "start": "Start",
+      "end": "Estimated completion",
+      "current": "Current time"
+    },
+    "warning": {
+      "name": "Warning",
+      "start": "We recommend starting this formula in the suggested order"
+    },
+    "invalid_steps": {
+      "verify": "Check working hours",
+      "name": "Invalid steps",
+      "text": "The following steps are outside the specified times, ¿Continue anyway?"
+    },
+    "oven": {
+      "start": "Start oven",
+      "change_temperature": "Change oven temperature"
+    }
   },
   "steps": {
     "1": "Mise en place",

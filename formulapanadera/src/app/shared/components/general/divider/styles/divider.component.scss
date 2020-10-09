@@ -1,0 +1,8 @@
+.app-divider {
+  --background: var(--page-background);
+  --padding-start: var(--app-narrow-margin);
+  color: var(--ion-color-medium);
+  font-weight: 400;
+  font-size: var(--title-size);
+  border-bottom: 1px solid lightgray;
+}

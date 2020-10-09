@@ -1,10 +1,10 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-icon slot="start" class="btn-med" name="list-outline"></ion-icon>
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.list"></ion-icon>
     <ion-title> {{'formulas.mixing_order' | translate}} </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="dismissModal()" class="create-ingredient">
-        <ion-icon slot="icon-only" name="close"></ion-icon>
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -16,7 +16,7 @@
       <ion-item-divider class="divider">
         <ion-label>{{'formulas.step' | translate}} {{i+1}}</ion-label>
         <ion-icon
-          name="close-outline"
+          [name]="ICONS.close"
           class="delete-step"
           slot="end"
           color="danger"
@@ -54,7 +54,7 @@
       </ion-item>
 
       <ion-item *ngIf="editable || mixStep.description">
-        <ion-label color="primary" position="floating"
+        <ion-label color="primary" position="stacked"
           >{{'formulas.description' | translate}}</ion-label
         >
         <ion-textarea
@@ -69,7 +69,7 @@
   </ion-list>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="editable">
     <ion-fab-button (click)="addStep()">
-      <ion-icon name="add"></ion-icon>
+      <ion-icon [name]="ICONS.add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

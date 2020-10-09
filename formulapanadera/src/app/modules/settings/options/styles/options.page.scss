@@ -1,12 +1,16 @@
+// Variables
+
 :host {
-  --page-margin: var(--app-narrow-margin);
+  --title-size: 16px;
+  --description-size: 12px;
+  --icon-size: 24px;
+  --page-background: var(--app-background);
 }
 
-.settings-list {
-  ion-icon {
-    padding-right: 16px;
-    color: var(--ion-color-primary);
-  }
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
 }
 
 .btn-med {
@@ -14,45 +18,26 @@
   margin: 0 0 0 10px;
 }
 
-ion-item-divider {
-  --background: var(--ion-color-light);
-  --padding-start: var(--page-margin);
-  color: var(--ion-color-medium);
-}
+.options-content {
+  --background: var(--page-background);
 
-.info-item {
-  color: var(--ion-color-medium);
-  padding: 5px 0 0 0;
-}
+  .settings-list {
+    padding: 0;
 
-.info-item-wrapper {
-  --ion-grid-column-padding: 0px;
+    ion-icon {
+      padding-right: 10px;
+      color: var(--ion-color-primary);
+      font-size: var(--icon-size);
+    }
 
-  width: 100%;
-  align-items: center;
-}
+    .option {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
 
-.details-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding-left: var(--page-margin);
-
-  .details-name {
-    margin-top: 0px;
-    margin-bottom: 5px;
-    font-size: 16px;
-    font-weight: 400;
-    letter-spacing: 0.2px;
-    color: var(--ion-color-primary);
+    ion-item {
+      --padding-start: var(--app-narrow-margin);
+      font-size: var(--title-size);
+    }
   }
-
-  .details-description {
-    font-size: 12px;
-    margin: 0px;
-  }
-}
-
-ion-list {
-  padding-top: 0;
 }

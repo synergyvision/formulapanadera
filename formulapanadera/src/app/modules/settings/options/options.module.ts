@@ -5,6 +5,7 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { TranslateModule } from "@ngx-translate/core";
 import { OptionsPage } from "./options.page";
+import { ComponentsModule } from "src/app/shared/components/components.module";
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
   imports: [
     IonicModule,
     CommonModule,
+    ComponentsModule,
     RouterModule.forChild(routes),
     TranslateModule,
   ],

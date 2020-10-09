@@ -23,7 +23,7 @@
             {{ formula.user.creator.name }}
           </p>
           <p class="formulas-description">
-            <ion-icon class="properties-icon" name="water"></ion-icon
+            <ion-icon class="properties-icon" [name]="ICONS.water"></ion-icon
             >{{ hydration() }}%
           </p>
         </ion-col>

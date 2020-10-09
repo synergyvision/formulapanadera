@@ -4,6 +4,8 @@ import {
   ModalController,
   IonRouterOutlet,
   AlertController,
+  LoadingController,
+  ToastController,
 } from "@ionic/angular";
 import {
   IngredientPercentageModel,
@@ -53,7 +55,9 @@ export class FormulaManagePage {
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
     private router: Router,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private loadingController: LoadingController,
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
@@ -202,7 +206,7 @@ export class FormulaManagePage {
   }
 
   async describeSteps() {
-    let steps = [];
+    let steps: Array<StepDetailsModel> = [];
     if (!this.formula.steps) {
       for (let i = 0; i < BAKERY_STEPS; i++) {
         steps.push({
@@ -211,6 +215,7 @@ export class FormulaManagePage {
           time: 0,
           temperature: null,
           description: "",
+          times: 1,
         });
       }
     } else {
@@ -246,7 +251,13 @@ export class FormulaManagePage {
     step.ingredients.splice(step.ingredients.indexOf(ingredient), 1);
   }
 
-  sendFormula() {
+  async sendFormula() {
+    const loading = await this.loadingController.create({
+      cssClass: "app-send-loading",
+      message: this.languageService.getTerm("loading"),
+    });
+    await loading.present();
+
     this.verifyUnit();
     this.verifyTemperature();
     this.formula.name = this.manageFormulaForm.value.name;
@@ -275,11 +286,19 @@ export class FormulaManagePage {
       } else {
         this.formula.user.owner = this.current_user.email;
       }
-      this.formulaCRUDService.updateFormula(this.formula).then(() => {
-        this.router.navigateByUrl(
-          APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-        );
-      });
+      this.formulaCRUDService
+        .updateFormula(this.formula)
+        .then(() => {
+          this.router.navigateByUrl(
+            APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+          );
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
     } else {
       this.formula.user = {
         owner: this.current_user.email,
@@ -296,11 +315,19 @@ export class FormulaManagePage {
         this.formula.user.owner = "";
         this.formula.user.cloned = false;
       }
-      this.formulaCRUDService.createFormula(this.formula).then(() => {
-        this.router.navigateByUrl(
-          APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-        );
-      });
+      this.formulaCRUDService
+        .createFormula(this.formula)
+        .then(() => {
+          this.router.navigateByUrl(
+            APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+          );
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
     }
   }
 
@@ -320,12 +347,26 @@ export class FormulaManagePage {
         {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
-          handler: () => {
-            this.formulaCRUDService.deleteFormula(this.formula.id).then(() => {
-              this.router.navigateByUrl(
-                APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-              );
+          handler: async () => {
+            const loading = await this.loadingController.create({
+              cssClass: "app-send-loading",
+              message: this.languageService.getTerm("loading"),
             });
+            await loading.present();
+
+            this.formulaCRUDService
+              .deleteFormula(this.formula.id)
+              .then(() => {
+                this.router.navigateByUrl(
+                  APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+                );
+              })
+              .catch(() => {
+                this.presentToast(false);
+              })
+              .finally(async () => {
+                await loading.dismiss();
+              });
           },
         },
       ],
@@ -372,5 +413,24 @@ export class FormulaManagePage {
       });
     }
     return valid;
+  }
+
+  async presentToast(success: boolean) {
+    const toast = await this.toastController.create({
+      message: success
+        ? this.languageService.getTerm("send.success")
+        : this.languageService.getTerm("send.error"),
+      color: "secondary",
+      duration: 5000,
+      position: "top",
+      buttons: [
+        {
+          icon: ICONS.close,
+          role: "cancel",
+          handler: () => {},
+        },
+      ],
+    });
+    toast.present();
   }
 }

@@ -2,10 +2,12 @@ import { Injectable } from "@angular/core";
 import {
   FormulaModel,
   IngredientPercentageModel,
+  StepDetailsModel,
 } from "../models/formula.model";
 
 import { DECIMALS } from "src/app/config/formats";
 import { ShellModel } from "src/app/shared/shell/shell.model";
+import { OVEN_STEP } from "src/app/config/formula";
 
 @Injectable()
 export class FormulaService {
@@ -383,5 +385,21 @@ export class FormulaService {
       }
     );
     return ingredients;
+  }
+
+  calculateTimeBeforeOven(steps: Array<StepDetailsModel>): number {
+    let time: number = 0;
+    for (let index = 0; index < OVEN_STEP - 1; index++) {
+      time = time + steps[index].time;
+    }
+    return time;
+  }
+
+  calculateTime(steps: Array<StepDetailsModel>): number {
+    let time: number = 0;
+    steps.forEach((step) => {
+      time = time + step.time;
+    });
+    return time;
   }
 }

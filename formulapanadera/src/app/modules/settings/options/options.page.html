@@ -7,31 +7,24 @@
 
 <ion-content class="options-content">
   <ion-list lines="full" class="settings-list">
-    <ion-item class="info-item">
-      <ion-row class="info-item-wrapper">
-        <ion-col class="details-wrapper">
-          <h2 class="details-name">{{ 'input.fullName' | translate }}</h2>
-          <p class="details-description">{{user.name}}</p>
-        </ion-col>
-      </ion-row> </ion-item
-    ><ion-item class="info-item">
-      <ion-row class="info-item-wrapper">
-        <ion-col class="details-wrapper">
-          <h2 class="details-name">{{ 'input.email' | translate }}</h2>
-          <p class="details-description">{{user.email}}</p>
-        </ion-col>
-      </ion-row>
-    </ion-item>
-    <ion-item-divider sticky>
-      <ion-label>{{ 'settings.name' | translate }}</ion-label>
-    </ion-item-divider>
+    <app-data-item
+      [title]="'input.fullName' | translate"
+      [data]="user.name"
+    ></app-data-item>
+    <app-data-item
+      [title]="'input.email' | translate"
+      [data]="user.email"
+    ></app-data-item>
+    <app-divider></app-divider>
     <ion-item
       button
       (click)="openLanguageChooser()"
       class="change-language-option"
     >
       <ion-icon [name]="ICONS.language"></ion-icon>
-      <ion-label>{{'settings.language.change' | translate}}</ion-label>
+      <ion-label class="option"
+        >{{'settings.language.change' | translate}}</ion-label
+      >
     </ion-item>
     <ion-item
       button
@@ -40,11 +33,13 @@
       class="change-password-option"
     >
       <ion-icon [name]="ICONS.change_password"></ion-icon>
-      <ion-label>{{'settings.password.change' | translate}}</ion-label>
+      <ion-label class="option"
+        >{{'settings.password.change' | translate}}</ion-label
+      >
     </ion-item>
     <ion-item button (click)="signOut()" class="sign-out-option">
       <ion-icon [name]="ICONS.sign_out"></ion-icon>
-      <ion-label>{{'settings.logout' | translate}}</ion-label>
+      <ion-label class="option">{{'settings.logout' | translate}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

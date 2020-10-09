@@ -1,5 +1,7 @@
 import { Component, Input } from "@angular/core";
+import { ICONS } from "src/app/config/icons";
 import { StepDetailsModel } from "src/app/core/models/formula.model";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 @Component({
   selector: "app-formula-step",
@@ -7,8 +9,17 @@ import { StepDetailsModel } from "src/app/core/models/formula.model";
   styleUrls: ["./styles/formula-step.component.scss"],
 })
 export class FormulaStepComponent {
-  @Input() step: StepDetailsModel;
-  @Input() temperatureUnit: string;
+  ICONS = ICONS;
 
-  constructor() {}
+  @Input() step: StepDetailsModel;
+  @Input() details: boolean = false;
+  @Input() temperatureUnit: string = "C";
+  @Input() read: boolean = true;
+
+  constructor(private formatNumberService: FormatNumberService) {}
+
+  fahrenheitTemperature(value) {
+    value = this.formatNumberService.fromCelsiusToFahrenheit(value);
+    return value;
+  }
 }

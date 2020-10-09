@@ -12,7 +12,6 @@ import {
 } from "src/app/core/models/formula.model";
 import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
-import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { ModifierModel, UserModel } from "src/app/core/models/user.model";
 import { DATE_FORMAT, DECIMALS } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
@@ -36,7 +35,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   formula: FormulaModel = new FormulaModel();
   formulaUnit = "%";
-  temperatureUnit = "C";
   units: number;
 
   bakers_percentage: string;
@@ -63,7 +61,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
     private languageService: LanguageService,
-    private formatNumberService: FormatNumberService,
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
     private toastController: ToastController,
@@ -71,24 +68,19 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private userStorageService: UserStorageService
   ) {
-    this.showIngredients = true;
+    this.showIngredients = false;
     this.showSubIngredients = true;
-    this.showMixing = true;
-    this.showSteps = true;
+    this.showMixing = false;
+    this.showSteps = false;
     this.state = this.router.getCurrentNavigation().extras.state;
   }
 
   async ngOnInit() {
-    if (this.state === undefined) {
-      this.router.navigateByUrl(
-        APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-      );
-    } else {
-      this.formula = this.state.formula;
-      this.units = this.formula.units;
-      this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
-      this.steps = JSON.parse(JSON.stringify(this.formula.steps));
-    }
+    this.formula = this.state.formula;
+    this.units = this.formula.units;
+    this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
+    this.steps = JSON.parse(JSON.stringify(this.formula.steps));
+
     this.user = await this.userStorageService.getUser();
   }
 
@@ -164,31 +156,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.ingredients = this.formulaService.sortIngredients(this.ingredients);
   }
 
-  //Change
-  changeTemperature(event: any) {
-    this.temperatureUnit = event.detail.value;
-    if (this.temperatureUnit == "F") {
-      this.steps.forEach((step) => {
-        if (step.temperature !== null) {
-          step.temperature.min = Number(
-            this.formatNumberService.fromCelsiusToFahrenheit(
-              step.temperature.min
-            )
-          );
-          if (step.temperature.max !== -1) {
-            step.temperature.max = Number(
-              this.formatNumberService.fromCelsiusToFahrenheit(
-                step.temperature.max
-              )
-            );
-          }
-        }
-      });
-    } else {
-      this.steps = JSON.parse(JSON.stringify(this.formula.steps));
-    }
-  }
-
   changeUnits(event: any) {
     if (event.detail.value > 0) {
       this.calculateFormula();
@@ -257,7 +224,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       // If not public or cloned
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
-        icon: "trash-outline",
+        icon: ICONS.trash,
         cssClass: "delete-icon",
         handler: () => {
           this.deleteFormula();

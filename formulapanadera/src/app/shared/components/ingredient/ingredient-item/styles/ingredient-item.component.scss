@@ -1,5 +1,6 @@
 .ingredient-item {
   color: var(--ion-color-medium);
+  --padding-start: var(--app-narrow-margin);
 }
 
 .background-gray {
@@ -7,7 +8,7 @@
 }
 
 .background-selected {
-  --background: var(--ion-color-tertiary) !important;
+  --background: var(--ion-color-selected) !important;
 }
 
 .ingredient-item-wrapper {
@@ -39,7 +40,7 @@
 
   .ingredient-hydration {
     ion-icon {
-      color: cornflowerblue !important;
+      color: var(--ion-color-hydration) !important;
     }
   }
 

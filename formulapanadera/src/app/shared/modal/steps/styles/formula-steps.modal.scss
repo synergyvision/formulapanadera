@@ -1,23 +1,44 @@
-.btn-med {
-  font-size: 26px;
-  margin: 0 0 0 10px;
+// Variables
+
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
 }
 
-.steps-list {
-  padding: 0;
-}
+// Styles
 
 .ios.title-default {
   padding: 0 0;
 }
 
-.temperature-unit-selector {
-  margin: 10px 20px;
-  border-bottom: 1px solid gray;
+.btn-med {
+  font-size: 26px;
+  margin: 0 0 0 10px;
 }
 
-.divider {
-  background-color: rgba(221, 221, 221, 0.322) !important;
-  color: black;
-  font-size: 13px;
+.ingredient-content {
+  background-color: var(--page-background);
+
+  .temperature-unit-selector {
+    border-bottom: 1px solid lightgray;
+  }
+
+  .steps-list {
+    padding: 0;
+
+    .input-item {
+      --padding-start: var(--page-margin);
+    }
+
+    .no-padding {
+      padding: 0;
+    }
+  }
+
+  .divider {
+    background-color: rgba(221, 221, 221, 0.322) !important;
+    color: black;
+    font-size: 12px;
+    --padding-start: var(--page-margin);
+  }
 }

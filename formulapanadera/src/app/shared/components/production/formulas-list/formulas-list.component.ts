@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { CURRENCY } from "src/app/config/configuration";
 import { FormulaPresentModel } from "src/app/core/models/production.model";
+import { FormulaService } from 'src/app/core/services/formula.service';
 import { ProductionService } from "src/app/core/services/production.service";
 
 @Component({
@@ -13,7 +14,7 @@ export class FormulasListComponent {
 
   @Input() formulas: Array<FormulaPresentModel>;
 
-  constructor(private productionService: ProductionService) {}
+  constructor(private productionService: ProductionService, private formulaService: FormulaService) {}
 
   totalUnits(): number {
     return this.productionService.calculateTotalUnits(this.formulas);
@@ -21,5 +22,9 @@ export class FormulasListComponent {
 
   totalCost(): number {
     return this.productionService.calculateTotalCost(this.formulas);
+  }
+
+  timeBeforeOven(formula: FormulaPresentModel): number{
+    return this.formulaService.calculateTimeBeforeOven(formula.formula.steps)
   }
 }

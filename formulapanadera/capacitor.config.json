@@ -1,6 +1,6 @@
 {
   "appId": "io.ionic.starter",
-  "appName": "formulapanadera",
+  "appName": "Haz pan en casa",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

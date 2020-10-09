@@ -1,6 +1,12 @@
-<ion-item class="content-title">
+<ion-item
+  class="content-title"
+  [ngClass]="{
+    'border-top': subtitle
+  }"
+  lines="full"
+>
   <ion-row class="title-row">
-    <ion-col size="9">
+    <ion-col size="9" class="no-padding">
       <h5
         [ngClass]="{
           'content-name': !subtitle,
@@ -10,7 +16,7 @@
         {{ title }}
       </h5>
     </ion-col>
-    <ion-col size="3" class="arrow-col">
+    <ion-col size="3" class="arrow-col no-padding">
       <ion-icon
         [name]="show ? ICONS.arrow_up : ICONS.arrow_down"
         button
