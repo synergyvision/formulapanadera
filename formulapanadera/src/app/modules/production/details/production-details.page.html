@@ -20,71 +20,76 @@
 </ion-header>
 
 <ion-content class="manage-production-content">
-  <section class="production-details-fields fields-section">
-    <ion-row>
-      <ion-col class="list-col" size="9"
-        ><app-title [title]="production.name"></app-title
-      ></ion-col>
-      <ion-col class="list-col start-button-col" size="3">
-        <ion-icon
-          [name]="ICONS.production_play"
-          button
-          class="start-button"
-          [ngClass]="{ blocked: production_in_process }"
-          (click)="startProduction()"
-        ></ion-icon>
-      </ion-col>
-    </ion-row>
+  <ion-row>
+    <ion-col class="list-col" size="9"
+      ><app-title [title]="production.name"></app-title
+    ></ion-col>
+    <ion-col class="list-col start-button-col" size="3">
+      <ion-icon
+        [name]="ICONS.production_play"
+        button
+        class="start-button"
+        [ngClass]="{ blocked: production_in_process }"
+        (click)="startProduction()"
+      ></ion-icon>
+    </ion-col>
+  </ion-row>
 
-    <ion-row class="present-list">
-      <ion-col class="list-col">
-        <app-formulas-list [formulas]="formulas"></app-formulas-list>
-      </ion-col>
-    </ion-row>
-    <ion-row class="present-list">
-      <ion-col class="list-col">
-        <app-show-hide-content
-          (click)="showIngredients = !showIngredients"
-          [show]="showIngredients"
-          [title]="'ingredients.name' | translate"
-        >
-        </app-show-hide-content>
-        <app-production-ingredients-list
-          *ngIf="showIngredients"
-          [formulas]="formulas"
-        ></app-production-ingredients-list>
-      </ion-col>
-    </ion-row>
+  <ion-row class="present-list">
+    <ion-col class="list-col">
+      <app-formulas-list [formulas]="formulas"></app-formulas-list>
+    </ion-col>
+  </ion-row>
 
-    <ion-row class="present-list">
-      <ion-col class="list-col">
-        <app-show-hide-content
-          (click)="showDetails = !showDetails"
-          [show]="showDetails"
-          [title]="'production.details' | translate"
-        >
-        </app-show-hide-content>
-        <app-formulas-ingredients-list
-          *ngIf="showDetails"
-          [formulas]="formulas"
-        ></app-formulas-ingredients-list> </ion-col
-    ></ion-row>
+  <app-divider></app-divider>
 
-    <ion-row class="present-list">
-      <ion-col class="list-col">
-        <app-show-hide-content
-          (click)="showTimes = !showTimes"
-          [show]="showTimes"
-          [title]="'production.times' | translate"
-        >
-        </app-show-hide-content>
-        <span *ngIf="showTimes">
-          <app-formula-time-table
-            *ngFor="let formula of formulas"
-            [formula]="formula"
-          ></app-formula-time-table>
-        </span>
-      </ion-col>
-    </ion-row>
-  </section>
+  <ion-row class="present-list">
+    <ion-col class="list-col">
+      <app-show-hide-content
+        (click)="showIngredients = !showIngredients"
+        [show]="showIngredients"
+        [title]="'ingredients.name' | translate"
+      >
+      </app-show-hide-content>
+      <app-production-ingredients-list
+        *ngIf="showIngredients"
+        [formulas]="formulas"
+      ></app-production-ingredients-list>
+    </ion-col>
+  </ion-row>
+
+  <app-divider></app-divider>
+
+  <ion-row class="present-list">
+    <ion-col class="list-col">
+      <app-show-hide-content
+        (click)="showDetails = !showDetails"
+        [show]="showDetails"
+        [title]="'production.details' | translate"
+      >
+      </app-show-hide-content>
+      <app-formulas-ingredients-list
+        *ngIf="showDetails"
+        [formulas]="formulas"
+      ></app-formulas-ingredients-list> </ion-col
+  ></ion-row>
+
+  <app-divider></app-divider>
+
+  <ion-row class="present-list">
+    <ion-col class="list-col">
+      <app-show-hide-content
+        (click)="showTimes = !showTimes"
+        [show]="showTimes"
+        [title]="'production.times' | translate"
+      >
+      </app-show-hide-content>
+      <span *ngIf="showTimes">
+        <app-formula-time-table
+          *ngFor="let formula of formulas"
+          [formula]="formula"
+        ></app-formula-time-table>
+      </span>
+    </ion-col>
+  </ion-row>
 </ion-content>

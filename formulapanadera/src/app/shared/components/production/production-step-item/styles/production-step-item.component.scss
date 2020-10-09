@@ -4,10 +4,12 @@
 
 .step-item {
   color: var(--ion-color-secondary);
+  --padding-start: var(--app-narrow-margin);
 
   .step-action-icon {
     margin-right: 12px;
     color: var(--ion-color-primary);
+    margin-left: -2px;
   }
 
   .blocked {
@@ -58,6 +60,10 @@
         margin-top: 10px;
       }
     }
+  }
+
+  .description-icon {
+    margin: 0;
   }
 }
 

@@ -16,7 +16,7 @@ ion-back-button {
 }
 
 .formula-detail-content {
-  background-color: var(--page-background);
+  --background: var(--page-background);
 
   .formula-detail {
     font-size: 14px;
@@ -30,6 +30,7 @@ ion-back-button {
 
   .detail-col {
     padding: 0;
+    background: white;
 
     .divider {
       background-color: rgba(221, 221, 221, 0.322) !important;

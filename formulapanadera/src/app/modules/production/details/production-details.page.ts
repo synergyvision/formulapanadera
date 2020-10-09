@@ -41,9 +41,9 @@ export class ProductionDetailsPage implements OnInit {
     private actionSheetController: ActionSheetController,
     private productionInProcessStorageService: ProductionInProcessStorageService
   ) {
-    this.showIngredients = true;
-    this.showDetails = true;
-    this.showTimes = true;
+    this.showIngredients = false;
+    this.showDetails = false;
+    this.showTimes = false;
 
     this.state = this.router.getCurrentNavigation().extras.state;
   }

@@ -1,34 +1,62 @@
+// Variables
+
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
+}
+
 ion-back-button {
   height: 0;
 }
 
-.segment-button {
-  width: 50%;
+.start-production-content {
+  --background: var(--page-background);
+
+  .action-button-col {
+    border-bottom: 1px solid lightgrey;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background: white;
+
+    .action-button {
+      color: var(--ion-color-primary-shade);
+      width: 60%;
+      height: 70%;
+    }
+  }
+
+  .time-item {
+    font-size: 13px;
+    color: var(--ion-color-secondary);
+    --padding-start: var(--page-margin);
+
+    .time-row {
+      width: 100%;
+    }
+  }
+
+  .input-item {
+    --padding-start: var(--page-margin);
+  }
+
+  .segment {
+    padding: 0 10px;
+
+    .segment-button {
+      width: 50%;
+    }
+  }
 }
 
 .list-col {
   padding: 0;
-}
-
-.time-item {
-  font-size: 13px;
-  color: var(--ion-color-secondary);
-  .time-row {
-    width: 100%;
-  }
-}
-
-.action-button-col {
-  border-bottom: 1px solid lightgrey;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  .action-button {
-    color: var(--ion-color-primary-shade);
-    width: 70%;
-    height: 70%;
-  }
 }
 
 .steps-list {

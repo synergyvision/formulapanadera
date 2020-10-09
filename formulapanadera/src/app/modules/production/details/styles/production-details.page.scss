@@ -1,10 +1,11 @@
-:host {
-  --page-margin: var(--app-fair-margin);
-  --page-background: var(--app-background);
+// Variables
 
-  --page-background-shade: var(--app-background-shade);
-  --page-tags-gutter: 5px;
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
 }
+
+// Styles
 
 .ios.title-default {
   padding: 0 0;
@@ -14,50 +15,29 @@ ion-back-button {
   height: 0;
 }
 
-.title-row {
-  width: 100%;
-  padding: 0;
+.manage-production-content {
+  --background: var(--page-background);
 
-  .production-name {
-    text-align: start;
-    color: var(--ion-color-primary);
+  .list-col {
+    padding: 0;
+    background: white;
   }
 
-  .production-formula-name {
-    margin: 0;
-    font-size: 14px;
-    color: var(--ion-color-secondary);
-  }
+  .start-button-col {
+    border-bottom: 1px solid lightgrey;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background: white;
 
-  .production-title-name {
-    text-align: center;
-    color: var(--ion-color-secondary);
-  }
-}
+    .start-button {
+      color: var(--ion-color-primary-shade);
+      width: 60%;
+      height: 70%;
+    }
 
-.present-list {
-  font-size: 13px;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-.list-col {
-  padding: 0;
-}
-
-.start-button-col {
-  border-bottom: 1px solid lightgrey;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  .start-button {
-    color: var(--ion-color-primary-shade);
-    width: 70%;
-    height: 70%;
-  }
-
-  .blocked {
-    color: var(--ion-color-secondary);
+    .blocked {
+      color: var(--ion-color-secondary);
+    }
   }
 }
