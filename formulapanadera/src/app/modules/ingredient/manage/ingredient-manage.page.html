@@ -33,6 +33,24 @@
           required
         ></ion-input>
       </ion-item>
+
+      <ion-row *ngIf="!update || user.email === ingredient.creator">
+        <ion-col class="no-padding">
+          <ion-item class="input-item">
+            <ion-label color="primary"
+              >{{'ingredients.can_be_modified' | translate}}</ion-label
+            >
+            <ion-checkbox
+              class="ingredient-is-modificable"
+              color="primary"
+              [(ngModel)]="public"
+              [ngModelOptions]="{standalone: true}"
+            >
+            </ion-checkbox>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
       <ion-select
         [value]="type"
         class="type-selector"
@@ -297,7 +315,6 @@
           color="danger"
           fill="solid"
           (click)="deleteIngredient()"
-          [disabled]="!ingredient.can_be_deleted"
           >{{ 'action.delete' | translate }}
         </ion-button>
       </ion-col>

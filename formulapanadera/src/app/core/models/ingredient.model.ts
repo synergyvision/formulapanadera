@@ -16,7 +16,8 @@ export class IngredientModel {
   is_flour: boolean;
   hydration: number;
   cost: number;
-  can_be_deleted: boolean;
+  can_be_modified: boolean;
+  creator: string;
   formula?: {
     // if the ingredient has its own formula
     ingredients: Array<IngredientPercentageModel>;

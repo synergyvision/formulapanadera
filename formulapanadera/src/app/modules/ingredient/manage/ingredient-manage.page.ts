@@ -19,6 +19,8 @@ import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mi
 import { FormulaService } from "src/app/core/services/formula.service";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
+import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { UserModel } from "src/app/core/models/user.model";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -35,12 +37,16 @@ export class IngredientManagePage implements OnInit {
   ingredient: IngredientModel = new IngredientModel();
   manageIngredientForm: FormGroup;
   update: boolean = false;
+  public = false;
   type: string = "simple";
 
   currency = CURRENCY;
 
+  user: UserModel = new UserModel();
+
   constructor(
     private ingredientCRUDService: IngredientCRUDService,
+    private userStorageService: UserStorageService,
     private formulaService: FormulaService,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
@@ -53,7 +59,7 @@ export class IngredientManagePage implements OnInit {
     private ngZone: NgZone
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     let state = this.router.getCurrentNavigation().extras.state;
     if (state == undefined) {
       delete this.ingredient.formula;
@@ -81,7 +87,10 @@ export class IngredientManagePage implements OnInit {
         ),
         cost: new FormControl(state.ingredient.cost, Validators.required),
       });
+      this.public = this.ingredient.can_be_modified;
     }
+
+    this.user = await this.userStorageService.getUser();
   }
 
   async pickIngredient() {
@@ -176,6 +185,7 @@ export class IngredientManagePage implements OnInit {
     await loading.present();
 
     this.ingredient.name = this.manageIngredientForm.value.name;
+    this.ingredient.can_be_modified = this.public;
     if (!this.ingredient.formula) {
       this.ingredient.hydration = this.manageIngredientForm.value.hydration;
       this.ingredient.is_flour = this.manageIngredientForm.value.is_flour;
@@ -193,7 +203,7 @@ export class IngredientManagePage implements OnInit {
       }
     }
     if (!this.update) {
-      this.ingredient.can_be_deleted = true;
+      this.ingredient.creator = this.user.email;
       this.ingredientCRUDService
         .createIngredient(this.ingredient)
         .then(() => {

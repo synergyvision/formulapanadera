@@ -108,6 +108,7 @@
     "ingredient_name": "Nombre",
     "is_flour": "Es harina",
     "hydration": "Hidratación",
+    "can_be_modified": "Modificable por otros usuarios",
     "cost": "Costo",
     "grams": "gr",
     "empty": "No se encontraron ingredientes",
