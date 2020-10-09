@@ -3,6 +3,8 @@ import {
   AlertController,
   ModalController,
   IonRouterOutlet,
+  LoadingController,
+  ToastController,
 } from "@ionic/angular";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 
@@ -42,6 +44,8 @@ export class IngredientManagePage implements OnInit {
     private formulaService: FormulaService,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
+    private loadingController: LoadingController,
+    private toastController: ToastController,
     public modalController: ModalController,
     private alertController: AlertController,
     private routerOutlet: IonRouterOutlet,
@@ -164,7 +168,13 @@ export class IngredientManagePage implements OnInit {
     }
   }
 
-  sendIngredient() {
+  async sendIngredient() {
+    const loading = await this.loadingController.create({
+      cssClass: "app-send-loading",
+      message: this.languageService.getTerm("loading"),
+    });
+    await loading.present();
+
     this.ingredient.name = this.manageIngredientForm.value.name;
     if (!this.ingredient.formula) {
       this.ingredient.hydration = this.manageIngredientForm.value.hydration;
@@ -184,17 +194,33 @@ export class IngredientManagePage implements OnInit {
     }
     if (!this.update) {
       this.ingredient.can_be_deleted = true;
-      this.ingredientCRUDService.createIngredient(this.ingredient).then(() => {
-        this.router.navigateByUrl(
-          APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-        );
-      });
+      this.ingredientCRUDService
+        .createIngredient(this.ingredient)
+        .then(() => {
+          this.router.navigateByUrl(
+            APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+          );
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
     } else {
-      this.ingredientCRUDService.updateIngredient(this.ingredient).then(() => {
-        this.router.navigateByUrl(
-          APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-        );
-      });
+      this.ingredientCRUDService
+        .updateIngredient(this.ingredient)
+        .then(() => {
+          this.router.navigateByUrl(
+            APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+          );
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
     }
   }
 
@@ -214,19 +240,29 @@ export class IngredientManagePage implements OnInit {
         {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
-          handler: () => {
+          handler: async () => {
+            const loading = await this.loadingController.create({
+              cssClass: "app-send-loading",
+              message: this.languageService.getTerm("loading"),
+            });
+            await loading.present();
+
             this.ingredientCRUDService
               .deleteIngredient(this.ingredient.id)
               .then(() => {
-                this.ngZone
-                  .run(() =>
-                    this.router.navigate([
-                      APP_URL.menu.name +
-                        "/" +
-                        APP_URL.menu.routes.ingredient.main,
-                    ])
-                  )
-                  .then();
+                this.ngZone.run(() =>
+                  this.router.navigate([
+                    APP_URL.menu.name +
+                      "/" +
+                      APP_URL.menu.routes.ingredient.main,
+                  ])
+                );
+              })
+              .catch(() => {
+                this.presentToast(false);
+              })
+              .finally(async () => {
+                await loading.dismiss();
               });
           },
         },
@@ -329,5 +365,24 @@ export class IngredientManagePage implements OnInit {
       });
     }
     return valid;
+  }
+
+  async presentToast(success: boolean) {
+    const toast = await this.toastController.create({
+      message: success
+        ? this.languageService.getTerm("send.success")
+        : this.languageService.getTerm("send.error"),
+      color: "secondary",
+      duration: 5000,
+      position: "top",
+      buttons: [
+        {
+          icon: ICONS.close,
+          role: "cancel",
+          handler: () => {},
+        },
+      ],
+    });
+    toast.present();
   }
 }

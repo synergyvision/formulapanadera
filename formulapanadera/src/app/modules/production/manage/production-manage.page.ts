@@ -4,7 +4,9 @@ import { Router } from "@angular/router";
 import {
   AlertController,
   IonRouterOutlet,
+  LoadingController,
   ModalController,
+  ToastController,
 } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
@@ -48,7 +50,9 @@ export class ProductionManagePage implements OnInit {
     private languageService: LanguageService,
     private router: Router,
     private formatNumberService: FormatNumberService,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private loadingController: LoadingController,
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
@@ -72,7 +76,13 @@ export class ProductionManagePage implements OnInit {
     this.current_user = await this.userStorageService.getUser();
   }
 
-  sendProduction() {
+  async sendProduction() {
+    const loading = await this.loadingController.create({
+      cssClass: "app-send-loading",
+      message: this.languageService.getTerm("loading"),
+    });
+    await loading.present();
+
     this.production.name = this.manageProductionForm.value.name;
     if (this.update) {
       this.productionCRUDService
@@ -85,6 +95,12 @@ export class ProductionManagePage implements OnInit {
                 APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
               );
             });
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
         });
     } else {
       this.production.owner = {
@@ -103,6 +119,12 @@ export class ProductionManagePage implements OnInit {
                 APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
               );
             });
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
         });
     }
   }
@@ -123,7 +145,13 @@ export class ProductionManagePage implements OnInit {
         {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
-          handler: () => {
+          handler: async () => {
+            const loading = await this.loadingController.create({
+              cssClass: "app-send-loading",
+              message: this.languageService.getTerm("loading"),
+            });
+            await loading.present();
+
             this.productionCRUDService
               .deleteProduction(this.production.id)
               .then(async () => {
@@ -136,6 +164,12 @@ export class ProductionManagePage implements OnInit {
                         APP_URL.menu.routes.production.main
                     );
                   });
+              })
+              .catch(() => {
+                this.presentToast(false);
+              })
+              .finally(async () => {
+                await loading.dismiss();
               });
           },
         },
@@ -187,7 +221,7 @@ export class ProductionManagePage implements OnInit {
     let valid = true;
     if (this.production.formulas) {
       this.production.formulas.forEach((formula) => {
-        if (formula.number && formula.number <= 0) {
+        if (!formula.number || (formula.number && formula.number <= 0)) {
           valid = false;
         }
       });
@@ -202,5 +236,24 @@ export class ProductionManagePage implements OnInit {
     formula.warming_time = Number(
       this.formatNumberService.formatNonZeroPositiveNumber(formula.warming_time)
     );
+  }
+
+  async presentToast(success: boolean) {
+    const toast = await this.toastController.create({
+      message: success
+        ? this.languageService.getTerm("send.success")
+        : this.languageService.getTerm("send.error"),
+      color: "secondary",
+      duration: 5000,
+      position: "top",
+      buttons: [
+        {
+          icon: ICONS.close,
+          role: "cancel",
+          handler: () => {},
+        },
+      ],
+    });
+    toast.present();
   }
 }
