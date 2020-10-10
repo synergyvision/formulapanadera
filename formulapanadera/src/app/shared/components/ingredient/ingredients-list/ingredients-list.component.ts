@@ -29,4 +29,20 @@ export class IngredientsListComponent {
       );
     }
   }
+
+  totalPercentage() {
+    let total: number = 0;
+    this.ingredients.forEach((ingredient) => {
+      total = total + ingredient.percentage;
+    });
+    return total;
+  }
+
+  totalGrams() {
+    let total: number = 0;
+    this.ingredients.forEach((ingredient) => {
+      total = total + Number(this.ingredientGrams(ingredient.percentage));
+    });
+    return total;
+  }
 }
