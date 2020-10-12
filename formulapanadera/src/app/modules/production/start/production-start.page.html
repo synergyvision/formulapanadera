@@ -41,12 +41,20 @@
   </ion-row>
   <!-- Range picker -->
   <ion-item *ngIf="!in_process" lines="full" class="input-item">
-    <ion-checkbox [(ngModel)]="specify_time" slot="start"></ion-checkbox>
-    <ion-label>{{'production.invalid_steps.verify'| translate}}</ion-label>
+    <ion-checkbox
+      [(ngModel)]="specify_time"
+      slot="start"
+      class="range-checkbox"
+    ></ion-checkbox>
+    <ion-label class="picker-label"
+      >{{'production.invalid_steps.verify'| translate}}</ion-label
+    >
   </ion-item>
   <span *ngIf="!in_process && specify_time">
     <ion-item lines="full" class="input-item">
-      <ion-label>{{ 'production.time.start' | translate}}</ion-label>
+      <ion-label class="picker-label"
+        >{{ 'production.time.start' | translate}}</ion-label
+      >
       <ion-datetime
         [cancelText]="'action.cancel'|translate"
         [doneText]="'action.ok'|translate"
@@ -56,7 +64,9 @@
       ></ion-datetime>
     </ion-item>
     <ion-item lines="full" class="input-item">
-      <ion-label>{{ 'production.time.end' | translate}}</ion-label>
+      <ion-label class="picker-label"
+        >{{ 'production.time.end' | translate}}</ion-label
+      >
       <ion-datetime
         [cancelText]="'action.cancel'|translate"
         [doneText]="'action.ok'|translate"

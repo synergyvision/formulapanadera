@@ -19,6 +19,7 @@ import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { ICONS } from "src/app/config/icons";
+import { ASSETS } from "src/app/config/assets";
 
 @Component({
   selector: "app-formula-details",
@@ -32,6 +33,7 @@ import { ICONS } from "src/app/config/icons";
 export class FormulaDetailsPage implements OnInit, OnDestroy {
   APP_URL = APP_URL;
   ICONS = ICONS;
+  ASSETS = ASSETS;
 
   formula: FormulaModel = new FormulaModel();
   formulaUnit = "%";
@@ -425,5 +427,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     toast.present();
+  }
+
+  getStepAsset(index: number) {
+    return ASSETS.step[index];
   }
 }

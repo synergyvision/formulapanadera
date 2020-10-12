@@ -30,6 +30,7 @@
     ></app-data-item>
     <span *ngIf="type == 'simple'">
       <app-data-item
+        *ngIf="ingredient.hydration > 0"
         title="{{'ingredients.hydration' | translate}} (%)"
         [data]="ingredient.hydration"
       ></app-data-item>
@@ -42,6 +43,7 @@
           class="flour-checkbox"
           [checked]="ingredient.is_flour"
           [disabled]="true"
+          slot="start"
         >
         </ion-checkbox>
       </ion-item>
