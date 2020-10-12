@@ -35,7 +35,7 @@ export class IngredientsListComponent {
     this.ingredients.forEach((ingredient) => {
       total = total + ingredient.percentage;
     });
-    return total;
+    return total.toFixed(DECIMALS.formula_percentage);
   }
 
   totalGrams() {
@@ -43,6 +43,6 @@ export class IngredientsListComponent {
     this.ingredients.forEach((ingredient) => {
       total = total + Number(this.ingredientGrams(ingredient.percentage));
     });
-    return total;
+    return total.toFixed(DECIMALS.formula_grams);
   }
 }

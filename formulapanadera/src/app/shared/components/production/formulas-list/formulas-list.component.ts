@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { CURRENCY } from "src/app/config/configuration";
+import { DECIMAL_COST_FORMAT } from 'src/app/config/formats';
 import { FormulaPresentModel } from "src/app/core/models/production.model";
 import { FormulaService } from 'src/app/core/services/formula.service';
 import { ProductionService } from "src/app/core/services/production.service";
@@ -11,6 +12,7 @@ import { ProductionService } from "src/app/core/services/production.service";
 })
 export class FormulasListComponent {
   CURRENCY = CURRENCY;
+  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT
 
   @Input() formulas: Array<FormulaPresentModel>;
 

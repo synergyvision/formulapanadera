@@ -2,8 +2,8 @@ import { Component, Input } from "@angular/core";
 import { FormulaModel } from "../../../../core/models/formula.model";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { CURRENCY } from "src/app/config/configuration";
-import { DECIMALS } from "src/app/config/formats";
-import { ICONS } from 'src/app/config/icons';
+import { ICONS } from "src/app/config/icons";
+import { DECIMAL_COST_FORMAT } from "src/app/config/formats";
 
 @Component({
   selector: "app-formula-item",
@@ -17,7 +17,8 @@ export class FormulaItemComponent {
   @Input() selected: boolean = false;
 
   currency = CURRENCY;
-  ICONS = ICONS
+  ICONS = ICONS;
+  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT;
 
   constructor(private formulaService: FormulaService) {}
 
@@ -34,6 +35,6 @@ export class FormulaItemComponent {
       this.formula.ingredients,
       Number(bakers_percentage)
     );
-    return (Number(total_cost) / this.formula.units).toFixed(DECIMALS.cost);
+    return (Number(total_cost) / this.formula.units).toString();
   }
 }

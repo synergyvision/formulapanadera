@@ -101,7 +101,7 @@ export class ProductionDetailsPage implements OnInit {
     );
     transformed_formula.unitary_cost = (
       Number(transformed_formula.total_cost) / initial_formula.number
-    ).toFixed(DECIMALS.cost);
+    ).toString();
 
     let bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
       transformed_formula.formula.ingredients,

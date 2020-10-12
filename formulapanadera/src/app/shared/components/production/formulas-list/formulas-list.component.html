@@ -16,14 +16,14 @@
       </ion-col>
       <ion-col size="2">{{ timeBeforeOven(item) }}</ion-col>
       <ion-col size="3">{{ item.number }}</ion-col>
-      <ion-col size="3">{{ item.total_cost }}</ion-col>
+      <ion-col size="3">{{ item.total_cost | number: DECIMAL_COST_FORMAT }}</ion-col>
     </ion-row>
     <ion-row class="total-row">
       <ion-col size="6" class="total-value total-name">{{
         "production.total" | translate
       }}</ion-col>
       <ion-col size="3" class="total-value">{{ totalUnits() }}</ion-col>
-      <ion-col size="3" class="total-value">{{ totalCost() }}</ion-col>
+      <ion-col size="3" class="total-value">{{ totalCost() | number: DECIMAL_COST_FORMAT }}</ion-col>
     </ion-row>
   </ion-col>
 </ion-row>

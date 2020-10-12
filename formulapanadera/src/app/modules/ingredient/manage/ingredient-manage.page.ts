@@ -281,12 +281,6 @@ export class IngredientManagePage implements OnInit {
     await alert.present();
   }
 
-  formatNumberDecimals(value: number) {
-    this.manageIngredientForm
-      .get("cost")
-      .patchValue(this.formatNumberService.formatNumberDecimals(value));
-  }
-
   formatNumberPercentage(value: number) {
     if (this.manageIngredientForm.value.is_flour) {
       this.manageIngredientForm.get("hydration").patchValue("0.0");
