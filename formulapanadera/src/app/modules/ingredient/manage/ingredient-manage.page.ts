@@ -21,6 +21,7 @@ import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { UserModel } from "src/app/core/models/user.model";
+import { IngredientService } from "src/app/core/services/ingredient.service";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -46,6 +47,7 @@ export class IngredientManagePage implements OnInit {
 
   constructor(
     private ingredientCRUDService: IngredientCRUDService,
+    private ingredientService: IngredientService,
     private userStorageService: UserStorageService,
     private formulaService: FormulaService,
     private languageService: LanguageService,
@@ -186,6 +188,7 @@ export class IngredientManagePage implements OnInit {
 
     this.ingredient.name = this.manageIngredientForm.value.name;
     this.ingredient.can_be_modified = this.public;
+
     if (!this.ingredient.formula) {
       this.ingredient.hydration = this.manageIngredientForm.value.hydration;
       this.ingredient.is_flour = this.manageIngredientForm.value.is_flour;
@@ -202,35 +205,50 @@ export class IngredientManagePage implements OnInit {
         this.ingredient.formula.compensation_percentage = 0;
       }
     }
-    if (!this.update) {
-      this.ingredient.creator = this.user.email;
-      this.ingredientCRUDService
-        .createIngredient(this.ingredient)
-        .then(() => {
-          this.router.navigateByUrl(
-            APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-          );
-        })
-        .catch(() => {
-          this.presentToast(false);
-        })
-        .finally(async () => {
-          await loading.dismiss();
-        });
+
+    let ingredients = this.ingredientService.getIngredients();
+    let ingredient_exists = false;
+    if (ingredients) {
+      ingredients.forEach((ingredient) => {
+        if (ingredient.name == this.ingredient.name) {
+          ingredient_exists = true;
+        }
+      });
+    }
+    if (ingredient_exists) {
+      loading.dismiss();
+      this.presentToast(false, true);
     } else {
-      this.ingredientCRUDService
-        .updateIngredient(this.ingredient)
-        .then(() => {
-          this.router.navigateByUrl(
-            APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-          );
-        })
-        .catch(() => {
-          this.presentToast(false);
-        })
-        .finally(async () => {
-          await loading.dismiss();
-        });
+      if (!this.update) {
+        this.ingredient.creator = this.user.email;
+        this.ingredientCRUDService
+          .createIngredient(this.ingredient)
+          .then(() => {
+            this.router.navigateByUrl(
+              APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+            );
+          })
+          .catch(() => {
+            this.presentToast(false);
+          })
+          .finally(async () => {
+            await loading.dismiss();
+          });
+      } else {
+        this.ingredientCRUDService
+          .updateIngredient(this.ingredient)
+          .then(() => {
+            this.router.navigateByUrl(
+              APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+            );
+          })
+          .catch(() => {
+            this.presentToast(false);
+          })
+          .finally(async () => {
+            await loading.dismiss();
+          });
+      }
     }
   }
 
@@ -371,9 +389,11 @@ export class IngredientManagePage implements OnInit {
     return valid;
   }
 
-  async presentToast(success: boolean) {
+  async presentToast(success: boolean, exists: boolean = false) {
     const toast = await this.toastController.create({
-      message: success
+      message: exists
+        ? this.languageService.getTerm("send.exists")
+        : success
         ? this.languageService.getTerm("send.success")
         : this.languageService.getTerm("send.error"),
       color: "secondary",
