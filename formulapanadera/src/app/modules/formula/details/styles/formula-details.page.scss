@@ -32,11 +32,22 @@ ion-back-button {
     padding: 0;
     background: white;
 
+    .steps-list {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
     .divider {
       background-color: rgba(221, 221, 221, 0.322) !important;
       color: black;
       font-size: 12px;
       padding-left: var(--app-narrow-margin);
+
+      .step-image {
+        width: 20%;
+        max-width: 60px;
+        margin: 5px 10px 5px 0;
+      }
     }
   }
 }

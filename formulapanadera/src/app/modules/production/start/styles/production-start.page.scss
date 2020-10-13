@@ -26,7 +26,7 @@ ion-back-button {
     background: white;
 
     .action-button {
-      color: var(--ion-color-primary-shade);
+      color: var(--ion-color-primary);
       width: 60%;
       height: 70%;
     }
@@ -62,4 +62,12 @@ ion-back-button {
 .steps-list {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.range-checkbox {
+  margin-right: var(--page-margin);
+}
+
+.picker-label {
+  color: var(--ion-color-secondary);
 }

@@ -30,6 +30,7 @@
     ></app-data-item>
     <span *ngIf="type == 'simple'">
       <app-data-item
+        *ngIf="ingredient.hydration > 0"
         title="{{'ingredients.hydration' | translate}} (%)"
         [data]="ingredient.hydration"
       ></app-data-item>
@@ -42,13 +43,14 @@
           class="flour-checkbox"
           [checked]="ingredient.is_flour"
           [disabled]="true"
+          slot="start"
         >
         </ion-checkbox>
       </ion-item>
       <app-data-item
         title="{{'ingredients.cost' | translate}}
           ({{currency}}/{{'ingredients.grams' | translate}})"
-        [data]="ingredient.cost"
+        [data]="ingredient.cost | number: DECIMAL_COST_FORMAT"
       ></app-data-item>
     </span>
     <span *ngIf="type == 'compound'">

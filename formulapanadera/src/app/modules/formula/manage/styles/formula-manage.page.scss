@@ -36,7 +36,6 @@ ion-back-button {
 
     .card-header {
       padding: 0;
-      padding-top: 5px;
 
       .card-title {
         font-size: 16px;
@@ -118,4 +117,18 @@ ion-back-button {
   .delete-btn {
     margin: 0px;
   }
+}
+
+.pick-ingredient {
+  background: var(--ion-color-primary);
+  color: white;
+  border-radius: 5px;
+}
+
+.disabled {
+  background: lightgray;
+}
+
+.formula-checkbox {
+  margin-right: var(--page-margin);
 }

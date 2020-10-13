@@ -143,7 +143,7 @@ export class FormulaService {
           cost;
       }
     });
-    return cost.toFixed(DECIMALS.cost);
+    return cost.toString();
   }
 
   public fromRecipeToFormula(ingredients: Array<IngredientPercentageModel>) {

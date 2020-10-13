@@ -4,7 +4,7 @@
 :root {
   /** primary **/
   --ion-color-primary: #881919;
-  --ion-color-primary-shade: rgb(22, 6, 0);
+  --ion-color-primary-shade: #741414;
 
   /** secondary **/
   --ion-color-secondary: #6e675f;
@@ -29,8 +29,8 @@
   --ion-color-warning-shade: #db9f1d;
 
   /** danger **/
-  --ion-color-danger: #f4344f;
-  --ion-color-danger-shade: #d72e46;
+  --ion-color-danger: var(--ion-color-tertiary);
+  --ion-color-danger-shade: var(--ion-color-tertiary-shade);
 
   /** lightest **/
   --ion-color-lightest: #ffffff;

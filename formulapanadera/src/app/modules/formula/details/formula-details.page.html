@@ -60,13 +60,13 @@
     <ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.cost.unitary' | translate"
-        data="{{unitary_cost}} {{currency}}"
+        data="{{unitary_cost | number: DECIMAL_COST_FORMAT}}{{currency}}"
       ></app-data-item>
     </ion-col>
     <ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.cost.total' | translate"
-        data="{{total_cost}} {{currency}}"
+        data="{{total_cost | number: DECIMAL_COST_FORMAT}}{{currency}}"
       ></app-data-item>
     </ion-col>
   </ion-row>
@@ -143,13 +143,15 @@
         [title]="'formulas.steps' | translate"
       >
       </app-show-hide-content>
-      <ion-list lines="full" *ngIf="showSteps">
+      <ion-list lines="full" *ngIf="showSteps" class="steps-list">
         <span *ngFor="let step of steps; index as i">
           <ion-item-divider class="divider">
-            <ion-label
-              >{{ "formulas.step" | translate }} {{ step.number + 1 }}: {{
-              step.name }}</ion-label
-            >
+            <ion-img
+              class="step-image"
+              alt="step_image"
+              [src]="getStepAsset(i)"
+            ></ion-img>
+            <ion-label>{{ step.name }}</ion-label>
           </ion-item-divider>
           <app-formula-step [step]="step"></app-formula-step> </span
       ></ion-list> </ion-col

@@ -175,33 +175,35 @@ export class FormulaManagePage {
   }
 
   async mixIngredients() {
-    let mixedIngredients = [
-      {
-        ingredients: [],
-        description: "",
-      },
-    ];
-    if (!this.formula.mixing) {
-      this.formula.ingredients.forEach(
-        (ingredient: IngredientPercentageModel) =>
-          mixedIngredients[0].ingredients.push(ingredient)
-      );
-    } else {
-      mixedIngredients = this.formula.mixing;
-    }
-    const modal = await this.modalController.create({
-      component: IngredientMixingModal,
-      swipeToClose: true,
-      presentingElement: this.routerOutlet.nativeEl,
-      componentProps: {
-        formulaMixing: mixedIngredients,
-        editable: true,
-      },
-    });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
-    if (data !== undefined) {
-      this.formula.mixing = data;
+    if (this.formula.ingredients) {
+      let mixedIngredients = [
+        {
+          ingredients: [],
+          description: "",
+        },
+      ];
+      if (!this.formula.mixing) {
+        this.formula.ingredients.forEach(
+          (ingredient: IngredientPercentageModel) =>
+            mixedIngredients[0].ingredients.push(ingredient)
+        );
+      } else {
+        mixedIngredients = this.formula.mixing;
+      }
+      const modal = await this.modalController.create({
+        component: IngredientMixingModal,
+        swipeToClose: true,
+        presentingElement: this.routerOutlet.nativeEl,
+        componentProps: {
+          formulaMixing: mixedIngredients,
+          editable: true,
+        },
+      });
+      await modal.present();
+      const { data } = await modal.onWillDismiss();
+      if (data !== undefined) {
+        this.formula.mixing = data;
+      }
     }
   }
 

@@ -67,10 +67,11 @@
               >{{'formulas.public' | translate}}</ion-label
             >
             <ion-checkbox
-              class="formula-is-public"
+              class="formula-is-public formula-checkbox"
               color="primary"
               [(ngModel)]="public"
               [ngModelOptions]="{standalone: true}"
+              slot="start"
             >
             </ion-checkbox> </ion-item></ion-col
       ></ion-row>
@@ -83,10 +84,11 @@
               >{{'formulas.can_clone' | translate}}</ion-label
             >
             <ion-checkbox
-              class="formula-can-clone"
+              class="formula-can-clone formula-checkbox"
               color="primary"
               [(ngModel)]="formula.user.can_clone"
               [ngModelOptions]="{standalone: true}"
+              slot="start"
             >
             </ion-checkbox>
           </ion-item>
@@ -103,13 +105,12 @@
             {{'ingredients.name' | translate}}
           </ion-label>
 
-          <ion-button
-            size="small"
+          <ion-icon
+            button
             (click)="pickIngredient()"
             class="pick-ingredient"
-          >
-            <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
-          </ion-button>
+            [name]="ICONS.add"
+          ></ion-icon>
         </ion-item>
         <ion-item
           class="unit-select-item input-item"
@@ -129,7 +130,7 @@
           </ion-select></ion-item
         >
       </ion-card-header>
-      <ion-list lines="full">
+      <ion-list lines="full" class="inputs-list">
         <ion-item *ngFor="let item of formula.ingredients" class="input-item">
           <ion-row class="ingredient-item-wrapper">
             <ion-col size="7" class="ingredients-wrapper">
@@ -164,7 +165,7 @@
             [name]="ICONS.close"
             class="delete-step"
             slot="end"
-            color="danger"
+            color="primary"
             button
             (click)="deleteIngredient(item)"
           ></ion-icon>
@@ -176,19 +177,18 @@
 
     <ion-card class="card">
       <ion-card-header class="card-header">
-        <ion-item class="input-item">
+        <ion-item class="input-item" lines="full">
           <ion-label class="card-title">
             {{'formulas.mixing_order' | translate}}
           </ion-label>
 
-          <ion-button
-            size="small"
+          <ion-icon
+            button
             (click)="mixIngredients()"
-            class="mix-ingredient"
-            [disabled]="!formula.ingredients"
-          >
-            <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
-          </ion-button>
+            class="pick-ingredient"
+            [name]="ICONS.add"
+            [ngClass]="{'disabled': !formula.ingredients}"
+          ></ion-icon>
         </ion-item>
       </ion-card-header>
       <app-mixing-steps [steps]="formula.mixing"></app-mixing-steps>
@@ -198,22 +198,21 @@
 
     <ion-card class="card">
       <ion-card-header class="card-header">
-        <ion-item class="input-item">
+        <ion-item class="input-item" lines="full">
           <ion-label class="card-title">
             {{'formulas.steps' | translate}}
           </ion-label>
-          <ion-button
-            size="small"
+          <ion-icon
+            button
             (click)="describeSteps()"
-            class="describe-steps"
-          >
-            <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
-          </ion-button>
+            class="pick-ingredient"
+            [name]="ICONS.add"
+          ></ion-icon>
         </ion-item>
       </ion-card-header>
-      <ion-list lines="full" class="steps-list">
+      <ion-list lines="full" class="steps-list inputs-list">
         <span *ngFor="let step of formula.steps; index as i">
-          <ion-item-divider class="divider">
+          <ion-item-divider class="divider" mode="ios">
             <ion-label class="divider-label"
               >{{ "formulas.step" | translate }} {{ step.number + 1 }}: {{
               step.name }}</ion-label
@@ -231,8 +230,12 @@
             [temperatureUnit]="temperatureUnit"
             [read]="false"
           ></app-formula-step>
-          <ion-list lines="full" *ngIf="step.ingredients">
-            <ion-item *ngFor="let item of step.ingredients" class="input-item">
+          <ion-list lines="full" *ngIf="step.ingredients" class="inputs-list">
+            <ion-item
+              *ngFor="let item of step.ingredients"
+              class="input-item"
+              lines="full"
+            >
               <ion-row class="ingredient-item-wrapper">
                 <ion-col size="7" class="ingredients-wrapper">
                   <ion-row>
@@ -242,7 +245,7 @@
                   </ion-row>
                 </ion-col>
                 <ion-col size="4">
-                  <ion-item>
+                  <ion-item lines="full">
                     <ion-input
                       class="ingredient-percentage"
                       [(ngModel)]="item.percentage"
@@ -261,7 +264,7 @@
                 [name]="ICONS.close"
                 class="delete-step"
                 slot="end"
-                color="danger"
+                color="primary"
                 button
                 (click)="deleteStepIngredient(step, item)"
               ></ion-icon>

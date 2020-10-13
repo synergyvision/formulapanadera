@@ -8,6 +8,7 @@ import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserModel } from "src/app/core/models/user.model";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { DECIMAL_COST_FORMAT } from "src/app/config/formats";
 
 @Component({
   selector: "app-ingredient-details",
@@ -22,6 +23,7 @@ export class IngredientDetailsPage implements OnInit {
   type: string = "simple";
 
   currency = CURRENCY;
+  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT;
 
   showIngredients: boolean;
   showMixing: boolean;

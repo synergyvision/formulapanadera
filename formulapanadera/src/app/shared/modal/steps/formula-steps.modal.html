@@ -11,14 +11,13 @@
 </ion-header>
 
 <ion-content class="ingredient-content">
-  <ion-select
-    [value]="temperatureUnit"
-    class="temperature-unit-selector"
-    (ionChange)="changeTemperature($event)"
-  >
-    <ion-select-option value="C">ºC</ion-select-option>
-    <ion-select-option value="F">ºF</ion-select-option>
-  </ion-select>
+  <ion-item lines="full">
+    <ion-label>{{'formulas.temperature' | translate}}</ion-label>
+    <ion-select [value]="temperatureUnit" class="temperature-unit-selector" (ionChange)="changeTemperature($event)">
+      <ion-select-option value="C">ºC</ion-select-option>
+      <ion-select-option value="F">ºF</ion-select-option>
+    </ion-select>
+  </ion-item>
 
   <ion-list lines="full" class="steps-list">
     <span *ngFor="let step of formulaSteps; index as i">

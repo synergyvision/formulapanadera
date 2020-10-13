@@ -13,12 +13,13 @@ import {
 import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ModifierModel, UserModel } from "src/app/core/models/user.model";
-import { DATE_FORMAT, DECIMALS } from "src/app/config/formats";
+import { DATE_FORMAT, DECIMALS, DECIMAL_COST_FORMAT } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { ICONS } from "src/app/config/icons";
+import { ASSETS } from "src/app/config/assets";
 
 @Component({
   selector: "app-formula-details",
@@ -32,6 +33,8 @@ import { ICONS } from "src/app/config/icons";
 export class FormulaDetailsPage implements OnInit, OnDestroy {
   APP_URL = APP_URL;
   ICONS = ICONS;
+  ASSETS = ASSETS;
+  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT
 
   formula: FormulaModel = new FormulaModel();
   formulaUnit = "%";
@@ -106,9 +109,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       this.ingredients,
       Number(this.bakers_percentage)
     );
-    this.unitary_cost = (Number(this.total_cost) / this.units).toFixed(
-      DECIMALS.cost
-    );
+    this.unitary_cost = (Number(this.total_cost) / this.units).toString();
 
     this.ingredients_formula = [];
     let bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
@@ -425,5 +426,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     toast.present();
+  }
+
+  getStepAsset(index: number) {
+    return ASSETS.step[index];
   }
 }

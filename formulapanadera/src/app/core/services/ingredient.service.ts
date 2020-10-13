@@ -1,10 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-
-import { DataStore } from "src/app/shared/shell/data-store";
 import { IngredientModel } from "../models/ingredient.model";
 
-import { LOADING_ITEMS } from "src/app/config/configuration";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 
 @Injectable()

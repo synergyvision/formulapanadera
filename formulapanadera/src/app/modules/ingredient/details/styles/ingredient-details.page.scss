@@ -3,8 +3,6 @@
 :host {
   --page-margin: var(--app-narrow-margin);
   --page-background: var(--app-background);
-  --page-background-shade: var(--app-background-shade);
-  --page-tags-gutter: 5px;
 }
 
 // Styles
@@ -20,6 +18,10 @@ ion-back-button {
 .manage-ingredient-content {
   --background: var(--page-background);
 
+  .inputs-list {
+    padding: 0;
+  }
+
   .input-item {
     --padding-start: var(--app-narrow-margin);
 
@@ -30,7 +32,7 @@ ion-back-button {
 
     .flour-checkbox {
       opacity: 1 !important;
-      margin: 0;
+      margin-right: var(--page-margin);
     }
   }
 

@@ -41,28 +41,24 @@
               >{{'ingredients.can_be_modified' | translate}}</ion-label
             >
             <ion-checkbox
-              class="ingredient-is-modificable"
+              class="ingredient-is-modificable ingredient-checkbox"
               color="primary"
               [(ngModel)]="public"
               [ngModelOptions]="{standalone: true}"
+              slot="start"
             >
             </ion-checkbox>
           </ion-item>
         </ion-col>
       </ion-row>
 
-      <ion-select
-        [value]="type"
-        class="type-selector"
-        (ionChange)="changeType($event)"
-      >
-        <ion-select-option value="simple"
-          >{{'ingredients.type.simple' | translate}}</ion-select-option
-        >
-        <ion-select-option value="compound"
-          >{{'ingredients.type.compound' | translate}}</ion-select-option
-        >
-      </ion-select>
+      <ion-item lines="full">
+        <ion-label>{{'ingredients.type.name' | translate}}</ion-label>
+        <ion-select [value]="type" class="type-selector" (ionChange)="changeType($event)">
+          <ion-select-option value="simple">{{'ingredients.type.simple' | translate}}</ion-select-option>
+          <ion-select-option value="compound">{{'ingredients.type.compound' | translate}}</ion-select-option>
+        </ion-select>
+      </ion-item>
 
       <app-divider></app-divider>
 
@@ -89,10 +85,11 @@
             >{{'ingredients.is_flour' | translate}}</ion-label
           >
           <ion-checkbox
-            class="ingredient-is-flour"
+            class="ingredient-is-flour ingredient-checkbox"
             color="primary"
             formControlName="is_flour"
             (ionChange)="changeFlourIngredient()"
+            slot="start"
           >
           </ion-checkbox>
         </ion-item>
@@ -109,7 +106,6 @@
             class="ingredient-cost"
             step="0.01"
             required
-            (ionBlur)="formatNumberDecimals(manageIngredientForm.value.cost)"
           ></ion-input>
         </ion-item>
       </span>
@@ -225,7 +221,7 @@
               </ion-button>
             </ion-item>
           </ion-card-header>
-          <ion-list lines="full" class="ingredients-list">
+          <ion-list lines="full" class="ingredients-list inputs-list">
             <ion-item
               *ngFor="let item of ingredient.formula.ingredients"
               class="input-item"
@@ -258,7 +254,7 @@
                 [name]="ICONS.close"
                 class="delete-step"
                 slot="end"
-                color="danger"
+                color="primary"
                 button
                 (click)="deleteSelectedIngredient(item)"
               ></ion-icon>

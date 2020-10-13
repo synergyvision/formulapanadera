@@ -5,7 +5,7 @@
 
   // Variables should be in a deeper selector or after the mixin include to override default values
   --select-alert-color: var(--ion-color-lightest);
-  --select-alert-background: var(--ion-color-danger);
+  --select-alert-background: var(--ion-color-primary);
   --select-alert-margin: var(--app-fair-margin);
 
   .alert-message {

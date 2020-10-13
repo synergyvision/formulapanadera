@@ -12,6 +12,9 @@
     border-bottom: 1px solid var(--ion-color-primary);
     font-style: bold;
     text-align: end;
+    background: var(--ion-color-primary);
+    color: white;
+
     .title-name {
       text-align: start;
     }
@@ -24,10 +27,19 @@
   }
 }
 
+.total-row {
+  .total-value {
+    border-top: 1px solid var(--ion-color-light-shade);
+  }
+  .total-name {
+    text-align: start;
+  }
+}
+
 .sub-ingredient {
-  border: 1px solid var(--ion-color-light-shade);
+  border: 1px solid var(--ion-color-primary);
 
   .title-row {
-    border-bottom: 1px solid var(--ion-color-light-shade);
+    border-bottom: 1px solid var(--ion-color-primary);
   }
 }
