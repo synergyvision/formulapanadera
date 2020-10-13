@@ -60,16 +60,15 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
     this.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
-    if (!(await this.productionStorageService.getProductions())) {
-      this.productionCRUDService
-        .getProductionsDataSource(this.user_email)
-        .subscribe((productions) => {
-          this.productionStorageService.setProductions(
-            productions as ProductionModel[] & ShellModel
-          );
-          this.searchList();
-        });
-    }
+    
+    this.productionCRUDService
+      .getProductionsDataSource(this.user_email)
+      .subscribe((productions) => {
+        this.productionStorageService.setProductions(
+          productions as ProductionModel[] & ShellModel
+        );
+        this.searchList();
+      });
   }
 
   async ionViewWillEnter() {

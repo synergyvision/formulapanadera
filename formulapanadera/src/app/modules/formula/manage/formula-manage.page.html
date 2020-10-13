@@ -177,7 +177,7 @@
 
     <ion-card class="card">
       <ion-card-header class="card-header">
-        <ion-item class="input-item">
+        <ion-item class="input-item" lines="full">
           <ion-label class="card-title">
             {{'formulas.mixing_order' | translate}}
           </ion-label>
@@ -198,7 +198,7 @@
 
     <ion-card class="card">
       <ion-card-header class="card-header">
-        <ion-item class="input-item">
+        <ion-item class="input-item" lines="full">
           <ion-label class="card-title">
             {{'formulas.steps' | translate}}
           </ion-label>
@@ -212,7 +212,7 @@
       </ion-card-header>
       <ion-list lines="full" class="steps-list inputs-list">
         <span *ngFor="let step of formula.steps; index as i">
-          <ion-item-divider class="divider">
+          <ion-item-divider class="divider" mode="ios">
             <ion-label class="divider-label"
               >{{ "formulas.step" | translate }} {{ step.number + 1 }}: {{
               step.name }}</ion-label
@@ -231,7 +231,11 @@
             [read]="false"
           ></app-formula-step>
           <ion-list lines="full" *ngIf="step.ingredients" class="inputs-list">
-            <ion-item *ngFor="let item of step.ingredients" class="input-item">
+            <ion-item
+              *ngFor="let item of step.ingredients"
+              class="input-item"
+              lines="full"
+            >
               <ion-row class="ingredient-item-wrapper">
                 <ion-col size="7" class="ingredients-wrapper">
                   <ion-row>
@@ -241,7 +245,7 @@
                   </ion-row>
                 </ion-col>
                 <ion-col size="4">
-                  <ion-item>
+                  <ion-item lines="full">
                     <ion-input
                       class="ingredient-percentage"
                       [(ngModel)]="item.percentage"

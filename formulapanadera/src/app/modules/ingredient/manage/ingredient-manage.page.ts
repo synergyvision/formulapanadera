@@ -73,7 +73,7 @@ export class IngredientManagePage implements OnInit {
       });
     } else {
       this.update = true;
-      this.ingredient = state.ingredient;
+      this.ingredient = JSON.parse(JSON.stringify(state.ingredient));
       if (this.ingredient.formula) {
         this.type = "compound";
       }
@@ -211,7 +211,9 @@ export class IngredientManagePage implements OnInit {
     if (ingredients) {
       ingredients.forEach((ingredient) => {
         if (ingredient.name == this.ingredient.name) {
-          ingredient_exists = true;
+          if (!this.ingredient.id || this.ingredient.id !== ingredient.id) {
+            ingredient_exists = true;
+          }
         }
       });
     }
