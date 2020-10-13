@@ -119,6 +119,7 @@
     "compensation_percentage": "Compensation factor",
     "suggested_values": "Suggested values",
     "type": {
+      "name": "Type",
       "simple": "Simple",
       "compound": "Compound"
     },

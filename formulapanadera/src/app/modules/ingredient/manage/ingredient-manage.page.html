@@ -52,18 +52,13 @@
         </ion-col>
       </ion-row>
 
-      <ion-select
-        [value]="type"
-        class="type-selector"
-        (ionChange)="changeType($event)"
-      >
-        <ion-select-option value="simple"
-          >{{'ingredients.type.simple' | translate}}</ion-select-option
-        >
-        <ion-select-option value="compound"
-          >{{'ingredients.type.compound' | translate}}</ion-select-option
-        >
-      </ion-select>
+      <ion-item lines="full">
+        <ion-label>{{'ingredients.type.name' | translate}}</ion-label>
+        <ion-select [value]="type" class="type-selector" (ionChange)="changeType($event)">
+          <ion-select-option value="simple">{{'ingredients.type.simple' | translate}}</ion-select-option>
+          <ion-select-option value="compound">{{'ingredients.type.compound' | translate}}</ion-select-option>
+        </ion-select>
+      </ion-item>
 
       <app-divider></app-divider>
 
