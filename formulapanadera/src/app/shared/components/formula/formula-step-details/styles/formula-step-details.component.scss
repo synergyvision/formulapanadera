@@ -1,0 +1,37 @@
+// Styles
+
+.step-description {
+  --padding-start: 0;
+
+  .step-item-wrapper {
+    --ion-grid-column-padding: 0px;
+    width: 100%;
+    align-items: center;
+    font-size: 14px;
+
+    .step-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+      .step-stats {
+        padding-top: var(--app-narrow-margin);
+        padding-left: var(--app-narrow-margin);
+      }
+
+      .only-stats {
+        padding-bottom: var(--app-narrow-margin);
+      }
+
+      .step-properties {
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+    }
+  }
+}
+
+.step-details {
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+}

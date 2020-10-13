@@ -72,6 +72,29 @@
   </ion-row>
 
   <app-divider></app-divider>
+  
+  <ion-row>
+    <ion-col class="detail-col">
+      <ion-item class="input-item">
+        <ion-label color="primary" class="label">{{'formulas.public' | translate}}</ion-label>
+        <ion-checkbox class="checkbox" color="primary" [(ngModel)]="!this.formula.user.owner"
+          [ngModelOptions]="{standalone: true}" slot="start" [disabled]="true">
+        </ion-checkbox>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col class="detail-col">
+      <ion-item class="input-item">
+        <ion-label color="primary" class="label">{{'formulas.can_clone' | translate}}</ion-label>
+        <ion-checkbox class="checkbox" color="primary" [(ngModel)]="formula.user.can_clone"
+          [ngModelOptions]="{standalone: true}" slot="start" [disabled]="true">
+        </ion-checkbox>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <app-divider></app-divider>
 
   <ion-row>
     <ion-col class="detail-col">
@@ -135,6 +158,18 @@
 
   <app-divider></app-divider>
 
+  <ion-row>
+    <ion-col class="detail-col">
+      <app-show-hide-content (click)="showTimes = !showTimes" [show]="showTimes" [title]="'production.times' | translate">
+      </app-show-hide-content>
+      <span *ngIf="showTimes">
+        <app-formula-time-table [formula]="formula"></app-formula-time-table>
+      </span>
+    </ion-col>
+  </ion-row>
+
+  <app-divider></app-divider>
+
   <ion-row
     ><ion-col class="detail-col">
       <app-show-hide-content
@@ -144,16 +179,11 @@
       >
       </app-show-hide-content>
       <ion-list lines="full" *ngIf="showSteps" class="steps-list">
-        <span *ngFor="let step of steps; index as i">
-          <ion-item-divider class="divider">
-            <ion-img
-              class="step-image"
-              alt="step_image"
-              [src]="getStepAsset(i)"
-            ></ion-img>
-            <ion-label>{{ step.name }}</ion-label>
-          </ion-item-divider>
-          <app-formula-step [step]="step"></app-formula-step> </span
-      ></ion-list> </ion-col
-  ></ion-row>
+        <app-formula-step *ngFor="let step of steps; index as i"
+        [step]="step"
+        [index]="i">
+        </app-formula-step>
+      </ion-list>
+    </ion-col>
+  </ion-row>
 </ion-content>

@@ -5,6 +5,8 @@ export const SPECIFIC_TIME_FORMAT = "hh:mm:ss a";
 
 export const DECIMAL_COST_FORMAT = "1.1-12";
 
+export const DECIMAL_HOUR_FORMAT = "1.0-2";
+
 export const DECIMALS = {
   temperature: 0,
   bakers_percentage: 2,

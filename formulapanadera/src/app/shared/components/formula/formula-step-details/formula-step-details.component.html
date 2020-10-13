@@ -1,0 +1,47 @@
+<ion-item class="step-description" [ngClass]="{ 'step-details': details }">
+  <ion-row class="step-item-wrapper">
+    <ion-col class="step-wrapper">
+      <ion-row
+        class="step-stats"
+        [ngClass]="{ 'only-stats': !step.description }"
+        ><ion-col size="4"
+          ><p class="step-properties">
+            <ion-icon [name]="ICONS.timer" color="dark"></ion-icon>
+            {{ step.time }} {{ "formulas.minutes" | translate }}
+          </p>
+        </ion-col>
+        <ion-col *ngIf="step.temperature" size="8">
+          <p class="step-properties" *ngIf="read">
+            <ion-icon [name]="ICONS.thermometer" color="primary"></ion-icon>
+            {{ step.temperature.min }}ºC<span
+              *ngIf="step.temperature.max !== -1"
+            >
+              - {{ step.temperature.max }}ºC</span
+            >
+            /
+            {{ fahrenheitTemperature(step.temperature.min) }}ºF<span
+              *ngIf="step.temperature.max !== -1"
+            >
+              - {{ fahrenheitTemperature(step.temperature.max) }}ºF</span
+            >
+          </p>
+          <p class="step-properties" *ngIf="!read">
+            <ion-icon [name]="ICONS.thermometer" color="primary"></ion-icon>
+            {{ step.temperature.min }}º{{ temperatureUnit }}
+            <span *ngIf="step.temperature.max !== -1">
+              - {{ step.temperature.max }}º{{ temperatureUnit }}</span
+            >
+          </p></ion-col
+        ></ion-row
+      >
+      <ion-row *ngIf="step.description">
+        <ion-col>
+          <app-data-item
+            [title]="'formulas.description' | translate"
+            [data]="step.description"
+          ></app-data-item>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+</ion-item>

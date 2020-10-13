@@ -19,7 +19,7 @@ import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { ICONS } from "src/app/config/icons";
-import { ASSETS } from "src/app/config/assets";
+import { FormatNumberService } from 'src/app/core/services/format-number.service';
 
 @Component({
   selector: "app-formula-details",
@@ -33,7 +33,6 @@ import { ASSETS } from "src/app/config/assets";
 export class FormulaDetailsPage implements OnInit, OnDestroy {
   APP_URL = APP_URL;
   ICONS = ICONS;
-  ASSETS = ASSETS;
   DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT
 
   formula: FormulaModel = new FormulaModel();
@@ -56,6 +55,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   showSubIngredients: boolean;
   showMixing: boolean;
   showSteps: boolean;
+  showTimes: boolean
 
   state;
   user: UserModel;
@@ -69,12 +69,14 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private toastController: ToastController,
     private router: Router,
     private datePipe: DatePipe,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private formatNumberService: FormatNumberService,
   ) {
     this.showIngredients = false;
     this.showSubIngredients = true;
     this.showMixing = false;
     this.showSteps = false;
+    this.showTimes = false;
     this.state = this.router.getCurrentNavigation().extras.state;
   }
 
@@ -426,9 +428,5 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     toast.present();
-  }
-
-  getStepAsset(index: number) {
-    return ASSETS.step[index];
   }
 }

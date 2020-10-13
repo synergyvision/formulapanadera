@@ -65,6 +65,7 @@
     "steps": "Pasos",
     "step": "Paso",
     "time": "Tiempo",
+    "hours": "Horas",
     "minutes": "Min.",
     "temperature": "Temperatura",
     "description": "Descripción",
@@ -189,8 +190,8 @@
     "6": "Preformado",
     "7": "Descanso en mesa",
     "8": "Formado",
-    "9": "Barnices, Coberturas y Greñado",
-    "10": "Maduración",
+    "9": "Maduración",
+    "10": "Barnices, Coberturas y Greñado",
     "11": "Horneado",
     "12": "Enfriamiento"
   }

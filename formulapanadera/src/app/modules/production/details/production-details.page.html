@@ -87,7 +87,7 @@
       <span *ngIf="showTimes">
         <app-formula-time-table
           *ngFor="let formula of formulas"
-          [formula]="formula"
+          [formula]="formula.formula"
         ></app-formula-time-table>
       </span>
     </ion-col>

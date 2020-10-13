@@ -65,6 +65,7 @@
     "steps": "Steps",
     "step": "Step",
     "time": "Time",
+    "hours": "Hours",
     "minutes": "Min.",
     "temperature": "Temperature",
     "description": "Description",
@@ -189,8 +190,8 @@
     "6": "Rounding",
     "7": "Rest/Benching",
     "8": "Shaping",
-    "9": "Coverings",
-    "10": "Proofing",
+    "9": "Proofing",
+    "10": "Coverings",
     "11": "Baking",
     "12": "Cooling"
   }
