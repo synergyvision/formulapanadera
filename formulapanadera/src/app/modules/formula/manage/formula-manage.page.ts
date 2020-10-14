@@ -39,6 +39,8 @@ export class FormulaManagePage {
   ICONS = ICONS;
 
   formula: FormulaModel = new FormulaModel();
+  original_formula: FormulaModel = new FormulaModel();
+
   manageFormulaForm: FormGroup;
   formulaUnit = "gr";
   temperatureUnit = "C";
@@ -107,6 +109,7 @@ export class FormulaManagePage {
       state.formula.steps.forEach((ingredient) => {
         this.formula.steps.push(ingredient);
       });
+      this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
     this.current_user = await this.userStorageService.getUser();
   }
@@ -128,7 +131,7 @@ export class FormulaManagePage {
   }
 
   formatPercentage(ingredient: IngredientPercentageModel) {
-    if (this.formulaUnit == "%" || ingredient.ingredient.formula) {
+    if (this.formulaUnit == "%") {
       ingredient.percentage = Number(
         this.formatNumberService.formatNumberPercentage(ingredient.percentage)
       );
@@ -265,6 +268,7 @@ export class FormulaManagePage {
     this.formula.name = this.manageFormulaForm.value.name;
     this.formula.units = this.manageFormulaForm.value.units;
     this.formula.unit_weight = this.manageFormulaForm.value.unit_weight;
+    
     if (this.update) {
       let is_modifier = false;
       this.formula.user.modifiers.forEach((user) => {
@@ -288,6 +292,9 @@ export class FormulaManagePage {
       } else {
         this.formula.user.owner = this.current_user.email;
       }
+
+      this.verifyCompoundIngredients()
+
       this.formulaCRUDService
         .updateFormula(this.formula)
         .then(() => {
@@ -400,9 +407,32 @@ export class FormulaManagePage {
   verifyUnit() {
     if (this.formulaUnit == "gr") {
       this.formula.ingredients = this.formulaService.fromRecipeToFormula(
-        this.formula.ingredients
+        this.formula.ingredients, true
       );
     }
+  }
+
+  verifyCompoundIngredients() {
+    let bakers_percentage: string
+    let new_bakers_percentage = this.formulaService.deleteIngredientsWithFormula(this.original_formula, this.formula)
+
+    if (new_bakers_percentage) {
+      bakers_percentage = new_bakers_percentage
+    } else {
+      bakers_percentage = this.formulaService.calculateBakersPercentage(
+        this.formula.units * this.formula.unit_weight,
+        this.original_formula.ingredients
+      );
+    }
+    let total_weight = Number(
+      (this.formula.units * this.formula.unit_weight)
+    );
+    
+    this.formulaService.calculateIngredientsWithFormula(
+      this.formula.ingredients,
+      bakers_percentage,
+      Number(total_weight)
+    );
   }
 
   ingredientsAreValid() {

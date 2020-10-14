@@ -105,7 +105,6 @@ export class ProductionDetailsPage implements OnInit {
 
     let bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
       transformed_formula.formula.ingredients,
-      transformed_formula.ingredients_formula,
       transformed_formula.bakers_percentage,
       Number(total_weight)
     );
@@ -124,7 +123,6 @@ export class ProductionDetailsPage implements OnInit {
           Number(transformed_formula.bakers_percentage),
           step.ingredients,
           ing_formula,
-          transformed_formula.ingredients_formula
         );
       }
     });

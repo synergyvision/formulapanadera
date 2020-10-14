@@ -19,7 +19,6 @@ import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { ICONS } from "src/app/config/icons";
-import { FormatNumberService } from 'src/app/core/services/format-number.service';
 
 @Component({
   selector: "app-formula-details",
@@ -70,7 +69,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private router: Router,
     private datePipe: DatePipe,
     private userStorageService: UserStorageService,
-    private formatNumberService: FormatNumberService,
   ) {
     this.showIngredients = false;
     this.showSubIngredients = true;
@@ -96,11 +94,10 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   calculateFormula() {
     this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
-    this.bakers_percentage = this.formulaService.calculateBakersPercentage(
+    this.bakers_percentage = Number(this.formulaService.calculateBakersPercentage(
       this.units * this.formula.unit_weight,
       this.ingredients
-    );
-
+    )).toFixed(DECIMALS.bakers_percentage);
     this.total_weight = Number(
       (this.units * this.formula.unit_weight).toFixed(DECIMALS.weight)
     );
@@ -114,48 +111,39 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.unitary_cost = (Number(this.total_cost) / this.units).toString();
 
     this.ingredients_formula = [];
-    let bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
-      this.ingredients,
-      this.ingredients_formula,
-      this.bakers_percentage,
-      Number(this.total_weight)
-    );
+    this.formulaService.getIngredientsWithFormula(this.ingredients, this.ingredients_formula)
 
-    let ing_formula: IngredientPercentageModel[];
-    this.steps.forEach((step) => {
-      ing_formula = [];
-      if (step.ingredients) {
-        step.ingredients.forEach((ingredient) => {
-          if (ingredient.ingredient.formula) {
-            ing_formula.push(ingredient);
-          }
-        });
-        this.formulaService.getIngredientsCalculatedPercentages(
-          Number(this.total_weight),
-          Number(this.bakers_percentage),
-          JSON.parse(JSON.stringify(this.ingredients)),
-          ing_formula,
-          this.ingredients_formula
-        );
-      }
-    });
+    // let ing_formula: IngredientPercentageModel[];
+    // this.steps.forEach((step) => {
+    //   ing_formula = [];
+    //   if (step.ingredients) {
+    //     step.ingredients.forEach((ingredient) => {
+    //       if (ingredient.ingredient.formula) {
+    //         ing_formula.push(ingredient);
+    //       }
+    //     });
+    //     this.formulaService.getIngredientsCalculatedPercentages(
+    //       Number(this.total_weight),
+    //       Number(this.bakers_percentage),
+    //       JSON.parse(JSON.stringify(this.ingredients)),
+    //       ing_formula,
+    //       this.ingredients_formula
+    //     );
+    //   }
+    // });
 
-    if (bakers_percentage) {
-      this.bakers_percentage = bakers_percentage;
-    }
-
-    this.steps.forEach((item) => {
-      if (item.ingredients) {
-        item.ingredients = this.formulaService.sortIngredients(
-          item.ingredients
-        );
-      }
-    });
-    this.ingredients_formula.forEach((item) => {
-      item.ingredient.formula.ingredients = this.formulaService.sortIngredients(
-        item.ingredient.formula.ingredients
-      );
-    });
+    // this.steps.forEach((item) => {
+    //   if (item.ingredients) {
+    //     item.ingredients = this.formulaService.sortIngredients(
+    //       item.ingredients
+    //     );
+    //   }
+    // });
+    // this.ingredients_formula.forEach((item) => {
+    //   item.ingredient.formula.ingredients = this.formulaService.sortIngredients(
+    //     item.ingredient.formula.ingredients
+    //   );
+    // });
     this.ingredients = this.formulaService.sortIngredients(this.ingredients);
   }
 
