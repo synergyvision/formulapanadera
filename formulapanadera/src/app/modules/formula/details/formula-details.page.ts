@@ -19,7 +19,6 @@ import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { ICONS } from "src/app/config/icons";
-import { ASSETS } from "src/app/config/assets";
 
 @Component({
   selector: "app-formula-details",
@@ -33,7 +32,6 @@ import { ASSETS } from "src/app/config/assets";
 export class FormulaDetailsPage implements OnInit, OnDestroy {
   APP_URL = APP_URL;
   ICONS = ICONS;
-  ASSETS = ASSETS;
   DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT
 
   formula: FormulaModel = new FormulaModel();
@@ -56,6 +54,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   showSubIngredients: boolean;
   showMixing: boolean;
   showSteps: boolean;
+  showTimes: boolean
 
   state;
   user: UserModel;
@@ -69,12 +68,13 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private toastController: ToastController,
     private router: Router,
     private datePipe: DatePipe,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
   ) {
     this.showIngredients = false;
     this.showSubIngredients = true;
     this.showMixing = false;
     this.showSteps = false;
+    this.showTimes = false;
     this.state = this.router.getCurrentNavigation().extras.state;
   }
 
@@ -94,11 +94,10 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   calculateFormula() {
     this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
-    this.bakers_percentage = this.formulaService.calculateBakersPercentage(
+    this.bakers_percentage = Number(this.formulaService.calculateBakersPercentage(
       this.units * this.formula.unit_weight,
       this.ingredients
-    );
-
+    )).toFixed(DECIMALS.bakers_percentage);
     this.total_weight = Number(
       (this.units * this.formula.unit_weight).toFixed(DECIMALS.weight)
     );
@@ -111,15 +110,20 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     );
     this.unitary_cost = (Number(this.total_cost) / this.units).toString();
 
-    this.ingredients_formula = [];
-    let bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
+    this.ingredients_formula = []
+    let ing_formula: IngredientPercentageModel[] = [];
+    //Identifies ingredients with formula
+    this.formulaService.getIngredientsWithFormula(
       this.ingredients,
-      this.ingredients_formula,
-      this.bakers_percentage,
-      Number(this.total_weight)
+      ing_formula
     );
+    this.formulaService.getAllIngredientsWithFormula(
+      Number(this.bakers_percentage),
+      this.ingredients,
+      ing_formula,
+      this.ingredients_formula
+    )
 
-    let ing_formula: IngredientPercentageModel[];
     this.steps.forEach((step) => {
       ing_formula = [];
       if (step.ingredients) {
@@ -133,14 +137,11 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           Number(this.bakers_percentage),
           JSON.parse(JSON.stringify(this.ingredients)),
           ing_formula,
+          "ADD",
           this.ingredients_formula
         );
       }
     });
-
-    if (bakers_percentage) {
-      this.bakers_percentage = bakers_percentage;
-    }
 
     this.steps.forEach((item) => {
       if (item.ingredients) {
@@ -426,9 +427,5 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     toast.present();
-  }
-
-  getStepAsset(index: number) {
-    return ASSETS.step[index];
   }
 }

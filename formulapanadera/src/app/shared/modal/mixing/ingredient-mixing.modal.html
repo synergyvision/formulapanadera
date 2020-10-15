@@ -42,6 +42,7 @@
               [value]="i"
               (ionChange)="changeMixingOrder($event, i, item)"
               class="step-selector"
+              mode="md"
             >
               <ion-select-option
                 *ngFor="let index of formulaMixing; index as j"
@@ -59,7 +60,7 @@
         >
         <ion-textarea
           class="step-description"
-          [autoGrow]="!editable"
+          autoGrow="true"
           type="text"
           [(ngModel)]="mixStep.description"
           [readonly]="!editable"

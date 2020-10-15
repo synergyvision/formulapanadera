@@ -36,18 +36,19 @@ ion-back-button {
       padding-top: 0;
       padding-bottom: 0;
     }
+  }
 
-    .divider {
-      background-color: rgba(221, 221, 221, 0.322) !important;
-      color: black;
-      font-size: 12px;
-      padding-left: var(--app-narrow-margin);
+  .input-item {
+    --padding-start: var(--page-margin);
 
-      .step-image {
-        width: 20%;
-        max-width: 60px;
-        margin: 5px 10px 5px 0;
-      }
+    .label {
+      opacity: 1 !important;
+      color: var(--ion-color-medium);
+    }
+
+    .checkbox {
+      opacity: 1 !important;
+      margin-right: var(--page-margin);
     }
   }
 }

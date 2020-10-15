@@ -11,7 +11,7 @@ import { ShowHideContentComponent } from "./general/show-hide-content/show-hide-
 import { IngredientItemComponent } from "./ingredient/ingredient-item/ingredient-item.component";
 import { FormulaItemComponent } from "./formula/formula-item/formula-item.component";
 import { IngredientsListComponent } from "./ingredient/ingredients-list/ingredients-list.component";
-import { FormulaStepComponent } from "./formula/formula-step/formula-step.component";
+import { FormulaStepDetailsComponent } from "./formula/formula-step-details/formula-step-details.component";
 import { MixingStepsComponent } from "./formula/mixing-steps/mixing-steps.component";
 import { HydrationBarComponent } from "./formula/hydration-bar/hydration-bar.component";
 import { FormulasListComponent } from "./production/formulas-list/formulas-list.component";
@@ -19,10 +19,11 @@ import { ProductionIngredientsComponent } from "./production/production-ingredie
 import { ProductionItemComponent } from "./production/production-item/production-item.component";
 import { FormulasIngredientsListComponent } from "./production/formulas-ingredients-list/formulas-ingredients-list.component";
 import { TitleComponent } from "./general/title/title.component";
-import { FormulaTimeTableComponent } from "./production/formula-time-table/formula-time-table.component";
+import { FormulaTimeTableComponent } from "./formula/formula-time-table/formula-time-table.component";
 import { ProductionStepItemComponent } from "./production/production-step-item/production-step-item.component";
 import { DataItemComponent } from "./general/data-item/data-item.component";
 import { DividerComponent } from "./general/divider/divider.component";
+import { FormulaStepComponent } from './formula/formula-step/formula-step.component';
 
 @NgModule({
   imports: [
@@ -45,6 +46,7 @@ import { DividerComponent } from "./general/divider/divider.component";
     FormulasListComponent,
     FormulaTimeTableComponent,
     FormulaStepComponent,
+    FormulaStepDetailsComponent,
     MixingStepsComponent,
     ProductionItemComponent,
     ProductionStepItemComponent,
@@ -64,6 +66,7 @@ import { DividerComponent } from "./general/divider/divider.component";
     FormulasListComponent,
     FormulaTimeTableComponent,
     FormulaStepComponent,
+    FormulaStepDetailsComponent,
     MixingStepsComponent,
     ProductionItemComponent,
     ProductionStepItemComponent,

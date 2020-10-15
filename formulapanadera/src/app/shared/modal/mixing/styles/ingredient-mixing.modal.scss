@@ -24,9 +24,10 @@
 }
 
 .step-selector {
-  padding: 0px;
+  padding: 0px 10px;
   border-bottom: 1px solid lightgray;
   font-size: 14px;
+  max-width: 100%;
 }
 
 .delete-step {

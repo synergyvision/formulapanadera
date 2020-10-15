@@ -43,4 +43,8 @@ export class FormatNumberService {
   fromFahrenheitToCelsius(fahrenheit: number) {
     return (((fahrenheit - 32) * 5) / 9).toFixed(DECIMALS.temperature);
   }
+
+  fromMinutesToHours(minutes: number) {
+    return (minutes / 60);
+  }
 }

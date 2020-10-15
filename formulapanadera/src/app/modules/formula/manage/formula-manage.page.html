@@ -153,11 +153,8 @@
               ></ion-item>
             </ion-col>
             <ion-col size="1">
-              <p class="ingredient-percentage" *ngIf="!item.ingredient.formula">
+              <p class="ingredient-percentage">
                 {{formulaUnit}}
-              </p>
-              <p class="ingredient-percentage" *ngIf="item.ingredient.formula">
-                %
               </p>
             </ion-col>
           </ion-row>
@@ -225,11 +222,11 @@
               <ion-icon button [name]="ICONS.ingredient" slot="end"></ion-icon>
             </span>
           </ion-item-divider>
-          <app-formula-step
+          <app-formula-step-details
             [step]="step"
             [temperatureUnit]="temperatureUnit"
             [read]="false"
-          ></app-formula-step>
+          ></app-formula-step-details>
           <ion-list lines="full" *ngIf="step.ingredients" class="inputs-list">
             <ion-item
               *ngFor="let item of step.ingredients"
