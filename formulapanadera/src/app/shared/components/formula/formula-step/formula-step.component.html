@@ -8,13 +8,15 @@
         </ion-col>
       </ion-row>
       <ion-row class="step-row">
-        <ion-col class="ion-no-padding" size="4">
+        <ion-col class="ion-no-padding" size="12">
           <p class="step-properties">
             <ion-icon [name]="ICONS.timer" color="dark"></ion-icon>
             {{ step.time }} {{ "formulas.minutes" | translate }}
           </p>
         </ion-col>
-        <ion-col class="ion-no-padding" size="8">
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-no-padding" size="12">
           <p class="step-properties" *ngIf="step.temperature">
             <ion-icon [name]="ICONS.thermometer" color="primary"></ion-icon>
             {{ step.temperature.min }}ºC<span *ngIf="step.temperature.max !== -1">

@@ -1,20 +1,20 @@
 <ion-row class="formulas-list">
   <ion-col class="formulas-col">
     <ion-row class="title-row">
-      <ion-col size="4" class="title-name">
+      <ion-col size="3" class="title-name">
         {{ "production.production_name" | translate }}
       </ion-col>
-      <ion-col size="2">{{ "formulas.time" | translate }} ({{ "formulas.minutes" | translate }})</ion-col>
+      <ion-col size="3">{{ "formulas.duration" | translate }} ({{ "formulas.minutes" | translate }})</ion-col>
       <ion-col size="3">{{ "formulas.units" | translate }}</ion-col>
       <ion-col size="3"
         >{{ "formulas.cost.name" | translate }} ({{ CURRENCY }})</ion-col
       >
     </ion-row>
     <ion-row *ngFor="let item of formulas" class="formulas-row">
-      <ion-col size="4" class="formula-name">
+      <ion-col size="3" class="formula-name">
         {{ item.formula.name }}
       </ion-col>
-      <ion-col size="2">{{ timeBeforeOven(item) }}</ion-col>
+      <ion-col size="3">{{ timeBeforeOven(item) }}</ion-col>
       <ion-col size="3">{{ item.number }}</ion-col>
       <ion-col size="3">{{ item.total_cost | number: DECIMAL_COST_FORMAT }}</ion-col>
     </ion-row>
