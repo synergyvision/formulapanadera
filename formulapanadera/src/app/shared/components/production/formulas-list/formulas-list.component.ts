@@ -12,7 +12,7 @@ import { ProductionService } from "src/app/core/services/production.service";
 })
 export class FormulasListComponent {
   CURRENCY = CURRENCY;
-  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT
+  FORMULA_COST_FORMAT = DECIMAL_COST_FORMAT.formula
 
   @Input() formulas: Array<FormulaPresentModel>;
 

@@ -17,7 +17,7 @@ export class IngredientItemComponent {
 
   currency = CURRENCY;
   ICONS = ICONS;
-  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT
+  INGREDIENT_COST_FORMAT = DECIMAL_COST_FORMAT.ingredient
 
   constructor() {}
 }

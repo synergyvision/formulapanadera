@@ -60,13 +60,13 @@
     <ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.cost.unitary' | translate"
-        data="{{unitary_cost | number: DECIMAL_COST_FORMAT}}{{currency}}"
+        data="{{unitary_cost | number: FORMULA_COST_FORMAT}} {{currency}}"
       ></app-data-item>
     </ion-col>
     <ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.cost.total' | translate"
-        data="{{total_cost | number: DECIMAL_COST_FORMAT}}{{currency}}"
+        data="{{total_cost | number: FORMULA_COST_FORMAT}} {{currency}}"
       ></app-data-item>
     </ion-col>
   </ion-row>

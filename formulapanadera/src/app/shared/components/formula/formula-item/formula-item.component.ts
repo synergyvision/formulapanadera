@@ -18,7 +18,7 @@ export class FormulaItemComponent {
 
   currency = CURRENCY;
   ICONS = ICONS;
-  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT;
+  FORMULA_COST_FORMAT = DECIMAL_COST_FORMAT.formula;
 
   constructor(private formulaService: FormulaService) {}
 

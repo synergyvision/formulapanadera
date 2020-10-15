@@ -50,7 +50,7 @@
       <app-data-item
         title="{{'ingredients.cost' | translate}}
           ({{currency}}/{{'ingredients.grams' | translate}})"
-        [data]="ingredient.cost | number: DECIMAL_COST_FORMAT"
+        [data]="ingredient.cost | number: INGREDIENT_COST_FORMAT"
       ></app-data-item>
     </span>
     <span *ngIf="type == 'compound'">
