@@ -1,10 +1,10 @@
-<ion-item lines="full" class="divider" (click)="show_description = !show_description">
+<ion-item lines="none" class="divider" (click)="show_description = !show_description" [ngClass]="{ 'background-gray': even, 'background-white': !even }">
   <ion-img class="step-image" alt="step_image" [src]="getStepAsset()"></ion-img>
   <ion-row class="step-row">
     <ion-col class="ion-no-padding" size="12">
       <ion-row class="step-row">
         <ion-col class="ion-no-padding" size="12">
-          <p class="step-title">{{ step.name }}</p>
+          <p class="step-name">{{ step.name }}</p>
         </ion-col>
       </ion-row>
       <ion-row class="step-row">
@@ -30,8 +30,8 @@
     </ion-col>
   </ion-row>
 </ion-item>
-<ion-row *ngIf="step.description && show_description">
-  <ion-col class="ion-no-padding">
-    <app-data-item [title]="'formulas.description' | translate" [data]="step.description"></app-data-item>
+<ion-row *ngIf="step.description">
+  <ion-col class="ion-no-padding" [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }">
+    <app-data-item [title]="'formulas.description' | translate" [data]="step.description" [no_lines]="true"></app-data-item>
   </ion-col>
 </ion-row>

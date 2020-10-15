@@ -1,10 +1,11 @@
-<ion-item class="step-item" [ngClass]="{ 'background-gray': even }">
+<ion-item class="step-item" [ngClass]="{ 'background-gray': even }" [ngClass]="{ 'background-gray': even, 'background-white': !even }">
+  <ion-img class="step-image" alt="step_image" [src]="getStepAsset()"></ion-img>
   <ion-icon
     *ngIf="step.time"
     class="step-action-icon"
     [ngClass]="{ blocked: blocked }"
     [name]="stepIcon(step)"
-    slot="start"
+    slot="end"
     button
     (click)="changeStepStatus(step)"
   ></ion-icon>
@@ -20,9 +21,33 @@
       <ion-row>
         <ion-col size="12" class="details-col">
           <p class="step-formula">{{ step.formula.name }}</p>
-          <p class="step-description" *ngIf="step.time">
-            <ion-icon class="details-icon" [name]="ICONS.alarm"></ion-icon
-            >{{ formatTime(step.time.start) }} - {{ formatTime(step.time.end) }}
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="step.time">
+        <ion-col class="ion-no-padding" size="12" class="details-col">
+          <p class="step-description">
+            <ion-icon class="details-icon" [name]="ICONS.timer" color="dark">
+            </ion-icon>{{ step.step.time }} {{ "formulas.minutes" | translate }}
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="step.time">
+        <ion-col class="ion-no-padding" size="12" class="details-col">
+          <p class="step-description" *ngIf="step.step.temperature">
+            <ion-icon class="details-icon" [name]="ICONS.thermometer" color="primary">
+            </ion-icon>{{ step.step.temperature.min }}ºC<span *ngIf="step.step.temperature.max !== -1">
+              - {{ step.step.temperature.max }}ºC</span>
+            /
+            {{ fahrenheitTemperature(step.step.temperature.min) }}ºF<span *ngIf="step.step.temperature.max !== -1">
+              - {{ fahrenheitTemperature(step.step.temperature.max) }}ºF</span>
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="step.time">
+        <ion-col size="12" class="details-col">
+          <p class="step-description">
+            <ion-icon class="details-icon" [name]="ICONS.alarm"></ion-icon>{{ formatTime(step.time.start) }} -
+            {{ formatTime(step.time.end) }}
           </p>
         </ion-col>
       </ion-row>
@@ -42,17 +67,10 @@
       </ion-row>
     </ion-col>
   </ion-row>
-  <ion-icon
-    *ngIf="step.time"
-    class="description-icon"
-    [name]="show_description ? ICONS.arrow_up : ICONS.arrow_down"
-    slot="end"
-    button
-    (click)="showDescription()"
-  ></ion-icon>
 </ion-item>
-<app-formula-step-details
-  *ngIf="show_description"
-  [details]="true"
-  [step]="step.step"
-></app-formula-step-details>
+<ion-row *ngIf="step.step.description">
+  <ion-col class="ion-no-padding" [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }">
+    <app-data-item [title]="'formulas.description' | translate" [data]="step.step.description" [no_lines]="true">
+    </app-data-item>
+  </ion-col>
+</ion-row>

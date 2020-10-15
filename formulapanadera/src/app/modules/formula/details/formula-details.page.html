@@ -179,9 +179,11 @@
       >
       </app-show-hide-content>
       <ion-list lines="full" *ngIf="showSteps" class="steps-list">
-        <app-formula-step *ngFor="let step of steps; index as i"
+        <app-formula-step
+        *ngFor="let step of steps; index as i"
         [step]="step"
-        [index]="i">
+        [index]="i"
+        [even]="i%2==0">
         </app-formula-step>
       </ion-list>
     </ion-col>

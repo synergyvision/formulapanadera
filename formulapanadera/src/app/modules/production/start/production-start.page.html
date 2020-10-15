@@ -124,6 +124,7 @@
       *ngFor="let step of stepsFiltered(false); index as i"
       [step]="step"
       [even]="(i%2==0)"
+      [index]="i"
       [production_in_process]="production_in_process"
       [original_production]="original_production"
       [blocked]="stepBlocked(step)"

@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { AlertController } from "@ionic/angular";
+import { ASSETS } from 'src/app/config/assets';
 import {
   FERMENTATION_STEP,
   MANIPULATION_STEP,
@@ -10,6 +11,7 @@ import {
   ProductionInProcessModel,
   ProductionStepModel,
 } from "src/app/core/models/production.model";
+import { FormatNumberService } from 'src/app/core/services/format-number.service';
 import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessService } from "src/app/core/services/production-in-process.service";
 import { TimeService } from "src/app/core/services/time.service";
@@ -28,27 +30,26 @@ export class ProductionStepItemComponent {
   FERMENTATION_STEP = FERMENTATION_STEP - 1;
 
   @Input() step: ProductionStepModel;
+  @Input() index: number
   @Input() even: boolean = false;
   @Input() production_in_process: ProductionInProcessModel;
   @Input() original_production: ProductionInProcessModel;
   @Input() blocked: boolean = false;
-  show_description: boolean = false;
 
   constructor(
     private timeService: TimeService,
     private productionInProcessService: ProductionInProcessService,
     private alertController: AlertController,
-    private languageService: LanguageService
-  ) {}
+    private languageService: LanguageService,
+    private formatNumberService: FormatNumberService
+  ) { }
+  
+  getStepAsset() {
+    return ASSETS.step[this.index];
+  }
 
   formatTime(date: Date) {
     return this.timeService.formatTime(date);
-  }
-
-  showDescription() {
-    if (this.step.time) {
-      this.show_description = !this.show_description;
-    }
   }
 
   stepOnTime(): boolean {
@@ -172,5 +173,10 @@ export class ProductionStepItemComponent {
       ],
     });
     await alert.present();
+  }
+
+  fahrenheitTemperature(value) {
+    value = this.formatNumberService.fromCelsiusToFahrenheit(value);
+    return value;
   }
 }

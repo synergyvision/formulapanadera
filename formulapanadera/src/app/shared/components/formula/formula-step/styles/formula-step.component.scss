@@ -1,27 +1,51 @@
 .divider {
-  --background: rgba(221, 221, 221, 0.322);
-  color: black;
+  color: var(--ion-color-secondary);
+  --padding-top: var(--page-margin);
   --padding-start: var(--page-margin);
-  font-size: 12px;
+  font-size: 14px;
 
   .step-row {
     width: 100%;
+    display: flex;
+    align-self: baseline;
 
-    .step-title {
-      font-size: 14px;
+    .step-name {
+      margin: 0px;
+      font-size: 16px;
       font-weight: bold;
-      margin: 0;
+      letter-spacing: 0.2px;
+      color: var(--ion-color-secondary);
     }
 
     .step-properties {
       margin: 0;
-      font-size: 14px;
+      font-size: 16px;
+      ion-icon {
+        margin-bottom: -2px;
+        margin-right: 5px;
+      }
     }
   }
 
   .step-image {
     width: 20%;
     max-width: 60px;
-    margin: 5px 10px 5px 0;
+    margin: 0 10px 5px 0;
   }
+}
+
+.background-gray {
+  --background: rgba(221, 221, 221, 0.322) !important;
+}
+
+.background-white {
+  --background: white !important;
+}
+
+.col-background-gray {
+  background: rgba(221, 221, 221, 0.322) !important;
+}
+
+.col-background-white {
+  background: white !important;
 }

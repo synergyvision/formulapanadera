@@ -14,7 +14,7 @@ export class FormulaStepComponent {
 
   @Input() step: StepDetailsModel;
   @Input() index: number;
-  show_description: boolean = true;
+  @Input() even: boolean;
 
   constructor(private formatNumberService: FormatNumberService) {}
 

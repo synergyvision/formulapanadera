@@ -1,10 +1,10 @@
-<ion-list lines="none" class="mixing-list">
+<ion-list lines="none" class="mixing-list" [ngClass]="{ 'border-bottom': steps.length>0 }">
   <span *ngFor="let mixStep of steps; index as i">
-    <ion-item-divider class="divider">
+    <ion-item-divider class="divider" [ngClass]="{ 'background-gray': i%2==0, 'background-white': i%2!=0 }">
       <ion-label>{{ "formulas.step" | translate }} {{ i + 1 }}</ion-label>
     </ion-item-divider>
-    <ion-item class="mixing-item">
-      <ion-row class="ingredient-item-wrapper">
+    <ion-item class="mixing-item" [ngClass]="{ 'background-gray': i%2==0, 'background-white': i%2!=0 }">
+      <ion-row class="ingredient-item-wrapper" [ngClass]="{ 'no-padding-bottom': mixStep.description }">
         <ion-col class="ingredients-wrapper">
           <ion-row>
             <ion-col class="ingredients-list">
@@ -22,6 +22,7 @@
               <app-data-item
                 [title]="'formulas.description' | translate"
                 [data]="mixStep.description"
+                [no_lines]="true"
               ></app-data-item>
             </ion-col>
           </ion-row>
