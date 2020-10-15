@@ -126,21 +126,7 @@ export class ProductionStepItemComponent {
           step.status = "IN PROCESS";
         }
       } else if (step.status == "IN PROCESS") {
-        this.productionInProcessService.recalculateProduction(
-          this.production_in_process,
-          this.step
-        );
-        step.status = "DONE";
-        if (step.step.number == FERMENTATION_STEP - 1) {
-          this.production_in_process.steps.forEach((production_step) => {
-            if (
-              step.formula.id == production_step.formula.id &&
-              production_step.step.number == MANIPULATION_STEP - 1
-            ) {
-              production_step.status = "DONE";
-            }
-          });
-        }
+        this.stepDoneAlert(step)
       }
 
       this.productionInProcessService.setProductionInProcess(
@@ -168,6 +154,43 @@ export class ProductionStepItemComponent {
               JSON.parse(JSON.stringify(this.original_production)),
               step.formula.id
             );
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async stepDoneAlert(step: ProductionStepModel) {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("production.warning.name"),
+      message: this.languageService.getTerm("production.warning.step_done", {step: step.step.name}),
+      cssClass: "confirm-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            this.productionInProcessService.recalculateProduction(
+              this.production_in_process,
+              this.step
+            );
+            step.status = "DONE";
+            if (step.step.number == FERMENTATION_STEP - 1) {
+              this.production_in_process.steps.forEach((production_step) => {
+                if (
+                  step.formula.id == production_step.formula.id &&
+                  production_step.step.number == MANIPULATION_STEP - 1
+                ) {
+                  production_step.status = "DONE";
+                }
+              });
+            }
           },
         },
       ],

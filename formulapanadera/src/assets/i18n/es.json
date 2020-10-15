@@ -170,7 +170,8 @@
     },
     "warning": {
       "name": "Alerta",
-      "start": "Recomendamos iniciar esta fórmula con el orden sugerido"
+      "start": "Recomendamos iniciar esta fórmula con el orden sugerido",
+      "step_done": "¿Seguro que el paso {{step}} está listo?"
     },
     "invalid_steps": {
       "verify": "Verificar jornada laboral",
