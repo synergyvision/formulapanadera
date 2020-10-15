@@ -292,6 +292,8 @@ export class ProductionInProcessService {
       fermentation_step.time.end
     );
     time_difference = time_difference / (manipulation_step.step.times + 1);
+    
+    let step_time_difference = time_difference
 
     for (let index = 0; index < manipulation_step.step.times; index++) {
       let step: ProductionStepModel = {
@@ -314,7 +316,7 @@ export class ProductionInProcessService {
 
       manipulation_steps.push(step);
 
-      time_difference += time_difference;
+      time_difference = time_difference + step_time_difference;
     }
 
     return manipulation_steps;
