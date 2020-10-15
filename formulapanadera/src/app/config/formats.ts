@@ -8,8 +8,6 @@ export const DECIMAL_COST_FORMAT = {
   formula: "1.1-2"
 };
 
-export const DECIMAL_HOUR_FORMAT = "1.0-2";
-
 export const DECIMALS = {
   temperature: 0,
   bakers_percentage: 2,

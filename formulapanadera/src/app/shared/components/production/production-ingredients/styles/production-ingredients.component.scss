@@ -17,6 +17,8 @@
   }
 
   .ingredients-row {
+    border-bottom: 1px solid var(--ion-color-light-shade);
+
     .ingredient-name {
       text-align: start;
     }

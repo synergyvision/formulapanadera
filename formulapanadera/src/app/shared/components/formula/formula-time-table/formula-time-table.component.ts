@@ -1,8 +1,7 @@
 import { Component, Input } from "@angular/core";
-import { DECIMAL_HOUR_FORMAT } from 'src/app/config/formats';
 import { FormulaModel } from "src/app/core/models/formula.model";
-import { FormatNumberService } from 'src/app/core/services/format-number.service';
 import { FormulaService } from "src/app/core/services/formula.service";
+import { TimeService } from 'src/app/core/services/time.service';
 
 @Component({
   selector: "app-formula-time-table",
@@ -11,15 +10,19 @@ import { FormulaService } from "src/app/core/services/formula.service";
 })
 export class FormulaTimeTableComponent {
   @Input() formula: FormulaModel;
-  DECIMAL_HOUR_FORMAT = DECIMAL_HOUR_FORMAT
 
-  constructor(private formulaService: FormulaService, private formatNumberService: FormatNumberService) {}
+  constructor(private formulaService: FormulaService, private timeService: TimeService) {}
 
   totalTime() {
     return this.formulaService.calculateTime(this.formula.steps);
   }
 
-  fromMinutesToHours(minutes: number) {
-    return this.formatNumberService.fromMinutesToHours(minutes)
+  getSpecificTime(minutes: number, type: "h" | "m") {
+    let time = this.timeService.fromMinutesToHours(minutes)
+    if (type == "h") {
+      return time.hours
+    } else if (type == "m") {
+      return time.minutes
+    }
   }
 }

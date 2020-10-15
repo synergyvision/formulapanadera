@@ -15,13 +15,39 @@
       <ion-col size="6" class="formula-name">
         {{ item.name }}
       </ion-col>
-      <ion-col size="6">{{ fromMinutesToHours(item.time) | number: DECIMAL_HOUR_FORMAT }} ({{ item.time }})</ion-col>
+      <ion-col size="2" class="formula-times">
+        <span *ngIf="item.time && item.time>60">
+          {{ getSpecificTime(item.time, "h") }} {{ "formulas.hours" | translate }}
+        </span>
+      </ion-col>
+      <ion-col size="2" class="formula-times">
+        <span *ngIf="item.time && item.time%60!==0">
+          {{ getSpecificTime(item.time, "m") }} {{ "formulas.minutes" | translate }}
+        </span>
+      </ion-col>
+      <ion-col size="2" class="formula-times">
+        <span *ngIf="item.time">
+          ({{ item.time }})
+        </span>
+      </ion-col>
     </ion-row>
     <ion-row class="total-row">
       <ion-col size="6" class="total-value total-name">{{
         "production.total" | translate
       }}</ion-col>
-      <ion-col size="6" class="total-value">{{ fromMinutesToHours(totalTime()) | number: DECIMAL_HOUR_FORMAT }} ({{ totalTime() }})</ion-col>
+      <ion-col size="2" class="total-value formula-times">
+        <span *ngIf="getSpecificTime(totalTime(), 'h')">
+          {{ getSpecificTime(totalTime(), "h") }} {{ "formulas.hours" | translate }}
+        </span>
+      </ion-col>
+      <ion-col size="2" class="total-value formula-times">
+        <span *ngIf="getSpecificTime(totalTime(), 'm')">
+          {{ getSpecificTime(totalTime(), "m") }} {{ "formulas.minutes" | translate }}
+        </span>
+      </ion-col>
+      <ion-col size="2" class="total-value formula-times">
+        ({{ totalTime() }})
+      </ion-col>
     </ion-row>
   </ion-col>
 </ion-row>
