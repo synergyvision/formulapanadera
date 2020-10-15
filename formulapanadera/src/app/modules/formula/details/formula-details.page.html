@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button
@@ -75,7 +75,7 @@
   
   <ion-row>
     <ion-col class="detail-col">
-      <ion-item class="input-item">
+      <ion-item class="input-item" lines="full">
         <ion-label color="primary" class="label">{{'formulas.public' | translate}}</ion-label>
         <ion-checkbox class="checkbox" color="primary" [(ngModel)]="!this.formula.user.owner"
           [ngModelOptions]="{standalone: true}" slot="start" [disabled]="true">
@@ -85,7 +85,7 @@
   </ion-row>
   <ion-row>
     <ion-col class="detail-col">
-      <ion-item class="input-item">
+      <ion-item class="input-item" lines="full">
         <ion-label color="primary" class="label">{{'formulas.can_clone' | translate}}</ion-label>
         <ion-checkbox class="checkbox" color="primary" [(ngModel)]="formula.user.can_clone"
           [ngModelOptions]="{standalone: true}" slot="start" [disabled]="true">

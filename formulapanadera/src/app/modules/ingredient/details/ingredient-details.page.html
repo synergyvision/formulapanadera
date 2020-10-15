@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button
@@ -34,7 +34,7 @@
         title="{{'ingredients.hydration' | translate}} (%)"
         [data]="ingredient.hydration"
       ></app-data-item>
-      <ion-item class="input-item">
+      <ion-item class="input-item" lines="full">
         <ion-label color="primary" class="flour-label"
           >{{'ingredients.is_flour' | translate}}</ion-label
         >

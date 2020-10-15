@@ -3,7 +3,7 @@
   [formGroup]="manageIngredientForm"
   (ngSubmit)="sendIngredient()"
 >
-  <ion-header>
+  <ion-header class="ion-no-border">
     <ion-toolbar color="primary">
       <ion-buttons slot="start">
         <ion-back-button
@@ -36,7 +36,7 @@
 
       <ion-row *ngIf="!update || user.email === ingredient.creator">
         <ion-col class="no-padding">
-          <ion-item class="input-item">
+          <ion-item class="input-item" lines="full">
             <ion-label color="primary"
               >{{'ingredients.can_be_modified' | translate}}</ion-label
             >
@@ -80,7 +80,7 @@
           >
           </ion-input>
         </ion-item>
-        <ion-item class="input-item">
+        <ion-item class="input-item" lines="full">
           <ion-label color="primary"
             >{{'ingredients.is_flour' | translate}}</ion-label
           >
