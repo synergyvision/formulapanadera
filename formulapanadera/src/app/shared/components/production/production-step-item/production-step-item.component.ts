@@ -45,7 +45,10 @@ export class ProductionStepItemComponent {
   ) { }
   
   getStepAsset() {
-    return ASSETS.step[this.index];
+    if (OVEN_STEP - 1.5 == this.step.step.number) {
+      return ASSETS.step[OVEN_STEP-1]
+    }
+    return ASSETS.step[this.step.step.number];
   }
 
   formatTime(date: Date) {
