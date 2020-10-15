@@ -8,6 +8,7 @@ import { Component, Input } from "@angular/core";
 export class DataItemComponent {
   @Input() title: string;
   @Input() data: string;
+  @Input() no_lines: boolean = false
 
   constructor() {}
 }

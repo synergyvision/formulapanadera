@@ -25,7 +25,8 @@ ion-select {
   --background: var(--page-background);
 
   .segment {
-    padding: 0 var(--page-margin) 0 var(--page-margin);
+    padding: 5px var(--page-margin);
+    border-radius: 0px;
   }
 
   .ingredients-list {
@@ -43,4 +44,8 @@ ion-select {
       height: 100%;
     }
   }
+}
+
+ion-segment-button {
+  font-size: 14px;
 }

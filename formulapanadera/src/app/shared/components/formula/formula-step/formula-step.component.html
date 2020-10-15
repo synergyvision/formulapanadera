@@ -1,20 +1,27 @@
-<ion-item lines="full" class="divider" (click)="show_description = !show_description">
+<ion-item lines="none" class="divider" (click)="show_description = !show_description" [ngClass]="{ 'background-gray': even, 'background-white': !even }">
   <ion-img class="step-image" alt="step_image" [src]="getStepAsset()"></ion-img>
   <ion-row class="step-row">
     <ion-col class="ion-no-padding" size="12">
       <ion-row class="step-row">
         <ion-col class="ion-no-padding" size="12">
-          <p class="step-title">{{ step.name }}</p>
+          <p class="step-name">{{ step.name }}
+            <span *ngIf="isManipulationStep()">({{step.times}}
+              <span *ngIf="step.times == 1">{{ "formulas.manipulation_time.time" | translate }})</span>
+              <span *ngIf="step.times != 1">{{ "formulas.manipulation_time.times" | translate }})</span>
+            </span>
+          </p>
         </ion-col>
       </ion-row>
       <ion-row class="step-row">
-        <ion-col class="ion-no-padding" size="4">
+        <ion-col class="ion-no-padding" size="12">
           <p class="step-properties">
             <ion-icon [name]="ICONS.timer" color="dark"></ion-icon>
             {{ step.time }} {{ "formulas.minutes" | translate }}
           </p>
         </ion-col>
-        <ion-col class="ion-no-padding" size="8">
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-no-padding" size="12">
           <p class="step-properties" *ngIf="step.temperature">
             <ion-icon [name]="ICONS.thermometer" color="primary"></ion-icon>
             {{ step.temperature.min }}ºC<span *ngIf="step.temperature.max !== -1">
@@ -28,8 +35,8 @@
     </ion-col>
   </ion-row>
 </ion-item>
-<ion-row *ngIf="step.description && show_description">
-  <ion-col class="ion-no-padding">
-    <app-data-item [title]="'formulas.description' | translate" [data]="step.description"></app-data-item>
+<ion-row *ngIf="step.description">
+  <ion-col class="ion-no-padding" [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }">
+    <app-data-item [title]="'formulas.description' | translate" [data]="step.description" [no_lines]="true"></app-data-item>
   </ion-col>
 </ion-row>

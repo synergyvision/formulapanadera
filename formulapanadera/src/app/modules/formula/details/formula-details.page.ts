@@ -32,7 +32,7 @@ import { ICONS } from "src/app/config/icons";
 export class FormulaDetailsPage implements OnInit, OnDestroy {
   APP_URL = APP_URL;
   ICONS = ICONS;
-  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT
+  FORMULA_COST_FORMAT = DECIMAL_COST_FORMAT.formula
 
   formula: FormulaModel = new FormulaModel();
   formulaUnit = "%";

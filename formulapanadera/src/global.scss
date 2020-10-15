@@ -25,7 +25,9 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-ion-button { text-transform: none; }
+ion-button {
+  text-transform: none;
+}
 
 .action-icon {
   color: cornflowerblue !important;
@@ -45,5 +47,17 @@ ion-button { text-transform: none; }
   color: red !important;
   ion-icon {
     color: red !important;
+  }
+}
+
+ion-searchbar {
+  .searchbar-input-container {
+    input {
+      font-size: 14px !important;
+      padding-left: 15% !important;
+    }
+  }
+  .searchbar-search-icon {
+    margin-left: 5px !important;
   }
 }

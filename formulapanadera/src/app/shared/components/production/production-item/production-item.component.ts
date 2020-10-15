@@ -14,7 +14,7 @@ export class ProductionItemComponent {
   @Input() even: boolean = false;
 
   currency = CURRENCY;
-  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT;
+  FORMULA_COST_FORMAT = DECIMAL_COST_FORMAT.formula;
 
   constructor(private productionService: ProductionService) {}
 

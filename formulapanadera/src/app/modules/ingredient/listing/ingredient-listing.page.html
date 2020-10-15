@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-icon slot="start" class="btn-med" [name]="ICONS.ingredient"></ion-icon>
     <ion-title> {{ 'ingredients.name' | translate }} </ion-title>
@@ -9,10 +9,11 @@
     </ion-buttons>
   </ion-toolbar>
 
-  <ion-toolbar class="filters-toolbar">
+  <ion-toolbar class="filters-toolbar" mode="ios">
     <ion-row class="searchbar-row" align-items-center>
       <ion-col>
         <ion-searchbar
+          mode="ios"
           class="items-searchbar"
           animated
           [(ngModel)]="searchQuery"
@@ -75,7 +76,7 @@
       ><ion-row>
         <ion-col class="cost-input">
           <ion-item class="input-item">
-            <ion-label color="primary" position="floating"
+            <ion-label color="primary" position="stacked"
               >{{'ingredients.filter.min' | translate}}</ion-label
             ><ion-input
               type="number"
@@ -86,7 +87,7 @@
           ></ion-item> </ion-col
         ><ion-col class="cost-input">
           <ion-item class="input-item"
-            ><ion-label color="primary" position="floating"
+            ><ion-label color="primary" position="stacked"
               >{{'ingredients.filter.max' | translate}}
             </ion-label>
             <ion-input
@@ -125,6 +126,7 @@
 
 <ion-content class="ingredient-content">
   <ion-segment
+    mode="ios"
     (ionChange)="segmentChanged($event)"
     [value]="segment"
     class="segment"

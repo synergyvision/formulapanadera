@@ -47,7 +47,8 @@ ion-back-button {
   }
 
   .segment {
-    padding: 0 10px;
+    padding: 5px var(--page-margin);
+    border-radius: 0px;
 
     .segment-button {
       width: 50%;
@@ -70,4 +71,8 @@ ion-back-button {
 
 .picker-label {
   color: var(--ion-color-secondary);
+}
+
+ion-segment-button {
+  font-size: 14px;
 }

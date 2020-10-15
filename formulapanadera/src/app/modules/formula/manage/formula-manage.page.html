@@ -3,7 +3,7 @@
   [formGroup]="manageFormulaForm"
   (ngSubmit)="sendFormula()"
 >
-  <ion-header>
+  <ion-header class="ion-no-border">
     <ion-toolbar color="primary">
       <ion-buttons slot="start">
         <ion-back-button
@@ -62,7 +62,7 @@
       <ion-row
         *ngIf="!update || current_user.email === formula.user.creator.email"
         ><ion-col class="no-padding"
-          ><ion-item class="input-item">
+          ><ion-item class="input-item" lines="full">
             <ion-label color="primary"
               >{{'formulas.public' | translate}}</ion-label
             >
@@ -79,7 +79,7 @@
         *ngIf="!update || current_user.email === formula.user.creator.email"
       >
         <ion-col class="no-padding">
-          <ion-item class="input-item">
+          <ion-item class="input-item" lines="full">
             <ion-label color="primary"
               >{{'formulas.can_clone' | translate}}</ion-label
             >

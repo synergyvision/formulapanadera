@@ -65,14 +65,19 @@
     "steps": "Steps",
     "step": "Step",
     "time": "Time",
-    "hours": "Hours",
-    "minutes": "Min.",
+    "hours": "hr.",
+    "minutes": "min.",
+    "duration": "Duration",
     "temperature": "Temperature",
     "description": "Description",
     "public": "Public",
     "can_clone": "Can be cloned",
     "warming_time": "Oven warming time",
     "manipulation_times": "Number of manipulations",
+    "manipulation_time":{
+      "time": "time",
+      "times": "times"
+    },
     "cost": {
       "name": "Cost",
       "unitary": "Unitary cost",
@@ -169,7 +174,8 @@
     },
     "warning": {
       "name": "Warning",
-      "start": "We recommend starting this formula in the suggested order"
+      "start": "We recommend starting this formula in the suggested order",
+      "step_done": "Are you sure you want to mark {{step}} as DONE?"
     },
     "invalid_steps": {
       "verify": "Check working hours",

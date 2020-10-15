@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button
@@ -60,13 +60,13 @@
     <ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.cost.unitary' | translate"
-        data="{{unitary_cost | number: DECIMAL_COST_FORMAT}}{{currency}}"
+        data="{{unitary_cost | number: FORMULA_COST_FORMAT}} {{currency}}"
       ></app-data-item>
     </ion-col>
     <ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.cost.total' | translate"
-        data="{{total_cost | number: DECIMAL_COST_FORMAT}}{{currency}}"
+        data="{{total_cost | number: FORMULA_COST_FORMAT}} {{currency}}"
       ></app-data-item>
     </ion-col>
   </ion-row>
@@ -75,7 +75,7 @@
   
   <ion-row>
     <ion-col class="detail-col">
-      <ion-item class="input-item">
+      <ion-item class="input-item" lines="full">
         <ion-label color="primary" class="label">{{'formulas.public' | translate}}</ion-label>
         <ion-checkbox class="checkbox" color="primary" [(ngModel)]="!this.formula.user.owner"
           [ngModelOptions]="{standalone: true}" slot="start" [disabled]="true">
@@ -85,7 +85,7 @@
   </ion-row>
   <ion-row>
     <ion-col class="detail-col">
-      <ion-item class="input-item">
+      <ion-item class="input-item" lines="full">
         <ion-label color="primary" class="label">{{'formulas.can_clone' | translate}}</ion-label>
         <ion-checkbox class="checkbox" color="primary" [(ngModel)]="formula.user.can_clone"
           [ngModelOptions]="{standalone: true}" slot="start" [disabled]="true">
@@ -179,9 +179,11 @@
       >
       </app-show-hide-content>
       <ion-list lines="full" *ngIf="showSteps" class="steps-list">
-        <app-formula-step *ngFor="let step of steps; index as i"
+        <app-formula-step
+        *ngFor="let step of steps; index as i"
         [step]="step"
-        [index]="i">
+        [index]="i"
+        [even]="i%2==0">
         </app-formula-step>
       </ion-list>
     </ion-col>

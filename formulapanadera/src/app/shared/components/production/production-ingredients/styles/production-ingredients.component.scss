@@ -8,12 +8,17 @@
     border-bottom: 1px solid var(--ion-color-primary);
     font-style: bold;
     text-align: end;
+    background: var(--ion-color-primary);
+    color: white;
+
     .title-name {
       text-align: start;
     }
   }
 
   .ingredients-row {
+    border-bottom: 1px solid var(--ion-color-light-shade);
+
     .ingredient-name {
       text-align: start;
     }

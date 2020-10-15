@@ -88,4 +88,10 @@ export class TimeService {
       );
     }
   }
+
+  fromMinutesToHours(total_minutes: number): {hours: number, minutes: number} {
+    let hours: number = (total_minutes / 60) | 0
+    let minutes: number = total_minutes - (hours*60)
+    return {hours: hours, minutes: minutes};
+  }
 }

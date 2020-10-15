@@ -65,14 +65,19 @@
     "steps": "Pasos",
     "step": "Paso",
     "time": "Tiempo",
-    "hours": "Horas",
-    "minutes": "Min.",
+    "hours": "hr.",
+    "minutes": "min.",
+    "duration": "Duración",
     "temperature": "Temperatura",
     "description": "Descripción",
     "public": "Pública",
     "can_clone": "Puede ser clonada",
     "warming_time": "Temperado del horno",
     "manipulation_times": "Cantidad de manipulaciones",
+    "manipulation_time":{
+      "time": "vez",
+      "times": "veces"
+    },
     "cost": {
       "name": "Costo",
       "unitary": "Costo unitario",
@@ -169,7 +174,8 @@
     },
     "warning": {
       "name": "Alerta",
-      "start": "Recomendamos iniciar esta fórmula con el orden sugerido"
+      "start": "Recomendamos iniciar esta fórmula con el orden sugerido",
+      "step_done": "¿Seguro que el paso {{step}} está listo?"
     },
     "invalid_steps": {
       "verify": "Verificar jornada laboral",

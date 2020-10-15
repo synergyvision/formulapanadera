@@ -1,8 +1,8 @@
 .formulas-list {
-  font-size: 12px;
+  font-size: 13px;
   border: 1px solid var(--ion-color-primary);
   text-align: end;
-  margin: 10px;
+  margin: var(--app-narrow-margin);
 
   .formulas-col {
     padding: 0px;
@@ -12,12 +12,17 @@
     border-bottom: 1px solid var(--ion-color-primary);
     font-style: bold;
     text-align: end;
+    background: var(--ion-color-primary);
+    color: white;
+
     .title-name {
       text-align: start;
     }
   }
 
   .formulas-row {
+    border-bottom: 1px solid var(--ion-color-light-shade);
+
     .formula-name {
       text-align: start;
     }

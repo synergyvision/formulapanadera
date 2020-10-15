@@ -1,4 +1,4 @@
-<ion-item class="info-item" lines="full">
+<ion-item class="info-item" [lines]="no_lines ? 'none' : 'full'">
   <ion-row class="info-item-wrapper">
     <ion-col class="details-wrapper">
       <h2 class="details-name">{{ title }}</h2>

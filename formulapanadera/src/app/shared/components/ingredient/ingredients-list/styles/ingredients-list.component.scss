@@ -8,6 +8,12 @@
     padding: 0;
   }
 
+  .name {
+    width: 100%;
+    text-align: start;
+    font-weight: bold;
+  }
+
   .title-row {
     border-bottom: 1px solid var(--ion-color-primary);
     font-style: bold;

@@ -23,7 +23,7 @@ export class IngredientDetailsPage implements OnInit {
   type: string = "simple";
 
   currency = CURRENCY;
-  DECIMAL_COST_FORMAT = DECIMAL_COST_FORMAT;
+  INGREDIENT_COST_FORMAT = DECIMAL_COST_FORMAT.ingredient;
 
   showIngredients: boolean;
   showMixing: boolean;
