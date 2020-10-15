@@ -88,7 +88,6 @@ export class ProductionDetailsPage implements OnInit {
       initial_formula.number * initial_formula.formula.unit_weight,
       transformed_formula.formula.ingredients
     );
-
     let total_weight = Number(
       (initial_formula.number * initial_formula.formula.unit_weight).toFixed(
         DECIMALS.weight
@@ -103,13 +102,20 @@ export class ProductionDetailsPage implements OnInit {
       Number(transformed_formula.total_cost) / initial_formula.number
     ).toString();
 
-    let bakers_percentage = this.formulaService.calculateIngredientsWithFormula(
+    transformed_formula.ingredients_formula = []
+    let ing_formula = [];
+    //Identifies ingredients with formula
+    this.formulaService.getIngredientsWithFormula(
       transformed_formula.formula.ingredients,
-      transformed_formula.bakers_percentage,
-      Number(total_weight)
+      ing_formula
     );
+    this.formulaService.getAllIngredientsWithFormula(
+      Number(transformed_formula.bakers_percentage),
+      transformed_formula.formula.ingredients,
+      ing_formula,
+      transformed_formula.ingredients_formula
+    )
 
-    let ing_formula;
     initial_formula.formula.steps.forEach((step) => {
       ing_formula = [];
       if (step.ingredients) {
@@ -123,13 +129,11 @@ export class ProductionDetailsPage implements OnInit {
           Number(transformed_formula.bakers_percentage),
           step.ingredients,
           ing_formula,
+          "ADD",
+          transformed_formula.ingredients_formula
         );
       }
     });
-
-    if (bakers_percentage) {
-      transformed_formula.bakers_percentage = bakers_percentage;
-    }
 
     initial_formula.formula.steps.forEach((item) => {
       if (item.ingredients) {

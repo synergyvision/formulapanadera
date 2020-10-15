@@ -248,7 +248,8 @@ export class FormulaService {
     original_bakers_percentage: number,
     ingredients: Array<IngredientPercentageModel>,
     ingredients_formula: Array<any>,
-    type: "ADD" | "DELETE" = "ADD"
+    type: "ADD" | "DELETE" = "ADD",
+    all_ingredients_formula?: Array<any>
   ) {
     let bakers_percentage: string;
     let proportion_factor: number;
@@ -274,6 +275,10 @@ export class FormulaService {
       );
       item.bakers_percentage = bakers_percentage;
 
+      if(all_ingredients_formula){
+        all_ingredients_formula.push(item)
+      }
+
       let sub_ingredients_formula = [];
       item.ingredient.formula.ingredients.forEach((element) => {
         if (element.ingredient.formula) {
@@ -287,7 +292,8 @@ export class FormulaService {
           0,
           ingredients,
           sub_ingredients_formula,
-          type
+          type,
+          all_ingredients_formula
         );
       }
 

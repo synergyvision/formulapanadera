@@ -132,6 +132,14 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             ing_formula.push(ingredient);
           }
         });
+        this.formulaService.getIngredientsCalculatedPercentages(
+          Number(this.total_weight),
+          Number(this.bakers_percentage),
+          JSON.parse(JSON.stringify(this.ingredients)),
+          ing_formula,
+          "ADD",
+          this.ingredients_formula
+        );
       }
     });
 
