@@ -110,40 +110,43 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     );
     this.unitary_cost = (Number(this.total_cost) / this.units).toString();
 
-    this.ingredients_formula = [];
-    this.formulaService.getIngredientsWithFormula(this.ingredients, this.ingredients_formula)
+    this.ingredients_formula = []
+    let ing_formula: IngredientPercentageModel[] = [];
+    //Identifies ingredients with formula
+    this.formulaService.getIngredientsWithFormula(
+      this.ingredients,
+      ing_formula
+    );
+    this.formulaService.getAllIngredientsWithFormula(
+      Number(this.bakers_percentage),
+      this.ingredients,
+      ing_formula,
+      this.ingredients_formula
+    )
 
-    // let ing_formula: IngredientPercentageModel[];
-    // this.steps.forEach((step) => {
-    //   ing_formula = [];
-    //   if (step.ingredients) {
-    //     step.ingredients.forEach((ingredient) => {
-    //       if (ingredient.ingredient.formula) {
-    //         ing_formula.push(ingredient);
-    //       }
-    //     });
-    //     this.formulaService.getIngredientsCalculatedPercentages(
-    //       Number(this.total_weight),
-    //       Number(this.bakers_percentage),
-    //       JSON.parse(JSON.stringify(this.ingredients)),
-    //       ing_formula,
-    //       this.ingredients_formula
-    //     );
-    //   }
-    // });
+    this.steps.forEach((step) => {
+      ing_formula = [];
+      if (step.ingredients) {
+        step.ingredients.forEach((ingredient) => {
+          if (ingredient.ingredient.formula) {
+            ing_formula.push(ingredient);
+          }
+        });
+      }
+    });
 
-    // this.steps.forEach((item) => {
-    //   if (item.ingredients) {
-    //     item.ingredients = this.formulaService.sortIngredients(
-    //       item.ingredients
-    //     );
-    //   }
-    // });
-    // this.ingredients_formula.forEach((item) => {
-    //   item.ingredient.formula.ingredients = this.formulaService.sortIngredients(
-    //     item.ingredient.formula.ingredients
-    //   );
-    // });
+    this.steps.forEach((item) => {
+      if (item.ingredients) {
+        item.ingredients = this.formulaService.sortIngredients(
+          item.ingredients
+        );
+      }
+    });
+    this.ingredients_formula.forEach((item) => {
+      item.ingredient.formula.ingredients = this.formulaService.sortIngredients(
+        item.ingredient.formula.ingredients
+      );
+    });
     this.ingredients = this.formulaService.sortIngredients(this.ingredients);
   }
 

@@ -178,6 +178,45 @@ export class FormulaService {
     });
   }
 
+  public getAllIngredientsWithFormula(
+    original_bakers_percentage: number,
+    ingredients: Array<IngredientPercentageModel>,
+    ingredients_formula: Array<any>,
+    all_ingredients_formula: Array<any>
+  ) {
+    let bakers_percentage: string;
+    let proportion_factor: number;
+
+    if (ingredients_formula.length > 0) {
+      ingredients_formula.forEach((item) => {
+        if (!item.prop_factor) {
+          proportion_factor = item.percentage * original_bakers_percentage
+        } else {
+          proportion_factor = item.prop_factor;
+        }
+        bakers_percentage = this.calculateBakersPercentage(
+          proportion_factor,
+          item.ingredient.formula.ingredients,
+        );
+        item.bakers_percentage = bakers_percentage;
+
+        all_ingredients_formula.push(item);
+      
+        let sub_ingredients_formula = [];
+        item.ingredient.formula.ingredients.forEach((element) => {
+          if (element.ingredient.formula) {
+            element.prop_factor = element.percentage * Number(bakers_percentage);
+            sub_ingredients_formula.push(JSON.parse(JSON.stringify(element)));
+          }
+        });
+       
+        if (sub_ingredients_formula.length > 0) {
+          this.getAllIngredientsWithFormula(0, ingredients, sub_ingredients_formula, all_ingredients_formula)
+        }
+      });
+    }
+  }
+
   public getProportionFactor(
     weight: number,
     bakers_percentage: number,

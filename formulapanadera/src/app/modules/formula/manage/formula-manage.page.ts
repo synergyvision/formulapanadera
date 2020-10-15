@@ -247,6 +247,7 @@ export class FormulaManagePage {
       this.formula.ingredients.indexOf(ingredient),
       1
     );
+    this.formula.mixing = undefined;
   }
 
   deleteStepIngredient(
