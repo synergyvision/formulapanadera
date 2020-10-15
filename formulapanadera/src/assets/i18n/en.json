@@ -74,6 +74,10 @@
     "can_clone": "Can be cloned",
     "warming_time": "Oven warming time",
     "manipulation_times": "Number of manipulations",
+    "manipulation_time":{
+      "time": "time",
+      "times": "times"
+    },
     "cost": {
       "name": "Cost",
       "unitary": "Unitary cost",

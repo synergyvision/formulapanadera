@@ -74,6 +74,10 @@
     "can_clone": "Puede ser clonada",
     "warming_time": "Temperado del horno",
     "manipulation_times": "Cantidad de manipulaciones",
+    "manipulation_time":{
+      "time": "vez",
+      "times": "veces"
+    },
     "cost": {
       "name": "Costo",
       "unitary": "Costo unitario",
