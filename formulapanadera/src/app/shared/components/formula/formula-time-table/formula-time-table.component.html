@@ -16,7 +16,7 @@
         {{ item.name }}
       </ion-col>
       <ion-col size="2" class="formula-times">
-        <span *ngIf="item.time && item.time>60">
+        <span *ngIf="item.time && item.time>=60">
           {{ getSpecificTime(item.time, "h") }} {{ "formulas.hours" | translate }}
         </span>
       </ion-col>
