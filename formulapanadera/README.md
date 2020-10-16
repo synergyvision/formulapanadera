@@ -17,7 +17,6 @@
 
 ### Tabla de contenido
 
-- [Tabla de contenido](#tabla-de-contenido)
 - [Pre-requisitos](#pre-requisitos)
 - [Instalación](#instalación)
 - [Ejecutar la aplicación](<#ejecutar-la-aplicación-(web)>)
@@ -111,4 +110,4 @@ ionic cap open ios
 
 ## Autor
 
-- **Alba Sánchez** - [albasanchez](https://github.com/albasanchez)
+- **Alba Sánchez** - _Desarrollador (Estudiante de Ingeniería Informática. Pasante)_ - [albasanchez](https://github.com/albasanchez)
