@@ -5,8 +5,8 @@
         {{ "production.production_name" | translate }}
       </ion-col>
       <ion-col size="3">{{ "formulas.duration" | translate }} ({{ "formulas.minutes" | translate }})</ion-col>
-      <ion-col size="3">{{ "formulas.units" | translate }}</ion-col>
-      <ion-col size="2"
+      <ion-col size="2">{{ "formulas.units" | translate }}</ion-col>
+      <ion-col size="3"
         >{{ "formulas.cost.name" | translate }} ({{ CURRENCY }})</ion-col
       >
     </ion-row>
@@ -15,15 +15,15 @@
         {{ item.formula.name }}
       </ion-col>
       <ion-col size="3">{{ timeBeforeOven(item) }}</ion-col>
-      <ion-col size="3">{{ item.number }}</ion-col>
-      <ion-col size="2">{{ item.total_cost | number: FORMULA_COST_FORMAT }}</ion-col>
+      <ion-col size="2">{{ item.number }}</ion-col>
+      <ion-col size="3">{{ item.total_cost | number: FORMULA_COST_FORMAT }}</ion-col>
     </ion-row>
     <ion-row class="total-row">
       <ion-col size="7" class="total-value total-name">{{
         "production.total" | translate
       }}</ion-col>
-      <ion-col size="3" class="total-value">{{ totalUnits() }}</ion-col>
-      <ion-col size="2" class="total-value">{{ totalCost() | number: FORMULA_COST_FORMAT }}</ion-col>
+      <ion-col size="2" class="total-value">{{ totalUnits() }}</ion-col>
+      <ion-col size="3" class="total-value">{{ totalCost() | number: FORMULA_COST_FORMAT }}</ion-col>
     </ion-row>
   </ion-col>
 </ion-row>
