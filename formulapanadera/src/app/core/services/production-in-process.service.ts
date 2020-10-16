@@ -299,8 +299,10 @@ export class ProductionInProcessService {
       let step: ProductionStepModel = {
         status: "PENDING",
         formula: manipulation_step.formula,
-        step: manipulation_step.step,
+        step: JSON.parse(JSON.stringify(manipulation_step.step)),
       };
+
+      step.step.name = manipulation_step.step.name +` (${index+1}/${manipulation_step.step.times})`
 
       step.time = new TimeModel();
       step.time.start = this.timeService.addTime(
@@ -389,7 +391,7 @@ export class ProductionInProcessService {
           let fermentation_step: ProductionStepModel =
             formula.steps[step_index - 1];
           let manipulation_steps: Array<ProductionStepModel> = this.getManipulationSteps(
-            step,
+            JSON.parse(JSON.stringify(step)),
             fermentation_step
           );
           manipulation_steps.forEach((step) => {
