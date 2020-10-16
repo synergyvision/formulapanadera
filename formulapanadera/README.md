@@ -19,10 +19,10 @@
 
 - [Pre-requisitos](#pre-requisitos)
 - [Instalación](#instalación)
-- [Ejecutar la aplicación](<#ejecutar-la-aplicación-(web)>)
-  - [Web](<#ejecutar-la-aplicación-(web)>)
-  - [Android](<#ejecutar-la-aplicación-(android)>)
-  - [iOS](<#ejecutar-la-aplicación-(ios)>)
+- [Ejecutar la aplicación](#ejecutar-la-aplicación-web)
+  - [Web](#ejecutar-la-aplicación-web)
+  - [Android](#ejecutar-la-aplicación-android)
+  - [iOS](#ejecutar-la-aplicación-ios)
 - [Autor](#autor)
 
 ### Pre-requisitos
