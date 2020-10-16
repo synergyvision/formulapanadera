@@ -79,7 +79,7 @@
   <!-- Production times -->
   <ion-row *ngIf="in_process"
     ><ion-col class="list-col" size="12">
-      <ion-item class="time-item">
+      <ion-item class="time-item" lines="full">
         <ion-row class="time-row">
           <ion-col size="6" class="list-col"
             ><b>{{ 'production.time.start' | translate}}</b><br />
@@ -141,6 +141,7 @@
       *ngFor="let step of stepsFiltered(true); index as i"
       [step]="step"
       [even]="(i%2==0)"
+      [index]="i"
       [production_in_process]="production_in_process"
       [original_production]="original_production"
       [blocked]="stepBlocked(step)"

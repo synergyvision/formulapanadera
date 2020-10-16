@@ -27,6 +27,7 @@ import { TimeService } from "src/app/core/services/time.service";
 export class ProductionStepItemComponent {
   ICONS = ICONS;
   OVEN_STEP = OVEN_STEP - 1;
+  MANIPULATION_STEP = MANIPULATION_STEP - 1
   FERMENTATION_STEP = FERMENTATION_STEP - 1;
 
   @Input() step: ProductionStepModel;
