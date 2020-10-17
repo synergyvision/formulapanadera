@@ -15,6 +15,8 @@
 
 ## Proyecto 💻
 
+---
+
 ### Tabla de contenido
 
 - [Pre-requisitos](#pre-requisitos)
@@ -43,7 +45,23 @@ cd formulapanadera
 npm install
 ```
 
-2. Una vez descargados los archivos del repositorio, debe agregar en la raiz del proyecto (src/) la carpeta "environments", que contiene dos archivos: "environment.ts" y "environment.prod.ts" que poseen las credenciales de la base de datos. Esta carpeta se debe solicitar a los desarrolladores por motivos de seguridad.
+2. Una vez descargados los archivos del repositorio, debe agregar en la raiz del proyecto (src/) la carpeta "environments", que contiene dos archivos: "environment.ts" y "environment.prod.ts" que poseen las credenciales de la base de datos. Esta carpeta se debe solicitar a los desarrolladores por motivos de seguridad. Los archivos tienen la siguiente estructura:
+
+```js
+export const environment = {
+  production: boolean,
+  connection: {
+    apiKey: string,
+    authDomain: string,
+    databaseURL: string,
+    projectId: string,
+    storageBucket: string,
+    messagingSenderId: string,
+    appId: string,
+    measurementId: string,
+  },
+};
+```
 
 3. Realice el build de la aplicación, esto creará una carpeta con el nombre de "www".
 

@@ -13,6 +13,8 @@
 
 **Haz pan en casa** es una herramienta de trabajo para la producción panadera y optimización del uso del horno.
 
+---
+
 ## Contexto
 
 La panadería como actividad cuenta con una serie de tareas y pasos bien definidos por los cuales se debe pasar para elaborar un pan de forma exitosa. Los panaderos deben planificar la producción y para ello cuentan con la fórmula
