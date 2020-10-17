@@ -57,11 +57,11 @@
     - /storage - _Contienen los métodos CRUD del storage en el dispositivo, para manejar sesiones y guardar producciones en proceso. Utilizando el plugin Storage de capacitor/core_
     - servicios simples - _Contienen la lógica de la aplicación_
   - **validators** - _Contiene la validación de contraseñas iguales_
-- **modules** - _Contiene los módulos de la aplicación, cada pantalla con su código html, scss y js_
+- **modules** - _Contiene los módulos de la aplicación, cada pantalla con su código html, scss y ts_
   - **auth** - _Páginas de autenticación en la aplicación (registro, login y olvido de contraseña)_
   - **formula** - _Páginas de fórmulas (listado, detalles y gestión)_
   - **ingredient** - _Páginas de ingredientes (listado, detalles y gestión)_
-  - **production** - _Páginas de fórmulas (listado, detalles, ejecución y gestión)_
+  - **production** - _Páginas de producción (listado, detalles, ejecución y gestión)_
   - **settings** - _Páginas de configuración de la aplicación (opciones globales y cambio de contraseña)_
   - **tabs** - _Menú de la aplicación_
 - **shared** - _Contiene componentes que se reutilizan a lo largo de la aplicación_
@@ -121,7 +121,7 @@ export const CURRENCY = "$";
 
 > El cambio de la ruta debe guiarse de las rutas especificadas en la constante APP_URL del mismo archivo, este archivo contiene las rutas y su jerarquía para armar un url
 
-- `src/app/config/configuration.ts`: Contiene las configuraciones de la moneda utilizada en la aplicación, en la constante MAIN_PAGE
+- `src/app/config/configuration.ts`: Contiene las configuraciones de la ruta principal utilizada en la aplicación, en la constante MAIN_PAGE
 
 ```js
 export const MAIN_PAGE =
@@ -133,6 +133,10 @@ export const MAIN_PAGE =
 > Para cambiar algún formato dentro de la aplicación se debe cambiar la variable necesaria en este archivo
 
 - `src/app/config/formats.ts`: Contiene los formatos utilizados en la aplicación para configurar decimales y fechas
+
+> Para cambiar formatos de fechas se deben utilizar los formatos establecidos por [moment.js](https://momentjs.com/).
+> En el caso de la constante DATE_FORMAT se deben utilizar los formatos del [Date Pipe de Angular](https://angular.io/api/common/DatePipe).
+> En el caso de la constante DECIMAL_COST_FORMAT se deben utilizar los formatos del [Decimal Pipe de Angular](https://angular.io/api/common/DecimalPipe).
 
 #### Cambio de imágenes
 

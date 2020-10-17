@@ -1,8 +1,11 @@
+// Angular Date Pipe (https://angular.io/api/common/DatePipe).
 export const DATE_FORMAT = "short";
 
+// moment.js
 export const TIME_FORMAT = "hh:mm a";
 export const SPECIFIC_TIME_FORMAT = "hh:mm:ss a";
 
+// Angular Decimal Pipe (https://angular.io/api/common/DecimalPipe).
 export const DECIMAL_COST_FORMAT = {
   ingredient: "1.1-10",
   formula: "1.1-2"
