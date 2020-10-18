@@ -1,4 +1,4 @@
-<ion-list lines="none" class="mixing-list" [ngClass]="{ 'border-bottom': steps.length>0 }">
+<ion-list lines="none" class="mixing-list" [ngClass]="{ 'border-bottom': steps && steps.length>0 }">
   <span *ngFor="let mixStep of steps; index as i">
     <ion-item-divider class="divider" [ngClass]="{ 'background-gray': i%2==0, 'background-white': i%2!=0 }">
       <ion-label>{{ "formulas.step" | translate }} {{ i + 1 }}</ion-label>

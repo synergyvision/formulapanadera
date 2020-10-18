@@ -1,5 +1,14 @@
+// Variables
+
 :host {
   --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
 }
 
 .btn-med {
@@ -7,24 +16,29 @@
   margin: 0 0 0 10px;
 }
 
-.formulas-list {
-  padding-top: 0;
-  padding-bottom: 0;
-}
+.formula-content {
+  --background: var(--page-background);
 
-.empty-block {
-  height: 100%;
-
-  ion-col {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+  .segment {
+    padding: 5px var(--page-margin);
+    border-radius: 0px;
   }
-}
 
-.ios.title-default {
-  padding: 0 0;
+  .formulas-list {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .empty-block {
+    height: 100%;
+
+    ion-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+  }
 }
 
 ion-segment-button {
