@@ -1,3 +1,4 @@
+// Add new assets to "assets" folder
 export const ASSETS = {
   logo: "assets/logo/logo.png",
   step: [
@@ -14,4 +15,7 @@ export const ASSETS = {
     "assets/steps/step-11.svg",
     "assets/steps/step-12.svg",
   ],
+  icons: {
+    wheat: "assets/icon/wheat.png"
+  }
 };

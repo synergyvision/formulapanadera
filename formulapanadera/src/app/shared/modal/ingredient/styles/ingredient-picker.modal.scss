@@ -1,5 +1,14 @@
+// Variables
+
 :host {
   --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
 }
 
 .btn-med {
@@ -7,34 +16,39 @@
   margin: 0 0 0 10px;
 }
 
-.ingredients-list {
-  padding: 0;
-
-  ion-icon {
-    padding-right: 16px;
-    color: var(--ion-color-primary);
-  }
-}
-
-.empty-block {
-  height: 100%;
-
-  ion-col {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-  }
-}
-
 ion-select {
   width: 100%;
-
   justify-content: center;
 }
 
-.ios.title-default {
-  padding: 0 0;
+.ingredient-content {
+  --background: var(--page-background);
+
+  .segment {
+    padding: 5px var(--page-margin);
+    border-radius: 0px;
+  }
+
+  .ingredients-list {
+    padding-top: 0;
+    padding-bottom: 0;
+
+    ion-icon {
+      padding-right: 16px;
+      color: var(--ion-color-primary);
+    }
+  }
+
+  .empty-block {
+    height: 100%;
+
+    ion-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+  }
 }
 
 ion-segment-button {

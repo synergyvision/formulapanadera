@@ -29,13 +29,13 @@
           <p class="ingredients-description" *ngIf="ingredient.is_flour">
             <img
               class="properties-icon image-icon"
-              src="assets/icon/wheat.png"
+              [src]="ASSETS.icons.wheat"
               width="18"
               height="18"
             />
           </p>
         </ion-col>
-        <ion-col size="9" *ngIf="ingredient.cost" class="cost-col">
+        <ion-col size="9" *ngIf="ingredient.cost!==null && ingredient.cost!==undefined" class="cost-col">
           <p class="ingredients-description ingredient-cost">
             {{ ingredient.cost | number: INGREDIENT_COST_FORMAT }}
             <span class="ingredient-currency"
