@@ -25,10 +25,13 @@
   - [/assets](#assets)
 - [Configuraciones del proyecto](#configuraciones-del-proyecto)
   - [Configuración de idiomas](#configuración-de-idiomas)
-  - [Configuración de moneda](#configuración-de-moneda)
-  - [Configuración de página principal](#configuración-de-página-principal)
+  - [Configuración de clasificación de fórmulas (hidratación)](<#configuración-de-clasificación-de-fórmulas-(hidratación)>)
+  - [Configuración de tiempos de horno](#configuración-de-tiempos-de-horno)
+  - [Cambio de moneda](#configuración-de-moneda)
+  - [Cambio de página principal](#configuración-de-página-principal)
   - [Cambio de formatos](#cambio-de-formatos)
   - [Cambio de imágenes](#cambio-de-imágenes)
+  - [Cambio de ícono y splash screen](#cambio-de-ícono-y-splash-screen)
 - [Autor](#autor)
 
 ### Documentos de interés
@@ -107,7 +110,37 @@ Para agregar un nuevo lenguaje a la aplicación se deben seguir los siguientes p
 1. Agregar el archivo "código.json" a `src/assets/i18n`
 2. Modificar la variable LANGUAGE en `src/app/config/configuration.ts` agregando el lenguaje con su nombre y el mismo código que se utilizó en el paso anterior, si se desea que este sea el lenguaje predeterminado se cambia el atributo "default"
 
-#### Configuración de moneda
+#### Configuración de clasificación de fórmulas (hidratación)
+
+- `src/app/config/formula.ts`: Contiene la clasificación de una fórmula dependiendo de la hidratación, en la constante HYDRATION_CLASSIFICATION
+
+```js
+export const HYDRATION_CLASSIFICATION = [
+  {
+    name: "hard",
+    values: { min: 0, max: 0.57 },
+  },
+  {
+    name: "standard",
+    values: { min: 0.57, max: 0.65 },
+  },
+  {
+    name: "rustic",
+    values: { min: 0.65, max: 1 },
+  },
+];
+```
+
+Los nombres deben ser iguales a una key contenida en "formulas.hydration" dentro de todos los archivos i18n y los valores deben ser continuos y abarcar desde el número 0 al 1
+
+#### Configuración de tiempos de horno
+
+- `src/app/config/formula.ts`: Contiene las configuraciones de tiempos del horno en la aplicación, en las constantes OVEN_START_TIME, FORMULA_WARMING_TIME y OVEN_STARTING_TIME (manejadas en minutos):
+  - OVEN_START_TIME: Contiene el tiempo de encendido del horno antes de agregar el primer pan
+  - FORMULA_WARMING_TIME: Contiene el tiempo recomendado al usuario para cambiar la temperatura del horno antes del ingreso de un segundo pan
+  - OVEN_STARTING_TIME: Contiene el tiempo que conlleva la actividad de cambiar la temperatura del horno
+
+#### Cambio de moneda
 
 > El cambio de la moneda no modificará los costos existentes, únicamente modificará aspectos visuales de la aplicación
 
@@ -117,7 +150,7 @@ Para agregar un nuevo lenguaje a la aplicación se deben seguir los siguientes p
 export const CURRENCY = "$";
 ```
 
-#### Configuración de página principal
+#### Cambio de página principal
 
 > El cambio de la ruta debe guiarse de las rutas especificadas en la constante APP_URL del mismo archivo, este archivo contiene las rutas y su jerarquía para armar un url
 
@@ -166,6 +199,19 @@ Para cambiar alguna imágen de la aplicación se deben seguir los siguientes pas
 
 1. Agregar la imágen a alguna carpeta dentro de la ruta `src/assets/`
 2. Modificar la ruta en la variable ASSETS en `src/app/config/assets.ts` o modificar el nombre de la imágen para que estas concuerden
+
+#### Cambio de ícono y splash screen
+
+- `resources/`: Contiene el ícono y splash screen de la aplicación
+
+Para cambiar el ícono y/o splash screen se deben seguir los siguientes pasos:
+
+1. Reemplazar la imágen a cambiar en `resources/` (icon.png o splash.png)
+2. Ejecutar el siguiente comando
+
+```bash
+npm run resources
+```
 
 ## Autor
 
