@@ -54,7 +54,13 @@
 
       <ion-item lines="full">
         <ion-label>{{'ingredients.type.name' | translate}}</ion-label>
-        <ion-select [value]="type" class="type-selector" (ionChange)="changeType($event)">
+        <ion-select
+          [value]="type"
+          class="type-selector"
+          (ionChange)="changeType($event)"
+          [cancelText]="'action.cancel'|translate"
+          [okText]="'action.ok'|translate"
+        >
           <ion-select-option value="simple">{{'ingredients.type.simple' | translate}}</ion-select-option>
           <ion-select-option value="compound">{{'ingredients.type.compound' | translate}}</ion-select-option>
         </ion-select>
@@ -171,6 +177,8 @@
             [ngModelOptions]="{standalone: true}"
             class="proportion-selector"
             (ionChange)="changeProportionFactor()"
+            [cancelText]="'action.cancel'|translate"
+            [okText]="'action.ok'|translate"
           >
             <ion-select-option value="dough"
               >{{'ingredients.proportion_factor.dough' |

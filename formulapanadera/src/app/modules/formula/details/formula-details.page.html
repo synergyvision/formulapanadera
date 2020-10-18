@@ -56,7 +56,7 @@
         data="{{hydration}} %"
       ></app-data-item> </ion-col
   ></ion-row>
-  <ion-row>
+  <ion-row *ngIf="unitary_cost>0">
     <ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.cost.unitary' | translate"

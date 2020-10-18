@@ -56,6 +56,7 @@
     "formula_name": "Name",
     "unit": "Unit",
     "units": "Units",
+    "units_short": "Units",
     "unit_letter": "u",
     "weight": "Weight",
     "unit_weight": "Unit weight",

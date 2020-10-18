@@ -130,6 +130,8 @@
     (ionChange)="segmentChanged($event)"
     [value]="segment"
     class="segment"
+    [cancelText]="'action.cancel'|translate"
+    [okText]="'action.ok'|translate"
   >
     <ion-segment-button value="simple">
       <ion-label>{{'ingredients.type.simple' | translate}}</ion-label>

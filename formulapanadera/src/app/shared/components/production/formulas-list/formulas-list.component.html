@@ -1,29 +1,29 @@
 <ion-row class="formulas-list">
   <ion-col class="formulas-col">
     <ion-row class="title-row">
-      <ion-col size="4" class="title-name">
+      <ion-col [size]="totalCost()>0 ? '4' : '7'" class="title-name">
         {{ "production.production_name" | translate }}
       </ion-col>
       <ion-col size="3">{{ "formulas.duration" | translate }} ({{ "formulas.minutes" | translate }})</ion-col>
-      <ion-col size="2">{{ "formulas.units" | translate }}</ion-col>
-      <ion-col size="3"
+      <ion-col size="2">{{ "formulas.units_short" | translate }}</ion-col>
+      <ion-col size="3" *ngIf="totalCost()>0"
         >{{ "formulas.cost.name" | translate }} ({{ CURRENCY }})</ion-col
       >
     </ion-row>
     <ion-row *ngFor="let item of formulas" class="formulas-row">
-      <ion-col size="4" class="formula-name">
+      <ion-col [size]="totalCost()>0 ? '4' : '7'" class="formula-name">
         {{ item.formula.name }}
       </ion-col>
       <ion-col size="3">{{ timeBeforeOven(item) }}</ion-col>
       <ion-col size="2">{{ item.number }}</ion-col>
-      <ion-col size="3">{{ item.total_cost | number: FORMULA_COST_FORMAT }}</ion-col>
+      <ion-col size="3" *ngIf="item.total_cost>0">{{ item.total_cost | number: FORMULA_COST_FORMAT }}</ion-col>
     </ion-row>
     <ion-row class="total-row">
-      <ion-col size="7" class="total-value total-name">{{
+      <ion-col [size]="totalCost()>0 ? '7' : '10'" class="total-value total-name">{{
         "production.total" | translate
       }}</ion-col>
       <ion-col size="2" class="total-value">{{ totalUnits() }}</ion-col>
-      <ion-col size="3" class="total-value">{{ totalCost() | number: FORMULA_COST_FORMAT }}</ion-col>
+      <ion-col size="3" class="total-value" *ngIf="totalCost()>0">{{ totalCost() | number: FORMULA_COST_FORMAT }}</ion-col>
     </ion-row>
   </ion-col>
 </ion-row>

@@ -122,6 +122,8 @@
             [value]="formulaUnit"
             class="unit-selector"
             (ionChange)="changeUnit($event)"
+            [cancelText]="'action.cancel'|translate"
+            [okText]="'action.ok'|translate"
           >
             <ion-select-option value="gr"
               >{{'ingredients.grams' | translate}}</ion-select-option
