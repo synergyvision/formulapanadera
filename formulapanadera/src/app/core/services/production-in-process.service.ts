@@ -503,6 +503,11 @@ export class ProductionInProcessService {
           );
         }
       });
+      production_in_process.time.end = this.timeService.addTime(
+        production_in_process.time.end,
+        difference,
+        "m"
+      );
     }
 
     this.setProductionInProcess(production_in_process);

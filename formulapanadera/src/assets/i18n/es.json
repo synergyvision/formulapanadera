@@ -55,7 +55,8 @@
     "bakers_percentage": "Factor panadero",
     "formula_name": "Nombre",
     "unit": "Unidad",
-    "units": "Unid.",
+    "units": "Unidades",
+    "units_short": "Unid.",
     "unit_letter": "u",
     "weight": "Peso",
     "unit_weight": "Peso por unidad",
@@ -93,9 +94,9 @@
       "range": "Escoger rango"
     },
     "hydration": {
-      "hard": "Duro",
-      "standard": "Estándar",
-      "rustic": "Rústico"
+      "low": "Baja hidratación",
+      "normal": "Hidratación normal",
+      "high": "Alta hidratación"
     },
     "empty": "No se encontraron fórmulas",
     "share": {
@@ -165,7 +166,7 @@
     "total": "Total",
     "times": "Tiempos",
     "empty": "No se encontraron producciones",
-    "done": "Hecho",
+    "done": "Pasos terminados",
     "executing": "Producción en ejecución",
     "time": {
       "start": "Inicio",
@@ -175,6 +176,7 @@
     "warning": {
       "name": "Alerta",
       "start": "Recomendamos iniciar esta fórmula con el orden sugerido",
+      "stop": "¿Seguro que desea cancelar la producción?",
       "step_done": "¿Seguro que el paso {{step}} está listo?"
     },
     "invalid_steps": {

@@ -19,7 +19,7 @@
       </ion-row>
       <ion-row *ngIf="production.id !== undefined">
         <ion-col size="12" class="cost-col">
-          <p class="productions-description production-cost">
+          <p class="productions-description production-cost" *ngIf="totalCost() && totalCost()>0">
             {{ totalCost() | number: FORMULA_COST_FORMAT }}
             <span class="production-currency"
               >{{ currency }}/{{ "formulas.unit_letter" | translate }}</span

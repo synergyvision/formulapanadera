@@ -157,13 +157,43 @@ export class FormulaManagePage {
   }
 
   async pickIngredient() {
-    let data = await this.ingredientPicker(this.formula.ingredients);
+    let data;
+    if (this.formula.ingredients) {
+      data = await this.ingredientPicker(JSON.parse(JSON.stringify(this.formula.ingredients)));
+    } else {
+      data = await this.ingredientPicker(this.formula.ingredients);
+    }
     if (data !== undefined) {
       if (this.formula.ingredients == null) {
         this.formula.ingredients = [];
       }
+      let new_ingredients: IngredientPercentageModel[] = []
+      let deleted_ingredients: IngredientPercentageModel[] = []
+      let exists: boolean
+      this.formula.ingredients.forEach(prev_ingredient => {
+        exists = false
+        data.ingredients.forEach((new_ingredient: IngredientPercentageModel) => {
+          if (prev_ingredient.ingredient.id == new_ingredient.ingredient.id) {
+            exists = true
+          }
+        })
+        if (!exists) {
+          deleted_ingredients.push(prev_ingredient)
+        }
+      })
+      data.ingredients.forEach((new_ingredient: IngredientPercentageModel) => {
+        exists = false
+        this.formula.ingredients.forEach(prev_ingredient => {
+          if (prev_ingredient.ingredient.id == new_ingredient.ingredient.id) {
+            exists = true
+          }
+        })
+        if (!exists) {
+          new_ingredients.push(new_ingredient)
+        }
+      })
+      this.adjustFormulaMixing(new_ingredients, deleted_ingredients)
       this.formula.ingredients = data.ingredients;
-      this.formula.mixing = undefined;
     }
   }
 
@@ -247,7 +277,7 @@ export class FormulaManagePage {
       this.formula.ingredients.indexOf(ingredient),
       1
     );
-    this.formula.mixing = undefined;
+    this.adjustFormulaMixing([], [ingredient])
   }
 
   deleteStepIngredient(
@@ -465,5 +495,32 @@ export class FormulaManagePage {
       ],
     });
     toast.present();
+  }
+
+  adjustFormulaMixing(new_ingredients: IngredientPercentageModel[], deleted_ingredients: IngredientPercentageModel[]) {
+    if (this.formula.mixing) {
+      if (new_ingredients.length > 0) {
+        new_ingredients.forEach(ingredient=>{
+          this.formula.mixing[0].ingredients.push(ingredient)
+        })
+      }
+      if (deleted_ingredients.length > 0) {
+        deleted_ingredients.forEach(ingredient=>{
+          this.formula.mixing.forEach((mix, mix_i) => {
+            mix.ingredients.forEach((mix_ingredient, ingredient_i) => {
+              if (mix_ingredient.ingredient.id == ingredient.ingredient.id) {
+                this.formula.mixing[mix_i].ingredients.splice(
+                  ingredient_i,
+                  1
+                );
+                if (this.formula.mixing[mix_i].ingredients.length == 0) {
+                  this.formula.mixing.splice(mix_i,1)
+                }
+              }
+            })
+          })
+        })
+      }
+    }
   }
 }

@@ -224,4 +224,31 @@ export class ProductionStartPage implements OnInit {
     });
     await alert.present();
   }
+
+  async startOrStopProduction() {
+    if (this.in_process) {
+      const alert = await this.alertController.create({
+        header: this.languageService.getTerm("production.warning.name"),
+        message: this.languageService.getTerm("production.warning.stop"),
+        cssClass: "confirm-alert",
+        buttons: [
+          {
+            text: this.languageService.getTerm("action.cancel"),
+            role: "cancel",
+            handler: () => { },
+          },
+          {
+            text: this.languageService.getTerm("action.ok"),
+            cssClass: "confirm-alert-accept",
+            handler: () => {
+              this.changeProcessStatus();
+            },
+          },
+        ],
+      });
+      await alert.present();
+    } else {
+      this.changeProcessStatus()
+    }
+  }
 }

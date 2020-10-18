@@ -1,4 +1,4 @@
-<ion-item lines="none" class="divider" [ngClass]="{ 'background-gray': even, 'background-white': !even }">
+<ion-item lines="none" class="divider" [ngClass]="{ 'background-gray': even, 'background-white': !even }" *ngIf="step.time">
   <ion-img class="step-image" alt="step_image" [src]="getStepAsset()"></ion-img>
   <ion-row class="step-row">
     <ion-col class="ion-no-padding" size="12">

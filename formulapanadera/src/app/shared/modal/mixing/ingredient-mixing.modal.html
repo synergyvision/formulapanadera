@@ -43,6 +43,8 @@
               (ionChange)="changeMixingOrder($event, i, item)"
               class="step-selector"
               mode="md"
+              [cancelText]="'action.cancel'|translate"
+              [okText]="'action.ok'|translate"
             >
               <ion-select-option
                 *ngFor="let index of formulaMixing; index as j"

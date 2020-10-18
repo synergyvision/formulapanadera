@@ -24,6 +24,9 @@
   - [/app](#app)
   - [/assets](#assets)
 - [Algoritmos](#algoritmos)
+  - [Agregar prefermentos](#agregar-prefermentos)
+  - [Eliminar prefermentos](#eliminar-prefermentos)
+  - [Algoritmo de maximización de uso del horno](#algoritmo-de-maximización-de-uso-del-horno)
 - [Configuraciones](#configuraciones)
   - [Configuración de idiomas](#configuración-de-idiomas)
   - [Configuración de clasificación de fórmulas (hidratación)](<#configuración-de-clasificación-de-fórmulas-(hidratación)>)
@@ -90,9 +93,62 @@
 
 ## Algoritmos
 
-### Formulas
+> Los diagramas a continuación se pueden encontrar [aquí](https://github.com/synergyvision/formulapanadera/tree/master/docs/diagramas)
 
-### Producciones
+### Agregar prefermentos
+
+> El proceso de agregar/eliminar prefermentos inicia [eliminando](#eliminar-prefermentos) los prefermentos de la fórmula (en caso de que existan) y al estar en su estado original se [agregan](#agregar-prefermentos) los prefermentos existentes y nuevos (en caso de que existan)
+
+<h1 align="center">
+  <img src="./diagramas/agregar_prefermentos.png" alt="Logo" width="400" height="auto">
+</h1>
+
+Por cada ingrediente simple de la fórmula, se verifica si éste también es componente de un prefermento (llamado aquí, "ingrediente compuesto"), en caso de ser así, se resta del ingrediente simple la cantidad que posee el ingrediente compuesto
+
+### Eliminar prefermentos
+
+> El proceso de agregar/eliminar prefermentos inicia [eliminando](#eliminar-prefermentos) los prefermentos de la fórmula (en caso de que existan) y al estar en su estado original se [agregan](#agregar-prefermentos) los prefermentos existentes y nuevos (en caso de que existan)
+
+<h1 align="center">
+  <img src="./diagramas/eliminar_prefermentos.png" alt="Logo" width="400" height="auto">
+</h1>
+
+Por cada ingrediente simple de la fórmula, se verifica si éste también es componente de un previo prefermento (llamado aquí, "ingrediente compuesto"), en caso de ser así, se suma al ingrediente simple la cantidad que poseía previamente el ingrediente compuesto
+
+### Algoritmo de maximización de uso del horno
+
+<h1 align="center">
+  <img src="./diagramas/produccion_en_ejecucion.png" alt="Logo" width="400" height="auto">
+</h1>
+
+Se verifica si el orden a seguir es el propuesto por el algoritmo o el escogido por el usuario
+
+> En caso de ser el orden propuesto por el usuario se inserta la fórmula de inicio escogida como primera fórmula
+
+Se ordenan las fórmulas tomando como criterio el tiempo de entrada al horno y por cada fórmula:
+
+1. En caso de ser la primera fórmula se inserta la fecha actual como inicio, si no es así se calcula la fecha de inicio de la siguiente forma:
+
+- En caso de que la fórmula choque con la anterior
+
+```txt
+fecha_inicio = el tiempo de salida del horno de la fórmula anterior - tiempo antes de atemperar el horno de la fórmula actual
+```
+
+- En caso de que no choquen
+
+```txt
+fecha_inicio = fecha actual
+```
+
+2. Luego, por cada paso de la formula se calculan los tiempos de inicio y fin y se insertan en la producción, tomando en cuenta los siguientes casos
+
+- Si es el paso de horneado, se debe insertar el encendido o atemperado del horno, según sea el caso
+- Si es el paso de manipulación, se deben insertar la cantidad indicada de manipulaciones al crear la fórmula y repartirlas durante el tiempo fermentación en bloque
+
+Luego, se ordena toda la producción, tomando como criterio las fechas más próximas al inicio
+
+> De esta forma
 
 ### Configuraciones
 
