@@ -166,7 +166,7 @@
     "total": "Total",
     "times": "Tiempos",
     "empty": "No se encontraron producciones",
-    "done": "Hecho",
+    "done": "Pasos terminados",
     "executing": "Producción en ejecución",
     "time": {
       "start": "Inicio",
@@ -176,6 +176,7 @@
     "warning": {
       "name": "Alerta",
       "start": "Recomendamos iniciar esta fórmula con el orden sugerido",
+      "stop": "¿Seguro que desea cancelar la producción?",
       "step_done": "¿Seguro que el paso {{step}} está listo?"
     },
     "invalid_steps": {

@@ -131,7 +131,7 @@
       [blocked]="stepBlocked(step)"
     ></app-production-step-item>
   </ion-list>
-  <ion-item-divider class="divider" *ngIf="stepsFiltered(true).length>0">
+  <ion-item-divider class="divider" *ngIf="segment=='steps' && stepsFiltered(true).length>0">
     <ion-label class="divider-label"
       >{{ "production.done" | translate }}</ion-label
     >
