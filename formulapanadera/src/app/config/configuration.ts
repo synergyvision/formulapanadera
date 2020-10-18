@@ -1,4 +1,4 @@
-// App languages
+// Available languages
 export const LANGUAGE = {
   default: "es",
   available: [

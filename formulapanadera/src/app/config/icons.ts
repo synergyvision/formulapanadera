@@ -1,3 +1,4 @@
+// Ionicons (https://ionicons.com/)
 export const ICONS = {
   add: "add-outline",
   alarm: "alarm-outline",

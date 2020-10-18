@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { ASSETS } from 'src/app/config/assets';
 import { CURRENCY } from "src/app/config/configuration";
 import { DECIMAL_COST_FORMAT } from 'src/app/config/formats';
 import { ICONS } from "src/app/config/icons";
@@ -17,6 +18,7 @@ export class IngredientItemComponent {
 
   currency = CURRENCY;
   ICONS = ICONS;
+  ASSETS = ASSETS
   INGREDIENT_COST_FORMAT = DECIMAL_COST_FORMAT.ingredient
 
   constructor() {}
