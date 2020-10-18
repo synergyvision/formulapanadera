@@ -88,7 +88,7 @@
           </app-ingredients-list>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="ingredient.formula.mixing">
         <ion-col class="no-padding">
           <app-show-hide-content
             (click)="showMixing = !showMixing"

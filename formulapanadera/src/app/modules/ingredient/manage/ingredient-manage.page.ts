@@ -237,7 +237,7 @@ export class IngredientManagePage implements OnInit {
         this.ingredient.formula.compensation_percentage = 0;
       }
       if (!this.ingredient.formula.mixing || !this.ingredient.formula.mixing[0]) {
-        this.ingredient.formula.mixing.push({description: "", ingredients: this.ingredient.formula.ingredients})
+        this.ingredient.formula.mixing = null
       }
     }
 

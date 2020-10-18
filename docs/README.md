@@ -148,8 +148,6 @@ fecha_inicio = fecha actual
 
 Luego, se ordena toda la producción, tomando como criterio las fechas más próximas al inicio
 
-> De esta forma
-
 ### Configuraciones
 
 #### Configuración de idiomas

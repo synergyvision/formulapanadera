@@ -101,7 +101,7 @@ export class ProductionStepItemComponent {
     );
   }
 
-  changeStepStatus(step: ProductionStepModel): void {
+  async changeStepStatus(step: ProductionStepModel): Promise<void> {
     if (!this.blocked) {
       if (step.status == "PENDING") {
         if (step.step.number == 0 && !this.productionStarted()) {
@@ -130,7 +130,7 @@ export class ProductionStepItemComponent {
           step.status = "IN PROCESS";
         }
       } else if (step.status == "IN PROCESS") {
-        this.stepDoneAlert(step)
+        await this.stepDoneAlert(step)
       }
 
       this.productionInProcessService.setProductionInProcess(
@@ -200,6 +200,7 @@ export class ProductionStepItemComponent {
       ],
     });
     await alert.present();
+    await alert.onDidDismiss();
   }
 
   fahrenheitTemperature(value) {
