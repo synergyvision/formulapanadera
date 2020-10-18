@@ -96,12 +96,18 @@ export class IngredientManagePage implements OnInit {
   }
 
   async pickIngredient() {
+    let ingredients;
+    if (this.ingredient.formula.ingredients) {
+      ingredients = JSON.parse(JSON.stringify(this.ingredient.formula.ingredients));
+    } else {
+      ingredients = this.ingredient.formula.ingredients;
+    }
     const modal = await this.modalController.create({
       component: IngredientPickerModal,
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
-        selectedIngredients: this.ingredient.formula.ingredients,
+        selectedIngredients: ingredients,
       },
     });
     await modal.present();
@@ -110,8 +116,33 @@ export class IngredientManagePage implements OnInit {
       if (this.ingredient.formula.ingredients == null) {
         this.ingredient.formula.ingredients = [];
       }
+      let new_ingredients: IngredientPercentageModel[] = []
+      let deleted_ingredients: IngredientPercentageModel[] = []
+      let exists: boolean
+      this.ingredient.formula.ingredients.forEach(prev_ingredient => {
+        exists = false
+        data.ingredients.forEach((new_ingredient: IngredientPercentageModel) => {
+          if (prev_ingredient.ingredient.id == new_ingredient.ingredient.id) {
+            exists = true
+          }
+        })
+        if (!exists) {
+          deleted_ingredients.push(prev_ingredient)
+        }
+      })
+      data.ingredients.forEach((new_ingredient: IngredientPercentageModel) => {
+        exists = false
+        this.ingredient.formula.ingredients.forEach(prev_ingredient => {
+          if (prev_ingredient.ingredient.id == new_ingredient.ingredient.id) {
+            exists = true
+          }
+        })
+        if (!exists) {
+          new_ingredients.push(new_ingredient)
+        }
+      })
+      this.adjustMixing(new_ingredients, deleted_ingredients)
       this.ingredient.formula.ingredients = data.ingredients;
-      this.ingredient.formula.mixing = undefined;
     }
   }
 
@@ -122,7 +153,7 @@ export class IngredientManagePage implements OnInit {
         description: "",
       },
     ];
-    if (!this.ingredient.formula.mixing) {
+    if (!this.ingredient.formula.mixing || !this.ingredient.formula.mixing[0]) {
       this.ingredient.formula.ingredients.forEach(
         (ingredient: IngredientPercentageModel) =>
           mixedIngredients[0].ingredients.push(ingredient)
@@ -151,6 +182,7 @@ export class IngredientManagePage implements OnInit {
       this.ingredient.formula.ingredients.indexOf(ingredient),
       1
     );
+    this.adjustMixing([], [ingredient])
   }
 
   canSend() {
@@ -161,8 +193,8 @@ export class IngredientManagePage implements OnInit {
           this.manageIngredientForm.value.name &&
           this.ingredient.formula.proportion_factor.factor &&
           this.ingredient.formula.ingredients &&
-          this.ingredientsAreValid() &&
-          this.ingredient.formula.mixing
+          this.ingredient.formula.ingredients.length>0 &&
+          this.ingredientsAreValid()
         ))
     );
   }
@@ -203,6 +235,9 @@ export class IngredientManagePage implements OnInit {
       this.ingredient.cost = null;
       if (!this.ingredient.formula.compensation_percentage) {
         this.ingredient.formula.compensation_percentage = 0;
+      }
+      if (!this.ingredient.formula.mixing || !this.ingredient.formula.mixing[0]) {
+        this.ingredient.formula.mixing.push({description: "", ingredients: this.ingredient.formula.ingredients})
       }
     }
 
@@ -410,5 +445,32 @@ export class IngredientManagePage implements OnInit {
       ],
     });
     toast.present();
+  }
+
+  adjustMixing(new_ingredients: IngredientPercentageModel[], deleted_ingredients: IngredientPercentageModel[]) {
+    if (this.ingredient.formula.mixing && this.ingredient.formula.mixing[0]) {
+      if (new_ingredients.length > 0) {
+        new_ingredients.forEach(ingredient=>{
+          this.ingredient.formula.mixing[0].ingredients.push(ingredient)
+        })
+      }
+      if (deleted_ingredients.length > 0) {
+        deleted_ingredients.forEach(ingredient=>{
+          this.ingredient.formula.mixing.forEach((mix, mix_i) => {
+            mix.ingredients.forEach((mix_ingredient, ingredient_i) => {
+              if (mix_ingredient.ingredient.id == ingredient.ingredient.id) {
+                this.ingredient.formula.mixing[mix_i].ingredients.splice(
+                  ingredient_i,
+                  1
+                );
+                if (this.ingredient.formula.mixing[mix_i].ingredients.length == 0) {
+                  this.ingredient.formula.mixing.splice(mix_i,1)
+                }
+              }
+            })
+          })
+        })
+      }
+    }
   }
 }

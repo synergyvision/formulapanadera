@@ -157,7 +157,12 @@ export class FormulaManagePage {
   }
 
   async pickIngredient() {
-    let data = await this.ingredientPicker(JSON.parse(JSON.stringify(this.formula.ingredients)));
+    let data;
+    if (this.formula.ingredients) {
+      data = await this.ingredientPicker(JSON.parse(JSON.stringify(this.formula.ingredients)));
+    } else {
+      data = await this.ingredientPicker(this.formula.ingredients);
+    }
     if (data !== undefined) {
       if (this.formula.ingredients == null) {
         this.formula.ingredients = [];
