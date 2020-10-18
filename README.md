@@ -13,7 +13,17 @@
 
 **Haz pan en casa** es una herramienta de trabajo para la producción panadera y optimización del uso del horno.
 
+## Bienvenido 📱
+
 ---
+
+### Tabla de contenido
+
+- [Contexto](#contexto)
+- [Documentación](#documentación-)
+- [Proyecto](#proyecto-)
+- [Funcionalidades](#funcionalidades-)
+- [Autor](#autor-)
 
 ## Contexto
 
@@ -33,7 +43,26 @@ Encuentra la documentación del proyecto [aquí](https://github.com/synergyvisio
 
 Si quieres conocer detalles de cómo ejecutar el proyecto y el código del mismo, ingresa a [formulapanadera](https://github.com/synergyvision/formulapanadera/tree/master/formulapanadera)
 
-## Autores 📝
+## Funcionalidades 📄
+
+- **Internacionalización**
+- **Autentificación**
+  - Registro
+  - Inicio y cierre de sesión
+  - Recuperación de contraseña
+  - Cambio de contraseña
+- **Ingredientes**
+  - CRUD de ingredientes simples y compuestos
+- **Fórmulas**
+  - CRUD de fórmulas (simples, con prefermentos y con rellenos, barnices y coberturas)
+  - Cálculo de fórmulas dependiendo de una cantidad de unidades especificada _(detalles de una fórmula)_
+  - Compartir, publicar y clonar fórmulas _(detalles de una fórmula)_
+  - Registro de creditos de creador y modificadores de una fórmula _(detalles de una fórmula)_
+- **Producción**
+  - CRUD de producción
+  - Ejecución de una producción _(ordenando la misma dependiendo del tiempo de uso del horno)_
+  - Verificación de jornada laboral _(ejecución de una producción)_
+
+## Autor 🐈
 
 - **Alba Sánchez** - _Desarrollador (Estudiante de Ingeniería Informática. Pasante)_ - [albasanchez](https://github.com/albasanchez)
-- **Alexander Ramírez** - _Tutor empresarial_ - [aaramirez](https://github.com/aaramirez)
