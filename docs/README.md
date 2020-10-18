@@ -20,10 +20,11 @@
 ### Tabla de contenido
 
 - [Documentos de interés](#documentos-de-interés)
-- [Estructura del proyecto](#estructura-del-proyecto)
+- [Estructura](#estructura)
   - [/app](#app)
   - [/assets](#assets)
-- [Configuraciones del proyecto](#configuraciones-del-proyecto)
+- [Algoritmos](#algoritmos)
+- [Configuraciones](#configuraciones)
   - [Configuración de idiomas](#configuración-de-idiomas)
   - [Configuración de clasificación de fórmulas (hidratación)](<#configuración-de-clasificación-de-fórmulas-(hidratación)>)
   - [Configuración de tiempos de horno](#configuración-de-tiempos-de-horno)
@@ -38,8 +39,10 @@
 
 - [Propuesta de pasantía](https://github.com/synergyvision/formulapanadera/tree/master/docs/propuesta) -
   _Este documento contiene la descripción del proyecto, junto a sus objetivos, limitaciones y alcance_
+- [Diagramas del proyecto](https://github.com/synergyvision/formulapanadera/tree/master/docs/diagramas) -
+  _Esta carpeta contiene los diagramas de los algoritmos más relevantes de la aplicación_
 
-### Estructura del proyecto
+### Estructura
 
 #### app
 
@@ -85,7 +88,13 @@
 - **logo** - _Contiene el logo de la aplicación_
 - **steps** - _Contiene las imágenes que hacen referencia a los 12 pasos de la panadería_
 
-### Configuraciones del proyecto
+## Algoritmos
+
+### Formulas
+
+### Producciones
+
+### Configuraciones
 
 #### Configuración de idiomas
 

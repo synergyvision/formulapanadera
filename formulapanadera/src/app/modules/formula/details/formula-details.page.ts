@@ -204,23 +204,15 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         },
       });
     }
-    if (!this.formula.user.cloned && this.formula.user.can_clone) {
-      // If not cloned but can clone
-      if (
-        !(
-          this.formula.user.creator.email == current_user &&
-          this.formula.user.owner == ""
-        )
-      ) {
-        buttons.push({
-          text: this.languageService.getTerm("action.clone"),
-          icon: ICONS.clone,
-          cssClass: "action-icon",
-          handler: () => {
-            this.cloneFormula();
-          },
-        });
-      }
+    if (this.formula.user.can_clone || this.formula.user.creator.email == current_user) {
+      buttons.push({
+        text: this.languageService.getTerm("action.clone"),
+        icon: ICONS.clone,
+        cssClass: "action-icon",
+        handler: () => {
+          this.cloneFormula();
+        },
+      });
     }
     if (!this.formula.user.cloned && this.formula.user.owner) {
       // If not public or cloned
