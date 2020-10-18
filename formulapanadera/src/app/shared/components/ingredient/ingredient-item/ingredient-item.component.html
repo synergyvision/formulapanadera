@@ -35,7 +35,7 @@
             />
           </p>
         </ion-col>
-        <ion-col size="9" *ngIf="ingredient.cost" class="cost-col">
+        <ion-col size="9" *ngIf="ingredient.cost && ingredient.cost>0" class="cost-col">
           <p class="ingredients-description ingredient-cost">
             {{ ingredient.cost | number: INGREDIENT_COST_FORMAT }}
             <span class="ingredient-currency"

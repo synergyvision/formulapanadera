@@ -105,7 +105,12 @@
         ><ion-col>
           <ion-item lines="full">
             <ion-label>{{'ingredients.filter.flour' | translate}}</ion-label>
-            <ion-select formControlName="value" (ionChange)="searchList()">
+            <ion-select
+              formControlName="value"
+              (ionChange)="searchList()"
+              [cancelText]="'action.cancel'|translate"
+              [okText]="'action.ok'|translate"
+            >
               <ion-select-option value="all"
                 >{{'ingredients.filter.all' | translate}}</ion-select-option
               >
@@ -130,8 +135,6 @@
     (ionChange)="segmentChanged($event)"
     [value]="segment"
     class="segment"
-    [cancelText]="'action.cancel'|translate"
-    [okText]="'action.ok'|translate"
   >
     <ion-segment-button value="simple">
       <ion-label>{{'ingredients.type.simple' | translate}}</ion-label>

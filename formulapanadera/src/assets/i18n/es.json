@@ -94,9 +94,9 @@
       "range": "Escoger rango"
     },
     "hydration": {
-      "hard": "Duro",
-      "standard": "Estándar",
-      "rustic": "Rústico"
+      "low": "Baja hidratación",
+      "normal": "Hidratación normal",
+      "high": "Alta hidratación"
     },
     "empty": "No se encontraron fórmulas",
     "share": {
