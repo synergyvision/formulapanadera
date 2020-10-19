@@ -30,10 +30,18 @@
     <ion-col class="list-col" size="12">
       <ion-item class="time-item" lines="full">
         <ion-row class="time-row">
-          <ion-col size="12" class="list-col">
+          <ion-col size="4" class="list-col">
             <b>{{ 'production.time.current' | translate}}</b>
             <br />
             {{currentTime()}}
+          </ion-col>
+          <!-- Production times -->
+          <ion-col *ngIf="in_process" size="4" class="list-col"><b>{{ 'production.time.start' | translate}}</b><br />
+            {{productionStartTime()}}</ion-col>
+          <ion-col *ngIf="in_process" size="4" class="list-col">
+            <span>
+              <b>{{ 'production.time.end' | translate}}</b> <br />
+              {{productionEndTime()}}</span>
           </ion-col>
         </ion-row>
       </ion-item>
@@ -76,25 +84,6 @@
       ></ion-datetime>
     </ion-item>
   </span>
-  <!-- Production times -->
-  <ion-row *ngIf="in_process"
-    ><ion-col class="list-col" size="12">
-      <ion-item class="time-item" lines="full">
-        <ion-row class="time-row">
-          <ion-col size="6" class="list-col"
-            ><b>{{ 'production.time.start' | translate}}</b><br />
-            {{productionStartTime()}}</ion-col
-          >
-          <ion-col size="6" class="list-col">
-            <span>
-              <b>{{ 'production.time.end' | translate}}</b> <br />
-              {{productionEndTime()}}</span
-            >
-          </ion-col>
-        </ion-row>
-      </ion-item>
-    </ion-col></ion-row
-  >
   <!-- Segment -->
   <ion-segment
     mode="ios"

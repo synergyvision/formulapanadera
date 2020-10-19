@@ -103,18 +103,26 @@ export class ProductionStepItemComponent {
 
   changeStepStatus(step: ProductionStepModel): void {
     if (!this.blocked) {
-      if (step.status == "PENDING") {
-        if (step.step.number == 0 && !this.productionStarted()) {
-          let difference = Number(
-            this.timeService
-              .difference(
-                step.time.start,
-                this.production_in_process.steps[0].time.start
-              )
-              .toFixed(0)
-          );
-          if (difference !== 0) {
-            this.startFormulaAlert(step);
+      if (step.step.number !== MANIPULATION_STEP - 1 && step.step.number !== OVEN_STEP - 1.5) {
+        if (step.status == "PENDING") {
+          if (step.step.number == 0 && !this.productionStarted()) {
+            let difference = Number(
+              this.timeService
+                .difference(
+                  step.time.start,
+                  this.production_in_process.steps[0].time.start
+                )
+                .toFixed(0)
+            );
+            if (difference !== 0) {
+              this.startFormulaAlert(step);
+            } else {
+              this.productionInProcessService.recalculateProduction(
+                this.production_in_process,
+                this.step
+              );
+              step.status = "IN PROCESS";
+            }
           } else {
             this.productionInProcessService.recalculateProduction(
               this.production_in_process,
@@ -122,15 +130,15 @@ export class ProductionStepItemComponent {
             );
             step.status = "IN PROCESS";
           }
-        } else {
-          this.productionInProcessService.recalculateProduction(
-            this.production_in_process,
-            this.step
-          );
-          step.status = "IN PROCESS";
+        } else if (step.status == "IN PROCESS") {
+          this.stepDoneAlert(step)
         }
-      } else if (step.status == "IN PROCESS") {
-        this.stepDoneAlert(step)
+      } else {
+        if (step.status == "PENDING") {
+          step.status = "IN PROCESS";
+        } else if (step.status == "IN PROCESS") {
+          step.status = "DONE"
+        }
       }
 
       this.productionInProcessService.setProductionInProcess(

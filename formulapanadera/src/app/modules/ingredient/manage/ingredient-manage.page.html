@@ -220,13 +220,12 @@
                 {{'ingredients.name' | translate}}
               </ion-label>
 
-              <ion-button
-                size="small"
+              <ion-icon
+                button
                 (click)="pickIngredient()"
                 class="pick-ingredient"
-              >
-                <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
-              </ion-button>
+                [name]="ICONS.add"
+              ></ion-icon>
             </ion-item>
           </ion-card-header>
           <ion-list lines="full" class="ingredients-list inputs-list">
@@ -279,14 +278,13 @@
                 {{'formulas.mixing_order' | translate}}
               </ion-label>
 
-              <ion-button
-                size="small"
+              <ion-icon
+                button
                 (click)="mixIngredients()"
-                class="mix-ingredient"
-                [disabled]="!ingredient.formula.ingredients"
-              >
-                <ion-icon [name]="ICONS.add" slot="icon-only"></ion-icon>
-              </ion-button>
+                class="pick-ingredient"
+                [name]="(!ingredient.formula.mixing || !ingredient.formula.mixing[0]) ? ICONS.add : ICONS.edit"
+                [ngClass]="{'disabled': !ingredient.formula.ingredients || ingredient.formula.ingredients.length==0}"
+              ></ion-icon>
             </ion-item>
           </ion-card-header>
           <app-mixing-steps
