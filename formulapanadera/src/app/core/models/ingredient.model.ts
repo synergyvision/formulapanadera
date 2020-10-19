@@ -21,7 +21,7 @@ export class IngredientModel {
   formula?: {
     // if the ingredient has its own formula
     ingredients: Array<IngredientPercentageModel>;
-    mixing: Array<IngredientMixingModel>;
+    mixing?: Array<IngredientMixingModel>;
     compensation_percentage: number;
     proportion_factor: ProportionFactor;
     suggested_values: {

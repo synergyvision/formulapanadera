@@ -136,7 +136,7 @@ export class IngredientPickerModal implements OnInit {
     );
 
     updateSearchObservable.subscribe((value) => {
-      this.ingredients = value;
+      this.ingredients = this.ingredientService.sortIngredients(value);
     });
   }
 

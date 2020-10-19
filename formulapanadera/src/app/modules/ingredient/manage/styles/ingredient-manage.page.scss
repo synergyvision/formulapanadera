@@ -124,3 +124,14 @@ ion-back-button {
 .inputs-list {
   padding: 0;
 }
+
+.pick-ingredient {
+  background: var(--ion-color-primary);
+  color: white;
+  border-radius: 5px;
+  padding: 1px;
+}
+
+.disabled {
+  background: lightgray;
+}

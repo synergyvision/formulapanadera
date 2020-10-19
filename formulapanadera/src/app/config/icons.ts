@@ -11,6 +11,7 @@ export const ICONS = {
   create: "create-outline",
   credits: "people-outline",
   done: "checkmark-done-outline",
+  edit: "pencil-outline",
   ellipsis_h: "ellipsis-horizontal",
   ellipsis_v: "ellipsis-vertical",
   eye_off: "eye-off-outline",
