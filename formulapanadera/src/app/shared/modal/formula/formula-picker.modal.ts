@@ -131,7 +131,7 @@ export class FormulaPickerModal implements OnInit {
     );
 
     updateSearchObservable.subscribe((value) => {
-      this.formulas = value;
+      this.formulas = this.formulaService.sortFormulas(value);
     });
   }
 

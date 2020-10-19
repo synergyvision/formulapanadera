@@ -15,11 +15,8 @@ export class TimeService {
   }
 
   startCurrentTime(): void {
-    if (!this.time) {
-      this.time = new Date();
-    }
     interval(1000).subscribe(() => {
-      this.time = this.addTime(this.time, 1, "s");
+      this.time = new Date();
     });
   }
 

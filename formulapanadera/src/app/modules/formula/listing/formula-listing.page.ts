@@ -128,7 +128,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
     );
 
     updateSearchObservable.subscribe((value) => {
-      this.formulas = value;
+      this.formulas = this.formulaService.sortFormulas(value);
     });
   }
 

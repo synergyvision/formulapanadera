@@ -39,13 +39,13 @@ export class FormulaStepsModal {
       this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = null;
     } else if (event.detail.value == "yes") {
       this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = {
-        min: 1,
+        min: 26,
         max: -1,
       };
     } else if (event.detail.value == "range") {
       this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = {
-        min: 1,
-        max: 2,
+        min: 25,
+        max: 27,
       };
     }
   }

@@ -103,18 +103,26 @@ export class ProductionStepItemComponent {
 
   async changeStepStatus(step: ProductionStepModel): Promise<void> {
     if (!this.blocked) {
-      if (step.status == "PENDING") {
-        if (step.step.number == 0 && !this.productionStarted()) {
-          let difference = Number(
-            this.timeService
-              .difference(
-                step.time.start,
-                this.production_in_process.steps[0].time.start
-              )
-              .toFixed(0)
-          );
-          if (difference !== 0) {
-            this.startFormulaAlert(step);
+      if (step.step.number !== MANIPULATION_STEP - 1 && step.step.number !== (OVEN_STEP - 1.5)) {
+        if (step.status == "PENDING") {
+          if (step.step.number == 0 && !this.productionStarted()) {
+            let difference = Number(
+              this.timeService
+                .difference(
+                  step.time.start,
+                  this.production_in_process.steps[0].time.start
+                )
+                .toFixed(0)
+            );
+            if (difference !== 0) {
+              await this.startFormulaAlert(step);
+            } else {
+              this.productionInProcessService.recalculateProduction(
+                this.production_in_process,
+                this.step
+              );
+              step.status = "IN PROCESS";
+            }
           } else {
             this.productionInProcessService.recalculateProduction(
               this.production_in_process,
@@ -122,15 +130,15 @@ export class ProductionStepItemComponent {
             );
             step.status = "IN PROCESS";
           }
-        } else {
-          this.productionInProcessService.recalculateProduction(
-            this.production_in_process,
-            this.step
-          );
-          step.status = "IN PROCESS";
+        } else if (step.status == "IN PROCESS") {
+          await this.stepDoneAlert(step, true)
         }
-      } else if (step.status == "IN PROCESS") {
-        await this.stepDoneAlert(step)
+      } else {
+        if (step.status == "PENDING") {
+          step.status = "IN PROCESS";
+        } else if (step.status == "IN PROCESS") {
+          await this.stepDoneAlert(step, false)
+        }
       }
 
       this.productionInProcessService.setProductionInProcess(
@@ -163,9 +171,10 @@ export class ProductionStepItemComponent {
       ],
     });
     await alert.present();
+    await alert.onDidDismiss();
   }
 
-  async stepDoneAlert(step: ProductionStepModel) {
+  async stepDoneAlert(step: ProductionStepModel, recalculate: boolean) {
     const alert = await this.alertController.create({
       header: this.languageService.getTerm("production.warning.name"),
       message: this.languageService.getTerm("production.warning.step_done", {step: step.step.name}),
@@ -180,10 +189,12 @@ export class ProductionStepItemComponent {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: () => {
-            this.productionInProcessService.recalculateProduction(
-              this.production_in_process,
-              this.step
-            );
+            if (recalculate) {
+              this.productionInProcessService.recalculateProduction(
+                this.production_in_process,
+                this.step
+              );
+            }
             step.status = "DONE";
             if (step.step.number == FERMENTATION_STEP - 1) {
               this.production_in_process.steps.forEach((production_step) => {

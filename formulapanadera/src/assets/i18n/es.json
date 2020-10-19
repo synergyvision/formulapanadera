@@ -170,7 +170,7 @@
     "executing": "Producción en ejecución",
     "time": {
       "start": "Inicio",
-      "end": "Finalización estimada",
+      "end": "Fin estimado",
       "current": "Hora actual"
     },
     "warning": {

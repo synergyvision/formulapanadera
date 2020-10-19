@@ -185,7 +185,7 @@
             button
             (click)="mixIngredients()"
             class="pick-ingredient"
-            [name]="ICONS.add"
+            [name]="(!formula.mixing || !formula.mixing[0]) ? ICONS.add : ICONS.edit"
             [ngClass]="{'disabled': !formula.ingredients}"
           ></ion-icon>
         </ion-item>
@@ -205,7 +205,7 @@
             button
             (click)="describeSteps()"
             class="pick-ingredient"
-            [name]="ICONS.add"
+            [name]="!formula.steps ? ICONS.add : ICONS.edit"
           ></ion-icon>
         </ion-item>
       </ion-card-header>

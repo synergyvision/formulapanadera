@@ -488,4 +488,19 @@ export class FormulaService {
     });
     return time;
   }
+
+  // Sort
+  sortFormulas(formulas: FormulaModel[]): FormulaModel[] & ShellModel {
+    return formulas.sort(function (a, b) {
+      if (a.name && b.name) {
+        if (a.name.toUpperCase() > b.name.toUpperCase()) {
+          return 1;
+        }
+        if (b.name.toUpperCase() > a.name.toUpperCase()) {
+          return -1;
+        }
+      }
+      return 0;
+    }) as FormulaModel[] & ShellModel
+  }
 }

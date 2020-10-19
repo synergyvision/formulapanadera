@@ -93,7 +93,7 @@ export class ProductionInProcessService {
   public productionEnded(steps: Array<ProductionStepModel>): boolean {
     let ended = true;
     steps.forEach((step) => {
-      if (step.status !== "DONE") {
+      if (step.step.time !== 0 && step.status !== "DONE") {
         ended = false;
       }
     });
@@ -112,14 +112,25 @@ export class ProductionInProcessService {
     let step_before_number = 1;
     let step_before: ProductionStepModel;
 
-    if (
-      OVEN_STEP - 1 == selected_step.step.number ||
-      OVEN_STEP - 1.5 == selected_step.step.number
-    ) {
-      step_before_number = 0.5;
-    }
-    if (MANIPULATION_STEP == selected_step.step.number) {
-      step_before_number = 2;
+    let fermentation_after_number = 0
+    let i: number = 0
+    formulas.forEach((formula) => {
+      if (formula.formula.id == selected_step.formula.id) {
+        formula.steps.forEach((step, index) => {
+          i = index
+          if (step.step.number == MANIPULATION_STEP) {
+            while (fermentation_after_number === 0) {
+              if (formula.steps[i].step.time !== 0) {
+                fermentation_after_number = formula.steps[i].step.number
+              }
+              i = i + 1
+            }
+          }
+        })
+      }
+    })
+    if (selected_step.step.number == fermentation_after_number) {
+      step_before_number = fermentation_after_number - (FERMENTATION_STEP - 1);
     }
 
     // Unblock first possible step of each formula
@@ -141,7 +152,7 @@ export class ProductionInProcessService {
               }
               if (
                 step_before.status == "DONE" ||
-                (step_before.step.number == FERMENTATION_STEP - 1 &&
+                (selected_step.step.number == MANIPULATION_STEP - 1 &&
                   step_before.status == "IN PROCESS")
               ) {
                 is_blocked = false;

@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { AlertController } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
+import { OVEN_STEP } from 'src/app/config/formula';
 import { ICONS } from "src/app/config/icons";
 import {
   FormulaPresentModel,
@@ -10,7 +11,6 @@ import {
   ProductionStepModel,
   TimeModel,
 } from "src/app/core/models/production.model";
-import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessService } from "src/app/core/services/production-in-process.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
@@ -41,7 +41,6 @@ export class ProductionStartPage implements OnInit {
 
   constructor(
     private router: Router,
-    private formatNumberService: FormatNumberService,
     private productionInProcessService: ProductionInProcessService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
     private timeService: TimeService,
@@ -166,10 +165,14 @@ export class ProductionStartPage implements OnInit {
   }
 
   stepBlocked(step: ProductionStepModel): boolean {
-    return this.productionInProcessService.stepIsBlocked(
-      this.production_in_process,
-      step
-    );
+    if (step.step.number !== (OVEN_STEP - 1.5)) {
+      return this.productionInProcessService.stepIsBlocked(
+        this.production_in_process,
+        step
+      );
+    } else {
+      return false
+    }
   }
 
   // Navigate
