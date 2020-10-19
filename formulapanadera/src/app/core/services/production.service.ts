@@ -124,4 +124,19 @@ export class ProductionService {
     let time_before: number = this.calculateTimeBeforeOven(steps);
     return time_before + steps[OVEN_STEP - 1].step.time;
   }
+
+  // Sort
+  sortProductions(productions: ProductionModel[]): ProductionModel[] & ShellModel {
+    return productions.sort(function (a, b) {
+      if (a.name && b.name) {
+        if (a.name.toUpperCase() > b.name.toUpperCase()) {
+          return 1;
+        }
+        if (b.name.toUpperCase() > a.name.toUpperCase()) {
+          return -1;
+        }
+      }
+      return 0;
+    }) as ProductionModel[] & ShellModel
+  }
 }

@@ -133,7 +133,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
     );
 
     updateSearchObservable.subscribe((value) => {
-      this.ingredients = value;
+      this.ingredients = this.ingredientService.sortIngredients(value);
     });
   }
 

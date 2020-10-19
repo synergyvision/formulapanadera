@@ -123,7 +123,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
     );
 
     updateSearchObservable.subscribe((value) => {
-      this.productions = value;
+      this.productions = this.productionService.sortProductions(value);
     });
   }
 

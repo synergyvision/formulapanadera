@@ -84,4 +84,19 @@ export class IngredientService {
 
     return filtered as IngredientModel[] & ShellModel;
   }
+
+  // Sort
+  sortIngredients(ingredients: IngredientModel[]): IngredientModel[] & ShellModel {
+    return ingredients.sort(function (a, b) {
+      if (a.name && b.name) {
+        if (a.name.toUpperCase() > b.name.toUpperCase()) {
+          return 1;
+        }
+        if (b.name.toUpperCase() > a.name.toUpperCase()) {
+          return -1;
+        }
+      }
+      return 0;
+    }) as IngredientModel[] & ShellModel
+  }
 }
