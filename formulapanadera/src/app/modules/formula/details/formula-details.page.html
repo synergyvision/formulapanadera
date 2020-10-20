@@ -70,6 +70,14 @@
       ></app-data-item>
     </ion-col>
   </ion-row>
+  <ion-row *ngIf="formula.description">
+    <ion-col class="detail-col">
+      <app-data-item
+        [title]="'formulas.description' | translate"
+        [data]="formula.description"
+      ></app-data-item>
+    </ion-col>
+  </ion-row>
 
   <app-divider></app-divider>
   

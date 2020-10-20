@@ -31,6 +31,7 @@ export class FormulaModel {
   name: string;
   units: number; // number of breads on the recipe
   unit_weight: number; // weight of one bread
+  description?: string;
   ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
   mixing: Array<IngredientMixingModel>;

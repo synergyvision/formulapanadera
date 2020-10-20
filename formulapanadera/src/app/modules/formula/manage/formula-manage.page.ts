@@ -69,6 +69,7 @@ export class FormulaManagePage {
         name: new FormControl(null, Validators.required),
         units: new FormControl(null, Validators.required),
         unit_weight: new FormControl(null, Validators.required),
+        description: new FormControl(null, Validators.required),
       });
       this.formula.user = {
         owner: this.current_user.email,
@@ -91,6 +92,7 @@ export class FormulaManagePage {
           state.formula.unit_weight,
           Validators.required
         ),
+        description: new FormControl(state.formula.description, Validators.required),
       });
       this.formula.id = state.formula.id;
       this.formula.user = state.formula.user;
@@ -299,6 +301,7 @@ export class FormulaManagePage {
     this.formula.name = this.manageFormulaForm.value.name;
     this.formula.units = this.manageFormulaForm.value.units;
     this.formula.unit_weight = this.manageFormulaForm.value.unit_weight;
+    this.formula.description = this.manageFormulaForm.value.description;
     
     if (this.update) {
       let is_modifier = false;
