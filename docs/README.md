@@ -132,7 +132,8 @@ Se ordenan las fórmulas tomando como criterio el tiempo de entrada al horno y p
 - En caso de que la fórmula choque con la anterior
 
 ```txt
-fecha_inicio = el tiempo de salida del horno de la fórmula anterior - tiempo antes de atemperar el horno de la fórmula actual
+diferencia = el tiempo de salida del horno de la fórmula anterior - tiempo antes de atemperar el horno de la fórmula actual
+fecha_inicio = hora actual + diferencia
 ```
 
 - En caso de que no choquen
