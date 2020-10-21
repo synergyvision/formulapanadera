@@ -4,7 +4,7 @@ import {
   ProductionModel,
   ProductionStepModel,
 } from "../models/production.model";
-import { IngredientPercentageModel } from "../models/formula.model";
+import { FormulaModel, IngredientPercentageModel } from "../models/formula.model";
 import { DECIMALS } from "src/app/config/formats";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { FormulaService } from "./formula.service";
@@ -59,18 +59,23 @@ export class ProductionService {
     let cost = 0;
     let bakers_percentage: number;
 
-    production.formulas.forEach((formula) => {
-      bakers_percentage = Number(
-        this.formulaService.calculateBakersPercentage(
-          formula.number * formula.formula.unit_weight,
-          formula.formula.ingredients
-        )
-      );
+    production.formulas.forEach((item) => {
+      let formula: FormulaModel = JSON.parse(JSON.stringify(item.formula))
+      let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item.formula))
+      formula_without_compound.ingredients.forEach((ingredient, index) => {
+        if (ingredient.ingredient.formula) {
+          formula_without_compound.ingredients.splice(
+            index,
+            1
+          );
+        }
+      })
+      bakers_percentage = Number(this.formulaService.deleteIngredientsWithFormula(formula, formula_without_compound))
       cost =
         cost +
         Number(
           this.formulaService.calculateTotalCost(
-            formula.formula.ingredients,
+            formula_without_compound.ingredients,
             bakers_percentage
           )
         );

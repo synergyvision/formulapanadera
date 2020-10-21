@@ -69,7 +69,7 @@ export class FormulaManagePage {
         name: new FormControl(null, Validators.required),
         units: new FormControl(null, Validators.required),
         unit_weight: new FormControl(null, Validators.required),
-        description: new FormControl(null, Validators.required),
+        description: new FormControl(null, null),
       });
       this.formula.user = {
         owner: this.current_user.email,
@@ -92,7 +92,7 @@ export class FormulaManagePage {
           state.formula.unit_weight,
           Validators.required
         ),
-        description: new FormControl(state.formula.description, Validators.required),
+        description: new FormControl(state.formula.description, null),
       });
       this.formula.id = state.formula.id;
       this.formula.user = state.formula.user;
