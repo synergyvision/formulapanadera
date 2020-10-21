@@ -23,7 +23,18 @@ export class FormulaItemComponent {
   constructor(private formulaService: FormulaService) {}
 
   hydration() {
-    return this.formulaService.calculateHydration(this.formula.ingredients);
+    let formula: FormulaModel = JSON.parse(JSON.stringify(this.formula))
+    let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(formula))
+    formula_without_compound.ingredients.forEach((ingredient, index) => {
+      if (ingredient.ingredient.formula) {
+        formula_without_compound.ingredients.splice(
+          index,
+          1
+        );
+      }
+    })
+    this.formulaService.deleteIngredientsWithFormula(formula, formula_without_compound)
+    return this.formulaService.calculateHydration(formula_without_compound.ingredients);
   }
 
   unitCost() {

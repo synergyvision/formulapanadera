@@ -38,7 +38,18 @@ export class FormulaService {
     const filtered = [];
     let hydration: number;
     formulas.forEach((item) => {
-      hydration = Number(this.calculateHydration(item.ingredients));
+      let formula: FormulaModel = JSON.parse(JSON.stringify(item))
+      let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item))
+      formula_without_compound.ingredients.forEach((ingredient, index) => {
+        if (ingredient.ingredient.formula) {
+          formula_without_compound.ingredients.splice(
+            index,
+            1
+          );
+        }
+      })
+      this.deleteIngredientsWithFormula(formula, formula_without_compound)
+      hydration = Number(this.calculateHydration(formula_without_compound.ingredients));
       if (hydration >= lower && hydration <= upper) {
         filtered.push(item);
       }
