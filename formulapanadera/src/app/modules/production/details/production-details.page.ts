@@ -4,6 +4,7 @@ import { ActionSheetController } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
 import { ICONS } from "src/app/config/icons";
+import { FormulaModel } from 'src/app/core/models/formula.model';
 import {
   FormulaNumberModel,
   FormulaPresentModel,
@@ -93,10 +94,20 @@ export class ProductionDetailsPage implements OnInit {
         DECIMALS.weight
       )
     );
-
+    let formula: FormulaModel = JSON.parse(JSON.stringify(transformed_formula.formula))
+    let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(formula))
+    formula_without_compound.ingredients.forEach((ingredient, index) => {
+      if (ingredient.ingredient.formula) {
+        formula_without_compound.ingredients.splice(
+          index,
+          1
+        );
+      }
+    })
+    let bakers_p = this.formulaService.deleteIngredientsWithFormula(formula, formula_without_compound)
     transformed_formula.total_cost = this.formulaService.calculateTotalCost(
-      transformed_formula.formula.ingredients,
-      Number(transformed_formula.bakers_percentage)
+      formula_without_compound.ingredients,
+      Number(bakers_p)
     );
     transformed_formula.unitary_cost = (
       Number(transformed_formula.total_cost) / initial_formula.number

@@ -102,6 +102,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       (this.units * this.formula.unit_weight).toFixed(DECIMALS.weight)
     );
     let formula: FormulaModel = JSON.parse(JSON.stringify(this.formula))
+    formula.units = this.units
     formula.ingredients = JSON.parse(JSON.stringify(this.ingredients))
     let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(formula))
     formula_without_compound.ingredients.forEach((ingredient, index) => {
@@ -116,10 +117,12 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.hydration = Number(
       this.formulaService.calculateHydration(formula_without_compound.ingredients)
     );
+    console.log(formula_without_compound)
     this.total_cost = this.formulaService.calculateTotalCost(
       formula_without_compound.ingredients,
       Number(bakers_p)
     );
+    console.log(this.total_cost)
     this.unitary_cost = (Number(this.total_cost) / this.units).toString();
 
     this.ingredients_formula = []
