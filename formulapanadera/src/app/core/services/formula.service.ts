@@ -38,7 +38,18 @@ export class FormulaService {
     const filtered = [];
     let hydration: number;
     formulas.forEach((item) => {
-      hydration = Number(this.calculateHydration(item.ingredients));
+      let formula: FormulaModel = JSON.parse(JSON.stringify(item))
+      let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item))
+      formula_without_compound.ingredients.forEach((ingredient, index) => {
+        if (ingredient.ingredient.formula) {
+          formula_without_compound.ingredients.splice(
+            index,
+            1
+          );
+        }
+      })
+      this.deleteIngredientsWithFormula(formula, formula_without_compound)
+      hydration = Number(this.calculateHydration(formula_without_compound.ingredients));
       if (hydration >= lower && hydration <= upper) {
         filtered.push(item);
       }
@@ -55,14 +66,19 @@ export class FormulaService {
     let bakers_percentage: number;
     let cost: number;
     formulas.forEach((item) => {
-      bakers_percentage = Number(
-        this.calculateBakersPercentage(
-          item.units * item.unit_weight,
-          item.ingredients
-        )
-      );
+      let formula: FormulaModel = JSON.parse(JSON.stringify(item))
+      let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item))
+      formula_without_compound.ingredients.forEach((ingredient, index) => {
+        if (ingredient.ingredient.formula) {
+          formula_without_compound.ingredients.splice(
+            index,
+            1
+          );
+        }
+      })
+      bakers_percentage = Number(this.deleteIngredientsWithFormula(formula, formula_without_compound))
       cost =
-        Number(this.calculateTotalCost(item.ingredients, bakers_percentage)) /
+        Number(this.calculateTotalCost(formula_without_compound.ingredients, bakers_percentage)) /
         item.units;
       if (
         (cost >= lower || lower == null) &&

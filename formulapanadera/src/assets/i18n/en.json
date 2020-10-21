@@ -54,6 +54,8 @@
     "update": "Update formula",
     "bakers_percentage": "Baker's percentage",
     "formula_name": "Name",
+    "recipe":"Recipe (grams)",
+    "formula":"Formula (%)",
     "unit": "Unit",
     "units": "Units",
     "units_short": "Units",
@@ -108,7 +110,7 @@
       "public": "Public"
     },
     "clone": {
-      "instructions": "By cloning this formula you can modify it, it will appear among your formulas. The original version will be in the shared section"
+      "instructions": "By cloning this formula you can modify it, it will appear among your formulas. The original version will be preserved"
     }
   },
   "ingredients": {
@@ -181,7 +183,7 @@
     },
     "invalid_steps": {
       "verify": "Check working hours",
-      "name": "Invalid steps",
+      "name": "Out of working hours",
       "text": "The following steps are outside the specified times, ¿Continue anyway?"
     },
     "oven": {

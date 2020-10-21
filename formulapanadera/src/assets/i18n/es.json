@@ -54,6 +54,8 @@
     "update": "Modificar fórmula",
     "bakers_percentage": "Factor panadero",
     "formula_name": "Nombre",
+    "recipe":"Receta (gramos)",
+    "formula":"Fórmula (%)",
     "unit": "Unidad",
     "units": "Unidades",
     "units_short": "Unid.",
@@ -108,7 +110,7 @@
       "public": "Públicas"
     },
     "clone": {
-      "instructions": "Al clonar esta fórmula podrás modificarla, esta aparecerá entre tus fórmulas. La versión original se conservará en la sección de compartidos"
+      "instructions": "Al clonar esta fórmula podrás modificarla, esta aparecerá entre tus fórmulas. La versión original se conservará"
     }
   },
   "ingredients": {
@@ -181,7 +183,7 @@
     },
     "invalid_steps": {
       "verify": "Verificar jornada laboral",
-      "name": "Pasos inválidos",
+      "name": "Fuera de la jornada",
       "text": "Los siguientes pasos están fuera de su jornada laboral, ¿Continuar de todas formas?"
     },
     "oven": {
