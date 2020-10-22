@@ -327,21 +327,25 @@ export class FormulaManagePage {
         this.formula.user.owner = this.current_user.email;
       }
 
-      this.verifyCompoundIngredients()
-
-      this.formulaCRUDService
-        .updateFormula(this.formula)
-        .then(() => {
-          this.router.navigateByUrl(
-            APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-          );
-        })
-        .catch(() => {
-          this.presentToast(false);
-        })
-        .finally(async () => {
-          await loading.dismiss();
-        });
+      let valid: boolean = this.verifyCompoundIngredients()
+      if (valid) {
+        this.formulaCRUDService
+          .updateFormula(this.formula)
+          .then(() => {
+            this.router.navigateByUrl(
+              APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+            );
+          })
+          .catch(() => {
+            this.presentToast(false);
+          })
+          .finally(async () => {
+            await loading.dismiss();
+          });
+      } else {
+        this.presentToast(false);
+        await loading.dismiss();
+      }
     } else {
       this.formula.user = {
         owner: this.current_user.email,
@@ -446,27 +450,63 @@ export class FormulaManagePage {
     }
   }
 
-  verifyCompoundIngredients() {
-    let bakers_percentage: string
-    let new_bakers_percentage = this.formulaService.deleteIngredientsWithFormula(this.original_formula, this.formula)
+  verifyCompoundIngredients(): boolean {
+    let new_compound_ingredients: IngredientPercentageModel[] = []
+    let deleted_compound_ingredients: IngredientPercentageModel[] = []
+    let exists: boolean
+    this.formula.ingredients.forEach((new_ingredient: IngredientPercentageModel) => {
+      exists = false
+      this.original_formula.ingredients.forEach(prev_ingredient => {
+        if (prev_ingredient.ingredient.id == new_ingredient.ingredient.id || !new_ingredient.ingredient.formula) {
+          exists = true
+        }
+      })
+      if (!exists) {
+        new_compound_ingredients.push(new_ingredient)
+      }
+    })
+    this.original_formula.ingredients.forEach((new_ingredient: IngredientPercentageModel) => {
+      exists = false
+      this.formula.ingredients.forEach(prev_ingredient => {
+        if (prev_ingredient.ingredient.id == new_ingredient.ingredient.id || !new_ingredient.ingredient.formula) {
+          exists = true
+        }
+      })
+      if (!exists) {
+        deleted_compound_ingredients.push(new_ingredient)
+      }
+    })
 
-    if (new_bakers_percentage) {
-      bakers_percentage = new_bakers_percentage
-    } else {
-      bakers_percentage = this.formulaService.calculateBakersPercentage(
-        this.formula.units * this.formula.unit_weight,
-        this.original_formula.ingredients
+    let bakers_percentage: string
+    let new_bakers_percentage: string
+    if (deleted_compound_ingredients.length !== 0) {
+      new_bakers_percentage = this.formulaService.deleteIngredientsWithFormula(this.original_formula, this.formula)
+    }
+    if (new_compound_ingredients.length !== 0) {
+      if (new_bakers_percentage) {
+        bakers_percentage = new_bakers_percentage
+      } else {
+        bakers_percentage = this.formulaService.calculateBakersPercentage(
+          this.formula.units * this.formula.unit_weight,
+          this.original_formula.ingredients
+        );
+      }
+      let total_weight = Number(
+        (this.formula.units * this.formula.unit_weight)
+      );
+    
+      this.formulaService.calculateIngredientsWithFormula(
+        this.formula.ingredients,
+        bakers_percentage,
+        Number(total_weight)
       );
     }
-    let total_weight = Number(
-      (this.formula.units * this.formula.unit_weight)
-    );
-    
-    this.formulaService.calculateIngredientsWithFormula(
-      this.formula.ingredients,
-      bakers_percentage,
-      Number(total_weight)
-    );
+    if (this.ingredientsAreValid()) {
+      return true
+    } else {
+      this.formulaService.deleteIngredientsWithFormula(this.formula, this.formula)
+      return false
+    }
   }
 
   ingredientsAreValid() {
