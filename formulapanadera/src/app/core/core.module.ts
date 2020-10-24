@@ -24,6 +24,7 @@ import { ProductionStorageService } from "./services/storage/production.service"
 import { TimeService } from "./services/time.service";
 import { ProductionInProcessStorageService } from "./services/storage/production-in-process.service";
 import { ProductionInProcessService } from "./services/production-in-process.service";
+import { LanguageStorageService } from './services/storage/language.service';
 
 @NgModule({
   imports: [
@@ -50,6 +51,7 @@ import { ProductionInProcessService } from "./services/production-in-process.ser
     ProductionStorageService,
     ProductionInProcessStorageService,
     LanguageService,
+    LanguageStorageService,
     UserStorageService,
   ],
 })

@@ -25,7 +25,7 @@ export class LanguageAlert implements OnInit {
       name: item.name,
       type: "radio",
       label: item.name,
-      value: item.code,
+      value: item,
       checked: item.code === this.languageService.getCurrentLang(),
     }));
 
@@ -42,7 +42,7 @@ export class LanguageAlert implements OnInit {
         },
         {
           text: this.languageService.getTerm("action.ok"),
-          handler: (data) => {
+          handler: (data: LanguageModel) => {
             if (data) {
               this.languageService.useLang(data);
             }
