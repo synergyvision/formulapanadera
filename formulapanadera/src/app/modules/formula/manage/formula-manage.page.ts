@@ -142,6 +142,12 @@ export class FormulaManagePage {
     }
   }
 
+  formatStepPercentage(ingredient: IngredientPercentageModel) {
+    ingredient.percentage = Number(
+      this.formatNumberService.formatNumberDecimals(ingredient.percentage)
+    );
+  }
+
   async ingredientPicker(ingredients: Array<IngredientPercentageModel>) {
     const modal = await this.modalController.create({
       component: IngredientPickerModal,

@@ -45,7 +45,7 @@
     ><ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.bakers_percentage' | translate"
-        data="{{bakers_percentage}} {{'ingredients.grams' | translate}}/%"
+        data="{{bakers_percentage | number: DECIMAL_BAKERS_PERCENTAGE_FORMAT}} {{'ingredients.grams' | translate}}/%"
       ></app-data-item> </ion-col
     ><ion-col class="detail-col">
       <app-data-item
