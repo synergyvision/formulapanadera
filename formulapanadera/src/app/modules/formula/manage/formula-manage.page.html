@@ -100,7 +100,7 @@
       </ion-row>
     </ion-list>
 
-    <app-divider></app-divider>
+    <app-divider *ngIf="!update || current_user.email === formula.user.creator.email"></app-divider>
 
     <ion-card class="card">
       <ion-card-header class="card-header">
