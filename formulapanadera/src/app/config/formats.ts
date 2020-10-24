@@ -10,11 +10,11 @@ export const DECIMAL_COST_FORMAT = {
   ingredient: "1.1-10",
   formula: "1.1-2"
 };
+export const DECIMAL_BAKERS_PERCENTAGE_FORMAT = "1.1-2"
 
 // Number of decimals required
 export const DECIMALS = {
   temperature: 0,
-  bakers_percentage: 2,
   formula_percentage: 1,
   formula_grams: 1,
   hydration: 1,

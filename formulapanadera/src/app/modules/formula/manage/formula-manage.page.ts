@@ -3,7 +3,6 @@ import { FormulaService } from "src/app/core/services/formula.service";
 import {
   ModalController,
   IonRouterOutlet,
-  AlertController,
   LoadingController,
   ToastController,
 } from "@ionic/angular";
@@ -47,12 +46,12 @@ export class FormulaManagePage {
   update: boolean = false;
   public = false;
   current_user = new UserModel();
+  is_modifier: boolean = false
 
   constructor(
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
     public modalController: ModalController,
-    private alertController: AlertController,
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
@@ -114,6 +113,14 @@ export class FormulaManagePage {
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
     this.current_user = await this.userStorageService.getUser();
+    if (this.update) {
+      this.is_modifier = false;
+      this.formula.user.modifiers.forEach((user) => {
+        if (user.email == this.current_user.email) {
+          this.is_modifier = true;
+        }
+      });
+    }
   }
 
   changeUnit(ev: any) {
@@ -142,6 +149,12 @@ export class FormulaManagePage {
         this.formatNumberService.formatNumberDecimals(ingredient.percentage, 1)
       );
     }
+  }
+
+  formatStepPercentage(ingredient: IngredientPercentageModel) {
+    ingredient.percentage = Number(
+      this.formatNumberService.formatNumberDecimals(ingredient.percentage)
+    );
   }
 
   async ingredientPicker(ingredients: Array<IngredientPercentageModel>) {
@@ -304,22 +317,11 @@ export class FormulaManagePage {
     this.formula.description = this.manageFormulaForm.value.description;
     
     if (this.update) {
-      let is_modifier = false;
-      this.formula.user.modifiers.forEach((user) => {
-        if (user.email == this.current_user.email) {
-          is_modifier = true;
-        }
+      this.formula.user.modifiers.push({
+        name: this.current_user.name,
+        email: this.current_user.email,
+        date: new Date(),
       });
-      if (
-        !is_modifier &&
-        this.current_user.email !== this.formula.user.creator.email
-      ) {
-        this.formula.user.modifiers.push({
-          name: this.current_user.name,
-          email: this.current_user.email,
-          date: new Date(),
-        });
-      }
       if (this.public) {
         this.formula.user.owner = "";
         this.formula.user.cloned = false;
@@ -376,49 +378,6 @@ export class FormulaManagePage {
           await loading.dismiss();
         });
     }
-  }
-
-  async deleteFormula() {
-    const alert = await this.alertController.create({
-      header: this.languageService.getTerm("action.confirm"),
-      message: this.languageService.getTerm("action.delete_question", {
-        item: this.manageFormulaForm.value.name,
-      }),
-      cssClass: "confirm-alert",
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          role: "cancel",
-          handler: () => {},
-        },
-        {
-          text: this.languageService.getTerm("action.ok"),
-          cssClass: "confirm-alert-accept",
-          handler: async () => {
-            const loading = await this.loadingController.create({
-              cssClass: "app-send-loading",
-              message: this.languageService.getTerm("loading"),
-            });
-            await loading.present();
-
-            this.formulaCRUDService
-              .deleteFormula(this.formula.id)
-              .then(() => {
-                this.router.navigateByUrl(
-                  APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-                );
-              })
-              .catch(() => {
-                this.presentToast(false);
-              })
-              .finally(async () => {
-                await loading.dismiss();
-              });
-          },
-        },
-      ],
-    });
-    await alert.present();
   }
 
   verifyTemperature() {

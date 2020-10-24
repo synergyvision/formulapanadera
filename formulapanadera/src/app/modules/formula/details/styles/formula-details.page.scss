@@ -21,10 +21,15 @@ ion-back-button {
   .formula-detail {
     font-size: 14px;
     --padding-start: var(--page-margin);
+    max-height: 58px;
+    border-bottom: 1px solid lightgray;
 
     .editable-field {
       color: var(--ion-color-primary);
       font-size: 16px;
+      max-height: 24px !important;
+      --padding-top: 0;
+      --padding-bottom: 0;
     }
   }
 

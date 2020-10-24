@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import {
-  AlertController,
   IonRouterOutlet,
   LoadingController,
   ModalController,
@@ -45,7 +44,6 @@ export class ProductionManagePage implements OnInit {
     private productionCRUDService: ProductionCRUDService,
     private productionStorageService: ProductionStorageService,
     public modalController: ModalController,
-    private alertController: AlertController,
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
     private router: Router,
@@ -127,55 +125,6 @@ export class ProductionManagePage implements OnInit {
           await loading.dismiss();
         });
     }
-  }
-
-  async deleteProduction() {
-    const alert = await this.alertController.create({
-      header: this.languageService.getTerm("action.confirm"),
-      message: this.languageService.getTerm("action.delete_question", {
-        item: this.manageProductionForm.value.name,
-      }),
-      cssClass: "confirm-alert",
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          role: "cancel",
-          handler: () => {},
-        },
-        {
-          text: this.languageService.getTerm("action.ok"),
-          cssClass: "confirm-alert-accept",
-          handler: async () => {
-            const loading = await this.loadingController.create({
-              cssClass: "app-send-loading",
-              message: this.languageService.getTerm("loading"),
-            });
-            await loading.present();
-
-            this.productionCRUDService
-              .deleteProduction(this.production.id)
-              .then(async () => {
-                await this.productionStorageService
-                  .deleteProduction(this.production.id)
-                  .then(() => {
-                    this.router.navigateByUrl(
-                      APP_URL.menu.name +
-                        "/" +
-                        APP_URL.menu.routes.production.main
-                    );
-                  });
-              })
-              .catch(() => {
-                this.presentToast(false);
-              })
-              .finally(async () => {
-                await loading.dismiss();
-              });
-          },
-        },
-      ],
-    });
-    await alert.present();
   }
 
   async formulaPicker(formulas: Array<FormulaNumberModel>) {

@@ -1,19 +1,23 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, NgZone, OnInit } from "@angular/core";
 
 import { IngredientModel } from "../../../core/models/ingredient.model";
 import { Router } from "@angular/router";
-import { ActionSheetController } from "@ionic/angular";
+import { ActionSheetController, AlertController, LoadingController, ToastController } from "@ionic/angular";
 import { LanguageService } from "src/app/core/services/language.service";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserModel } from "src/app/core/models/user.model";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DECIMAL_COST_FORMAT } from "src/app/config/formats";
+import { IngredientCRUDService } from 'src/app/core/services/firebase/ingredient.service';
 
 @Component({
   selector: "app-ingredient-details",
   templateUrl: "./ingredient-details.page.html",
-  styleUrls: ["./styles/ingredient-details.page.scss"],
+  styleUrls: [
+    "./styles/ingredient-details.page.scss",
+    "./../../../shared/styles/confirm.alert.scss"
+  ],
 })
 export class IngredientDetailsPage implements OnInit {
   APP_URL = APP_URL;
@@ -35,10 +39,15 @@ export class IngredientDetailsPage implements OnInit {
   constructor(
     private router: Router,
     private actionSheetController: ActionSheetController,
+    private alertController: AlertController,
+    private loadingController: LoadingController,
+    private toastController: ToastController,
+    private ngZone: NgZone,
     private languageService: LanguageService,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private ingredientCRUDService: IngredientCRUDService
   ) {
-    this.showIngredients = false;
+    this.showIngredients = true;
     this.showMixing = false;
     this.state = this.router.getCurrentNavigation().extras.state;
   }
@@ -62,6 +71,14 @@ export class IngredientDetailsPage implements OnInit {
           handler: () => {
             this.updateIngredient();
           },
+        },
+        {
+        text: this.languageService.getTerm("action.delete"),
+        icon: ICONS.trash,
+        cssClass: "delete-icon",
+          handler: () => {
+            this.deleteIngredient();
+          }
         },
         {
           text: this.languageService.getTerm("action.cancel"),
@@ -104,5 +121,73 @@ export class IngredientDetailsPage implements OnInit {
     } else {
       return "";
     }
+  }
+
+  async deleteIngredient() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.confirm"),
+      message: this.languageService.getTerm("action.delete_question", {
+        item: this.ingredient.name,
+      }),
+      cssClass: "confirm-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: async () => {
+            const loading = await this.loadingController.create({
+              cssClass: "app-send-loading",
+              message: this.languageService.getTerm("loading"),
+            });
+            await loading.present();
+
+            this.ingredientCRUDService
+              .deleteIngredient(this.ingredient.id)
+              .then(() => {
+                this.ngZone.run(() =>
+                  this.router.navigate([
+                    APP_URL.menu.name +
+                      "/" +
+                      APP_URL.menu.routes.ingredient.main,
+                  ])
+                );
+              })
+              .catch(() => {
+                this.presentToast(false);
+              })
+              .finally(async () => {
+                await loading.dismiss();
+              });
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async presentToast(success: boolean, exists: boolean = false) {
+    const toast = await this.toastController.create({
+      message: exists
+        ? this.languageService.getTerm("send.exists")
+        : success
+        ? this.languageService.getTerm("send.success")
+        : this.languageService.getTerm("send.error"),
+      color: "secondary",
+      duration: 5000,
+      position: "top",
+      buttons: [
+        {
+          icon: ICONS.close,
+          role: "cancel",
+          handler: () => {},
+        },
+      ],
+    });
+    toast.present();
   }
 }

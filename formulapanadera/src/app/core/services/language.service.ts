@@ -4,13 +4,14 @@ import { TranslateService } from "@ngx-translate/core";
 import { LanguageModel } from "../models/language.model";
 
 import { LANGUAGE } from "src/app/config/configuration";
+import { LanguageStorageService } from './storage/language.service';
 
 @Injectable()
 export class LanguageService {
   languages: Array<LanguageModel> = new Array<LanguageModel>();
   translations;
 
-  constructor(private translateService: TranslateService) {
+  constructor(private translateService: TranslateService, private languageStorageService: LanguageStorageService) {
     this.languages = LANGUAGE.available;
   }
 
@@ -22,8 +23,9 @@ export class LanguageService {
     return this.translateService.currentLang;
   }
 
-  useLang(data: string) {
-    this.translateService.use(data);
+  useLang(data: LanguageModel) {
+    this.translateService.use(data.code);
+    this.languageStorageService.setLanguage(data)
   }
 
   public initLanguages() {

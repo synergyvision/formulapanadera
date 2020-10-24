@@ -41,4 +41,8 @@
     font-size: 12px;
     --padding-start: var(--page-margin);
   }
+
+  ion-textarea {
+    color: var(--ion-color-primary);
+  }
 }
