@@ -3,6 +3,7 @@ import { FormulaService } from "src/app/core/services/formula.service";
 import {
   ActionSheetController,
   AlertController,
+  LoadingController,
   ToastController,
 } from "@ionic/angular";
 import {
@@ -69,6 +70,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private router: Router,
     private datePipe: DatePipe,
     private userStorageService: UserStorageService,
+    private loadingController: LoadingController
   ) {
     this.showIngredients = false;
     this.showSubIngredients = true;
@@ -227,7 +229,19 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         },
       });
     }
-    if (!this.formula.user.cloned && this.formula.user.owner) {
+    buttons.push(
+      {
+        text: this.languageService.getTerm("credits.name"),
+        icon: ICONS.credits,
+        cssClass: "action-icon",
+        handler: () => {
+          this.showCredits();
+        },
+      },
+    );
+    if (this.formula.user.owner == current_user ||
+      (this.formula.user.owner == "" &&
+        this.formula.user.creator.email == current_user)) {
       // If not public or cloned
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
@@ -239,14 +253,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       });
     }
     buttons.push(
-      {
-        text: this.languageService.getTerm("credits.name"),
-        icon: ICONS.credits,
-        cssClass: "action-icon",
-        handler: () => {
-          this.showCredits();
-        },
-      },
       {
         text: this.languageService.getTerm("action.cancel"),
         icon: ICONS.close,
@@ -367,11 +373,24 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
-          handler: () => {
-            this.formulaCRUDService.deleteFormula(this.formula.id).then(() => {
+          handler: async () => {
+            const loading = await this.loadingController.create({
+              cssClass: "app-send-loading",
+              message: this.languageService.getTerm("loading"),
+            });
+            await loading.present();
+
+            this.formulaCRUDService.deleteFormula(this.formula.id)
+              .then(() => {
               this.router.navigateByUrl(
                 APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-              );
+              )
+              .catch(() => {
+                this.presentToast(false);
+              })
+              .finally(async () => {
+                await loading.dismiss();
+              });
             });
           },
         },

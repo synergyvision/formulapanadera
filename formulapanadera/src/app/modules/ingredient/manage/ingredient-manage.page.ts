@@ -1,6 +1,5 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
-  AlertController,
   ModalController,
   IonRouterOutlet,
   LoadingController,
@@ -55,10 +54,8 @@ export class IngredientManagePage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     public modalController: ModalController,
-    private alertController: AlertController,
     private routerOutlet: IonRouterOutlet,
     private router: Router,
-    private ngZone: NgZone
   ) {}
 
   async ngOnInit() {
@@ -287,53 +284,6 @@ export class IngredientManagePage implements OnInit {
           });
       }
     }
-  }
-
-  async deleteIngredient() {
-    const alert = await this.alertController.create({
-      header: this.languageService.getTerm("action.confirm"),
-      message: this.languageService.getTerm("action.delete_question", {
-        item: this.manageIngredientForm.value.name,
-      }),
-      cssClass: "confirm-alert",
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          role: "cancel",
-          handler: () => {},
-        },
-        {
-          text: this.languageService.getTerm("action.ok"),
-          cssClass: "confirm-alert-accept",
-          handler: async () => {
-            const loading = await this.loadingController.create({
-              cssClass: "app-send-loading",
-              message: this.languageService.getTerm("loading"),
-            });
-            await loading.present();
-
-            this.ingredientCRUDService
-              .deleteIngredient(this.ingredient.id)
-              .then(() => {
-                this.ngZone.run(() =>
-                  this.router.navigate([
-                    APP_URL.menu.name +
-                      "/" +
-                      APP_URL.menu.routes.ingredient.main,
-                  ])
-                );
-              })
-              .catch(() => {
-                this.presentToast(false);
-              })
-              .finally(async () => {
-                await loading.dismiss();
-              });
-          },
-        },
-      ],
-    });
-    await alert.present();
   }
 
   formatNumberPercentage(value: number) {

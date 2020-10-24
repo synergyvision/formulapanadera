@@ -276,34 +276,10 @@
         </span>
       </ion-list>
     </ion-card>
-
-    <ion-row class="form-actions-wrapper" *ngIf="!update">
-      <ion-col>
-        <ion-button
-          class="submit-btn"
-          expand="block"
-          color="primary"
-          type="submit"
-          fill="solid"
-          [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps || !ingredientsAreValid())"
-          >{{ 'action.create' | translate }}</ion-button
-        >
-      </ion-col>
-    </ion-row>
   </ion-content>
 
-  <ion-footer *ngIf="update">
-    <ion-row class="form-actions-wrapper">
-      <ion-col>
-        <ion-button
-          class="delete-btn"
-          expand="block"
-          color="danger"
-          fill="solid"
-          (click)="deleteFormula()"
-          >{{ 'action.delete' | translate }}
-        </ion-button>
-      </ion-col>
+  <ion-footer>
+    <ion-row class="form-actions-wrapper" *ngIf="update">
       <ion-col>
         <ion-button
           class="submit-btn"
@@ -314,6 +290,18 @@
           [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps || !ingredientsAreValid())"
           >{{ 'action.update' | translate }}</ion-button
         >
+      </ion-col>
+    </ion-row>
+    <ion-row class="form-actions-wrapper" *ngIf="!update">
+      <ion-col>
+        <ion-button
+          class="submit-btn"
+          expand="block"
+          color="primary"
+          type="submit"
+          fill="solid"
+          [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps || !ingredientsAreValid())"
+        >{{ 'action.create' | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-footer>

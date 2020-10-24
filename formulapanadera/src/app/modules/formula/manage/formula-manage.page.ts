@@ -3,7 +3,6 @@ import { FormulaService } from "src/app/core/services/formula.service";
 import {
   ModalController,
   IonRouterOutlet,
-  AlertController,
   LoadingController,
   ToastController,
 } from "@ionic/angular";
@@ -52,7 +51,6 @@ export class FormulaManagePage {
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
     public modalController: ModalController,
-    private alertController: AlertController,
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
@@ -376,49 +374,6 @@ export class FormulaManagePage {
           await loading.dismiss();
         });
     }
-  }
-
-  async deleteFormula() {
-    const alert = await this.alertController.create({
-      header: this.languageService.getTerm("action.confirm"),
-      message: this.languageService.getTerm("action.delete_question", {
-        item: this.manageFormulaForm.value.name,
-      }),
-      cssClass: "confirm-alert",
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          role: "cancel",
-          handler: () => {},
-        },
-        {
-          text: this.languageService.getTerm("action.ok"),
-          cssClass: "confirm-alert-accept",
-          handler: async () => {
-            const loading = await this.loadingController.create({
-              cssClass: "app-send-loading",
-              message: this.languageService.getTerm("loading"),
-            });
-            await loading.present();
-
-            this.formulaCRUDService
-              .deleteFormula(this.formula.id)
-              .then(() => {
-                this.router.navigateByUrl(
-                  APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-                );
-              })
-              .catch(() => {
-                this.presentToast(false);
-              })
-              .finally(async () => {
-                await loading.dismiss();
-              });
-          },
-        },
-      ],
-    });
-    await alert.present();
   }
 
   verifyTemperature() {
