@@ -46,6 +46,7 @@ export class FormulaManagePage {
   update: boolean = false;
   public = false;
   current_user = new UserModel();
+  is_modifier: boolean = false
 
   constructor(
     private formulaService: FormulaService,
@@ -112,6 +113,14 @@ export class FormulaManagePage {
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
     this.current_user = await this.userStorageService.getUser();
+    if (this.update) {
+      this.is_modifier = false;
+      this.formula.user.modifiers.forEach((user) => {
+        if (user.email == this.current_user.email) {
+          this.is_modifier = true;
+        }
+      });
+    }
   }
 
   changeUnit(ev: any) {
@@ -308,22 +317,11 @@ export class FormulaManagePage {
     this.formula.description = this.manageFormulaForm.value.description;
     
     if (this.update) {
-      let is_modifier = false;
-      this.formula.user.modifiers.forEach((user) => {
-        if (user.email == this.current_user.email) {
-          is_modifier = true;
-        }
+      this.formula.user.modifiers.push({
+        name: this.current_user.name,
+        email: this.current_user.email,
+        date: new Date(),
       });
-      if (
-        !is_modifier &&
-        this.current_user.email !== this.formula.user.creator.email
-      ) {
-        this.formula.user.modifiers.push({
-          name: this.current_user.name,
-          email: this.current_user.email,
-          date: new Date(),
-        });
-      }
       if (this.public) {
         this.formula.user.owner = "";
         this.formula.user.cloned = false;
