@@ -49,7 +49,7 @@ export class ProductionDetailsPage implements OnInit {
     private productionStorageService: ProductionStorageService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
   ) {
-    this.showIngredients = false;
+    this.showIngredients = true;
     this.showDetails = false;
     this.showTimes = false;
 

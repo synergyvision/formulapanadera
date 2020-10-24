@@ -72,7 +72,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private userStorageService: UserStorageService,
     private loadingController: LoadingController
   ) {
-    this.showIngredients = false;
+    this.showIngredients = true;
     this.showSubIngredients = true;
     this.showMixing = false;
     this.showSteps = false;

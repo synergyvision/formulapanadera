@@ -62,6 +62,7 @@
     "unit_letter": "u",
     "weight": "Peso",
     "unit_weight": "Peso por unidad",
+    "unit_weight_short": "Peso (unid.)",
     "total_weight": "Peso total",
     "ingredients": { "value": "Valor" },
     "mixing_order": "Orden de la mezcla",

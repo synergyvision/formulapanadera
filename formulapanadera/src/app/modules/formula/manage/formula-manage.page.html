@@ -29,33 +29,23 @@
           required
         ></ion-input>
       </ion-item>
-      <ion-item class="input-item">
-        <ion-label color="primary" position="stacked"
-          >{{'formulas.units' | translate}}</ion-label
-        >
-        <ion-input
-          type="number"
-          formControlName="units"
-          inputmode="numeric"
-          class="formula-units"
-          (ionBlur)="formatUnits(manageFormulaForm.value.units)"
-          required
-        ></ion-input>
-      </ion-item>
-      <ion-item class="input-item">
-        <ion-label color="primary" position="stacked"
-          >{{'formulas.unit_weight' | translate}} ({{'ingredients.grams' |
-          translate}})</ion-label
-        >
-        <ion-input
-          type="text"
-          formControlName="unit_weight"
-          inputmode="numeric"
-          class="formula-unit-weight"
-          (ionBlur)="formatUnitWeight(manageFormulaForm.value.unit_weight)"
-          required
-        ></ion-input>
-      </ion-item>
+      <ion-row>
+        <ion-col class="ion-no-padding" size="6">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="stacked">{{'formulas.units' | translate}}</ion-label>
+            <ion-input type="number" formControlName="units" inputmode="numeric" class="formula-units"
+              (ionBlur)="formatUnits(manageFormulaForm.value.units)" required></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col class="ion-no-padding" size="6">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="stacked">{{'formulas.unit_weight' | translate}} ({{'ingredients.grams' |
+                    translate}})</ion-label>
+            <ion-input type="text" formControlName="unit_weight" inputmode="numeric" class="formula-unit-weight"
+              (ionBlur)="formatUnitWeight(manageFormulaForm.value.unit_weight)" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
       <ion-item class="input-item" *ngIf="!update || current_user.email === formula.user.creator.email">
         <ion-label color="primary" position="stacked">{{'formulas.description' | translate}}</ion-label>
         <ion-textarea type="text" autoGrow="true" formControlName="description"></ion-textarea>

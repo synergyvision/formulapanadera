@@ -47,7 +47,7 @@ export class IngredientDetailsPage implements OnInit {
     private userStorageService: UserStorageService,
     private ingredientCRUDService: IngredientCRUDService
   ) {
-    this.showIngredients = false;
+    this.showIngredients = true;
     this.showMixing = false;
     this.state = this.router.getCurrentNavigation().extras.state;
   }

@@ -22,29 +22,26 @@
 <ion-content class="formula-detail-content">
   <app-title [title]="formula.name"></app-title>
   <app-hydration-bar [hydration]="hydration/100"></app-hydration-bar>
-  <ion-item class="formula-detail" lines="full">
-    <ion-label color="secondary" position="floating"
-      >{{'formulas.units' | translate}}</ion-label
-    >
-    <ion-input
-      class="editable-field"
-      [(ngModel)]="units"
-      (ionChange)="changeUnits($event)"
-    ></ion-input>
-  </ion-item>
-
   <ion-row>
-    <ion-col size="6" class="detail-col">
+    <ion-col class="detail-col" size="4">
+      <ion-item class="formula-detail" lines="full" mode="ios">
+        <ion-label color="medium" position="floating">{{'formulas.units' | translate}}</ion-label>
+        <ion-input class="editable-field" [(ngModel)]="units" (ionChange)="changeUnits($event)"></ion-input>
+      </ion-item>
+    </ion-col>
+    <ion-col size="4" class="detail-col">
       <app-data-item
-        [title]="'formulas.unit_weight' | translate"
+        [title]="'formulas.unit_weight_short' | translate"
         data="{{formula.unit_weight}} {{'ingredients.grams' | translate}}"
       ></app-data-item> </ion-col
-    ><ion-col size="6" class="detail-col">
+    ><ion-col size="4" class="detail-col">
       <app-data-item
         [title]="'formulas.total_weight' | translate"
         data="{{total_weight}} {{'ingredients.grams' | translate}}"
       ></app-data-item> </ion-col></ion-row
-  ><ion-row
+  >
+  
+  <ion-row
     ><ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.bakers_percentage' | translate"

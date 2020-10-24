@@ -62,6 +62,7 @@
     "unit_letter": "u",
     "weight": "Weight",
     "unit_weight": "Unit weight",
+    "unit_weight_short": "Unit weight",
     "total_weight": "Total weight",
     "ingredients": { "value": "Value" },
     "mixing_order": "Mixing order",
