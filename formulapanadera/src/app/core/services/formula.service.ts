@@ -400,7 +400,7 @@ export class FormulaService {
           percentage = percentage + Number(ingredientData.percentage);
         }
       });
-      let new_bakers_percentage = (formula_weight / percentage).toFixed(DECIMALS.bakers_percentage);
+      let new_bakers_percentage = (formula_weight / percentage).toString();
 
       return new_bakers_percentage
     }
@@ -441,9 +441,7 @@ export class FormulaService {
       );
 
       //Gets new bakers percentage
-      bakers_percentage = (this.totalFlour(ingredients) / 100).toFixed(
-        DECIMALS.bakers_percentage
-      );
+      bakers_percentage = (this.totalFlour(ingredients) / 100).toString();
 
       //Sets ingredients
       ingredients = this.fromRecipeToFormula(ingredients);

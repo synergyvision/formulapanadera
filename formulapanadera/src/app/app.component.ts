@@ -7,6 +7,7 @@ import { StatusBar } from "@ionic-native/status-bar/ngx";
 import { TranslateService } from "@ngx-translate/core";
 
 import { LANGUAGE } from "./config/configuration";
+import { LanguageStorageService } from './core/services/storage/language.service';
 
 @Component({
   selector: "app-root",
@@ -18,7 +19,8 @@ export class AppComponent {
     private translate: TranslateService,
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+    private languageStorageService: LanguageStorageService
   ) {
     this.initializeApp();
     this.setLanguage();
@@ -30,8 +32,22 @@ export class AppComponent {
       this.splashScreen.hide();
     });
   }
-  setLanguage() {
-    this.translate.setDefaultLang(LANGUAGE.default);
-    this.translate.use(LANGUAGE.default);
+  async setLanguage() {
+    let language = await this.languageStorageService.getLanguage()
+    let exists: boolean = false
+    if (language) {
+      LANGUAGE.available.forEach(lang => {
+        if (lang.code == language.code) {
+          exists = true
+        }
+      })
+    }
+    if (language && exists) {
+      this.translate.setDefaultLang(language.code);
+      this.translate.use(language.code);
+    } else {
+      this.translate.setDefaultLang(LANGUAGE.default);
+      this.translate.use(LANGUAGE.default);
+    }
   }
 }

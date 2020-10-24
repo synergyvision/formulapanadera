@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { ActionSheetController } from "@ionic/angular";
+import { ActionSheetController, AlertController, LoadingController, ToastController } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
 import { ICONS } from "src/app/config/icons";
@@ -10,9 +10,11 @@ import {
   FormulaPresentModel,
   ProductionModel,
 } from "src/app/core/models/production.model";
+import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
 import { FormulaService } from "src/app/core/services/formula.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
+import { ProductionStorageService } from 'src/app/core/services/storage/production.service';
 
 @Component({
   selector: "app-production-details",
@@ -40,9 +42,14 @@ export class ProductionDetailsPage implements OnInit {
     private languageService: LanguageService,
     private router: Router,
     private actionSheetController: ActionSheetController,
-    private productionInProcessStorageService: ProductionInProcessStorageService
+    private alertController: AlertController,
+    private loadingController: LoadingController,
+    private toastController: ToastController,
+    private productionCRUDService: ProductionCRUDService,
+    private productionStorageService: ProductionStorageService,
+    private productionInProcessStorageService: ProductionInProcessStorageService,
   ) {
-    this.showIngredients = false;
+    this.showIngredients = true;
     this.showDetails = false;
     this.showTimes = false;
 
@@ -178,6 +185,14 @@ export class ProductionDetailsPage implements OnInit {
           },
         },
         {
+          text: this.languageService.getTerm("action.delete"),
+          icon: ICONS.trash,
+          cssClass: "delete-icon",
+          handler: () => {
+            this.deleteProduction();
+          },
+        },
+        {
           text: this.languageService.getTerm("action.cancel"),
           icon: ICONS.close,
           role: "cancel",
@@ -215,5 +230,73 @@ export class ProductionDetailsPage implements OnInit {
         }
       );
     }
+  }
+
+  async deleteProduction() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.confirm"),
+      message: this.languageService.getTerm("action.delete_question", {
+        item: this.production.name,
+      }),
+      cssClass: "confirm-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: async () => {
+            const loading = await this.loadingController.create({
+              cssClass: "app-send-loading",
+              message: this.languageService.getTerm("loading"),
+            });
+            await loading.present();
+
+            this.productionCRUDService
+              .deleteProduction(this.production.id)
+              .then(async () => {
+                await this.productionStorageService
+                  .deleteProduction(this.production.id)
+                  .then(() => {
+                    this.router.navigateByUrl(
+                      APP_URL.menu.name +
+                        "/" +
+                        APP_URL.menu.routes.production.main
+                    );
+                  });
+              })
+              .catch(() => {
+                this.presentToast(false);
+              })
+              .finally(async () => {
+                await loading.dismiss();
+              });
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async presentToast(success: boolean) {
+    const toast = await this.toastController.create({
+      message: success
+        ? this.languageService.getTerm("send.success")
+        : this.languageService.getTerm("send.error"),
+      color: "secondary",
+      duration: 5000,
+      position: "top",
+      buttons: [
+        {
+          icon: ICONS.close,
+          role: "cancel",
+          handler: () => {},
+        },
+      ],
+    });
+    toast.present();
   }
 }
