@@ -42,6 +42,8 @@
 
 - [Propuesta de pasantía](https://github.com/synergyvision/formulapanadera/tree/master/docs/propuesta) -
   _Este documento contiene la descripción del proyecto, junto a sus objetivos, limitaciones y alcance_
+- [Informe final de pasantía](https://github.com/synergyvision/formulapanadera/tree/master/docs/informe) -
+  _Este documento contiene detalles de la elaboración del proyecto, la metodología utilizada y las conclusiones del mismo_
 - [Diagramas del proyecto](https://github.com/synergyvision/formulapanadera/tree/master/docs/diagramas) -
   _Esta carpeta contiene los diagramas de los algoritmos más relevantes de la aplicación_
 
