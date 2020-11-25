@@ -359,7 +359,14 @@ export class FormulaManagePage {
           .updateFormula(this.formula)
           .then(() => {
             this.router.navigateByUrl(
-              APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+              APP_URL.menu.name +
+                "/" +
+                APP_URL.menu.routes.formula.main +
+                "/" +
+                APP_URL.menu.routes.formula.routes.details,
+              {
+                state: { formula: this.formula },
+              }
             );
           })
           .catch(() => {

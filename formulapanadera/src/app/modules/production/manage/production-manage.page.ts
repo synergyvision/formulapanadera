@@ -90,7 +90,14 @@ export class ProductionManagePage implements OnInit {
             .updateProduction(this.production)
             .then(() => {
               this.router.navigateByUrl(
-                APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
+                APP_URL.menu.name +
+                  "/" +
+                  APP_URL.menu.routes.production.main +
+                  "/" +
+                  APP_URL.menu.routes.production.routes.details,
+                {
+                  state: { production: this.production },
+                }
               );
             });
         })

@@ -11,7 +11,7 @@ import {
   StepDetailsModel,
   IngredientPercentageModel,
 } from "src/app/core/models/formula.model";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ModifierModel, UserModel } from "src/app/core/models/user.model";
 import { DATE_FORMAT, DECIMALS, DECIMAL_BAKERS_PERCENTAGE_FORMAT, DECIMAL_COST_FORMAT } from "src/app/config/formats";
@@ -58,7 +58,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   showSteps: boolean;
   showTimes: boolean
 
-  state;
   user: UserModel = new UserModel();
   is_modifier: boolean = false
   public: boolean = false
@@ -71,6 +70,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private alertController: AlertController,
     private toastController: ToastController,
     private router: Router,
+    private route: ActivatedRoute,
     private datePipe: DatePipe,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController
@@ -80,24 +80,27 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.showMixing = false;
     this.showSteps = false;
     this.showTimes = false;
-    this.state = this.router.getCurrentNavigation().extras.state;
   }
 
   async ngOnInit() {
-    this.formula = this.state.formula;
-    this.units = this.formula.units;
-    this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
-    this.steps = JSON.parse(JSON.stringify(this.formula.steps));
-    if (this.formula.user.owner == "") {
-      this.public = true;
-    }
+    this.route.queryParams.subscribe(async () => {
+      let navParams = this.router.getCurrentNavigation().extras.state;
+      this.formula = navParams.formula;
 
-    this.user = await this.userStorageService.getUser();
-    this.is_modifier = false;
-    this.formula.user.modifiers.forEach((user) => {
-      if (user.email == this.user.email) {
-        this.is_modifier = true;
+      this.units = this.formula.units;
+      this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
+      this.steps = JSON.parse(JSON.stringify(this.formula.steps));
+      if (this.formula.user.owner == "") {
+        this.public = true;
       }
+
+      this.user = await this.userStorageService.getUser();
+      this.is_modifier = false;
+      this.formula.user.modifiers.forEach((user) => {
+        if (user.email == this.user.email) {
+          this.is_modifier = true;
+        }
+      });
     });
   }
 
