@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Haz pan en casa</name>
-    <description>Aplicación elaborada como proyecto de pasantías. Alba Sánchez, UCAB.</description>
-    <author email="alba.sofia.n.n@gmail.com" href="https://github.com/albasanchez">Alba Sánchez</author>
+<widget id="app.hazpanen.casa" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>hazpanencasa</name>
+    <description>Haz Pan en Casa</description>
+    <author email="ar@synergy.vision" href="https://github.com/synergyvision">Synergy Vision</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
