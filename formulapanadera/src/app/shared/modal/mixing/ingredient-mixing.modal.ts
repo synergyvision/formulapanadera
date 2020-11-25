@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
-import { ModalController } from "@ionic/angular";
+import { AfterViewInit, Component, Input, QueryList, ViewChildren } from "@angular/core";
+import { IonTextarea, ModalController } from "@ionic/angular";
 import { ICONS } from "src/app/config/icons";
 import {
   IngredientMixingModel,
@@ -11,13 +11,23 @@ import {
   templateUrl: "ingredient-mixing.modal.html",
   styleUrls: ["./styles/ingredient-mixing.modal.scss"],
 })
-export class IngredientMixingModal {
+export class IngredientMixingModal implements AfterViewInit {
   ICONS = ICONS;
 
+  @ViewChildren("stepdescription") private textAreas: QueryList<IonTextarea>
   @Input() formulaMixing: Array<IngredientMixingModel>;
   @Input() editable: boolean;
 
-  constructor(public modalController: ModalController) {}
+  constructor(public modalController: ModalController) { }
+  
+  ngAfterViewInit() {
+    this.textAreas.toArray().forEach(textArea => {
+      textArea.autoGrow = true;
+      textArea.ionChange.subscribe(() => {
+        textArea.autoGrow = true;
+      })
+    })
+  }
 
   dismissModal() {
     this.modalController.dismiss();

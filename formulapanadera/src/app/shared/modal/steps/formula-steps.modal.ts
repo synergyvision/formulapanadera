@@ -26,6 +26,7 @@ export class FormulaStepsModal implements AfterViewInit {
   
   ngAfterViewInit() {
     this.textAreas.toArray().forEach(textArea => {
+      textArea.autoGrow = true;
       textArea.ionChange.subscribe(() => {
         textArea.autoGrow = true;
       })
