@@ -3,6 +3,7 @@
   export const BAKERY_STEPS = 12;
   export const FERMENTATION_STEP = 3;
   export const MANIPULATION_STEP = 4;
+  export const DIVITION_STEP = 5;
   export const OVEN_STEP = 11;
   // Steps status
   export const PRODUCTION_STEP_STATUS = [

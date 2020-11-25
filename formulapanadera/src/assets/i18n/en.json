@@ -66,6 +66,7 @@
     "total_weight": "Total weight",
     "ingredients": { "value": "Value" },
     "mixing_order": "Mixing order",
+    "divition": "Divide into {{portions}} servings of {{grams}}g.",
     "steps": "Steps",
     "step": "Step",
     "time": "Time",

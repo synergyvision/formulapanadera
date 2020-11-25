@@ -18,7 +18,7 @@ import { Router } from "@angular/router";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
-import { BAKERY_STEPS } from "src/app/config/formula";
+import { BAKERY_STEPS, DIVITION_STEP } from "src/app/config/formula";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { APP_URL } from "src/app/config/configuration";
@@ -259,12 +259,23 @@ export class FormulaManagePage {
     let steps: Array<StepDetailsModel> = [];
     if (!this.formula.steps) {
       for (let i = 0; i < BAKERY_STEPS; i++) {
+        var description = ""
+        if (i == DIVITION_STEP - 1 &&
+          this.manageFormulaForm.value.units &&
+          this.manageFormulaForm.value.unit_weight
+        ) {
+          description = this.languageService.getTerm("formulas.divition",
+            {
+              portions: this.manageFormulaForm.value.units,
+              grams: this.manageFormulaForm.value.unit_weight
+            })
+        }
         steps.push({
           number: i,
           name: this.languageService.getTerm("steps." + (i + 1)),
           time: 0,
           temperature: null,
-          description: "",
+          description: description,
           times: 1,
         });
       }

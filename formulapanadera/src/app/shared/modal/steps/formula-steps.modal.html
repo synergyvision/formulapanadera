@@ -136,8 +136,9 @@
               >{{'formulas.description' | translate}}</ion-label
             >
             <ion-textarea
+              #stepdescription
               type="text"
-              autoGrow="true"
+              rows="1"
               [(ngModel)]="step.description"
             ></ion-textarea>
           </ion-item>
