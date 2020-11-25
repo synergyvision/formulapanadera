@@ -423,7 +423,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         `${modifier.name}<br/>${modifier.email}<br>${this.datePipe.transform(
           modifier.date.seconds * 1000,
           DATE_FORMAT
-        )}`;
+        )}<br/><br/>`;
     });
     let text = `<strong>${creator_title}</strong><br/>${creator_name}<br/>${creator_date}<br/>`;
     if (modifiers) {
