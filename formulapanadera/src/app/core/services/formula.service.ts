@@ -183,6 +183,14 @@ export class FormulaService {
     return flour;
   }
 
+  public formulaWeight(ingredients: Array<IngredientPercentageModel>) {
+    let grams = 0;
+    ingredients.forEach((ingredient) => {
+        grams = grams + ingredient.percentage;
+    });
+    return grams;
+  }
+
   public getIngredientsWithFormula(
     ingredients: Array<IngredientPercentageModel>,
     ingredients_formula: Array<IngredientPercentageModel>

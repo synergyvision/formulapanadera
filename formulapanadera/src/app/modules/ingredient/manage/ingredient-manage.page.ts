@@ -66,7 +66,7 @@ export class IngredientManagePage implements OnInit {
         name: new FormControl("", Validators.required),
         hydration: new FormControl("", Validators.required),
         is_flour: new FormControl(false, Validators.required),
-        cost: new FormControl("", Validators.required),
+        cost: new FormControl("0", Validators.required),
       });
     } else {
       this.update = true;

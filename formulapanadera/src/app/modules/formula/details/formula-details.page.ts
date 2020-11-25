@@ -59,7 +59,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   showTimes: boolean
 
   state;
-  user: UserModel;
+  user: UserModel = new UserModel();
+  is_modifier: boolean = false
+  public: boolean = false
 
   constructor(
     private formulaService: FormulaService,
@@ -86,8 +88,17 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.units = this.formula.units;
     this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
     this.steps = JSON.parse(JSON.stringify(this.formula.steps));
+    if (this.formula.user.owner == "") {
+      this.public = true;
+    }
 
     this.user = await this.userStorageService.getUser();
+    this.is_modifier = false;
+    this.formula.user.modifiers.forEach((user) => {
+      if (user.email == this.user.email) {
+        this.is_modifier = true;
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -184,12 +195,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   async presentOptions() {
     let current_user = this.user.email;
-    let is_modifier = false;
-    this.formula.user.modifiers.forEach((modifier: ModifierModel) => {
-      if (modifier.email == current_user) {
-        is_modifier = true;
-      }
-    });
     let buttons = [];
     if (
       this.formula.user.cloned ||
@@ -207,7 +212,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     }
     if (
       this.formula.user.owner &&
-      ((this.formula.user.cloned && is_modifier) ||
+      ((this.formula.user.cloned && this.is_modifier) ||
         this.formula.user.creator.email == current_user)
     ) {
       // If not public but is cloned and was modified or user is creator
@@ -452,5 +457,29 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     toast.present();
+  }
+
+  async changeFormula() {
+    const loading = await this.loadingController.create({
+      cssClass: "app-send-loading",
+      message: this.languageService.getTerm("loading"),
+    });
+    await loading.present();
+
+    if (this.public) {
+      this.formula.user.owner = "";
+      this.formula.user.cloned = false;
+    } else {
+      this.formula.user.owner = this.user.email;
+    }
+    this.formulaCRUDService
+      .updateFormula(this.formula)
+      .then(() => {})
+      .catch(() => {
+        this.presentToast(false);
+      })
+      .finally(async () => {
+        await loading.dismiss();
+      });
   }
 }

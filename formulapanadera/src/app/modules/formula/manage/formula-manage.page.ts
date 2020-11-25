@@ -131,6 +131,17 @@ export class FormulaManagePage {
     this.manageFormulaForm
       .get("units")
       .patchValue(this.formatNumberService.formatNumberDecimals(value, 0));
+    this.changeUnitWeight()
+  }
+
+  changeUnitWeight() {
+    if (this.formulaUnit == 'gr' && this.ingredientsAreValid()) {
+      let units = this.manageFormulaForm.value.units
+      if (this.formula.ingredients && units) {
+        let grams = this.formulaService.formulaWeight(this.formula.ingredients)
+        this.formatUnitWeight(grams / Number(units))
+      }
+    }
   }
 
   formatUnitWeight(value: number) {
@@ -148,6 +159,7 @@ export class FormulaManagePage {
       ingredient.percentage = Number(
         this.formatNumberService.formatNumberDecimals(ingredient.percentage, 1)
       );
+      this.changeUnitWeight()
     }
   }
 
@@ -304,6 +316,7 @@ export class FormulaManagePage {
       1
     );
     this.adjustFormulaMixing([], [ingredient])
+    this.changeUnitWeight()
   }
 
   deleteStepIngredient(
