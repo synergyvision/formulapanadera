@@ -175,6 +175,19 @@ export class ProductionStartPage implements OnInit {
     }
   }
 
+  stepDay(step: ProductionStepModel) {
+    let day: number = this.timeService.getDay(step.time.start)
+    return this.languageService.getTerm(`day.${day}`)
+  }
+
+  dayChanged(step: ProductionStepModel, index: number): boolean {
+    if (index > 0) {
+      return this.stepDay(this.stepsFiltered(false)[index - 1]) !== this.stepDay(step)
+    } else {
+      return true
+    }
+  }
+
   // Navigate
 
   productionDetails() {

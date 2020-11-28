@@ -110,15 +110,19 @@
   </ion-row>
   <!-- Steps content -->
   <ion-list lines="none" class="steps-list" *ngIf="segment=='steps'">
-    <app-production-step-item
-      *ngFor="let step of stepsFiltered(false); index as i"
-      [step]="step"
-      [even]="(i%2==0)"
-      [index]="i"
-      [production_in_process]="production_in_process"
-      [original_production]="original_production"
-      [blocked]="stepBlocked(step)"
-    ></app-production-step-item>
+    <span *ngFor="let step of stepsFiltered(false); index as i">
+      <ion-item-divider class="divider" *ngIf="step.time && dayChanged(step, i)">
+        <ion-label>{{ stepDay(step) }}</ion-label>
+      </ion-item-divider>
+      <app-production-step-item
+        [step]="step"
+        [even]="(i%2==0)"
+        [index]="i"
+        [production_in_process]="production_in_process"
+        [original_production]="original_production"
+        [blocked]="stepBlocked(step)"
+      ></app-production-step-item>
+    </span>
   </ion-list>
   <ion-item-divider class="divider" *ngIf="segment=='steps' && stepsFiltered(true).length>0">
     <ion-label class="divider-label"

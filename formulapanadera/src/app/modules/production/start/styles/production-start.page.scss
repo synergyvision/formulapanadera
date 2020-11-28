@@ -65,6 +65,11 @@ ion-back-button {
   padding-bottom: 0;
 }
 
+.divider {
+  --background: var(--ion-color-primary);
+  color: white;
+}
+
 .range-checkbox {
   margin-right: var(--page-margin);
 }

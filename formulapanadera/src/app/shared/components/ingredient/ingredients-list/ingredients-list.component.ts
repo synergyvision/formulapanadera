@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { DECIMALS } from "src/app/config/formats";
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
@@ -8,13 +8,20 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
   templateUrl: "./ingredients-list.component.html",
   styleUrls: ["./styles/ingredients-list.component.scss"],
 })
-export class IngredientsListComponent {
+export class IngredientsListComponent implements OnInit{
   @Input() ingredients: Array<IngredientPercentageModel>;
   @Input() bakers_percentage: number;
   @Input() compensation?: number;
   @Input() name?: string;
+  @Input() units?: number;
 
   constructor(private formatNumberService: FormatNumberService) {}
+
+  ngOnInit() {
+    if (this.units && this.units <= 1) {
+      this.units = undefined
+    }
+  }
 
   ingredientGrams(percentage: number): string {
     if (!this.compensation) {
@@ -28,6 +35,13 @@ export class IngredientsListComponent {
         DECIMALS.formula_grams
       );
     }
+  }
+
+  unitGrams(ingredientGrams: number) {
+    return this.formatNumberService.formatNumberDecimals(
+      ingredientGrams / this.units,
+      DECIMALS.formula_grams
+    );
   }
 
   totalPercentage() {
@@ -44,5 +58,12 @@ export class IngredientsListComponent {
       total = total + Number(this.ingredientGrams(ingredient.percentage));
     });
     return total.toFixed(DECIMALS.formula_grams);
+  }
+
+  unitTotalGrams(totalGrams: number) {
+    return this.formatNumberService.formatNumberDecimals(
+      totalGrams / this.units,
+      DECIMALS.formula_grams
+    );
   }
 }

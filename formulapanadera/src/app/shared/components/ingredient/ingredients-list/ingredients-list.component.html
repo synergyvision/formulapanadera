@@ -9,20 +9,26 @@
       ><ion-col size="6" class="title-name">
         {{ "ingredients.ingredient_name" | translate }}
       </ion-col>
-      <ion-col size="3" *ngIf="!bakers_percentage"></ion-col>
-      <ion-col size="3">%</ion-col>
-      <ion-col size="3" *ngIf="bakers_percentage">{{
+      <ion-col [size]="units?2:3" *ngIf="!bakers_percentage"></ion-col>
+      <ion-col [size]="units?2:3">%</ion-col>
+      <ion-col [size]="units?2:3" *ngIf="bakers_percentage">{{
         "ingredients.grams" | translate
+      }}</ion-col>
+      <ion-col size="2" *ngIf="units">{{
+        "formulas.units_short" | translate
       }}</ion-col></ion-row
     >
     <ion-row *ngFor="let item of ingredients" class="ingredients-row">
       <ion-col size="6" class="ingredient-name">
         {{ item.ingredient.name }}
       </ion-col>
-      <ion-col size="3" *ngIf="!bakers_percentage"></ion-col>
-      <ion-col size="3">{{ item.percentage }}</ion-col>
-      <ion-col size="3" *ngIf="bakers_percentage">{{
+      <ion-col [size]="units?2:3" *ngIf="!bakers_percentage"></ion-col>
+      <ion-col [size]="units?2:3">{{ item.percentage }}</ion-col>
+      <ion-col [size]="units?2:3" *ngIf="bakers_percentage">{{
         ingredientGrams(item.percentage)
+      }}</ion-col>
+      <ion-col size="2" *ngIf="units">{{
+        unitGrams(ingredientGrams(item.percentage))
       }}</ion-col>
       <ion-col size="12"
         ><ion-progress-bar [value]="item.percentage / 100"></ion-progress-bar
@@ -32,10 +38,13 @@
       <ion-col size="6" class="total-value total-name">{{
         "production.total" | translate
       }}</ion-col>
-      <ion-col size="3" *ngIf="!bakers_percentage"></ion-col>
-      <ion-col size="3" class="total-value">{{ totalPercentage() }}</ion-col>
-      <ion-col size="3" class="total-value" *ngIf="bakers_percentage">{{
+      <ion-col [size]="units?2:3" *ngIf="!bakers_percentage"></ion-col>
+      <ion-col [size]="units?2:3" class="total-value">{{ totalPercentage() }}</ion-col>
+      <ion-col [size]="units?2:3" class="total-value" *ngIf="bakers_percentage">{{
         totalGrams()
+      }}</ion-col>
+      <ion-col size="2" class="total-value" *ngIf="units">{{
+        unitTotalGrams(totalGrams())
       }}</ion-col>
     </ion-row>
   </ion-col>
