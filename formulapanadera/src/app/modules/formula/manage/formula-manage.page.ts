@@ -154,14 +154,10 @@ export class FormulaManagePage {
   }
 
   formatPercentage(ingredient: IngredientPercentageModel) {
-    if (this.formulaUnit == "%") {
-      ingredient.percentage = Number(
-        this.formatNumberService.formatNumberPercentage(ingredient.percentage)
-      );
-    } else {
-      ingredient.percentage = Number(
-        this.formatNumberService.formatNumberDecimals(ingredient.percentage, 1)
-      );
+    ingredient.percentage = Number(
+      this.formatNumberService.formatNumberDecimals(ingredient.percentage, 1)
+    );
+    if (this.formulaUnit == "gr") {
       this.changeUnitWeight()
     }
   }
