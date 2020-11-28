@@ -85,7 +85,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.route.queryParams.subscribe(async () => {
       let navParams = this.router.getCurrentNavigation().extras.state;
-      this.formula = navParams.formula;
+      if (navParams) {
+        this.formula = navParams.formula;
+      }
 
       this.units = this.formula.units;
       this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));

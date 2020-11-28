@@ -53,7 +53,9 @@ export class IngredientDetailsPage implements OnInit {
   async ngOnInit() {
     this.route.queryParams.subscribe(async () => {
       let navParams = this.router.getCurrentNavigation().extras.state;
-      this.ingredient = navParams.ingredient;
+      if (navParams) {
+        this.ingredient = navParams.ingredient;
+      }
 
       if (this.ingredient.formula) {
         this.type = "compound";

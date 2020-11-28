@@ -56,11 +56,13 @@ export class ProductionDetailsPage implements OnInit {
   async ngOnInit() {
     this.route.queryParams.subscribe(async () => {
       let navParams = this.router.getCurrentNavigation().extras.state;
-      this.production = JSON.parse(JSON.stringify(navParams.production));
-      this.production = JSON.parse(JSON.stringify(navParams.production));
-      this.original_production = JSON.parse(
-        JSON.stringify(navParams.production)
-      );
+      if (navParams) {
+        this.production = JSON.parse(JSON.stringify(navParams.production));
+        this.production = JSON.parse(JSON.stringify(navParams.production));
+        this.original_production = JSON.parse(
+          JSON.stringify(navParams.production)
+        );
+      }
 
       this.calculateFormulas();
 

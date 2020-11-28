@@ -102,13 +102,13 @@ export class FormulaManagePage {
       this.formula.mixing = [];
       this.formula.steps = [];
       state.formula.ingredients.forEach((ingredient) => {
-        this.formula.ingredients.push(ingredient);
+        this.formula.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
       });
       state.formula.mixing.forEach((ingredient) => {
-        this.formula.mixing.push(ingredient);
+        this.formula.mixing.push(JSON.parse(JSON.stringify(ingredient)));
       });
       state.formula.steps.forEach((ingredient) => {
-        this.formula.steps.push(ingredient);
+        this.formula.steps.push(JSON.parse(JSON.stringify(ingredient)));
       });
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
@@ -125,6 +125,9 @@ export class FormulaManagePage {
 
   changeUnit(ev: any) {
     this.formulaUnit = ev.detail.value;
+    if (this.formulaUnit == 'gr') {
+      this.changeUnitWeight()
+    }
   }
 
   formatUnits(value: number) {
@@ -242,7 +245,7 @@ export class FormulaManagePage {
           description: "",
         },
       ];
-      if (!this.formula.mixing) {
+      if (!this.formula.mixing || this.formula.mixing.length==0) {
         this.formula.ingredients.forEach(
           (ingredient: IngredientPercentageModel) =>
             mixedIngredients[0].ingredients.push(ingredient)
@@ -531,7 +534,7 @@ export class FormulaManagePage {
   }
 
   adjustFormulaMixing(new_ingredients: IngredientPercentageModel[], deleted_ingredients: IngredientPercentageModel[]) {
-    if (this.formula.mixing) {
+    if (this.formula.mixing && this.formula.mixing.length>0) {
       if (new_ingredients.length > 0) {
         new_ingredients.forEach(ingredient=>{
           this.formula.mixing[0].ingredients.push(ingredient)
@@ -555,5 +558,15 @@ export class FormulaManagePage {
         })
       }
     }
+  }
+
+  dontSubmitFormula(): boolean{
+    return (
+      !this.manageFormulaForm.valid ||
+      !this.formula.ingredients || this.formula.ingredients.length==0 ||
+      !this.formula.mixing || this.formula.mixing.length==0 ||
+      !this.formula.steps || this.formula.steps.length==0 ||
+      !this.ingredientsAreValid()
+    )
   }
 }
