@@ -259,7 +259,14 @@ export class IngredientManagePage implements OnInit {
           .createIngredient(this.ingredient)
           .then(() => {
             this.router.navigateByUrl(
-              APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+              APP_URL.menu.name +
+                "/" +
+                APP_URL.menu.routes.ingredient.main +
+                "/" +
+                APP_URL.menu.routes.ingredient.routes.details,
+              {
+                state: { ingredient: this.ingredient },
+              }
             );
           })
           .catch(() => {

@@ -194,4 +194,10 @@ export class IngredientDetailsPage implements OnInit {
     });
     toast.present();
   }
+
+  returnToList() {
+    this.router.navigateByUrl(
+      APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+    );
+  }
 }

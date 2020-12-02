@@ -103,6 +103,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           this.is_modifier = true;
         }
       });
+
+      this.calculateFormula();
     });
   }
 
@@ -486,5 +488,11 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       .finally(async () => {
         await loading.dismiss();
       });
+  }
+
+  returnToList() {
+    this.router.navigateByUrl(
+      APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+    );
   }
 }

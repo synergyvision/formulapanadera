@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button
-        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.production.main "
+        (click)="returnToList()"
         mode="md"
       ></ion-back-button>
     </ion-buttons>
