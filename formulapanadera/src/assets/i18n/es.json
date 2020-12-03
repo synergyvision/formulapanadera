@@ -18,6 +18,7 @@
     "create": "Crear",
     "update": "Modificar",
     "delete": "Eliminar",
+    "do_production": "Producir",
     "delete_question": "¿Desea eliminar {{item}}?",
     "sign_out_question": "¿Cerrar sesión?",
     "yes": "Sí",
@@ -119,6 +120,9 @@
       "mine": "Propias",
       "shared": "Compartidas",
       "public": "Públicas"
+    },
+    "do_production": {
+      "units": "Unidades a elaborar"
     },
     "clone": {
       "instructions": "Al clonar esta fórmula podrás modificarla, esta aparecerá entre tus fórmulas. La versión original se conservará"

@@ -19,7 +19,9 @@ import { ProductionStorageService } from 'src/app/core/services/storage/producti
 @Component({
   selector: "app-production-details",
   templateUrl: "production-details.page.html",
-  styleUrls: ["./styles/production-details.page.scss"],
+  styleUrls: ["./styles/production-details.page.scss",
+    "./../../../shared/styles/note.alert.scss",
+    "./../../../shared/styles/confirm.alert.scss",]
 })
 export class ProductionDetailsPage implements OnInit {
   APP_URL = APP_URL;

@@ -13,13 +13,17 @@ import {
 } from "src/app/core/models/formula.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
-import { ModifierModel, UserModel } from "src/app/core/models/user.model";
+import { UserModel } from "src/app/core/models/user.model";
 import { DATE_FORMAT, DECIMALS, DECIMAL_BAKERS_PERCENTAGE_FORMAT, DECIMAL_COST_FORMAT } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { ICONS } from "src/app/config/icons";
+import { ProductionModel } from 'src/app/core/models/production.model';
+import { FormatNumberService } from 'src/app/core/services/format-number.service';
+import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
+import { ProductionStorageService } from 'src/app/core/services/storage/production.service';
 
 @Component({
   selector: "app-formula-details",
@@ -73,7 +77,10 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private datePipe: DatePipe,
     private userStorageService: UserStorageService,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private formatNumberService: FormatNumberService,
+    private productionCRUDService: ProductionCRUDService,
+    private productionStorageService: ProductionStorageService
   ) {
     this.showIngredients = true;
     this.showSubIngredients = true;
@@ -203,6 +210,14 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   async presentOptions() {
     let current_user = this.user.email;
     let buttons = [];
+    buttons.push({
+      text: this.languageService.getTerm("action.do_production"),
+      icon: ICONS.production_start,
+      cssClass: "action-icon",
+      handler: () => {
+        this.doFormula();
+      },
+    });
     if (
       this.formula.user.cloned ||
       (!this.formula.user.cloned &&
@@ -494,5 +509,80 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.router.navigateByUrl(
       APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
     );
+  }
+
+  async startProduction(production: ProductionModel) {
+    const loading = await this.loadingController.create({
+      cssClass: "app-send-loading",
+      message: this.languageService.getTerm("loading"),
+    });
+    await loading.present();
+    
+    this.productionCRUDService
+      .createProduction(production)
+      .then(async (document) => {
+        production.id = document.id;
+        await this.productionStorageService
+          .createProduction(production)
+          .then(() => {
+            this.router.navigateByUrl(
+              APP_URL.menu.name +
+                "/" +
+                APP_URL.menu.routes.production.main +
+                "/" +
+                APP_URL.menu.routes.production.routes.details,
+              {
+                state: { production: production },
+              }
+            );
+          });
+      })
+      .catch(() => {
+        this.presentToast(false);
+      })
+      .finally(async () => {
+        await loading.dismiss();
+      });
+  }
+
+  async doFormula() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.do_production"),
+      message: this.languageService.getTerm("formulas.do_production.units"),
+      cssClass: "alert do-production-alert",
+      inputs: [
+        {
+          name: "number",
+          type: "number",
+          placeholder: this.languageService.getTerm("formulas.units"),
+        },
+      ],
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: (data) => {
+            data.number = Number(
+              this.formatNumberService.formatNonZeroPositiveNumber(data.number)
+            );
+            let production: ProductionModel = new ProductionModel();
+            production.name = this.formula.name;
+            production.formulas = [{ formula: this.formula, number: data.number, warming_time: 10 }]
+            production.owner = {
+              name: this.user.name,
+              email: this.user.email,
+              date: new Date(),
+            };
+            this.startProduction(production);
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 }
