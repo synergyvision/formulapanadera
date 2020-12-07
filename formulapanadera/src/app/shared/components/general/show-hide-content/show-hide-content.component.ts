@@ -12,6 +12,7 @@ export class ShowHideContentComponent {
   @Input() title: string;
   @Input() show: boolean;
   @Input() subtitle: boolean = false;
+  @Input() transparent: boolean = false;
 
   constructor() {}
 }

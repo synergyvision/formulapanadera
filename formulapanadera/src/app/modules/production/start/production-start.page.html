@@ -84,32 +84,8 @@
       ></ion-datetime>
     </ion-item>
   </span>
-  <!-- Segment -->
-  <ion-segment
-    mode="ios"
-    [value]="segment"
-    (ionChange)="segmentChanged($event)"
-    class="segment"
-  >
-    <ion-segment-button value="ingredients" class="segment-button">
-      <ion-label>{{'ingredients.name' | translate}}</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="steps" class="segment-button">
-      <ion-label>{{'formulas.steps' | translate}}</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-  <!-- Ingredients content -->
-  <ion-row *ngIf="segment=='ingredients'" class="present-list">
-    <ion-col class="list-col">
-      <app-formulas-ingredients-list
-        [formulas]="formulas"
-        [highlight]="true"
-        [showMixing]="true"
-      ></app-formulas-ingredients-list>
-    </ion-col>
-  </ion-row>
   <!-- Steps content -->
-  <ion-list lines="none" class="steps-list" *ngIf="segment=='steps'">
+  <ion-list lines="none" class="steps-list">
     <span *ngFor="let step of stepsFiltered(false); index as i">
       <ion-item-divider class="divider" *ngIf="step.time && dayChanged(step, i)">
         <ion-label>{{ stepDay(step) }}</ion-label>
@@ -121,15 +97,16 @@
         [production_in_process]="production_in_process"
         [original_production]="original_production"
         [blocked]="stepBlocked(step)"
+        [formula]="getStepFormula(step)"
       ></app-production-step-item>
     </span>
   </ion-list>
-  <ion-item-divider class="divider" *ngIf="segment=='steps' && stepsFiltered(true).length>0">
+  <ion-item-divider class="divider" *ngIf="stepsFiltered(true).length>0">
     <ion-label class="divider-label"
       >{{ "production.done" | translate }}</ion-label
     >
   </ion-item-divider>
-  <ion-list lines="none" class="steps-list" *ngIf="segment=='steps'">
+  <ion-list lines="none" class="steps-list">
     <app-production-step-item
       *ngFor="let step of stepsFiltered(true); index as i"
       [step]="step"
@@ -138,6 +115,7 @@
       [production_in_process]="production_in_process"
       [original_production]="original_production"
       [blocked]="stepBlocked(step)"
+      [formula]="getStepFormula(step)"
     >
     </app-production-step-item>
   </ion-list>

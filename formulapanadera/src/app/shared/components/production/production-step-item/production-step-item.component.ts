@@ -8,6 +8,7 @@ import {
 } from "src/app/config/formula";
 import { ICONS } from "src/app/config/icons";
 import {
+  FormulaPresentModel,
   ProductionInProcessModel,
   ProductionStepModel,
 } from "src/app/core/models/production.model";
@@ -29,6 +30,8 @@ export class ProductionStepItemComponent {
   OVEN_STEP = OVEN_STEP - 1;
   MANIPULATION_STEP = MANIPULATION_STEP - 1
   FERMENTATION_STEP = FERMENTATION_STEP - 1;
+  showIngredients: boolean = false;
+  showMixing: boolean = false;
 
   @Input() step: ProductionStepModel;
   @Input() index: number
@@ -36,6 +39,7 @@ export class ProductionStepItemComponent {
   @Input() production_in_process: ProductionInProcessModel;
   @Input() original_production: ProductionInProcessModel;
   @Input() blocked: boolean = false;
+  @Input() formula: FormulaPresentModel & { show: boolean };
 
   constructor(
     private timeService: TimeService,
@@ -217,5 +221,19 @@ export class ProductionStepItemComponent {
   fahrenheitTemperature(value) {
     value = this.formatNumberService.fromCelsiusToFahrenheit(value);
     return value;
+  }
+
+  getStepCompoundIngredients() {
+    let compound_ingredients = []
+    this.step.step.ingredients.forEach(ingredient => {
+      if (ingredient.ingredient.formula) {
+        this.formula.ingredients_formula.forEach(ingredient_formula => {
+          if (ingredient.ingredient.id == ingredient_formula.ingredient.id) {
+            compound_ingredients.push(ingredient_formula)
+          }
+        })
+      }
+    });
+    return compound_ingredients;
   }
 }
