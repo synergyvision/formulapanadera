@@ -14,21 +14,29 @@ export class IngredientsListComponent implements OnInit{
   @Input() compensation?: number;
   @Input() name?: string;
   @Input() units?: number;
+  @Input() formula_weight?: number;
 
   constructor(private formatNumberService: FormatNumberService) {}
 
   ngOnInit() {
-    if (this.units && this.units <= 1) {
+    if (this.units && this.units <= 1 || !(this.bakers_percentage || this.noCompoundIngredients())) {
       this.units = undefined
     }
   }
 
   ingredientGrams(percentage: number): string {
     if (!this.compensation) {
-      return this.formatNumberService.formatNumberDecimals(
-        percentage * this.bakers_percentage,
-        DECIMALS.formula_grams
-      );
+      if (this.bakers_percentage) {
+        return this.formatNumberService.formatNumberDecimals(
+          percentage * this.bakers_percentage,
+          DECIMALS.formula_grams
+        );
+      } else { 
+        return this.formatNumberService.formatNumberDecimals(
+          percentage * this.formula_weight/100,
+          DECIMALS.formula_grams
+        );
+      }
     } else {
       return this.formatNumberService.formatNumberDecimals(
         percentage * this.bakers_percentage * (1 + this.compensation / 100),
@@ -65,5 +73,18 @@ export class IngredientsListComponent implements OnInit{
       totalGrams / this.units,
       DECIMALS.formula_grams
     );
+  }
+
+  noCompoundIngredients() {
+    let compound: boolean = false;
+    this.ingredients.forEach(ingredient => {
+      if (ingredient.ingredient.formula) {
+        compound = true
+      }
+    })
+    if (this.bakers_percentage) {
+      compound = false;
+    }
+    return !compound;
   }
 }

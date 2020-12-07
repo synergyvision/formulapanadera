@@ -132,6 +132,8 @@
           *ngIf="step.ingredients && showIngredients"
           [ingredients]="step.ingredients"
           [name]="step.name"
+          [formula_weight]="total_weight"
+          [units]="units"
         >
         </app-ingredients-list>
       </span>

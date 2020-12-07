@@ -91,7 +91,8 @@
             *ngIf="step.ingredients"
             [ingredients]="step.ingredients"
             [name]="step.name"
-            [bakers_percentage]="(formula.formula.unit_weight*formula.formula.units) / 100"
+            [formula_weight]="formula.formula.unit_weight*formula.formula.units*formula.number"
+            [units]="formula.number"
           ></app-ingredients-list>
         </span>
         <span *ngFor="let ingredientFormula of formula.ingredients_formula">
@@ -111,7 +112,8 @@
         <app-ingredients-list
           [ingredients]="step.step.ingredients"
           [name]="step.step.name"
-          [bakers_percentage]="(formula.formula.unit_weight*formula.formula.units) / 100"
+          [formula_weight]="formula.formula.unit_weight*formula.formula.units*formula.number"
+          [units]="formula.number"
         ></app-ingredients-list>
         <span *ngFor="let ingredientFormula of getStepCompoundIngredients()">
           <app-ingredients-list
