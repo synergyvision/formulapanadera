@@ -37,7 +37,8 @@
               *ngIf="step.ingredients"
               [ingredients]="step.ingredients"
               [name]="step.name"
-              [bakers_percentage]="item.total_weight / 100"
+              [formula_weight]="item.formula.unit_weight*item.formula.units*item.number"
+              [units]="item.number"
             >
             </app-ingredients-list>
           </span>
@@ -60,6 +61,7 @@
                   ingredientFormula.ingredient.formula.compensation_percentage
                 "
                 [name]="ingredientFormula.ingredient.name"
+                [units]="item.number"
               >
               </app-ingredients-list>
               <app-mixing-steps

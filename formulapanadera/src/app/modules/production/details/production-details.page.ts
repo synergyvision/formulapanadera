@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ActionSheetController, AlertController, LoadingController, ToastController } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
@@ -19,7 +19,9 @@ import { ProductionStorageService } from 'src/app/core/services/storage/producti
 @Component({
   selector: "app-production-details",
   templateUrl: "production-details.page.html",
-  styleUrls: ["./styles/production-details.page.scss"],
+  styleUrls: ["./styles/production-details.page.scss",
+    "./../../../shared/styles/note.alert.scss",
+    "./../../../shared/styles/confirm.alert.scss",]
 })
 export class ProductionDetailsPage implements OnInit {
   APP_URL = APP_URL;
@@ -35,12 +37,11 @@ export class ProductionDetailsPage implements OnInit {
 
   production_in_process: boolean = false;
 
-  state;
-
   constructor(
     private formulaService: FormulaService,
     private languageService: LanguageService,
     private router: Router,
+    private route: ActivatedRoute,
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
     private loadingController: LoadingController,
@@ -52,25 +53,29 @@ export class ProductionDetailsPage implements OnInit {
     this.showIngredients = true;
     this.showDetails = false;
     this.showTimes = false;
-
-    this.state = this.router.getCurrentNavigation().extras.state;
   }
 
   async ngOnInit() {
-    this.production = JSON.parse(JSON.stringify(this.state.production));
-    this.production = JSON.parse(JSON.stringify(this.state.production));
-    this.original_production = JSON.parse(
-      JSON.stringify(this.state.production)
-    );
-    this.calculateFormulas();
+    this.route.queryParams.subscribe(async () => {
+      let navParams = this.router.getCurrentNavigation().extras.state;
+      if (navParams) {
+        this.production = JSON.parse(JSON.stringify(navParams.production));
+        this.production = JSON.parse(JSON.stringify(navParams.production));
+        this.original_production = JSON.parse(
+          JSON.stringify(navParams.production)
+        );
+      }
 
-    let existing_production = await this.productionInProcessStorageService.getProduction();
-    if (
-      existing_production &&
-      this.production.id !== existing_production.production.id
-    ) {
-      this.production_in_process = true;
-    }
+      this.calculateFormulas();
+
+      let existing_production = await this.productionInProcessStorageService.getProduction();
+      if (
+        existing_production &&
+        this.production.id !== existing_production.production.id
+      ) {
+        this.production_in_process = true;
+      }
+    });
   }
 
   calculateFormulas() {
@@ -298,5 +303,11 @@ export class ProductionDetailsPage implements OnInit {
       ],
     });
     toast.present();
+  }
+
+  returnToList() {
+    this.router.navigateByUrl(
+      APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
+    );
   }
 }

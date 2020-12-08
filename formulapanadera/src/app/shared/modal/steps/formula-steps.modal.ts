@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
-import { ModalController } from "@ionic/angular";
+import { AfterViewInit, Component, Input, QueryList, ViewChildren } from "@angular/core";
+import { IonTextarea, ModalController } from "@ionic/angular";
 import { MANIPULATION_STEP } from "src/app/config/formula";
 import { ICONS } from "src/app/config/icons";
 import { StepDetailsModel } from "src/app/core/models/formula.model";
@@ -10,10 +10,11 @@ import { FormatNumberService } from "src/app/core/services/format-number.service
   templateUrl: "formula-steps.modal.html",
   styleUrls: ["./styles/formula-steps.modal.scss"],
 })
-export class FormulaStepsModal {
+export class FormulaStepsModal implements AfterViewInit {
   ICONS = ICONS;
   MANIPULATION_STEP = MANIPULATION_STEP;
 
+  @ViewChildren("stepdescription") private textAreas: QueryList<IonTextarea>
   @Input() formulaSteps: Array<StepDetailsModel>;
 
   temperatureUnit: string = "C";
@@ -21,7 +22,16 @@ export class FormulaStepsModal {
   constructor(
     public modalController: ModalController,
     private formatNumberService: FormatNumberService
-  ) {}
+  ) { }
+  
+  ngAfterViewInit() {
+    this.textAreas.toArray().forEach(textArea => {
+      textArea.autoGrow = true;
+      textArea.ionChange.subscribe(() => {
+        textArea.autoGrow = true;
+      })
+    })
+  }
 
   dismissModal() {
     this.modalController.dismiss();

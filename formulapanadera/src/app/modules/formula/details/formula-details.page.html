@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button
-        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.formula.main "
+        (click)="returnToList()"
         mode="md"
       ></ion-back-button>
     </ion-buttons>
@@ -82,8 +82,14 @@
     <ion-col class="detail-col">
       <ion-item class="input-item" lines="full">
         <ion-label color="primary" class="label">{{'formulas.public' | translate}}</ion-label>
-        <ion-checkbox class="checkbox" color="primary" [(ngModel)]="!this.formula.user.owner"
-          [ngModelOptions]="{standalone: true}" slot="start" [disabled]="true">
+        <ion-checkbox
+          class="checkbox"
+          color="primary"
+          [ngModel]="public"
+          slot="start"
+          [disabled]="!(user.email === formula.user.creator.email) && !is_modifier"
+          (ngModelChange)="changeFormula()"
+        >
         </ion-checkbox>
       </ion-item>
     </ion-col>
@@ -92,8 +98,15 @@
     <ion-col class="detail-col">
       <ion-item class="input-item" lines="full">
         <ion-label color="primary" class="label">{{'formulas.can_clone' | translate}}</ion-label>
-        <ion-checkbox class="checkbox" color="primary" [(ngModel)]="formula.user.can_clone"
-          [ngModelOptions]="{standalone: true}" slot="start" [disabled]="true">
+        <ion-checkbox
+          class="checkbox"
+          color="primary"
+          [ngModel]="formula.user.can_clone"
+          [ngModelOptions]="{standalone: true}"
+          slot="start"
+          [disabled]="!(user.email === formula.user.creator.email) && !is_modifier"
+          (ngModelChange)="changeFormula()"
+        >
         </ion-checkbox>
       </ion-item>
     </ion-col>
@@ -119,6 +132,8 @@
           *ngIf="step.ingredients && showIngredients"
           [ingredients]="step.ingredients"
           [name]="step.name"
+          [formula_weight]="total_weight"
+          [units]="units"
         >
         </app-ingredients-list>
       </span>
@@ -137,6 +152,7 @@
             [bakers_percentage]="ingredientFormula.bakers_percentage"
             [compensation]="ingredientFormula.ingredient.formula.compensation_percentage"
             [name]="ingredientFormula.ingredient.name"
+            [units]="units"
           >
           </app-ingredients-list
         ></span>

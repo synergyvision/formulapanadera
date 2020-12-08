@@ -277,7 +277,7 @@
           color="primary"
           type="submit"
           fill="solid"
-          [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps || !ingredientsAreValid())"
+          [disabled]="dontSubmitFormula()"
           >{{ 'action.update' | translate }}</ion-button
         >
       </ion-col>
@@ -290,7 +290,7 @@
           color="primary"
           type="submit"
           fill="solid"
-          [disabled]="(!manageFormulaForm.valid || !formula.ingredients || !formula.mixing || !formula.steps || !ingredientsAreValid())"
+          [disabled]="dontSubmitFormula()"
         >{{ 'action.create' | translate }}</ion-button>
       </ion-col>
     </ion-row>

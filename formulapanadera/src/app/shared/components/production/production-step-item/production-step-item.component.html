@@ -64,9 +64,83 @@
     </ion-col>
   </ion-row>
 </ion-item>
+<!-- Description -->
 <ion-row *ngIf="step.step.description">
   <ion-col class="ion-no-padding" [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }">
     <app-data-item [title]="'formulas.description' | translate" [data]="step.step.description" [no_lines]="true">
     </app-data-item>
+  </ion-col>
+</ion-row>
+<!-- Ingredients -->
+<ion-row *ngIf="formula && (step.step.number == 0 || step.step.ingredients)">
+  <ion-col class="ion-no-padding" [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }">
+    <app-show-hide-content
+      (click)="showIngredients = !showIngredients"
+      [show]="showIngredients"
+      [title]="'ingredients.name' | translate"
+      [transparent]="true"
+    ></app-show-hide-content>
+    <span *ngIf="showIngredients">
+      <span *ngIf="step.step.number == 0">
+        <app-ingredients-list
+          [ingredients]="formula.formula.ingredients"
+          [bakers_percentage]="formula.bakers_percentage"
+        ></app-ingredients-list>
+        <span *ngFor="let step of formula.formula.steps">
+          <app-ingredients-list
+            *ngIf="step.ingredients"
+            [ingredients]="step.ingredients"
+            [name]="step.name"
+            [formula_weight]="formula.formula.unit_weight*formula.formula.units*formula.number"
+            [units]="formula.number"
+          ></app-ingredients-list>
+        </span>
+        <span *ngFor="let ingredientFormula of formula.ingredients_formula">
+          <app-ingredients-list
+            [ingredients]="ingredientFormula.ingredient.formula.ingredients"
+            [bakers_percentage]="ingredientFormula.bakers_percentage"
+            [compensation]="ingredientFormula.ingredient.formula.compensation_percentage"
+            [name]="ingredientFormula.ingredient.name"
+            [units]="formula.number"
+          ></app-ingredients-list>
+          <app-mixing-steps
+            [steps]="ingredientFormula.ingredient.formula.mixing"
+          ></app-mixing-steps>
+        </span>
+      </span>
+      <span *ngIf="step.step.ingredients">
+        <app-ingredients-list
+          [ingredients]="step.step.ingredients"
+          [name]="step.step.name"
+          [formula_weight]="formula.formula.unit_weight*formula.formula.units*formula.number"
+          [units]="formula.number"
+        ></app-ingredients-list>
+        <span *ngFor="let ingredientFormula of getStepCompoundIngredients()">
+          <app-ingredients-list
+            [ingredients]="ingredientFormula.ingredient.formula.ingredients"
+            [bakers_percentage]="ingredientFormula.bakers_percentage"
+            [compensation]="ingredientFormula.ingredient.formula.compensation_percentage"
+            [name]="ingredientFormula.ingredient.name"
+            [units]="formula.number"
+          ></app-ingredients-list>
+        </span>
+      </span>
+    </span>
+  </ion-col>
+</ion-row>
+<!-- Mixing -->
+<ion-row *ngIf="formula && step.step.number == 1">
+  <ion-col class="ion-no-padding" [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }">
+    <app-show-hide-content
+      (click)="showMixing = !showMixing"
+      [show]="showMixing"
+      [title]="'formulas.mixing_order' | translate"
+      [transparent]="true"
+    ></app-show-hide-content>
+    <span *ngIf="step.step.number == 1 && showMixing">
+      <app-mixing-steps
+        [steps]="formula.formula.mixing"
+      ></app-mixing-steps>
+    </span>
   </ion-col>
 </ion-row>

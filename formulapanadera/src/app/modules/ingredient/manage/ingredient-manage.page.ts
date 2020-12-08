@@ -66,7 +66,7 @@ export class IngredientManagePage implements OnInit {
         name: new FormControl("", Validators.required),
         hydration: new FormControl("", Validators.required),
         is_flour: new FormControl(false, Validators.required),
-        cost: new FormControl("", Validators.required),
+        cost: new FormControl("0", Validators.required),
       });
     } else {
       this.update = true;
@@ -259,7 +259,14 @@ export class IngredientManagePage implements OnInit {
           .createIngredient(this.ingredient)
           .then(() => {
             this.router.navigateByUrl(
-              APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+              APP_URL.menu.name +
+                "/" +
+                APP_URL.menu.routes.ingredient.main +
+                "/" +
+                APP_URL.menu.routes.ingredient.routes.details,
+              {
+                state: { ingredient: this.ingredient },
+              }
             );
           })
           .catch(() => {
@@ -273,7 +280,14 @@ export class IngredientManagePage implements OnInit {
           .updateIngredient(this.ingredient)
           .then(() => {
             this.router.navigateByUrl(
-              APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+              APP_URL.menu.name +
+                "/" +
+                APP_URL.menu.routes.ingredient.main +
+                "/" +
+                APP_URL.menu.routes.ingredient.routes.details,
+              {
+                state: { ingredient: this.ingredient },
+              }
             );
           })
           .catch(() => {

@@ -27,8 +27,8 @@ ion-back-button {
 
     .action-button {
       color: var(--ion-color-primary);
-      width: 60%;
-      height: 70%;
+      width: 50px;
+      height: 35px;
     }
   }
 
@@ -45,15 +45,6 @@ ion-back-button {
   .input-item {
     --padding-start: var(--page-margin);
   }
-
-  .segment {
-    padding: 5px var(--page-margin);
-    border-radius: 0px;
-
-    .segment-button {
-      width: 50%;
-    }
-  }
 }
 
 .list-col {
@@ -63,6 +54,11 @@ ion-back-button {
 .steps-list {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.divider {
+  --background: var(--ion-color-primary);
+  color: white;
 }
 
 .range-checkbox {

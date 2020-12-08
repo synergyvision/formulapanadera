@@ -31,7 +31,6 @@ export class ProductionStartPage implements OnInit {
   production_in_process: ProductionInProcessModel = new ProductionInProcessModel();
   original_production: ProductionInProcessModel = new ProductionInProcessModel();
   formulas: Array<FormulaPresentModel & { show: boolean }> = [];
-  segment: string = "steps";
   in_process: boolean = false;
 
   specify_time: boolean = false;
@@ -93,10 +92,6 @@ export class ProductionStartPage implements OnInit {
   }
 
   // Change
-
-  segmentChanged(ev: any) {
-    this.segment = ev.detail.value;
-  }
 
   async changeProcessStatus() {
     this.in_process = !this.in_process;
@@ -173,6 +168,29 @@ export class ProductionStartPage implements OnInit {
     } else {
       return false
     }
+  }
+
+  stepDay(step: ProductionStepModel) {
+    let day: number = this.timeService.getDay(step.time.start)
+    return this.languageService.getTerm(`day.${day}`)
+  }
+
+  dayChanged(step: ProductionStepModel, index: number): boolean {
+    if (index > 0) {
+      return this.stepDay(this.stepsFiltered(false)[index - 1]) !== this.stepDay(step)
+    } else {
+      return true
+    }
+  }
+
+  getStepFormula(step: ProductionStepModel): FormulaPresentModel & { show: boolean } {
+    let step_formula: FormulaPresentModel & { show: boolean };
+    this.formulas.forEach(formula => {
+      if (step.formula.id == formula.formula.id) {
+        step_formula = formula;
+      }
+    })
+    return step_formula
   }
 
   // Navigate

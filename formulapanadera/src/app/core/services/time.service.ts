@@ -24,6 +24,10 @@ export class TimeService {
     return this.formatTime(this.time, SPECIFIC_TIME_FORMAT);
   }
 
+  getDay(date: Date): number {
+    return moment(date).day()
+  }
+
   addTime(initial_date: Date, time: any, type: string): Date {
     return moment(initial_date).add(type, time).toDate();
   }

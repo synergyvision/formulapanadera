@@ -18,7 +18,7 @@ import { Router } from "@angular/router";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
-import { BAKERY_STEPS } from "src/app/config/formula";
+import { BAKERY_STEPS, DIVITION_STEP } from "src/app/config/formula";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { APP_URL } from "src/app/config/configuration";
@@ -102,13 +102,13 @@ export class FormulaManagePage {
       this.formula.mixing = [];
       this.formula.steps = [];
       state.formula.ingredients.forEach((ingredient) => {
-        this.formula.ingredients.push(ingredient);
+        this.formula.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
       });
       state.formula.mixing.forEach((ingredient) => {
-        this.formula.mixing.push(ingredient);
+        this.formula.mixing.push(JSON.parse(JSON.stringify(ingredient)));
       });
       state.formula.steps.forEach((ingredient) => {
-        this.formula.steps.push(ingredient);
+        this.formula.steps.push(JSON.parse(JSON.stringify(ingredient)));
       });
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
@@ -125,12 +125,26 @@ export class FormulaManagePage {
 
   changeUnit(ev: any) {
     this.formulaUnit = ev.detail.value;
+    if (this.formulaUnit == 'gr') {
+      this.changeUnitWeight()
+    }
   }
 
   formatUnits(value: number) {
     this.manageFormulaForm
       .get("units")
       .patchValue(this.formatNumberService.formatNumberDecimals(value, 0));
+    this.changeUnitWeight()
+  }
+
+  changeUnitWeight() {
+    if (this.formulaUnit == 'gr' && this.ingredientsAreValid()) {
+      let units = this.manageFormulaForm.value.units
+      if (this.formula.ingredients && units) {
+        let grams = this.formulaService.formulaWeight(this.formula.ingredients)
+        this.formatUnitWeight(grams / Number(units))
+      }
+    }
   }
 
   formatUnitWeight(value: number) {
@@ -140,14 +154,11 @@ export class FormulaManagePage {
   }
 
   formatPercentage(ingredient: IngredientPercentageModel) {
-    if (this.formulaUnit == "%") {
-      ingredient.percentage = Number(
-        this.formatNumberService.formatNumberPercentage(ingredient.percentage)
-      );
-    } else {
-      ingredient.percentage = Number(
-        this.formatNumberService.formatNumberDecimals(ingredient.percentage, 1)
-      );
+    ingredient.percentage = Number(
+      this.formatNumberService.formatNumberDecimals(ingredient.percentage, 1)
+    );
+    if (this.formulaUnit == "gr") {
+      this.changeUnitWeight()
     }
   }
 
@@ -230,7 +241,7 @@ export class FormulaManagePage {
           description: "",
         },
       ];
-      if (!this.formula.mixing) {
+      if (!this.formula.mixing || this.formula.mixing.length==0) {
         this.formula.ingredients.forEach(
           (ingredient: IngredientPercentageModel) =>
             mixedIngredients[0].ingredients.push(ingredient)
@@ -259,12 +270,23 @@ export class FormulaManagePage {
     let steps: Array<StepDetailsModel> = [];
     if (!this.formula.steps) {
       for (let i = 0; i < BAKERY_STEPS; i++) {
+        var description = ""
+        if (i == DIVITION_STEP - 1 &&
+          this.manageFormulaForm.value.units &&
+          this.manageFormulaForm.value.unit_weight
+        ) {
+          description = this.languageService.getTerm("formulas.divition",
+            {
+              portions: this.manageFormulaForm.value.units,
+              grams: this.manageFormulaForm.value.unit_weight
+            })
+        }
         steps.push({
           number: i,
           name: this.languageService.getTerm("steps." + (i + 1)),
           time: 0,
           temperature: null,
-          description: "",
+          description: description,
           times: 1,
         });
       }
@@ -293,6 +315,7 @@ export class FormulaManagePage {
       1
     );
     this.adjustFormulaMixing([], [ingredient])
+    this.changeUnitWeight()
   }
 
   deleteStepIngredient(
@@ -335,7 +358,14 @@ export class FormulaManagePage {
           .updateFormula(this.formula)
           .then(() => {
             this.router.navigateByUrl(
-              APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+              APP_URL.menu.name +
+                "/" +
+                APP_URL.menu.routes.formula.main +
+                "/" +
+                APP_URL.menu.routes.formula.routes.details,
+              {
+                state: { formula: this.formula },
+              }
             );
           })
           .catch(() => {
@@ -368,7 +398,14 @@ export class FormulaManagePage {
         .createFormula(this.formula)
         .then(() => {
           this.router.navigateByUrl(
-            APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+            APP_URL.menu.name +
+              "/" +
+              APP_URL.menu.routes.formula.main +
+              "/" +
+              APP_URL.menu.routes.formula.routes.details,
+            {
+              state: { formula: this.formula },
+            }
           );
         })
         .catch(() => {
@@ -500,7 +537,7 @@ export class FormulaManagePage {
   }
 
   adjustFormulaMixing(new_ingredients: IngredientPercentageModel[], deleted_ingredients: IngredientPercentageModel[]) {
-    if (this.formula.mixing) {
+    if (this.formula.mixing && this.formula.mixing.length>0) {
       if (new_ingredients.length > 0) {
         new_ingredients.forEach(ingredient=>{
           this.formula.mixing[0].ingredients.push(ingredient)
@@ -524,5 +561,15 @@ export class FormulaManagePage {
         })
       }
     }
+  }
+
+  dontSubmitFormula(): boolean{
+    return (
+      !this.manageFormulaForm.valid ||
+      !this.formula.ingredients || this.formula.ingredients.length==0 ||
+      !this.formula.mixing || this.formula.mixing.length==0 ||
+      !this.formula.steps || this.formula.steps.length==0 ||
+      !this.ingredientsAreValid()
+    )
   }
 }

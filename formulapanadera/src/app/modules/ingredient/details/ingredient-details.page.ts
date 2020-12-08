@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from "@angular/core";
 
 import { IngredientModel } from "../../../core/models/ingredient.model";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ActionSheetController, AlertController, LoadingController, ToastController } from "@ionic/angular";
 import { LanguageService } from "src/app/core/services/language.service";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
@@ -34,10 +34,9 @@ export class IngredientDetailsPage implements OnInit {
 
   user: UserModel = new UserModel();
 
-  state;
-
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
     private loadingController: LoadingController,
@@ -49,15 +48,20 @@ export class IngredientDetailsPage implements OnInit {
   ) {
     this.showIngredients = true;
     this.showMixing = false;
-    this.state = this.router.getCurrentNavigation().extras.state;
   }
 
   async ngOnInit() {
-    this.ingredient = this.state.ingredient;
-    if (this.ingredient.formula) {
-      this.type = "compound";
-    }
-    this.user = await this.userStorageService.getUser();
+    this.route.queryParams.subscribe(async () => {
+      let navParams = this.router.getCurrentNavigation().extras.state;
+      if (navParams) {
+        this.ingredient = navParams.ingredient;
+      }
+
+      if (this.ingredient.formula) {
+        this.type = "compound";
+      }
+      this.user = await this.userStorageService.getUser();
+    });
   }
 
   async presentOptions() {
@@ -189,5 +193,11 @@ export class IngredientDetailsPage implements OnInit {
       ],
     });
     toast.present();
+  }
+
+  returnToList() {
+    this.router.navigateByUrl(
+      APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+    );
   }
 }

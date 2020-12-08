@@ -1,4 +1,13 @@
 {
+  "day": {
+    "0": "Sunday",
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday"
+  },
   "action": {
     "ok": "OK",
     "cancel": "Cancel",
@@ -9,6 +18,7 @@
     "create": "Create",
     "update": "Update",
     "delete": "Delete",
+    "do_production": "Produce",
     "delete_question": "Do you want to delete {{item}}?",
     "sign_out_question": "Sign out?",
     "yes": "Yes",
@@ -66,6 +76,7 @@
     "total_weight": "Total weight",
     "ingredients": { "value": "Value" },
     "mixing_order": "Mixing order",
+    "divition": "Divide into {{portions}} servings of {{grams}}g.",
     "steps": "Steps",
     "step": "Step",
     "time": "Time",
@@ -109,6 +120,9 @@
       "mine": "Mine",
       "shared": "Shared",
       "public": "Public"
+    },
+    "do_production": {
+      "units": "Production units"
     },
     "clone": {
       "instructions": "By cloning this formula you can modify it, it will appear among your formulas. The original version will be preserved"
