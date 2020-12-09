@@ -34,5 +34,6 @@ export const ICONS = {
   thermometer: "thermometer-outline",
   timer: "timer-outline",
   trash: "trash-outline",
+  users_group: "people-outline",
   water: "water",
 };

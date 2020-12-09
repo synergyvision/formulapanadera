@@ -18,6 +18,13 @@ const routes: Routes = [
         (m) => m.ChangePasswordPageModule
       ),
   },
+  {
+    path: APP_URL.menu.routes.settings.routes.user_groups,
+    loadChildren: () =>
+      import("./user-groups/user-groups.module").then(
+        (m) => m.UserGroupsPageModule
+      ),
+  },
 ];
 
 @NgModule({

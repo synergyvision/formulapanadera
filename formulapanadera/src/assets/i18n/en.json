@@ -172,6 +172,9 @@
       "select": "Select language"
     },
     "password": { "change": "Change password" },
+    "user_groups": {
+      "name": "User groups"
+    },
     "logout": "Log out"
   },
   "production": {

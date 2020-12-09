@@ -172,6 +172,9 @@
       "select": "Selecciona el idioma"
     },
     "password": { "change": "Cambiar contraseña" },
+    "user_groups": {
+      "name": "Grupos de usuarios"
+    },
     "logout": "Cerrar sesión"
   },
   "production": {
