@@ -11,6 +11,8 @@ import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { ASSETS } from "src/app/config/assets";
 import { LoadingController, ToastController } from "@ionic/angular";
+import { UserCRUDService } from 'src/app/core/services/firebase/user.service';
+import { UserModel } from 'src/app/core/models/user.model';
 
 @Component({
   selector: "app-sign-up",
@@ -30,12 +32,15 @@ export class SignUpPage implements OnInit {
   redirectLoader: HTMLIonLoadingElement;
   authRedirectResult: Subscription;
 
+  user: UserModel = new UserModel();
+
   constructor(
     private router: Router,
     private authService: AuthService,
     private ngZone: NgZone,
     private languageService: LanguageService,
     private languageAlert: LanguageAlert,
+    private userCRUDService: UserCRUDService,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
     private toastController: ToastController
@@ -103,12 +108,15 @@ export class SignUpPage implements OnInit {
     this.authService
       .signUp(values.email, values.matching_passwords.password)
       .then(async (result) => {
-        await result.user.updateProfile({ displayName: values.fullName });
-        this.userStorageService.setUser({
-          name: values.fullName,
-          email: values.email,
-        });
-        this.redirectLoggedUserToMainPage();
+        this.user.name = values.fullName;
+        this.user.email = values.email;
+        this.user.user_groups = [];
+        this.userCRUDService
+          .createUser(result.user.uid, this.user)
+          .then(async () => {
+            await this.userStorageService.setUser(this.user);
+            this.redirectLoggedUserToMainPage();
+          })
       })
       .catch((error) => {
         this.dismissLoading();

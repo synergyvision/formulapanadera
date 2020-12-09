@@ -34,7 +34,8 @@ export class OptionsPage {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.user = await this.userStorageService.getUser();
+    let user = await this.userStorageService.getUser();
+    this.user = {name: user.name, email: user.email}
     if (!this.user) {
       this.router.navigate(
         [APP_URL.auth.name + "/" + APP_URL.auth.routes.sign_in],

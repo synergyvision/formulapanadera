@@ -72,7 +72,8 @@ export class ChangePasswordPage {
     });
     await loading.present();
 
-    const user = await this.userStorageService.getUser();
+    let fullUser = await this.userStorageService.getUser();
+    const user = {name: fullUser.name, email: fullUser.email}
     const previous_password = this.passwordForm.value.actual_password;
     const password = this.passwordForm.value.matching_passwords.password;
 

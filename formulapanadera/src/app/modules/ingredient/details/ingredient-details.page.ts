@@ -60,7 +60,8 @@ export class IngredientDetailsPage implements OnInit {
       if (this.ingredient.formula) {
         this.type = "compound";
       }
-      this.user = await this.userStorageService.getUser();
+      let user = await this.userStorageService.getUser();
+      this.user = {name: user.name, email: user.email}
     });
   }
 

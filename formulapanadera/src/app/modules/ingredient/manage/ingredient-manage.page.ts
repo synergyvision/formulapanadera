@@ -89,7 +89,8 @@ export class IngredientManagePage implements OnInit {
       this.public = this.ingredient.can_be_modified;
     }
 
-    this.user = await this.userStorageService.getUser();
+    let user = await this.userStorageService.getUser();
+    this.user = {name: user.name, email: user.email}
   }
 
   async pickIngredient() {

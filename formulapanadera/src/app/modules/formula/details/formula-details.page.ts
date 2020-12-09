@@ -103,7 +103,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         this.public = true;
       }
 
-      this.user = await this.userStorageService.getUser();
+      let user = await this.userStorageService.getUser();
+      this.user = {name: user.name, email: user.email}
       this.is_modifier = false;
       this.formula.user.modifiers.forEach((user) => {
         if (user.email == this.user.email) {

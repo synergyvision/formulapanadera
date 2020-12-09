@@ -71,7 +71,8 @@ export class ProductionManagePage implements OnInit {
       });
       this.production.owner = state.production.owner;
     }
-    this.current_user = await this.userStorageService.getUser();
+    let user = await this.userStorageService.getUser();
+    this.current_user = {name: user.name, email: user.email}
   }
 
   async sendProduction() {

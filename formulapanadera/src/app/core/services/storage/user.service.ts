@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Plugins } from "@capacitor/core";
-import { UserResumeModel } from "../../models/user.model";
+import { UserModel } from "../../models/user.model";
 
 const { Storage } = Plugins;
 
@@ -10,8 +10,8 @@ export class UserStorageService {
 
   constructor() {}
 
-  public async getUser(): Promise<UserResumeModel> {
-    let user: UserResumeModel;
+  public async getUser(): Promise<UserModel> {
+    let user: UserModel;
     await Storage.get({ key: this.key }).then((data) => {
       if (data.value) {
         user = JSON.parse(data.value);
@@ -20,7 +20,7 @@ export class UserStorageService {
     return user;
   }
 
-  public async setUser(user: UserResumeModel): Promise<void> {
+  public async setUser(user: UserModel): Promise<void> {
     let storage_user = JSON.stringify(user);
     Storage.set({ key: this.key, value: storage_user });
   }

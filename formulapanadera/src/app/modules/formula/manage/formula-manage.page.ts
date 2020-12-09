@@ -112,7 +112,8 @@ export class FormulaManagePage {
       });
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
-    this.current_user = await this.userStorageService.getUser();
+    let user = await this.userStorageService.getUser();
+    this.current_user = {name: user.name, email: user.email}
     if (this.update) {
       this.is_modifier = false;
       this.formula.user.modifiers.forEach((user) => {
