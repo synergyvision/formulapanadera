@@ -13,7 +13,7 @@ import {
 } from "src/app/core/models/formula.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
-import { UserModel } from "src/app/core/models/user.model";
+import { UserResumeModel } from "src/app/core/models/user.model";
 import { DATE_FORMAT, DECIMALS, DECIMAL_BAKERS_PERCENTAGE_FORMAT, DECIMAL_COST_FORMAT } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
@@ -62,7 +62,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   showSteps: boolean;
   showTimes: boolean
 
-  user: UserModel = new UserModel();
+  user: UserResumeModel = new UserResumeModel();
   is_modifier: boolean = false
   public: boolean = false
 

@@ -19,7 +19,7 @@ import { FormulaService } from "src/app/core/services/formula.service";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
-import { UserModel } from "src/app/core/models/user.model";
+import { UserResumeModel } from "src/app/core/models/user.model";
 import { IngredientService } from "src/app/core/services/ingredient.service";
 
 @Component({
@@ -42,7 +42,7 @@ export class IngredientManagePage implements OnInit {
 
   currency = CURRENCY;
 
-  user: UserModel = new UserModel();
+  user: UserResumeModel = new UserResumeModel();
 
   constructor(
     private ingredientCRUDService: IngredientCRUDService,

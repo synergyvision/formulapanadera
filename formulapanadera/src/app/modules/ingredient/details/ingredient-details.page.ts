@@ -6,7 +6,7 @@ import { ActionSheetController, AlertController, LoadingController, ToastControl
 import { LanguageService } from "src/app/core/services/language.service";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
-import { UserModel } from "src/app/core/models/user.model";
+import { UserResumeModel } from "src/app/core/models/user.model";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DECIMAL_COST_FORMAT } from "src/app/config/formats";
 import { IngredientCRUDService } from 'src/app/core/services/firebase/ingredient.service';
@@ -32,7 +32,7 @@ export class IngredientDetailsPage implements OnInit {
   showIngredients: boolean;
   showMixing: boolean;
 
-  user: UserModel = new UserModel();
+  user: UserResumeModel = new UserResumeModel();
 
   constructor(
     private router: Router,
