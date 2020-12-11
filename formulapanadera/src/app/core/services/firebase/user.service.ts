@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
+import { AngularFirestore } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 import { map } from 'rxjs/operators';
 
@@ -36,10 +36,11 @@ export class UserCRUDService {
   }
 
   public updateUser(userData: UserModel): Promise<void> {
+    const data = { name: userData.name, email: userData.email, user_groups: userData.user_groups }
     return this.afs
       .collection(this.collection)
       .doc(userData.id)
-      .set({ ...userData });
+      .set(JSON.parse(JSON.stringify(data)));
   }
 
   public deleteUser(userKey: string): Promise<void> {

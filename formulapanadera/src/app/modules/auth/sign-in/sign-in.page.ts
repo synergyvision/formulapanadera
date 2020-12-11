@@ -98,8 +98,11 @@ export class SignInPage implements OnInit {
         this.userCRUDService
           .getUserDataSource(loggedUser.user.uid)
           .subscribe((userdata) => {
-            this.userStorageService.setUser(userdata);
-            this.redirectLoggedUserToMainPage();
+            if (userdata) {
+              userdata.id = loggedUser.user.uid;
+              this.userStorageService.setUser(userdata);
+              this.redirectLoggedUserToMainPage();
+            }
           });
       })
       .catch((error) => {

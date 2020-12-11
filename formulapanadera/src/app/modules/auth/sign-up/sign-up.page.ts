@@ -114,6 +114,7 @@ export class SignUpPage implements OnInit {
         this.userCRUDService
           .createUser(result.user.uid, this.user)
           .then(async () => {
+            this.user.id = result.user.uid
             await this.userStorageService.setUser(this.user);
             this.redirectLoggedUserToMainPage();
           })

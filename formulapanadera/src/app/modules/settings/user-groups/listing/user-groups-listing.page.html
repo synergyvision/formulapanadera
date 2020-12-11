@@ -1,0 +1,54 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button mode="md" [defaultHref]="'/'+APP_URL.menu.routes.settings.main"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'settings.user_groups.name' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="createUserGroup()" class="create-user-group">
+        <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="filters-toolbar" mode="ios">
+    <ion-row class="searchbar-row" align-items-center>
+      <ion-col>
+        <ion-searchbar
+          mode="ios"
+          class="items-searchbar"
+          animated
+          [(ngModel)]="searchQuery"
+          (ionChange)="searchList()"
+          placeholder="{{'ingredients.filter.name' | translate}}"
+        ></ion-searchbar>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="user-group-content">
+  <ion-list
+    lines="none"
+    class="user-group-list"
+    *ngIf="user_groups?.length > 0; else emptyBlock"
+  >
+    <app-user-group-item
+      *ngFor="let user_group of user_groups; index as i"
+      [user_group]="user_group"
+      [even]="(i%2==0)"
+      (click)="presentOptions(user_group)"
+    ></app-user-group-item>
+  </ion-list>
+  <ng-template #emptyBlock>
+    <ion-row class="empty-block">
+      <ion-col class="ion-text-center ion-padding">
+        <h5>
+          {{ 'settings.user_groups.empty' | translate }}<br /><a
+            (click)="createUserGroup()"
+            >{{ 'settings.user_groups.create' | translate }}</a
+          >
+        </h5>
+      </ion-col>
+    </ion-row>
+  </ng-template>
+</ion-content>

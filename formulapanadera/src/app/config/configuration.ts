@@ -56,7 +56,13 @@ export const APP_URL = {
         routes: {
           settings: "",
           change_password: "change-password",
-          user_groups: "user-groups"
+          user_groups: {
+            main: "user-groups",
+            routes: {
+              listing: "",
+              management: "manage",
+            },
+          },
         },
       },
     },

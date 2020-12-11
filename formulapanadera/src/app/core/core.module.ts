@@ -26,6 +26,7 @@ import { ProductionInProcessStorageService } from "./services/storage/production
 import { ProductionInProcessService } from "./services/production-in-process.service";
 import { LanguageStorageService } from './services/storage/language.service';
 import { UserCRUDService } from './services/firebase/user.service';
+import { UserService } from './services/user.service'
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ import { UserCRUDService } from './services/firebase/user.service';
     ProductionInProcessStorageService,
     LanguageService,
     LanguageStorageService,
+    UserService,
     UserCRUDService,
     UserStorageService,
   ],

@@ -26,6 +26,7 @@
   },
   "input": {
     "fullName": "Nombre completo",
+    "name": "Nombre",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "confirm_password": "Confirmación de contraseña",
@@ -173,7 +174,11 @@
     },
     "password": { "change": "Cambiar contraseña" },
     "user_groups": {
-      "name": "Grupos de usuarios"
+      "name": "Grupos de usuarios",
+      "user_group_name": "Nombre",
+      "users": "Usuarios",
+      "create": "Crear grupo",
+      "empty": "No se encontraron grupos de usuarios"
     },
     "logout": "Cerrar sesión"
   },

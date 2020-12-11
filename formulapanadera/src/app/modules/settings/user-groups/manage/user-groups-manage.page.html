@@ -1,0 +1,128 @@
+<form
+  class="manage-user-group-form ion-page"
+  [formGroup]="manageUserGroupForm"
+  (ngSubmit)="sendUserGroup()"
+>
+  <ion-header class="ion-no-border">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button mode="md" [defaultHref]="'/'+APP_URL.menu.routes.settings.main"></ion-back-button>
+      </ion-buttons>
+      <ion-title>{{ 'settings.user_groups.name' | translate }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="manage-user-groups-content">
+    <ion-list class="inputs-list" lines="full">
+      <ion-row>
+        <ion-col class="no-padding">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="stacked"
+              >{{'settings.user_groups.user_group_name' | translate}}</ion-label
+            >
+            <ion-input
+              type="text"
+              formControlName="name"
+              class="user-group-name"
+              required
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+    <app-divider></app-divider>
+
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'settings.user_groups.users' | translate}}
+          </ion-label>
+          <ion-icon
+            button
+            (click)="addUser()"
+            class="add-user"
+            [name]="ICONS.add"
+          ></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="users-list inputs-list">
+        <ion-row
+          class="title-row"
+          *ngIf="user_group.users && user_group.users.length>0"
+        >
+          <ion-col size="4" class="title-col">
+            {{'input.name' | translate}}
+          </ion-col>
+          <ion-col size="8" class="title-col user-email">
+            {{'input.email' | translate}}
+          </ion-col>
+        </ion-row>
+        <ion-item *ngFor="let item of user_group.users" class="input-item">
+          <ion-row class="users-item-wrapper">
+            <ion-col size="5" class="users-wrapper">
+              <ion-item class="user-item">
+                <ion-input
+                  class="user-data"
+                  [(ngModel)]="item.name"
+                  [ngModelOptions]="{standalone: true}"
+                ></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="7" class="users-wrapper">
+              <ion-item class="user-item">
+                <ion-input
+                  class="user-data"
+                  [(ngModel)]="item.email"
+                  [ngModelOptions]="{standalone: true}"
+                  type="email"
+                  inputmode="email"
+                ></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-icon
+            [name]="ICONS.close"
+            class="delete-user"
+            slot="end"
+            color="primary"
+            button
+            (click)="deleteUser(item)"
+          ></ion-icon>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  </ion-content>
+
+  <ion-footer>
+    <ion-row class="form-actions-wrapper" *ngIf="!update">
+      <ion-col>
+        <ion-button
+          class="submit-btn"
+          expand="block"
+          color="primary"
+          type="submit"
+          fill="solid"
+          [disabled]="canSend()"
+        >
+          {{ 'action.create' | translate }}</ion-button
+        >
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="update" class="form-actions-wrapper">
+      <ion-col>
+        <ion-button
+          class="submit-btn"
+          expand="block"
+          color="primary"
+          type="submit"
+          fill="solid"
+          [disabled]="canSend()"
+        >
+          {{ 'action.update' | translate }}</ion-button
+        >
+      </ion-col>
+    </ion-row>
+  </ion-footer>
+</form>

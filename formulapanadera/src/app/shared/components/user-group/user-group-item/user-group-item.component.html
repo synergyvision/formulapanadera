@@ -1,0 +1,31 @@
+<ion-item
+  detail="true"
+  button="true"
+  class="user-group-item"
+  [ngClass]="{ 'background-gray': even }"
+>
+  <ion-row class="user-group-item-wrapper">
+    <ion-col class="user-group-wrapper">
+      <ion-row class="user-group-title">
+        <ion-col>
+          <h2 class="user-group-name">
+            <app-text-shell
+              animation="bouncing"
+              lines="3"
+              [data]="user_group.name"
+            ></app-text-shell>
+          </h2>
+        </ion-col>
+      </ion-row>
+      <span *ngIf="user_group.name !== undefined">
+        <ion-row *ngFor="let user of user_group.users">
+          <ion-col size="12" class="properties-col">
+            <p class="group-user">
+              {{ user.name }} ({{user.email}})
+            </p>
+          </ion-col>
+        </ion-row>
+      </span>
+    </ion-col>
+  </ion-row>
+</ion-item>

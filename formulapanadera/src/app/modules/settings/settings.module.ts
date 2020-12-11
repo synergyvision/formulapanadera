@@ -19,10 +19,10 @@ const routes: Routes = [
       ),
   },
   {
-    path: APP_URL.menu.routes.settings.routes.user_groups,
+    path: APP_URL.menu.routes.settings.routes.user_groups.main,
     loadChildren: () =>
       import("./user-groups/user-groups.module").then(
-        (m) => m.UserGroupsPageModule
+        (m) => m.UserGroupsModule
       ),
   },
 ];
