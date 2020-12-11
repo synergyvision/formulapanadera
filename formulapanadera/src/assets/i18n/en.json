@@ -120,7 +120,12 @@
       "error": "An error ocurred. Try again",
       "mine": "Mine",
       "shared": "Shared",
-      "public": "Public"
+      "public": "Public",
+      "options": {
+        "instructions": "Do you want to share to a single person or a group?",
+        "one": "Single",
+        "group": "Group"
+      }
     },
     "do_production": {
       "units": "Production units"

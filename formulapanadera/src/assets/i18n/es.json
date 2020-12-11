@@ -120,7 +120,12 @@
       "error": "Ocurrió un error. Intente de nuevo",
       "mine": "Propias",
       "shared": "Compartidas",
-      "public": "Públicas"
+      "public": "Públicas",
+      "options": {
+        "instructions": "¿Deseas compartir la fórmula a un único receptor o a un grupo?",
+        "one": "Único",
+        "group": "Grupo"
+      }
     },
     "do_production": {
       "units": "Unidades a elaborar"

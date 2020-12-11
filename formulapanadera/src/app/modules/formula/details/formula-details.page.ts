@@ -3,7 +3,9 @@ import { FormulaService } from "src/app/core/services/formula.service";
 import {
   ActionSheetController,
   AlertController,
+  IonRouterOutlet,
   LoadingController,
+  ModalController,
   ToastController,
 } from "@ionic/angular";
 import {
@@ -13,7 +15,7 @@ import {
 } from "src/app/core/models/formula.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
-import { UserResumeModel } from "src/app/core/models/user.model";
+import { UserGroupModel, UserResumeModel } from "src/app/core/models/user.model";
 import { DATE_FORMAT, DECIMALS, DECIMAL_BAKERS_PERCENTAGE_FORMAT, DECIMAL_COST_FORMAT } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
@@ -24,6 +26,7 @@ import { ProductionModel } from 'src/app/core/models/production.model';
 import { FormatNumberService } from 'src/app/core/services/format-number.service';
 import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
 import { ProductionStorageService } from 'src/app/core/services/storage/production.service';
+import { UserGroupPickerModal } from 'src/app/shared/modal/user-group/user-group-picker.modal';
 
 @Component({
   selector: "app-formula-details",
@@ -73,8 +76,10 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
     private toastController: ToastController,
+    private modalController: ModalController,
     private router: Router,
     private route: ActivatedRoute,
+    private routerOutlet: IonRouterOutlet,
     private datePipe: DatePipe,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
@@ -316,6 +321,31 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   async shareFormula() {
     const alert = await this.alertController.create({
       header: this.languageService.getTerm("action.share"),
+      message: this.languageService.getTerm("formulas.share.options.instructions"),
+      cssClass: "alert share-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("formulas.share.options.one"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            this.shareOne()
+          },
+        },
+        {
+          text: this.languageService.getTerm("formulas.share.options.group"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            this.shareGroup()
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async shareOne() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.share"),
       message: this.languageService.getTerm("formulas.share.instructions"),
       cssClass: "alert share-alert",
       inputs: [
@@ -335,22 +365,47 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: (data) => {
-            let formula = JSON.parse(JSON.stringify(this.formula));
-            formula.user.owner = data.email;
-            formula.user.cloned = false;
-            this.formulaCRUDService
-              .createFormula(formula)
-              .then(() => {
-                this.presentToast(true);
-              })
-              .catch(() => {
-                this.presentToast(false);
-              });
+            this.shareFormulaToEmail(data.email)
           },
         },
       ],
     });
     await alert.present();
+  }
+  
+  async shareGroup() {
+    const modal = await this.modalController.create({
+      component: UserGroupPickerModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+
+    if (data !== undefined) {
+      let user_groups: UserGroupModel[] = data.user_groups as UserGroupModel[]
+      user_groups.forEach(group => {
+        group.users.forEach(user => {
+          this.shareFormulaToEmail(user.email, true)
+        })
+      })
+    }
+  }
+  
+  shareFormulaToEmail(email: string, toast: boolean = true) {
+    let formula = JSON.parse(JSON.stringify(this.formula));
+    formula.user.owner = email;
+    formula.user.cloned = false;
+    this.formulaCRUDService
+      .createFormula(formula)
+      .then(() => {
+        if (toast) {
+          this.presentToast(true, email);
+        }
+      })
+      .catch(() => {
+        this.presentToast(false, email);
+      });
   }
 
   async cloneFormula() {
@@ -464,11 +519,16 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async presentToast(success: boolean) {
+  async presentToast(success: boolean, email?: string) {
+    let message = ""
+    message = `${email}: `;
+    if (success) {
+      message = message + this.languageService.getTerm("formulas.share.success")
+    } else {
+      message = message + this.languageService.getTerm("formulas.share.error")
+    }
     const toast = await this.toastController.create({
-      message: success
-        ? this.languageService.getTerm("formulas.share.success")
-        : this.languageService.getTerm("formulas.share.error"),
+      message: message,
       color: "secondary",
       duration: 5000,
       buttons: [

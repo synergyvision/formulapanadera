@@ -17,6 +17,7 @@ export class UserGroupItemComponent {
 
   @Input() user_group: UserGroupModel;
   @Input() even: boolean = false;
+  @Input() selected: boolean = false;
 
   constructor() { }
 }

@@ -1,12 +1,10 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button mode="md" [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.settings.main"></ion-back-button>
-    </ion-buttons>
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.users"></ion-icon>
     <ion-title>{{ 'settings.user_groups.name' | translate }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="createUserGroup()" class="create-user-group">
-        <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
+      <ion-button (click)="dismissModal()">
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -36,19 +34,33 @@
       *ngFor="let user_group of user_groups; index as i"
       [user_group]="user_group"
       [even]="(i%2==0)"
-      (click)="presentOptions(user_group)"
+      [selected]="isSelected(user_group)"
+      (click)="clickUserGroup(user_group)"
     ></app-user-group-item>
   </ion-list>
   <ng-template #emptyBlock>
     <ion-row class="empty-block">
       <ion-col class="ion-text-center ion-padding">
         <h5>
-          {{ 'settings.user_groups.empty' | translate }}<br /><a
-            (click)="createUserGroup()"
-            >{{ 'settings.user_groups.create' | translate }}</a
-          >
+          {{ 'settings.user_groups.empty' | translate }}
         </h5>
       </ion-col>
     </ion-row>
   </ng-template>
 </ion-content>
+
+<ion-footer>
+  <ion-row class="form-actions-wrapper">
+    <ion-col>
+      <ion-button
+        class="submit-btn"
+        expand="block"
+        color="primary"
+        (click)="saveGroups()"
+        fill="solid"
+      >
+        {{ 'action.share' | translate }}</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-footer>
