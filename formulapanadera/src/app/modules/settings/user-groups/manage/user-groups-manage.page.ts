@@ -22,6 +22,7 @@ export class UserGroupsManagePage implements OnInit {
 
   user_group: UserGroupModel = new UserGroupModel();
   manageUserGroupForm: FormGroup;
+  original_name: string = "";
 
   user: UserModel = new UserModel()
   
@@ -53,6 +54,7 @@ export class UserGroupsManagePage implements OnInit {
         description: new FormControl(state.user_group.description, null),
         image_url: new FormControl(state.user_group.image_url, null),
       });
+      this.original_name = state.user_group.name;
       this.user_group.name = state.user_group.name;
       this.user_group.description = state.user_group.description;
       this.user_group.image_url = state.user_group.image_url;
@@ -73,7 +75,7 @@ export class UserGroupsManagePage implements OnInit {
     let group_exists = false;
     if (this.user.user_groups && this.user.user_groups.length>0) {
       this.user.user_groups.forEach((group) => {
-        if (group.name == this.manageUserGroupForm.value.name) {
+        if (group.name == this.manageUserGroupForm.value.name && group.name !== this.original_name) {
           group_exists = true;
         }
       });
