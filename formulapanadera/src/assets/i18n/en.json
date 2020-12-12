@@ -122,8 +122,8 @@
       "shared": "Shared",
       "public": "Public",
       "options": {
-        "instructions": "Do you want to share to a single person or a group?",
-        "one": "Single",
+        "instructions": "Do you want to share to a single user or a group?",
+        "one": "User",
         "group": "Group"
       }
     },

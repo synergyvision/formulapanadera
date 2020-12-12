@@ -122,8 +122,8 @@
       "shared": "Compartidas",
       "public": "Públicas",
       "options": {
-        "instructions": "¿Deseas compartir la fórmula a un único receptor o a un grupo?",
-        "one": "Único",
+        "instructions": "¿Deseas compartir la fórmula a un único usuario o a un grupo?",
+        "one": "Usuario",
         "group": "Grupo"
       }
     },
