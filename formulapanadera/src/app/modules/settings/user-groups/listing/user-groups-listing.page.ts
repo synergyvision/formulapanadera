@@ -102,17 +102,19 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
   }
 
   updateUserGroup(user_group: UserGroupModel) {
-    this.router.navigateByUrl(
-      APP_URL.menu.name +
+    if (user_group.name) {
+      this.router.navigateByUrl(
+        APP_URL.menu.name +
         "/" +
         APP_URL.menu.routes.settings.main +
         "/" +
         APP_URL.menu.routes.settings.routes.user_groups.main +
         "/" +
         APP_URL.menu.routes.settings.routes.user_groups.routes.management,
-      {
-        state: { user_group: user_group },
-      }
-    );
+        {
+          state: { user_group: user_group },
+        }
+      );
+    }
   }
 }
