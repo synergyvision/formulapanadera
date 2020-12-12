@@ -9,6 +9,15 @@
         <ion-back-button mode="md" [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.settings.main + '/' + APP_URL.menu.routes.settings.routes.user_groups.main"></ion-back-button>
       </ion-buttons>
       <ion-title>{{ 'settings.user_groups.name' | translate }}</ion-title>
+      <ion-buttons slot="primary">
+        <ion-button (click)="presentOptions(user_group)">
+          <ion-icon
+            slot="icon-only"
+            [ios]="ICONS.ellipsis_h"
+            [md]="ICONS.ellipsis_v"
+          ></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
@@ -17,14 +26,42 @@
       <ion-row>
         <ion-col class="no-padding">
           <ion-item class="input-item">
-            <ion-label color="primary" position="stacked"
+            <ion-label color="medium" position="stacked"
               >{{'settings.user_groups.user_group_name' | translate}}</ion-label
             >
             <ion-input
               type="text"
               formControlName="name"
-              class="user-group-name"
+              class="user-group-name colored-field"
               required
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="no-padding">
+          <ion-item class="input-item">
+            <ion-label color="medium" position="stacked"
+              >{{'settings.user_groups.user_group_description' | translate}}</ion-label
+            >
+            <ion-input
+              type="text"
+              formControlName="description"
+              class="user-group-description colored-field"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="no-padding">
+          <ion-item class="input-item">
+            <ion-label color="medium" position="stacked"
+              >{{'settings.user_groups.user_group_image_url' | translate}}</ion-label
+            >
+            <ion-input
+              type="text"
+              formControlName="image_url"
+              class="user-group-image-url colored-field"
             ></ion-input>
           </ion-item>
         </ion-col>
@@ -64,7 +101,7 @@
             <ion-col size="5" class="users-wrapper">
               <ion-item class="user-item">
                 <ion-input
-                  class="user-data"
+                  class="user-data colored-field"
                   [(ngModel)]="item.name"
                   [ngModelOptions]="{standalone: true}"
                 ></ion-input>
@@ -73,7 +110,7 @@
             <ion-col size="7" class="users-wrapper">
               <ion-item class="user-item">
                 <ion-input
-                  class="user-data"
+                  class="user-data colored-field"
                   [(ngModel)]="item.email"
                   [ngModelOptions]="{standalone: true}"
                   type="email"

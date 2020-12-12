@@ -384,10 +384,15 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
     if (data !== undefined) {
       let user_groups: UserGroupModel[] = data.user_groups as UserGroupModel[]
+      let emails: string[] = [];
       user_groups.forEach(group => {
         group.users.forEach(user => {
-          this.shareFormulaToEmail(user.email, true)
+          emails.push(user.email)
         })
+      })
+      emails = [...new Set(emails)];
+      emails.forEach(email => {
+        this.shareFormulaToEmail(email, true)
       })
     }
   }

@@ -4,6 +4,10 @@
   class="user-group-item"
   [ngClass]="{ 'background-gray': even, 'background-selected': selected }"
 >
+  <ion-avatar slot="start">
+    <img *ngIf="user_group.image_url" [src]="user_group.image_url">
+    <img *ngIf="!user_group.image_url" [src]="DEFAULT_ICON">
+  </ion-avatar>
   <ion-row class="user-group-item-wrapper">
     <ion-col class="user-group-wrapper">
       <ion-row class="user-group-title">
@@ -17,15 +21,13 @@
           </h2>
         </ion-col>
       </ion-row>
-      <span *ngIf="user_group.name !== undefined">
-        <ion-row *ngFor="let user of user_group.users">
-          <ion-col size="12" class="properties-col">
-            <p class="group-user">
-              {{ user.name }} ({{user.email}})
-            </p>
-          </ion-col>
-        </ion-row>
-      </span>
+      <ion-row *ngIf="user_group.description">
+        <ion-col size="12" class="properties-col">
+          <p class="group-user">
+            {{ user_group.description}}
+          </p>
+        </ion-col>
+      </ion-row>
     </ion-col>
   </ion-row>
 </ion-item>

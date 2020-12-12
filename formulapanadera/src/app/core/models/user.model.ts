@@ -9,6 +9,8 @@ export class ModifierModel extends UserResumeModel {
 
 export class UserGroupModel {
   name: string;
+  image_url: string;
+  description: string;
   users: Array<UserResumeModel>
 }
 
