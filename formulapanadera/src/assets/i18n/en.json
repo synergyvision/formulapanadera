@@ -26,6 +26,7 @@
   },
   "input": {
     "fullName": "Full name",
+    "name": "Name",
     "email": "Email",
     "password": "Password",
     "confirm_password": "Confirm password",
@@ -119,7 +120,12 @@
       "error": "An error ocurred. Try again",
       "mine": "Mine",
       "shared": "Shared",
-      "public": "Public"
+      "public": "Public",
+      "options": {
+        "instructions": "Do you want to share to a single user or a group?",
+        "one": "User",
+        "group": "Group"
+      }
     },
     "do_production": {
       "units": "Production units"
@@ -172,6 +178,15 @@
       "select": "Select language"
     },
     "password": { "change": "Change password" },
+    "user_groups": {
+      "name": "User groups",
+      "user_group_name": "Name",
+      "user_group_description": "Description",
+      "user_group_image_url": "Image (URL)",
+      "users": "Users",
+      "create": "Create user group",
+      "empty": "No user groups found"
+    },
     "logout": "Log out"
   },
   "production": {

@@ -8,6 +8,7 @@ import { IngredientMixingModal } from "./mixing/ingredient-mixing.modal";
 import { ComponentsModule } from "../components/components.module";
 import { FormulaStepsModal } from "./steps/formula-steps.modal";
 import { FormulaPickerModal } from "./formula/formula-picker.modal";
+import { UserGroupPickerModal } from './user-group/user-group-picker.modal';
 
 @NgModule({
   imports: [
@@ -23,12 +24,14 @@ import { FormulaPickerModal } from "./formula/formula-picker.modal";
     IngredientMixingModal,
     FormulaPickerModal,
     FormulaStepsModal,
+    UserGroupPickerModal
   ],
   exports: [
     IngredientPickerModal,
     IngredientMixingModal,
     FormulaPickerModal,
     FormulaStepsModal,
+    UserGroupPickerModal
   ],
 })
 export class ModalModule {}

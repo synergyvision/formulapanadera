@@ -1,0 +1,120 @@
+// Variables
+
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+ion-back-button {
+  height: 0;
+}
+
+.manage-user-groups-content {
+  --background: var(--page-background);
+
+  .inputs-list {
+    padding: 0;
+
+    .input-item {
+      --padding-start: var(--page-margin);
+      font-size: 14px;
+    }
+  }
+
+  .card {
+    margin: 0;
+    border-radius: 0px;
+
+    .card-header {
+      padding: 0;
+
+      .card-title {
+        font-size: 16px;
+      }
+    }
+
+    .input-item {
+      --padding-start: var(--page-margin);
+    }
+
+    .users-list {
+      .title-row {
+        padding-left: var(--page-margin);
+        border-bottom: 1px solid var(--ion-color-light-shade);
+
+        .title-col {
+          padding: 10px 0;
+          height: 100%;
+          align-self: center;
+        }
+
+        .user-email {
+          padding-left: var(--page-margin);
+        }
+      }
+    }
+
+    .users-item-wrapper {
+      --ion-grid-column-padding: 0px;
+      font-size: 16px;
+      width: 100%;
+
+      .users-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+
+        .users-name {
+          margin: 0px;
+          font-size: 14px;
+          font-weight: 400;
+          color: black;
+          align-self: center;
+        }
+      }
+    }
+
+    .delete-user {
+      margin: 0;
+    }
+  }
+}
+
+.form-actions-wrapper {
+  --ion-grid-column-padding: calc(var(--page-margin) / 2);
+  padding: calc(var(--page-margin) / 2);
+
+  .submit-btn {
+    margin: 0px;
+  }
+}
+
+.user-item {
+  --padding-start: 0 !important;
+
+  .user-data {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.add-user {
+  background: var(--ion-color-primary);
+  color: white;
+  border-radius: 5px;
+  padding: 1px;
+}
+
+.colored-field {
+  color: var(--ion-color-primary);
+}
+
+.no-padding {
+  padding: 0;
+}

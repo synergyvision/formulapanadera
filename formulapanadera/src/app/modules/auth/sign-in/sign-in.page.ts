@@ -11,6 +11,7 @@ import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { LoadingController, ToastController } from "@ionic/angular";
 import { LanguageService } from "src/app/core/services/language.service";
+import { UserCRUDService } from 'src/app/core/services/firebase/user.service';
 
 @Component({
   selector: "app-sign-in",
@@ -34,6 +35,7 @@ export class SignInPage implements OnInit {
     private authService: AuthService,
     private ngZone: NgZone,
     private languageAlert: LanguageAlert,
+    private userCRUDService: UserCRUDService,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
     private languageService: LanguageService,
@@ -93,11 +95,15 @@ export class SignInPage implements OnInit {
     this.authService
       .signIn(this.loginForm.value["email"], this.loginForm.value["password"])
       .then((loggedUser) => {
-        this.userStorageService.setUser({
-          name: loggedUser.user.displayName,
-          email: loggedUser.user.email,
-        });
-        this.redirectLoggedUserToMainPage();
+        this.userCRUDService
+          .getUserDataSource(loggedUser.user.uid)
+          .subscribe((userdata) => {
+            if (userdata) {
+              userdata.id = loggedUser.user.uid;
+              this.userStorageService.setUser(userdata);
+              this.redirectLoggedUserToMainPage();
+            }
+          });
       })
       .catch((error) => {
         this.dismissLoading();

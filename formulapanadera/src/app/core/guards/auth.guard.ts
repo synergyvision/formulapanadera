@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Router, CanLoad } from "@angular/router";
 import { APP_URL } from "src/app/config/configuration";
 
-import { UserModel } from "../models/user.model";
+import { UserResumeModel } from "../models/user.model";
 import { UserStorageService } from "../services/storage/user.service";
 
 @Injectable()
@@ -13,7 +13,7 @@ export class AuthGuard implements CanLoad {
   ) {}
 
   async canLoad(): Promise<any> {
-    let user: UserModel;
+    let user: UserResumeModel;
     user = await this.userStorageService.getUser();
     if (user) {
       return true;

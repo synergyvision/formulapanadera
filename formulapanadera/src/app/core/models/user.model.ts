@@ -1,8 +1,22 @@
-export class UserModel {
+export class UserResumeModel {
   name: string;
   email: string;
 }
 
-export class ModifierModel extends UserModel {
+export class ModifierModel extends UserResumeModel {
   date: any;
+}
+
+export class UserGroupModel {
+  name: string;
+  image_url: string;
+  description: string;
+  users: Array<UserResumeModel>
+}
+
+export class UserModel {
+  id: string;
+  name: string;
+  email: string;
+  user_groups: Array<UserGroupModel>;
 }

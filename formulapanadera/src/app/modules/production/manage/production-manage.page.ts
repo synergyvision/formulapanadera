@@ -13,7 +13,7 @@ import {
   FormulaNumberModel,
   ProductionModel,
 } from "src/app/core/models/production.model";
-import { UserModel } from "src/app/core/models/user.model";
+import { UserResumeModel } from "src/app/core/models/user.model";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { LanguageService } from "src/app/core/services/language.service";
@@ -38,7 +38,7 @@ export class ProductionManagePage implements OnInit {
   production: ProductionModel = new ProductionModel();
   manageProductionForm: FormGroup;
 
-  current_user = new UserModel();
+  current_user = new UserResumeModel();
 
   constructor(
     private productionCRUDService: ProductionCRUDService,
@@ -71,7 +71,8 @@ export class ProductionManagePage implements OnInit {
       });
       this.production.owner = state.production.owner;
     }
-    this.current_user = await this.userStorageService.getUser();
+    let user = await this.userStorageService.getUser();
+    this.current_user = {name: user.name, email: user.email}
   }
 
   async sendProduction() {

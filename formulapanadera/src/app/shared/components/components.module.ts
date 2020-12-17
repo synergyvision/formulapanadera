@@ -24,6 +24,7 @@ import { ProductionStepItemComponent } from "./production/production-step-item/p
 import { DataItemComponent } from "./general/data-item/data-item.component";
 import { DividerComponent } from "./general/divider/divider.component";
 import { FormulaStepComponent } from './formula/formula-step/formula-step.component';
+import { UserGroupItemComponent } from './user-group/user-group-item/user-group-item.component';
 
 @NgModule({
   imports: [
@@ -52,6 +53,7 @@ import { FormulaStepComponent } from './formula/formula-step/formula-step.compon
     ProductionStepItemComponent,
     ProductionIngredientsComponent,
     FormulasIngredientsListComponent,
+    UserGroupItemComponent,
   ],
   exports: [
     TitleComponent,
@@ -72,6 +74,7 @@ import { FormulaStepComponent } from './formula/formula-step/formula-step.compon
     ProductionStepItemComponent,
     ProductionIngredientsComponent,
     FormulasIngredientsListComponent,
+    UserGroupItemComponent,
     ShellModule,
   ],
 })

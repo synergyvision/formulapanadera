@@ -1,0 +1,33 @@
+<ion-item
+  detail="true"
+  button="true"
+  class="user-group-item"
+  [ngClass]="{ 'background-gray': even, 'background-selected': selected }"
+>
+  <ion-avatar slot="start">
+    <img *ngIf="user_group.image_url" [src]="user_group.image_url">
+    <img *ngIf="!user_group.image_url" [src]="DEFAULT_ICON">
+  </ion-avatar>
+  <ion-row class="user-group-item-wrapper">
+    <ion-col class="user-group-wrapper">
+      <ion-row class="user-group-title">
+        <ion-col>
+          <h2 class="user-group-name">
+            <app-text-shell
+              animation="bouncing"
+              lines="3"
+              [data]="user_group.name"
+            ></app-text-shell>
+          </h2>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="user_group.description">
+        <ion-col size="12" class="properties-col">
+          <p class="group-user">
+            {{ user_group.description}}
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+</ion-item>

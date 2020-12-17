@@ -16,6 +16,7 @@ export const ASSETS = {
     "assets/steps/step-12.svg",
   ],
   icons: {
-    wheat: "assets/icon/wheat.png"
+    wheat: "assets/icon/wheat.png",
+    default: "assets/icon/default.png"
   }
 };

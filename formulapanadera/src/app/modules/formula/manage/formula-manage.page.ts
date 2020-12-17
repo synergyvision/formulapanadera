@@ -23,7 +23,7 @@ import { FormulaCRUDService } from "src/app/core/services/firebase/formula.servi
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
-import { UserModel } from "src/app/core/models/user.model";
+import { UserResumeModel } from "src/app/core/models/user.model";
 
 @Component({
   selector: "app-formula-manage",
@@ -45,7 +45,7 @@ export class FormulaManagePage {
   temperatureUnit = "C";
   update: boolean = false;
   public = false;
-  current_user = new UserModel();
+  current_user = new UserResumeModel();
   is_modifier: boolean = false
 
   constructor(
@@ -112,7 +112,8 @@ export class FormulaManagePage {
       });
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
-    this.current_user = await this.userStorageService.getUser();
+    let user = await this.userStorageService.getUser();
+    this.current_user = {name: user.name, email: user.email}
     if (this.update) {
       this.is_modifier = false;
       this.formula.user.modifiers.forEach((user) => {

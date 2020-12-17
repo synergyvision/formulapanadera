@@ -18,6 +18,18 @@
     <app-divider></app-divider>
     <ion-item
       button
+      [routerLink]="[APP_URL.menu.routes.settings.routes.user_groups.main]"
+      routerDirection="forward"
+      class="users-group-option"
+    >
+      <ion-icon [name]="ICONS.users_group"></ion-icon>
+      <ion-label class="option"
+        >{{'settings.user_groups.name' | translate}}</ion-label
+      >
+    </ion-item>
+    <app-divider></app-divider>
+    <ion-item
+      button
       (click)="openLanguageChooser()"
       class="change-language-option"
     >
