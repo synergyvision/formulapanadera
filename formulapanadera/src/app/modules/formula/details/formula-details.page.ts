@@ -651,4 +651,18 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     });
     await alert.present();
   }
+
+  compoundIngredientNotInStep(ingredientFormula: any) {
+    let compound_in_step = false
+    this.formula.steps.forEach(step => {
+      if (step.ingredients) {
+        step.ingredients.forEach(ingredient => {
+          if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
+            compound_in_step = true
+          }
+        })
+      }
+    })
+    return !compound_in_step
+  }
 }
