@@ -10,6 +10,7 @@ import { UserResumeModel } from "src/app/core/models/user.model";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DECIMAL_COST_FORMAT } from "src/app/config/formats";
 import { IngredientCRUDService } from 'src/app/core/services/firebase/ingredient.service';
+import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 
 @Component({
   selector: "app-ingredient-details",
@@ -24,6 +25,7 @@ export class IngredientDetailsPage implements OnInit {
   ICONS = ICONS;
 
   ingredient: IngredientModel = new IngredientModel();
+  ingredients_formula: IngredientPercentageModel[] = [];
   type: string = "simple";
 
   currency = CURRENCY;
@@ -52,6 +54,7 @@ export class IngredientDetailsPage implements OnInit {
 
   async ngOnInit() {
     this.route.queryParams.subscribe(async () => {
+      this.ingredients_formula = []
       let navParams = this.router.getCurrentNavigation().extras.state;
       if (navParams) {
         this.ingredient = navParams.ingredient;
@@ -59,6 +62,11 @@ export class IngredientDetailsPage implements OnInit {
 
       if (this.ingredient.formula) {
         this.type = "compound";
+        this.ingredient.formula.ingredients.forEach(ingredient => {
+          if (ingredient.ingredient.formula) {
+            this.ingredients_formula.push(ingredient)
+          }
+        })
       }
       let user = await this.userStorageService.getUser();
       this.user = {name: user.name, email: user.email}

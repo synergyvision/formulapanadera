@@ -80,12 +80,22 @@
             [title]="'ingredients.name' | translate"
           >
           </app-show-hide-content>
-          <app-ingredients-list
-            *ngIf="showIngredients"
-            [ingredients]="ingredient.formula.ingredients"
-            [bakers_percentage]="0"
-          >
-          </app-ingredients-list>
+          <span *ngIf="showIngredients">
+            <app-ingredients-list
+              [ingredients]="ingredient.formula.ingredients"
+              [bakers_percentage]="0"
+              [compound_ingredient]="true"
+            >
+            </app-ingredients-list>
+            <app-ingredients-list
+              *ngFor="let ingredient_formula of ingredients_formula"
+              [name]="ingredient_formula.ingredient.name"
+              [ingredients]="ingredient_formula.ingredient.formula.ingredients"
+              [bakers_percentage]="0"
+              [compound_ingredient]="true"
+            >
+            </app-ingredients-list>
+          </span>
         </ion-col>
       </ion-row>
       <ion-row *ngIf="ingredient.formula.mixing">
