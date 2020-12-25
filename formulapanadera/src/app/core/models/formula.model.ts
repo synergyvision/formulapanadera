@@ -26,12 +26,31 @@ export class StepDetailsModel {
   times?: number;
 }
 
+export class BasicCharacteristicsModel {
+  aroma: string;
+  texture: string;
+  color: string;
+  flavor: string;
+}
+
+export class OrganolepticCharacteristicsModel {
+  overview: string;
+  shape: string;
+  weight: string;
+  cell_size: string;
+  bubbles_presence: string;
+  useful_life: string;
+  crumb: BasicCharacteristicsModel;
+  crust: BasicCharacteristicsModel & { hardness: string; };
+}
+
 export class FormulaModel {
   id: string;
   name: string;
   units: number; // number of breads on the recipe
   unit_weight: number; // weight of one bread
   description?: string;
+  organoleptic_characteristics?: OrganolepticCharacteristicsModel;
   ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
   mixing: Array<IngredientMixingModel>;
