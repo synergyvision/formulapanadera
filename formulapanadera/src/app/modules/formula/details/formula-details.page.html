@@ -112,6 +112,26 @@
     </ion-col>
   </ion-row>
 
+  <span *ngIf="formula.organoleptic_characteristics">
+    <app-divider></app-divider>
+
+    <ion-row>
+      <ion-col class="detail-col">
+        <app-show-hide-content
+          (click)="showOrganolepticCharacteristics = !showOrganolepticCharacteristics"
+          [show]="showOrganolepticCharacteristics"
+          [title]="'formulas.organoleptic_characteristics.name' | translate"
+        ></app-show-hide-content>
+        <ion-list lines="full" class="inputs-list">
+          <app-organoleptic-characteristics
+            *ngIf="showOrganolepticCharacteristics"
+            [organoleptic_characteristics]="formula.organoleptic_characteristics"
+          ></app-organoleptic-characteristics>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </span>
+
   <app-divider></app-divider>
 
   <ion-row>

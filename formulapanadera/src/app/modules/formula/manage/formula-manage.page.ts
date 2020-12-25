@@ -99,6 +99,7 @@ export class FormulaManagePage {
       if (this.formula.user.owner == "") {
         this.public = true;
       }
+      this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
       this.formula.ingredients = [];
       this.formula.mixing = [];
       this.formula.steps = [];

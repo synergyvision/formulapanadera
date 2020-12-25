@@ -48,6 +48,52 @@ export class OrganolepticCharacteristicsModal implements AfterViewInit, OnInit {
   }
 
   save() {
-    this.modalController.dismiss(this.organoleptic_characteristics);
+    if (!this.organoleptic_characteristics || this.allFieldsEmpty()) {
+      this.modalController.dismiss(undefined);
+    } else {
+      let organoleptic_characteristics: OrganolepticCharacteristicsModel;
+      organoleptic_characteristics = { ...this.organoleptic_characteristics };
+      organoleptic_characteristics.crumb = { ...this.organoleptic_characteristics.crumb };
+      organoleptic_characteristics.crust = { ...this.organoleptic_characteristics.crust };
+      this.modalController.dismiss(organoleptic_characteristics);
+    }
+  }
+
+  allFieldsEmpty(): boolean {
+    let fields_empty: boolean = false;
+    if (
+      !this.organoleptic_characteristics.overview &&
+      !this.organoleptic_characteristics.shape &&
+      !this.organoleptic_characteristics.weight &&
+      !this.organoleptic_characteristics.cell_size &&
+      !this.organoleptic_characteristics.bubbles_presence &&
+      !this.organoleptic_characteristics.useful_life
+    ) {
+      if (
+        (
+          !this.organoleptic_characteristics.crumb ||
+          (
+            !this.organoleptic_characteristics.crumb.aroma &&
+            !this.organoleptic_characteristics.crumb.texture &&
+            !this.organoleptic_characteristics.crumb.color &&
+            !this.organoleptic_characteristics.crumb.flavor
+          )
+        )
+        &&
+        (
+          !this.organoleptic_characteristics.crust ||
+          (
+            !this.organoleptic_characteristics.crust.aroma &&
+            !this.organoleptic_characteristics.crust.texture &&
+            !this.organoleptic_characteristics.crust.color &&
+            !this.organoleptic_characteristics.crust.flavor &&
+            !this.organoleptic_characteristics.crust.hardness
+          )
+        )
+      ) {
+        fields_empty = true;
+      }
+    }
+    return fields_empty;
   }
 }

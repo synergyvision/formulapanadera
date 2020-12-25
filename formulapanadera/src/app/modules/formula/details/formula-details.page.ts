@@ -59,6 +59,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   steps: Array<StepDetailsModel>;
   ingredients_formula: Array<any> = [];
 
+  showOrganolepticCharacteristics: boolean;
   showIngredients: boolean;
   showSubIngredients: boolean;
   showMixing: boolean;
@@ -87,6 +88,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private productionCRUDService: ProductionCRUDService,
     private productionStorageService: ProductionStorageService
   ) {
+    this.showOrganolepticCharacteristics = false;
     this.showIngredients = true;
     this.showSubIngredients = true;
     this.showMixing = false;

@@ -105,6 +105,12 @@
           <ion-icon button (click)="pickOrganolepticCharacteristics()" class="pick-ingredient" [name]="ICONS.add"></ion-icon>
         </ion-item>
       </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <app-organoleptic-characteristics
+          *ngIf="formula.organoleptic_characteristics"
+          [organoleptic_characteristics]="formula.organoleptic_characteristics"
+        ></app-organoleptic-characteristics>
+      </ion-list>
     </ion-card>
 
     <app-divider *ngIf="!update || current_user.email === formula.user.creator.email || is_modifier"></app-divider>
