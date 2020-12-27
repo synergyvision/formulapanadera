@@ -35,8 +35,52 @@
     </ion-col>
   </ion-row>
 </ion-item>
-<ion-row *ngIf="step.description">
+<ion-row *ngIf="step.time && step.description">
   <ion-col class="ion-no-padding" [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }">
     <app-data-item [title]="'formulas.description' | translate" [data]="step.description" [no_lines]="true"></app-data-item>
+  </ion-col>
+</ion-row>
+<ion-row *ngIf="step.time && step.ingredients && details">
+  <ion-col class="ion-no-padding" [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }">
+    <app-show-hide-content
+      (click)="showIngredients = !showIngredients"
+      [show]="showIngredients"
+      [title]="'ingredients.name' | translate"
+      [transparent]="true"
+    ></app-show-hide-content>
+    <span *ngIf="showIngredients">
+      <app-ingredients-list
+        [ingredients]="step.ingredients"
+        [name]="step.name"
+        [formula_weight]="total_weight"
+        [units]="units"
+      ></app-ingredients-list>
+      <span *ngFor="let ingredientFormula of getStepCompoundIngredients()">
+        <app-ingredients-list
+          [ingredients]="ingredientFormula.ingredient.formula.ingredients"
+          [bakers_percentage]="ingredientFormula.bakers_percentage"
+          [compensation]="ingredientFormula.ingredient.formula.compensation_percentage"
+          [name]="ingredientFormula.ingredient.name"
+          [units]="units"
+        ></app-ingredients-list>
+      </span>
+    </span>
+  </ion-col>
+</ion-row>
+<ion-row *ngIf="step.time && step.ingredients && stepHasMixing() && details">
+  <ion-col class="ion-no-padding" [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }">
+    <app-show-hide-content
+      (click)="showMixing = !showMixing"
+      [show]="showMixing"
+      [title]="'formulas.mixing_order' | translate"
+      [transparent]="true"
+    ></app-show-hide-content>
+    <span *ngIf="step.ingredients && stepHasMixing() && showMixing">
+      <span *ngFor="let ingredientFormula of getStepCompoundIngredients()">
+        <app-mixing-steps
+          [steps]="ingredientFormula.ingredient.formula.mixing"
+        ></app-mixing-steps>
+      </span>
+    </span>
   </ion-col>
 </ion-row>

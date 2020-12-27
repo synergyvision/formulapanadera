@@ -24,6 +24,7 @@ import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserResumeModel } from "src/app/core/models/user.model";
+import { OrganolepticCharacteristicsModal } from "src/app/shared/modal/organoleptic-characteristics/organoleptic-characteristics.modal";
 
 @Component({
   selector: "app-formula-manage",
@@ -98,6 +99,7 @@ export class FormulaManagePage {
       if (this.formula.user.owner == "") {
         this.public = true;
       }
+      this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
       this.formula.ingredients = [];
       this.formula.mixing = [];
       this.formula.steps = [];
@@ -167,6 +169,22 @@ export class FormulaManagePage {
     ingredient.percentage = Number(
       this.formatNumberService.formatNumberDecimals(ingredient.percentage)
     );
+  }
+
+  async pickOrganolepticCharacteristics() {
+    const modal = await this.modalController.create({
+      component: OrganolepticCharacteristicsModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        organoleptic_characteristics: this.formula.organoleptic_characteristics
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      this.formula.organoleptic_characteristics = data;
+    }
   }
 
   async ingredientPicker(ingredients: Array<IngredientPercentageModel>) {

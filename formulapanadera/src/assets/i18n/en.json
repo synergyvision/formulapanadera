@@ -94,6 +94,29 @@
       "time": "time",
       "times": "times"
     },
+    "organoleptic_characteristics": {
+      "name": "Organoleptic characteristics",
+      "name_short": "Organoleptic char.",
+      "overview": "Overview",
+      "shape": "Shape",
+      "weight": "Weight",
+      "crumb": {
+        "aroma": "Crumb aroma",
+        "texture": "Crumb texture",
+        "color": "Crumb color",
+        "flavor": "Crumb flavor"
+      },
+      "cell_size": "Cell size",
+      "crust": {
+        "aroma": "Crust aroma",
+        "texture": "Crust texture",
+        "color": "Crust color",
+        "flavor": "Crust flavor",
+        "hardness": "Crust hardness"
+      },
+      "bubbles_presence": "Bubbles presence",
+      "useful_life": "Useful life"
+    },
     "cost": {
       "name": "Cost",
       "unitary": "Unitary cost",

@@ -236,4 +236,31 @@ export class ProductionStepItemComponent {
     });
     return compound_ingredients;
   }
+
+  stepHasMixing() {
+    let has_mixing = false
+    let compound_ingredients = this.getStepCompoundIngredients()
+    if (this.getStepCompoundIngredients()) {
+      compound_ingredients.forEach(ingredient => {
+        if (ingredient.ingredient.formula.mixing) {
+          has_mixing = true
+        }
+      })
+    }
+    return has_mixing
+  }
+
+  compoundIngredientNotInStep(ingredientFormula: any) {
+    let compound_in_step = false
+    this.production_in_process.steps.forEach(step => {
+      if (step.step.ingredients) {
+        step.step.ingredients.forEach(ingredient => {
+          if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
+            compound_in_step = true
+          }
+        })
+      }
+    })
+    return !compound_in_step
+  }
 }

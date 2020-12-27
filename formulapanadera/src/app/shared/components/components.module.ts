@@ -25,6 +25,7 @@ import { DataItemComponent } from "./general/data-item/data-item.component";
 import { DividerComponent } from "./general/divider/divider.component";
 import { FormulaStepComponent } from './formula/formula-step/formula-step.component';
 import { UserGroupItemComponent } from './user-group/user-group-item/user-group-item.component';
+import { OrganolepticCharacteristicsComponent } from "./formula/organoleptic-characteristics/organoleptic-characteristics.component";
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ import { UserGroupItemComponent } from './user-group/user-group-item/user-group-
     ProductionStepItemComponent,
     ProductionIngredientsComponent,
     FormulasIngredientsListComponent,
+    OrganolepticCharacteristicsComponent,
     UserGroupItemComponent,
   ],
   exports: [
@@ -74,6 +76,7 @@ import { UserGroupItemComponent } from './user-group/user-group-item/user-group-
     ProductionStepItemComponent,
     ProductionIngredientsComponent,
     FormulasIngredientsListComponent,
+    OrganolepticCharacteristicsComponent,
     UserGroupItemComponent,
     ShellModule,
   ],

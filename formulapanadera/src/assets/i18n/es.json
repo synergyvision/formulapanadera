@@ -94,6 +94,29 @@
       "time": "vez",
       "times": "veces"
     },
+    "organoleptic_characteristics": {
+      "name": "Características organolépticas",
+      "name_short": "Caract. organolépticas",
+      "overview": "Descripción general",
+      "shape": "Forma",
+      "weight": "Peso",
+      "crumb": {
+        "aroma": "Aroma de la miga",
+        "texture": "Textura de la miga",
+        "color": "Color de miga",
+        "flavor": "Sabor de miga"
+      },
+      "cell_size": "Tamaño de alvéolos",
+      "crust": {
+        "aroma": "Aroma de la corteza",
+        "texture": "Textura de la corteza",
+        "color": "Color de corteza",
+        "flavor": "Sabor de corteza",
+        "hardness": "Dureza de la corteza"
+      },
+      "bubbles_presence": "Presencia de burbujas",
+      "useful_life": "Vida útil"
+    },
     "cost": {
       "name": "Costo",
       "unitary": "Costo unitario",

@@ -16,6 +16,12 @@ export class FormulaStepComponent {
   @Input() step: StepDetailsModel;
   @Input() index: number;
   @Input() even: boolean;
+  @Input() details: boolean = false;
+  @Input() ingredients_formula: Array<any> = [];
+  @Input() units?: number;
+  @Input() total_weight?: number;
+  showIngredients: boolean = false;
+  showMixing: boolean = false;
 
   constructor(private formatNumberService: FormatNumberService) {}
 
@@ -30,5 +36,32 @@ export class FormulaStepComponent {
 
   isManipulationStep(): boolean {
     return this.step.number == MANIPULATION_STEP-1
+  }
+
+  getStepCompoundIngredients() {
+    let compound_ingredients = []
+    this.step.ingredients.forEach(ingredient => {
+      if (ingredient.ingredient.formula) {
+        this.ingredients_formula.forEach(ingredient_formula => {
+          if (ingredient.ingredient.id == ingredient_formula.ingredient.id) {
+            compound_ingredients.push(ingredient_formula)
+          }
+        })
+      }
+    });
+    return compound_ingredients;
+  }
+
+  stepHasMixing() {
+    let has_mixing = false
+    let compound_ingredients = this.getStepCompoundIngredients()
+    if (this.getStepCompoundIngredients()) {
+      compound_ingredients.forEach(ingredient => {
+        if (ingredient.ingredient.formula.mixing) {
+          has_mixing = true
+        }
+      })
+    }
+    return has_mixing
   }
 }

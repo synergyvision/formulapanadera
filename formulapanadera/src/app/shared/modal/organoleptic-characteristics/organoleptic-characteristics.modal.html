@@ -1,0 +1,180 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.formula"></ion-icon>
+    <ion-title> {{'formulas.organoleptic_characteristics.name_short' | translate}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="organoleptic-characteristics-content">
+  <ion-list class="inputs-list" lines="full">
+    <!-- Basic -->
+    <ion-item class="input-item">
+      <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.overview' | translate}}</ion-label>
+      <ion-textarea
+        #organolepticCharacteristics
+        type="text"
+        [(ngModel)]="organoleptic_characteristics.overview"
+        required
+      ></ion-textarea>
+    </ion-item>
+    <ion-item class="input-item">
+      <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.shape' | translate}}</ion-label>
+      <ion-textarea
+        #organolepticCharacteristics
+        type="text"
+        [(ngModel)]="organoleptic_characteristics.shape"
+        required
+      ></ion-textarea>
+    </ion-item>
+    <ion-item class="input-item">
+      <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.weight' | translate}}</ion-label>
+      <ion-textarea
+        #organolepticCharacteristics
+        type="text"
+        [(ngModel)]="organoleptic_characteristics.weight"
+        required
+      ></ion-textarea>
+    </ion-item>
+    <ion-item class="input-item">
+      <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.cell_size' | translate}}</ion-label>
+      <ion-textarea
+        #organolepticCharacteristics
+        type="text"
+        [(ngModel)]="organoleptic_characteristics.cell_size"
+        required
+      ></ion-textarea>
+    </ion-item>
+    <ion-item class="input-item">
+      <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.bubbles_presence' | translate}}</ion-label>
+      <ion-textarea
+        #organolepticCharacteristics
+        type="text"
+        [(ngModel)]="organoleptic_characteristics.bubbles_presence"
+        required
+      ></ion-textarea>
+    </ion-item>
+    <ion-item class="input-item">
+      <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.useful_life' | translate}}</ion-label>
+      <ion-textarea
+        #organolepticCharacteristics
+        type="text"
+        [(ngModel)]="organoleptic_characteristics.useful_life"
+        required
+      ></ion-textarea>
+    </ion-item>
+
+    <app-divider></app-divider>
+
+    <!-- Crumb -->
+    <span *ngIf="organoleptic_characteristics.crumb">
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.crumb.aroma' | translate}}</ion-label>
+        <ion-textarea
+          #organolepticCharacteristics
+          type="text"
+          [(ngModel)]="organoleptic_characteristics.crumb.aroma"
+          required
+        ></ion-textarea>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.crumb.texture' | translate}}</ion-label>
+        <ion-textarea
+          #organolepticCharacteristics
+          type="text"
+          [(ngModel)]="organoleptic_characteristics.crumb.texture"
+          required
+        ></ion-textarea>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.crumb.color' | translate}}</ion-label>
+        <ion-textarea
+          #organolepticCharacteristics
+          type="text"
+          [(ngModel)]="organoleptic_characteristics.crumb.color"
+          required
+        ></ion-textarea>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.crumb.flavor' | translate}}</ion-label>
+        <ion-textarea
+          #organolepticCharacteristics
+          type="text"
+          [(ngModel)]="organoleptic_characteristics.crumb.flavor"
+          required
+        ></ion-textarea>
+      </ion-item>
+    </span>
+
+    <app-divider></app-divider>
+
+    <!-- Crust -->
+    <span *ngIf="organoleptic_characteristics.crust">
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.crust.aroma' | translate}}</ion-label>
+        <ion-textarea
+          #organolepticCharacteristics
+          type="text"
+          [(ngModel)]="organoleptic_characteristics.crust.aroma"
+          required
+        ></ion-textarea>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.crust.texture' | translate}}</ion-label>
+        <ion-textarea
+          #organolepticCharacteristics
+          type="text"
+          [(ngModel)]="organoleptic_characteristics.crust.texture"
+          required
+        ></ion-textarea>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.crust.color' | translate}}</ion-label>
+        <ion-textarea
+          #organolepticCharacteristics
+          type="text"
+          [(ngModel)]="organoleptic_characteristics.crust.color"
+          required
+        ></ion-textarea>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.crust.flavor' | translate}}</ion-label>
+        <ion-textarea
+          #organolepticCharacteristics
+          type="text"
+          [(ngModel)]="organoleptic_characteristics.crust.flavor"
+          required
+        ></ion-textarea>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">{{'formulas.organoleptic_characteristics.crust.hardness' | translate}}</ion-label>
+        <ion-textarea
+          #organolepticCharacteristics
+          type="text"
+          [(ngModel)]="organoleptic_characteristics.crust.hardness"
+          required
+        ></ion-textarea>
+      </ion-item>
+    </span>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-row class="form-actions-wrapper">
+    <ion-col>
+      <ion-button
+        class="submit-btn"
+        expand="block"
+        color="primary"
+        (click)="save()"
+        fill="solid"
+      >
+        {{ 'action.confirm' | translate }}</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-footer>

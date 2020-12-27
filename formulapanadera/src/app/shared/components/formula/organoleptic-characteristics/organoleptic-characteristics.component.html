@@ -1,0 +1,86 @@
+<ion-list lines="none" class="characteristics-list">
+  <!-- Basic -->
+  <app-data-item
+    *ngIf="organoleptic_characteristics.overview"
+    [title]="'formulas.organoleptic_characteristics.overview' | translate"
+    [data]="organoleptic_characteristics.overview"
+  ></app-data-item>
+  <app-data-item
+    *ngIf="organoleptic_characteristics.shape"
+    [title]="'formulas.organoleptic_characteristics.shape' | translate"
+    [data]="organoleptic_characteristics.shape"
+  ></app-data-item>
+  <app-data-item
+    *ngIf="organoleptic_characteristics.weight"
+    [title]="'formulas.organoleptic_characteristics.weight' | translate"
+    [data]="organoleptic_characteristics.weight"
+  ></app-data-item>
+  <app-data-item
+    *ngIf="organoleptic_characteristics.cell_size"
+    [title]="'formulas.organoleptic_characteristics.cell_size' | translate"
+    [data]="organoleptic_characteristics.cell_size"
+  ></app-data-item>
+  <app-data-item
+    *ngIf="organoleptic_characteristics.bubbles_presence"
+    [title]="'formulas.organoleptic_characteristics.bubbles_presence' | translate"
+    [data]="organoleptic_characteristics.bubbles_presence"
+  ></app-data-item>
+  <app-data-item
+    *ngIf="organoleptic_characteristics.useful_life"
+    [title]="'formulas.organoleptic_characteristics.useful_life' | translate"
+    [data]="organoleptic_characteristics.useful_life"
+  ></app-data-item>
+
+  <!-- Crumb -->
+  <span *ngIf="organoleptic_characteristics.crumb">
+    <app-data-item
+      *ngIf="organoleptic_characteristics.crumb.aroma"
+      [title]="'formulas.organoleptic_characteristics.crumb.aroma' | translate"
+      [data]="organoleptic_characteristics.crumb.aroma"
+    ></app-data-item>
+    <app-data-item
+      *ngIf="organoleptic_characteristics.crumb.texture"
+      [title]="'formulas.organoleptic_characteristics.crumb.texture' | translate"
+      [data]="organoleptic_characteristics.crumb.texture"
+    ></app-data-item>
+    <app-data-item
+      *ngIf="organoleptic_characteristics.crumb.color"
+      [title]="'formulas.organoleptic_characteristics.crumb.color' | translate"
+      [data]="organoleptic_characteristics.crumb.color"
+    ></app-data-item>
+    <app-data-item
+      *ngIf="organoleptic_characteristics.crumb.flavor"
+      [title]="'formulas.organoleptic_characteristics.crumb.flavor' | translate"
+      [data]="organoleptic_characteristics.crumb.flavor"
+    ></app-data-item>
+  </span>
+
+  <!-- Crust -->
+  <span *ngIf="organoleptic_characteristics.crust">
+    <app-data-item
+      *ngIf="organoleptic_characteristics.crust.aroma"
+      [title]="'formulas.organoleptic_characteristics.crust.aroma' | translate"
+      [data]="organoleptic_characteristics.crust.aroma"
+    ></app-data-item>
+    <app-data-item
+      *ngIf="organoleptic_characteristics.crust.texture"
+      [title]="'formulas.organoleptic_characteristics.crust.texture' | translate"
+      [data]="organoleptic_characteristics.crust.texture"
+    ></app-data-item>
+    <app-data-item
+      *ngIf="organoleptic_characteristics.crust.color"
+      [title]="'formulas.organoleptic_characteristics.crust.color' | translate"
+      [data]="organoleptic_characteristics.crust.color"
+    ></app-data-item>
+    <app-data-item
+      *ngIf="organoleptic_characteristics.crust.flavor"
+      [title]="'formulas.organoleptic_characteristics.crust.flavor' | translate"
+      [data]="organoleptic_characteristics.crust.flavor"
+    ></app-data-item>
+    <app-data-item
+      *ngIf="organoleptic_characteristics.crust.hardness"
+      [title]="'formulas.organoleptic_characteristics.crust.hardness' | translate"
+      [data]="organoleptic_characteristics.crust.hardness"
+    ></app-data-item>
+  </span>
+</ion-list>

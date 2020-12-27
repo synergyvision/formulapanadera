@@ -1,0 +1,29 @@
+.btn-med {
+  font-size: 26px;
+  margin: 0 0 0 10px;
+}
+
+.organoleptic-characteristics-content {
+  --background: var(--app-background);
+
+  .input-item {
+    --padding-start: var(--app-narrow-margin);
+    font-size: 14px;
+  }
+
+  .inputs-list {
+    padding: 0;
+
+    .no-padding {
+      padding: 0;
+    }
+  }
+}
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+ion-textarea {
+  color: var(--ion-color-primary);
+}

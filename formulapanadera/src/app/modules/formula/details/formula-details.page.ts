@@ -59,6 +59,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   steps: Array<StepDetailsModel>;
   ingredients_formula: Array<any> = [];
 
+  showOrganolepticCharacteristics: boolean;
   showIngredients: boolean;
   showSubIngredients: boolean;
   showMixing: boolean;
@@ -87,6 +88,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private productionCRUDService: ProductionCRUDService,
     private productionStorageService: ProductionStorageService
   ) {
+    this.showOrganolepticCharacteristics = false;
     this.showIngredients = true;
     this.showSubIngredients = true;
     this.showMixing = false;
@@ -650,5 +652,19 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     await alert.present();
+  }
+
+  compoundIngredientNotInStep(ingredientFormula: any) {
+    let compound_in_step = false
+    this.formula.steps.forEach(step => {
+      if (step.ingredients) {
+        step.ingredients.forEach(ingredient => {
+          if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
+            compound_in_step = true
+          }
+        })
+      }
+    })
+    return !compound_in_step
   }
 }
