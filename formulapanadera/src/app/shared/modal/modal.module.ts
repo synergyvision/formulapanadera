@@ -10,6 +10,7 @@ import { FormulaStepsModal } from "./steps/formula-steps.modal";
 import { FormulaPickerModal } from "./formula/formula-picker.modal";
 import { UserGroupPickerModal } from './user-group/user-group-picker.modal';
 import { OrganolepticCharacteristicsModal } from "./organoleptic-characteristics/organoleptic-characteristics.modal";
+import { ReferencesModal } from "./references/references.modal";
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { OrganolepticCharacteristicsModal } from "./organoleptic-characteristics
     FormulaPickerModal,
     FormulaStepsModal,
     OrganolepticCharacteristicsModal,
+    ReferencesModal,
     UserGroupPickerModal
   ],
   exports: [
@@ -34,6 +36,7 @@ import { OrganolepticCharacteristicsModal } from "./organoleptic-characteristics
     FormulaPickerModal,
     FormulaStepsModal,
     OrganolepticCharacteristicsModal,
+    ReferencesModal,
     UserGroupPickerModal
   ],
 })

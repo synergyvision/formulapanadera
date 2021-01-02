@@ -60,6 +60,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   ingredients_formula: Array<any> = [];
 
   showOrganolepticCharacteristics: boolean;
+  showReferences: boolean;
   showIngredients: boolean;
   showSubIngredients: boolean;
   showMixing: boolean;
@@ -89,6 +90,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private productionStorageService: ProductionStorageService
   ) {
     this.showOrganolepticCharacteristics = false;
+    this.showReferences = false;
     this.showIngredients = true;
     this.showSubIngredients = true;
     this.showMixing = false;

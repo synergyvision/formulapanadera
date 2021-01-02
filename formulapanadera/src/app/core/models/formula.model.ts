@@ -1,5 +1,6 @@
 import { IngredientModel } from "./ingredient.model";
 import { ModifierModel } from "./user.model";
+import { ReferenceModel } from "./shared.model"
 
 export class IngredientPercentageModel {
   ingredient: IngredientModel;
@@ -51,6 +52,7 @@ export class FormulaModel {
   unit_weight: number; // weight of one bread
   description?: string;
   organoleptic_characteristics?: OrganolepticCharacteristicsModel;
+  references?: Array<ReferenceModel>;
   ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
   mixing: Array<IngredientMixingModel>;

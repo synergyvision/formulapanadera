@@ -25,6 +25,8 @@ import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserResumeModel } from "src/app/core/models/user.model";
 import { OrganolepticCharacteristicsModal } from "src/app/shared/modal/organoleptic-characteristics/organoleptic-characteristics.modal";
+import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
+import { ReferenceModel } from "src/app/core/models/shared.model";
 
 @Component({
   selector: "app-formula-manage",
@@ -100,17 +102,23 @@ export class FormulaManagePage {
         this.public = true;
       }
       this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
+      this.formula.references = [];
       this.formula.ingredients = [];
       this.formula.mixing = [];
       this.formula.steps = [];
+      if (state.formula.references && state.formula.references.length>0) {
+        state.formula.references.forEach((reference) => {
+          this.formula.references.push(JSON.parse(JSON.stringify(reference)));
+        });
+      }
       state.formula.ingredients.forEach((ingredient) => {
         this.formula.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
       });
-      state.formula.mixing.forEach((ingredient) => {
-        this.formula.mixing.push(JSON.parse(JSON.stringify(ingredient)));
+      state.formula.mixing.forEach((step) => {
+        this.formula.mixing.push(JSON.parse(JSON.stringify(step)));
       });
-      state.formula.steps.forEach((ingredient) => {
-        this.formula.steps.push(JSON.parse(JSON.stringify(ingredient)));
+      state.formula.steps.forEach((step) => {
+        this.formula.steps.push(JSON.parse(JSON.stringify(step)));
       });
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
@@ -184,6 +192,26 @@ export class FormulaManagePage {
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
       this.formula.organoleptic_characteristics = data;
+    }
+  }
+
+  async addReferences() {
+    let references: Array<ReferenceModel>;
+    if (this.formula.references) {
+      references = JSON.parse(JSON.stringify(this.formula.references))
+    }
+    const modal = await this.modalController.create({
+      component: ReferencesModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        references: references
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      this.formula.references = data;
     }
   }
 
@@ -357,6 +385,9 @@ export class FormulaManagePage {
     this.formula.units = this.manageFormulaForm.value.units;
     this.formula.unit_weight = this.manageFormulaForm.value.unit_weight;
     this.formula.description = this.manageFormulaForm.value.description;
+    if (this.formula.references) {
+      this.formula.references = JSON.parse(JSON.stringify(this.formula.references))
+    }
     
     if (this.update) {
       this.formula.user.modifiers.push({

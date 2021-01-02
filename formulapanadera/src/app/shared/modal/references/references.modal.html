@@ -1,0 +1,81 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.formula"></ion-icon>
+    <ion-title> {{'formulas.references.name' | translate}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="references-content">
+  <ion-list lines="full" class="references-list inputs-list">
+    <ion-row
+      class="title-row"
+      *ngIf="references && references.length>0"
+    >
+      <ion-col size="4" class="title-col">
+        {{'formulas.references.reference_name' | translate}}
+      </ion-col>
+      <ion-col size="8" class="title-col reference-url">
+        {{'formulas.references.url' | translate}}
+      </ion-col>
+    </ion-row>
+    <ion-item *ngFor="let item of references" class="input-item">
+      <ion-row class="references-item-wrapper">
+        <ion-col size="5" class="references-wrapper">
+          <ion-item class="reference-item">
+            <ion-input
+              class="reference-data colored-field"
+              [(ngModel)]="item.name"
+              [ngModelOptions]="{standalone: true}"
+              required
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="7" class="references-wrapper">
+          <ion-item class="reference-item">
+            <ion-input
+              class="reference-data colored-field"
+              [(ngModel)]="item.url"
+              [ngModelOptions]="{standalone: true}"
+              required
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-icon
+        [name]="ICONS.close"
+        class="delete-reference"
+        slot="end"
+        color="primary"
+        button
+        (click)="deleteReference(item)"
+      ></ion-icon>
+    </ion-item>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addReference()">
+      <ion-icon [name]="ICONS.add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<ion-footer>
+  <ion-row class="form-actions-wrapper">
+    <ion-col>
+      <ion-button
+        class="submit-btn"
+        expand="block"
+        color="primary"
+        (click)="save()"
+        fill="solid"
+        [disabled]="referencesEmpty()"
+      >
+        {{ 'action.confirm' | translate }}</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-footer>
