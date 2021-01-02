@@ -114,4 +114,23 @@
       </ion-row>
     </span>
   </ion-list>
+  <span *ngIf="ingredient.references && ingredient.references.length>0">
+    <app-divider></app-divider>
+
+    <ion-row>
+      <ion-col class="detail-col">
+        <app-show-hide-content
+          (click)="showReferences = !showReferences"
+          [show]="showReferences"
+          [title]="'formulas.references.name' | translate"
+        ></app-show-hide-content>
+        <ion-list lines="full" class="inputs-list">
+          <app-references
+            *ngIf="showReferences"
+            [references]="ingredient.references"
+          ></app-references>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </span>
 </ion-content>
