@@ -1,0 +1,45 @@
+// Variables
+
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+ion-back-button {
+  height: 0;
+}
+
+ion-segment-button {
+  font-size: 14px;
+}
+
+.shared-content {
+  --background: var(--page-background);
+
+  .segment {
+    padding: 5px var(--page-margin);
+    border-radius: 0px;
+  }
+
+  .shared-list {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .empty-block {
+    height: 100%;
+
+    ion-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+  }
+}

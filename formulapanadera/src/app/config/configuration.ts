@@ -63,6 +63,12 @@ export const APP_URL = {
               management: "manage",
             },
           },
+          shared: {
+            main: "shared",
+            routes: {
+              listing: "",
+            },
+          },
         },
       },
     },

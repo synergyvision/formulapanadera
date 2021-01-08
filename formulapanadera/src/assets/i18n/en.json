@@ -19,6 +19,9 @@
     "update": "Update",
     "delete": "Delete",
     "do_production": "Produce",
+    "view_details": "Details",
+    "sync_shared": "Sync shared",
+    "manage_shared": "Manage shared",
     "delete_question": "Do you want to delete {{item}}?",
     "sign_out_question": "Sign out?",
     "yes": "Yes",
@@ -148,6 +151,8 @@
       "error": "An error ocurred. Try again",
       "mine": "Mine",
       "shared": "Shared",
+      "my_shares": "My shares",
+      "empty": "No shared found",
       "public": "Public",
       "options": {
         "instructions": "Do you want to share to a single user or a group?",

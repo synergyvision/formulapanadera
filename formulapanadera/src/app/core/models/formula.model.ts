@@ -62,6 +62,8 @@ export class FormulaModel {
     // Used to clone
     can_clone: boolean;
     cloned: boolean;
+    reference: string; // ID of original formula
+    shared_users: Array<string>;
     // Used to credit the users
     creator: ModifierModel;
     modifiers: Array<ModifierModel>;

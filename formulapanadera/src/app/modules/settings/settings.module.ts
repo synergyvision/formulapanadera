@@ -25,6 +25,13 @@ const routes: Routes = [
         (m) => m.UserGroupsModule
       ),
   },
+  {
+    path: APP_URL.menu.routes.settings.routes.shared.main,
+    loadChildren: () =>
+      import("./shared/shared.module").then(
+        (m) => m.SharedModule
+      ),
+  },
 ];
 
 @NgModule({

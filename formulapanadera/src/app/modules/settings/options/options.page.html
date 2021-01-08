@@ -18,6 +18,17 @@
     <app-divider></app-divider>
     <ion-item
       button
+      [routerLink]="[APP_URL.menu.routes.settings.routes.shared.main]"
+      routerDirection="forward"
+      class="users-group-option"
+    >
+      <ion-icon [name]="ICONS.share"></ion-icon>
+      <ion-label class="option"
+        >{{'formulas.share.my_shares' | translate}}</ion-label
+      >
+    </ion-item>
+    <ion-item
+      button
       [routerLink]="[APP_URL.menu.routes.settings.routes.user_groups.main]"
       routerDirection="forward"
       class="users-group-option"

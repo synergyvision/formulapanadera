@@ -19,6 +19,9 @@
     "update": "Modificar",
     "delete": "Eliminar",
     "do_production": "Producir",
+    "view_details": "Detalle",
+    "sync_shared": "Sincronizar compartidos",
+    "manage_shared": "Gestionar compartidos",
     "delete_question": "¿Desea eliminar {{item}}?",
     "sign_out_question": "¿Cerrar sesión?",
     "yes": "Sí",
@@ -148,6 +151,8 @@
       "error": "Ocurrió un error. Intente de nuevo",
       "mine": "Propias",
       "shared": "Compartidas",
+      "my_shares": "Mis compartidos",
+      "empty": "No se encontraron compartidos",
       "public": "Públicas",
       "options": {
         "instructions": "¿Deseas compartir la fórmula a un único usuario o a un grupo?",

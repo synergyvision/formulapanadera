@@ -36,9 +36,6 @@ export class FormulaListingPage implements OnInit, OnDestroy {
 
   user_email: string;
 
-  @HostBinding("class.is-shell") get isShell() {
-    return this.formulas && this.formulas.isShell ? true : false;
-  }
   constructor(
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,

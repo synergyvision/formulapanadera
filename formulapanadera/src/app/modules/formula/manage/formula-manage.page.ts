@@ -77,6 +77,8 @@ export class FormulaManagePage {
         owner: this.current_user.email,
         can_clone: false,
         cloned: true,
+        reference: "",
+        shared_users: [],
         creator: {
           name: this.current_user.name,
           email: this.current_user.email,
@@ -433,6 +435,8 @@ export class FormulaManagePage {
         owner: this.current_user.email,
         can_clone: this.formula.user.can_clone,
         cloned: true,
+        reference: "",
+        shared_users: [],
         creator: {
           name: this.current_user.name,
           email: this.current_user.email,

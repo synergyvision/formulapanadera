@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 
 import { FormulaModel } from "../../models/formula.model";
 import { COLLECTIONS } from "src/app/config/firebase";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class FormulaCRUDService {
@@ -22,6 +23,18 @@ export class FormulaCRUDService {
         ref.where("user.owner", "in", [user_email, ""])
       )
       .valueChanges({ idField: "id" });
+  }
+
+  public getFormula(
+    id: string
+  ): Observable<FormulaModel> {
+    return this.afs.collection<FormulaModel>(this.collection).doc(id).snapshotChanges()
+    .pipe(
+      map( a => {
+        const userData = a.payload.data();
+        return userData as FormulaModel;
+      })
+    );
   }
 
   /*
