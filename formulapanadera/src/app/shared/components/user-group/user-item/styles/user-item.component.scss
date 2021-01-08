@@ -1,0 +1,47 @@
+.user-item {
+  color: var(--ion-color-medium);
+  --padding-start: var(--app-narrow-margin);
+}
+
+.background-gray {
+  --background: rgba(221, 221, 221, 0.322) !important;
+}
+
+.background-selected {
+  --background: var(--ion-color-selected) !important;
+}
+
+.user-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  align-items: center;
+}
+
+.user-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 0;
+
+  .user-title {
+    padding-bottom: 5px;
+  }
+
+  .user-name {
+    margin: 0px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+    color: var(--ion-color-primary);
+  }
+
+  .properties-col {
+    align-self: flex-end;
+  }
+
+  .user {
+    font-size: 12px;
+    margin: 0px 0 5px 0;
+  }
+}

@@ -380,7 +380,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: (data) => {
-            this.shareFormulaToEmail(data.email, can_clone)
+            this.shareFormulaToEmail({name: "----", email: data.email}, can_clone)
           },
         },
       ],
@@ -399,43 +399,43 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
     if (data !== undefined) {
       let user_groups: UserGroupModel[] = data.user_groups as UserGroupModel[]
-      let emails: string[] = [];
+      let users: UserResumeModel[] = [];
       user_groups.forEach(group => {
         group.users.forEach(user => {
-          emails.push(user.email)
+          users.push(user)
         })
       })
-      emails = [...new Set(emails)];
-      emails.forEach(email => {
-        this.shareFormulaToEmail(email, can_clone,true)
+      users = [...new Set(users)];
+      users.forEach(user => {
+        this.shareFormulaToEmail(user, can_clone, true)
       })
     }
   }
   
-  shareFormulaToEmail(email: string, can_clone: boolean, toast: boolean = true) {
+  shareFormulaToEmail(user_to_share: UserResumeModel, can_clone: boolean, toast: boolean = true) {
     let shared: boolean = false
 
     let formula = JSON.parse(JSON.stringify(this.formula));
     formula.user.can_clone = can_clone;
-    formula.user.owner = email;
+    formula.user.owner = user_to_share.email;
     formula.user.cloned = false;
     formula.user.reference = this.formula.id;
     formula.user.shared_users = [];
 
     if (this.formula.user.shared_users && this.formula.user.shared_users.length > 0) {
       this.formula.user.shared_users.forEach(user => {
-        if (user == email) {
+        if (user.email == user_to_share.email) {
           shared = true
         }
       })
       if (shared == false) {
-        this.formula.user.shared_users.push(email);
+        this.formula.user.shared_users.push(user_to_share);
       }
     } else {
-      this.formula.user.shared_users.push(email);
+      this.formula.user.shared_users.push(user_to_share);
     }
 
-    if (email == this.user.email) {
+    if (user_to_share.email == this.user.email) {
       shared = true
     }
 
@@ -447,18 +447,18 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
               .updateFormula(this.formula)
               .then(() => {
                 if (toast) {
-                  this.presentToast(true, email);
+                  this.presentToast(true, user_to_share.email);
                 }
               })
               .catch(() => {
-                this.presentToast(false, email);
+                this.presentToast(false, user_to_share.email);
               });
         })
         .catch(() => {
-          this.presentToast(false, email);
+          this.presentToast(false, user_to_share.email);
         });
     } else {
-      this.presentToast(false, email);
+      this.presentToast(false, user_to_share.email);
     }
   }
 
@@ -525,7 +525,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
                   this.formulaCRUDService.getFormula(this.formula.user.reference)
                     .subscribe((original_formula) => {
                       original_formula.user.shared_users.forEach((user) => {
-                        if (user == this.user.email) {
+                        if (user.email == this.user.email) {
                           original_formula.user.shared_users.splice(original_formula.user.shared_users.indexOf(user), 1)
                         }
                       })

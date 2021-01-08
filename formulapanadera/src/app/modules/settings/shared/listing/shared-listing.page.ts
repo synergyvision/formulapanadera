@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from '@angular/router';
-import { ActionSheetController } from "@ionic/angular";
+import { ActionSheetController, IonRouterOutlet, ModalController } from "@ionic/angular";
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { APP_URL, LOADING_ITEMS } from 'src/app/config/configuration';
@@ -12,6 +12,7 @@ import { FormulaCRUDService } from "src/app/core/services/firebase/formula.servi
 import { FormulaService } from "src/app/core/services/formula.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
+import { SharedUsersPickerModal } from "src/app/shared/modal/shared-users/shared-users-picker.modal";
 import { DataStore } from 'src/app/shared/shell/data-store';
 import { ShellModel } from 'src/app/shared/shell/shell.model';
 
@@ -34,12 +35,14 @@ export class SharedListingPage implements OnInit {
   user_email: string;
 
   constructor(
+    private modalController: ModalController,
     private languageService: LanguageService,
     private actionSheetController: ActionSheetController,
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
     private userStorageService: UserStorageService,
-    private router: Router
+    private router: Router,
+    private routerOutlet: IonRouterOutlet
   ) { }
   
   async ngOnInit() {
@@ -138,7 +141,9 @@ export class SharedListingPage implements OnInit {
         text: this.languageService.getTerm("action.manage_shared"),
         icon: ICONS.share,
         cssClass: "action-icon",
-        handler: () => {},
+        handler: () => {
+          this.manageShare(formula)
+        },
       },
       {
         text: this.languageService.getTerm("action.view_details"),
@@ -162,6 +167,18 @@ export class SharedListingPage implements OnInit {
       buttons: buttons,
     });
     await actionSheet.present();
+  }
+
+  async manageShare(formula: FormulaModel) {
+    const modal = await this.modalController.create({
+      component: SharedUsersPickerModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        formula: formula
+      }
+    });
+    await modal.present();
   }
 
   formulaDetails(formula: FormulaModel) {

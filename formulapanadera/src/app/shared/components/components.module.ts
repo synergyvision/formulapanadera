@@ -27,6 +27,7 @@ import { FormulaStepComponent } from './formula/formula-step/formula-step.compon
 import { UserGroupItemComponent } from './user-group/user-group-item/user-group-item.component';
 import { OrganolepticCharacteristicsComponent } from "./formula/organoleptic-characteristics/organoleptic-characteristics.component";
 import { ReferencesComponent } from "./general/references/references.component";
+import { UserItemComponent } from "./user-group/user-item/user-item.component";
 
 @NgModule({
   imports: [
@@ -57,6 +58,7 @@ import { ReferencesComponent } from "./general/references/references.component";
     FormulasIngredientsListComponent,
     OrganolepticCharacteristicsComponent,
     ReferencesComponent,
+    UserItemComponent,
     UserGroupItemComponent,
   ],
   exports: [
@@ -80,6 +82,7 @@ import { ReferencesComponent } from "./general/references/references.component";
     FormulasIngredientsListComponent,
     OrganolepticCharacteristicsComponent,
     ReferencesComponent,
+    UserItemComponent,
     UserGroupItemComponent,
     ShellModule,
   ],
