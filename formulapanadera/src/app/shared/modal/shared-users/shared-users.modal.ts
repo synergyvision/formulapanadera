@@ -66,13 +66,10 @@ export class SharedUsersModal implements OnInit {
           group = user_group.users;
         }
       })
-      console.log(group)
       filteredUsers = filteredUsers.filter((user) => 
         group.find((group_user) => group_user.email == user.email)
       )
     }
-    
-console.log(filteredUsers)
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredUsers),
