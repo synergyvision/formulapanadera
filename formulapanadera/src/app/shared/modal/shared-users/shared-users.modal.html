@@ -20,7 +20,40 @@
           placeholder="{{'ingredients.filter.name' | translate}}"
         ></ion-searchbar>
       </ion-col>
+      <ion-col class="call-to-action-col">
+        <ion-button
+          fill="clear"
+          color="secondary"
+          class="filters-btn"
+          (click)="showFilters = !showFilters"
+        >
+          <ion-icon slot="icon-only" [name]="ICONS.options"></ion-icon>
+        </ion-button>
+      </ion-col>
     </ion-row>
+    <form [formGroup]="groupForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row"
+        ><ion-col>
+          <ion-item lines="full" class="no-padding-item">
+            <ion-label>{{'formulas.share.options.group' | translate}}</ion-label>
+            <ion-select
+              formControlName="value"
+              (ionChange)="searchList()"
+              [cancelText]="'action.cancel'|translate"
+              [okText]="'action.ok'|translate"
+            >
+              <ion-select-option value="all"
+                >{{'ingredients.filter.all' | translate}}</ion-select-option
+              >
+              <ion-select-option
+                *ngFor="let group of user.user_groups"
+                [value]="group.name"
+              >{{group.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col></ion-row
+      >
+    </form>
   </ion-toolbar>
 </ion-header>
 

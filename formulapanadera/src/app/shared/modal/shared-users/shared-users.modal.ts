@@ -8,8 +8,9 @@ import { LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
 import { FormulaModel } from "src/app/core/models/formula.model";
-import { UserResumeModel } from "src/app/core/models/user.model";
+import { UserModel, UserResumeModel } from "src/app/core/models/user.model";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
+import { FormControl, FormGroup } from "@angular/forms";
 
 @Component({
   selector: "app-shared-users-modal",
@@ -25,9 +26,13 @@ export class SharedUsersModal implements OnInit {
   @Input() formula: FormulaModel;
 
   searchQuery: string;
+  groupForm: FormGroup;
+  showFilters: boolean = false;
 
   selectedUsers: Array<string>;
   users: UserResumeModel[] & ShellModel;
+
+  user: UserModel = new UserModel();
 
   constructor(
     private userStorageService: UserStorageService,
@@ -35,18 +40,40 @@ export class SharedUsersModal implements OnInit {
     private formulaCRUDService: FormulaCRUDService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.searchQuery = "";
+    this.groupForm = new FormGroup({
+      value: new FormControl("all"),
+    });
     this.searchingState();
     this.searchList();
+
+    this.user = await this.userStorageService.getUser();
+    this.user.user_groups[0].name
   }
 
   async searchList() {
     let filteredUsers = this.formula.user.shared_users;
     let filters = {
+      group: this.groupForm.value.value,
       query: this.searchQuery,
     };
+
+    if (filters.group !== "all") {
+      let group: UserResumeModel[] = [];
+      this.user.user_groups.forEach((user_group) => {
+        if (user_group.name == filters.group) {
+          group = user_group.users;
+        }
+      })
+      console.log(group)
+      filteredUsers = filteredUsers.filter((user) => 
+        group.find((group_user) => group_user.email == user.email)
+      )
+    }
     
+console.log(filteredUsers)
+
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredUsers),
       this.searchingState()

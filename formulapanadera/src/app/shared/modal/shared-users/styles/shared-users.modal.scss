@@ -16,6 +16,11 @@
   margin: 0 0 0 10px;
 }
 
+ion-select {
+  width: 100%;
+  justify-content: center;
+}
+
 .shared-users-content {
   --background: var(--page-background);
 
@@ -23,4 +28,8 @@
     padding-top: 0;
     padding-bottom: 0;
   }
+}
+
+.no-padding-item {
+  --padding-start: 0;
 }
