@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from '@angular/router';
-import { ActionSheetController, IonRouterOutlet, ModalController } from "@ionic/angular";
+import { ActionSheetController, IonRouterOutlet, ModalController, ToastController } from "@ionic/angular";
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { APP_URL, LOADING_ITEMS } from 'src/app/config/configuration';
@@ -37,6 +37,7 @@ export class SharedListingPage implements OnInit {
   constructor(
     private modalController: ModalController,
     private languageService: LanguageService,
+    private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
@@ -135,7 +136,9 @@ export class SharedListingPage implements OnInit {
         text: this.languageService.getTerm("action.sync_shared"),
         icon: ICONS.sync,
         cssClass: "action-icon",
-        handler: () => {},
+        handler: () => {
+          this.syncShared(formula)
+        },
       },
       {
         text: this.languageService.getTerm("action.manage_shared"),
@@ -169,6 +172,29 @@ export class SharedListingPage implements OnInit {
     await actionSheet.present();
   }
 
+  async syncShared(formula: FormulaModel) {
+    let count = 0
+    // Gets associated formulas
+    this.formulaCRUDService.getSharedFormulas(formula.id)
+      .subscribe((shared_formulas) => {
+        shared_formulas.forEach(async (shared_formula, index) => {
+          let updated_formula: FormulaModel;
+          updated_formula = JSON.parse(JSON.stringify(formula));
+          updated_formula.id = shared_formula.id;
+          updated_formula.user = shared_formula.user;
+          await this.formulaCRUDService.updateFormula(updated_formula)
+          count++;
+          if (shared_formulas.length - 1 == index) {
+            if (count == shared_formulas.length) {
+              this.presentToast(true)
+            } else {
+              this.presentToast(false)
+            }
+          }
+        })
+      });
+  }
+
   async manageShare(formula: FormulaModel) {
     const modal = await this.modalController.create({
       component: SharedUsersModal,
@@ -194,5 +220,27 @@ export class SharedListingPage implements OnInit {
         }
       );
     }
+  }
+
+  async presentToast(success: boolean) {
+    let message = ""
+    if (success) {
+      message = message + this.languageService.getTerm("send.success")
+    } else {
+      message = message + this.languageService.getTerm("send.error")
+    }
+    const toast = await this.toastController.create({
+      message: message,
+      color: "secondary",
+      duration: 5000,
+      buttons: [
+        {
+          icon: ICONS.close,
+          role: "cancel",
+          handler: () => {},
+        },
+      ],
+    });
+    toast.present();
   }
 }
