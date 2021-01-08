@@ -12,7 +12,7 @@ import { FormulaCRUDService } from "src/app/core/services/firebase/formula.servi
 import { FormulaService } from "src/app/core/services/formula.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
-import { SharedUsersPickerModal } from "src/app/shared/modal/shared-users/shared-users-picker.modal";
+import { SharedUsersModal } from "src/app/shared/modal/shared-users/shared-users.modal";
 import { DataStore } from 'src/app/shared/shell/data-store';
 import { ShellModel } from 'src/app/shared/shell/shell.model';
 
@@ -171,7 +171,7 @@ export class SharedListingPage implements OnInit {
 
   async manageShare(formula: FormulaModel) {
     const modal = await this.modalController.create({
-      component: SharedUsersPickerModal,
+      component: SharedUsersModal,
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {

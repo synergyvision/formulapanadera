@@ -37,6 +37,16 @@ export class FormulaCRUDService {
     );
   }
 
+  public getSharedFormulas(
+    id: string
+  ): Observable<Array<FormulaModel>> {
+    return this.afs
+      .collection<FormulaModel>(this.collection, (ref) =>
+        ref.where("user.reference", "==", id)
+      )
+      .valueChanges({ idField: "id" });
+  }
+
   /*
     Formula Management
   */

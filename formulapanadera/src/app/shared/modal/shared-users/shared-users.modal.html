@@ -49,6 +49,7 @@
         color="primary"
         (click)="stopShare()"
         fill="solid"
+        [disabled]="!selectedUsers || selectedUsers.length == 0"
       >
         {{ 'action.stop_sharing' | translate }}</ion-button
       >

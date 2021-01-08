@@ -9,16 +9,17 @@ import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { UserResumeModel } from "src/app/core/models/user.model";
+import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 
 @Component({
-  selector: "app-shared-users-picker-modal",
-  templateUrl: "shared-users-picker.modal.html",
+  selector: "app-shared-users-modal",
+  templateUrl: "shared-users.modal.html",
   styleUrls: [
-    "./styles/shared-users-picker.modal.scss",
+    "./styles/shared-users.modal.scss",
     "./../../styles/filter.scss",
   ],
 })
-export class SharedUsersPickerModal implements OnInit {
+export class SharedUsersModal implements OnInit {
   ICONS = ICONS;
 
   @Input() formula: FormulaModel;
@@ -30,7 +31,8 @@ export class SharedUsersPickerModal implements OnInit {
 
   constructor(
     private userStorageService: UserStorageService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private formulaCRUDService: FormulaCRUDService
   ) {}
 
   ngOnInit() {
@@ -118,6 +120,31 @@ export class SharedUsersPickerModal implements OnInit {
   // Manage shared
 
   stopShare() {
-    console.log("STOPPING SHARE TO", this.selectedUsers)
+    // Modifies shared_users array of formula
+    this.selectedUsers.forEach(selected_user => {
+      this.formula.user.shared_users.forEach((user) => {
+        if (user.email == selected_user) {
+          this.formula.user.shared_users.splice(this.formula.user.shared_users.indexOf(user), 1)
+        }
+      })
+    })
+
+    // Gets associated formulas
+    this.formulaCRUDService.getSharedFormulas(this.formula.id)
+      .subscribe((shared_formulas) => {
+        const formulas_to_delete = shared_formulas.filter((item) =>
+          this.selectedUsers.find((name)=> name == item.user.owner)
+        );
+        // Deletes each selected formula
+        formulas_to_delete.forEach((formula) => {
+          this.formulaCRUDService.deleteFormula(formula.id)
+        })
+      });
+    
+    // Updates original formula
+    this.formulaCRUDService.updateFormula(this.formula)
+      .then(() => {
+        this.dismissModal()
+      })
   }
 }

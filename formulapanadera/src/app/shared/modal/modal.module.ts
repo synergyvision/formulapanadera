@@ -11,7 +11,7 @@ import { FormulaPickerModal } from "./formula/formula-picker.modal";
 import { UserGroupPickerModal } from './user-group/user-group-picker.modal';
 import { OrganolepticCharacteristicsModal } from "./organoleptic-characteristics/organoleptic-characteristics.modal";
 import { ReferencesModal } from "./references/references.modal";
-import { SharedUsersPickerModal } from "./shared-users/shared-users-picker.modal";
+import { SharedUsersModal } from "./shared-users/shared-users.modal";
 
 @NgModule({
   imports: [
@@ -30,7 +30,7 @@ import { SharedUsersPickerModal } from "./shared-users/shared-users-picker.modal
     OrganolepticCharacteristicsModal,
     ReferencesModal,
     UserGroupPickerModal,
-    SharedUsersPickerModal
+    SharedUsersModal
   ],
   exports: [
     IngredientPickerModal,
@@ -40,7 +40,7 @@ import { SharedUsersPickerModal } from "./shared-users/shared-users-picker.modal
     OrganolepticCharacteristicsModal,
     ReferencesModal,
     UserGroupPickerModal,
-    SharedUsersPickerModal
+    SharedUsersModal
   ],
 })
 export class ModalModule {}
