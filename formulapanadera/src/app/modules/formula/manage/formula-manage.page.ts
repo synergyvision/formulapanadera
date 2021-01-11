@@ -387,6 +387,11 @@ export class FormulaManagePage {
     this.formula.units = this.manageFormulaForm.value.units;
     this.formula.unit_weight = this.manageFormulaForm.value.unit_weight;
     this.formula.description = this.manageFormulaForm.value.description;
+    if (this.formula.organoleptic_characteristics) {
+      this.formula.organoleptic_characteristics = JSON.parse(JSON.stringify(this.formula.organoleptic_characteristics));
+    } else {
+      this.formula.organoleptic_characteristics = null;
+    }
     if (this.formula.references) {
       this.formula.references = JSON.parse(JSON.stringify(this.formula.references))
     }

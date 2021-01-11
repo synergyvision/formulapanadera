@@ -173,7 +173,6 @@ export class SharedListingPage implements OnInit {
   }
 
   async syncShared(formula: FormulaModel) {
-    let count = 0
     // Gets associated formulas
     this.formulaCRUDService.getSharedFormulas(formula.id)
       .subscribe((shared_formulas) => {
@@ -182,15 +181,13 @@ export class SharedListingPage implements OnInit {
           updated_formula = JSON.parse(JSON.stringify(formula));
           updated_formula.id = shared_formula.id;
           updated_formula.user = shared_formula.user;
-          await this.formulaCRUDService.updateFormula(updated_formula)
-          count++;
-          if (shared_formulas.length - 1 == index) {
-            if (count == shared_formulas.length) {
-              this.presentToast(true)
-            } else {
-              this.presentToast(false)
-            }
-          }
+          this.formulaCRUDService.updateFormula(updated_formula)
+            .then(() => {
+              this.presentToast(true, updated_formula.user.owner)
+            })
+            .catch(() => {
+              this.presentToast(false, updated_formula.user.owner)
+            })
         })
       });
   }
@@ -222,8 +219,9 @@ export class SharedListingPage implements OnInit {
     }
   }
 
-  async presentToast(success: boolean) {
+  async presentToast(success: boolean, email?: string) {
     let message = ""
+    message = `${email}: `;
     if (success) {
       message = message + this.languageService.getTerm("send.success")
     } else {
