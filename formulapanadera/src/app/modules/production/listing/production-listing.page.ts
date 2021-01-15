@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ViewWillEnter } from "@ionic/angular";
@@ -10,7 +10,6 @@ import { ProductionModel } from "src/app/core/models/production.model";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { ProductionService } from "src/app/core/services/production.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
-import { ProductionStorageService } from "src/app/core/services/storage/production.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DataStore } from "src/app/shared/shell/data-store";
 import { ShellModel } from "src/app/shared/shell/shell.model";
@@ -38,13 +37,9 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
 
   production_in_process: ProductionModel;
 
-  @HostBinding("class.is-shell") get isShell() {
-    return this.productions && this.productions.isShell ? true : false;
-  }
   constructor(
     private productionService: ProductionService,
     private productionCRUDService: ProductionCRUDService,
-    private productionStorageService: ProductionStorageService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
     private router: Router,
     private userStorageService: UserStorageService
@@ -60,11 +55,10 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
     this.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
-    
     this.productionCRUDService
       .getProductionsDataSource(this.user_email)
       .subscribe((productions) => {
-        this.productionStorageService.setProductions(
+        this.productionService.setProductions(
           productions as ProductionModel[] & ShellModel
         );
         this.searchList();
@@ -72,10 +66,6 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
   }
 
   async ionViewWillEnter() {
-    if (await this.productionStorageService.getProductions()) {
-      this.searchList();
-    }
-
     let existing_production = await this.productionInProcessStorageService.getProduction();
     if (existing_production) {
       this.production_in_process = existing_production.production;
@@ -84,7 +74,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
 
   async searchList() {
     let filteredProductions = JSON.parse(
-      JSON.stringify(await this.productionStorageService.getProductions())
+      JSON.stringify(this.productionService.getProductions())
     );
     let filters = {
       cost: {

@@ -31,8 +31,8 @@ export class FormulaCRUDService {
     return this.afs.collection<FormulaModel>(this.collection).doc(id).snapshotChanges()
     .pipe(
       map( a => {
-        const userData = a.payload.data();
-        return userData as FormulaModel;
+        const data = a.payload.data();
+        return data as FormulaModel;
       })
     );
   }

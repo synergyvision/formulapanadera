@@ -225,12 +225,12 @@
             button
             (click)="mixIngredients()"
             class="pick-ingredient"
-            [name]="(!formula.mixing || !formula.mixing[0]) ? ICONS.add : ICONS.edit"
+            [name]="(!formula.mixing || !formula.mixing[0] || !formula.mixing[0].mixing_order) ? ICONS.add : ICONS.edit"
             [ngClass]="{'disabled': !formula.ingredients}"
           ></ion-icon>
         </ion-item>
       </ion-card-header>
-      <app-mixing-steps [steps]="formula.mixing"></app-mixing-steps>
+      <app-mixing-steps [steps]="formula.mixing[0].mixing_order"></app-mixing-steps>
     </ion-card>
 
     <app-divider></app-divider>

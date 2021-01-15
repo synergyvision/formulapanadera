@@ -219,7 +219,7 @@
       </app-show-hide-content>
       <app-mixing-steps
         *ngIf="showMixing"
-        [steps]="formula.mixing"
+        [steps]="formula.mixing[0].mixing_order"
       ></app-mixing-steps>
     </ion-col>
   </ion-row>

@@ -20,7 +20,6 @@ import { FormulaCRUDService } from "./services/firebase/formula.service";
 import { ProductionCRUDService } from "./services/firebase/production.service";
 import { UserStorageService } from "./services/storage/user.service";
 import { ProductionService } from "./services/production.service";
-import { ProductionStorageService } from "./services/storage/production.service";
 import { TimeService } from "./services/time.service";
 import { ProductionInProcessStorageService } from "./services/storage/production-in-process.service";
 import { ProductionInProcessService } from "./services/production-in-process.service";
@@ -50,7 +49,6 @@ import { UserService } from './services/user.service'
     ProductionService,
     ProductionInProcessService,
     ProductionCRUDService,
-    ProductionStorageService,
     ProductionInProcessStorageService,
     LanguageService,
     LanguageStorageService,

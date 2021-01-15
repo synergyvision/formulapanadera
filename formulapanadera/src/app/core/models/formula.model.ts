@@ -12,6 +12,12 @@ export class IngredientMixingModel {
   description: string;
 }
 
+export class FormulaMixingModel {
+  name: string;
+  description: string;
+  mixing_order: Array<IngredientMixingModel>
+}
+
 export class StepDetailsModel {
   number: number;
   name: string;
@@ -55,7 +61,7 @@ export class FormulaModel {
   references?: Array<ReferenceModel>;
   ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
-  mixing: Array<IngredientMixingModel>;
+  mixing: Array<FormulaMixingModel>;
   user: {
     // If empty formula is public
     owner: string;

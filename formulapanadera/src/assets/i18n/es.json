@@ -80,7 +80,7 @@
     "unit_weight_short": "Peso (unid.)",
     "total_weight": "Peso total",
     "ingredients": { "value": "Valor" },
-    "mixing_order": "Orden de la mezcla",
+    "mixing_order": "Orden de preparación",
     "divition": "Divida en {{portions}} porciones de {{grams}}g.",
     "steps": "Pasos",
     "step": "Paso",

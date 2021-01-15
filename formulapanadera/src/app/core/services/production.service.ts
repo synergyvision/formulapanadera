@@ -12,7 +12,21 @@ import { OVEN_STEP } from "src/app/config/formula";
 
 @Injectable()
 export class ProductionService {
-  constructor(private formulaService: FormulaService) {}
+  private productions: ProductionModel[] & ShellModel;
+
+  constructor(private formulaService: FormulaService) { }
+  
+  public setProductions(productions: ProductionModel[] & ShellModel) {
+    this.productions = productions;
+  }
+
+  public getProductions() {
+    return this.productions;
+  }
+
+  public clearProductions() {
+    this.productions = null;
+  }
 
   /*
     Production filters

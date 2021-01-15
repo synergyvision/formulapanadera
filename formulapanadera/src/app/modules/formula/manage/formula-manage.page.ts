@@ -290,13 +290,13 @@ export class FormulaManagePage {
           description: "",
         },
       ];
-      if (!this.formula.mixing || this.formula.mixing.length==0) {
+      if (!this.formula.mixing || this.formula.mixing.length==0 || !this.formula.mixing[0].mixing_order || this.formula.mixing[0].mixing_order.length==0) {
         this.formula.ingredients.forEach(
           (ingredient: IngredientPercentageModel) =>
             mixedIngredients[0].ingredients.push(ingredient)
         );
       } else {
-        mixedIngredients = this.formula.mixing;
+        mixedIngredients = this.formula.mixing[0].mixing_order;
       }
       const modal = await this.modalController.create({
         component: IngredientMixingModal,
@@ -310,7 +310,7 @@ export class FormulaManagePage {
       await modal.present();
       const { data } = await modal.onWillDismiss();
       if (data !== undefined) {
-        this.formula.mixing = data;
+        this.formula.mixing[0].mixing_order = data;
       }
     }
   }
@@ -596,23 +596,23 @@ export class FormulaManagePage {
   }
 
   adjustFormulaMixing(new_ingredients: IngredientPercentageModel[], deleted_ingredients: IngredientPercentageModel[]) {
-    if (this.formula.mixing && this.formula.mixing.length>0) {
+    if (this.formula.mixing && this.formula.mixing.length>0 && this.formula.mixing[0] && this.formula.mixing[0].mixing_order.length>0) {
       if (new_ingredients.length > 0) {
         new_ingredients.forEach(ingredient=>{
-          this.formula.mixing[0].ingredients.push(ingredient)
+          this.formula.mixing[0].mixing_order[0].ingredients.push(ingredient)
         })
       }
       if (deleted_ingredients.length > 0) {
         deleted_ingredients.forEach(ingredient=>{
-          this.formula.mixing.forEach((mix, mix_i) => {
+          this.formula.mixing[0].mixing_order.forEach((mix, mix_i) => {
             mix.ingredients.forEach((mix_ingredient, ingredient_i) => {
               if (mix_ingredient.ingredient.id == ingredient.ingredient.id) {
-                this.formula.mixing[mix_i].ingredients.splice(
+                this.formula.mixing[0].mixing_order[mix_i].ingredients.splice(
                   ingredient_i,
                   1
                 );
-                if (this.formula.mixing[mix_i].ingredients.length == 0) {
-                  this.formula.mixing.splice(mix_i,1)
+                if (this.formula.mixing[0].mixing_order[mix_i].ingredients.length == 0) {
+                  this.formula.mixing[0].mixing_order.splice(mix_i,1)
                 }
               }
             })
@@ -626,7 +626,8 @@ export class FormulaManagePage {
     return (
       !this.manageFormulaForm.valid ||
       !this.formula.ingredients || this.formula.ingredients.length==0 ||
-      !this.formula.mixing || this.formula.mixing.length==0 ||
+      !this.formula.mixing || this.formula.mixing.length == 0 ||
+      !this.formula.mixing[0] || this.formula.mixing[0].mixing_order.length==0 ||
       !this.formula.steps || this.formula.steps.length==0 ||
       !this.ingredientsAreValid()
     )

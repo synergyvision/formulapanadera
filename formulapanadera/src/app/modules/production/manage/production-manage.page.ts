@@ -17,7 +17,6 @@ import { UserResumeModel } from "src/app/core/models/user.model";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { LanguageService } from "src/app/core/services/language.service";
-import { ProductionStorageService } from "src/app/core/services/storage/production.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { FormulaPickerModal } from "src/app/shared/modal/formula/formula-picker.modal";
 
@@ -42,7 +41,6 @@ export class ProductionManagePage implements OnInit {
 
   constructor(
     private productionCRUDService: ProductionCRUDService,
-    private productionStorageService: ProductionStorageService,
     public modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
@@ -87,20 +85,16 @@ export class ProductionManagePage implements OnInit {
       this.productionCRUDService
         .updateProduction(this.production)
         .then(async () => {
-          await this.productionStorageService
-            .updateProduction(this.production)
-            .then(() => {
-              this.router.navigateByUrl(
-                APP_URL.menu.name +
-                  "/" +
-                  APP_URL.menu.routes.production.main +
-                  "/" +
-                  APP_URL.menu.routes.production.routes.details,
-                {
-                  state: { production: this.production },
-                }
-              );
-            });
+          this.router.navigateByUrl(
+            APP_URL.menu.name +
+              "/" +
+              APP_URL.menu.routes.production.main +
+              "/" +
+              APP_URL.menu.routes.production.routes.details,
+            {
+              state: { production: this.production },
+            }
+          );
         })
         .catch(() => {
           this.presentToast(false);
@@ -116,22 +110,17 @@ export class ProductionManagePage implements OnInit {
       };
       this.productionCRUDService
         .createProduction(this.production)
-        .then(async (document) => {
-          this.production.id = document.id;
-          await this.productionStorageService
-            .createProduction(this.production)
-            .then(() => {
-              this.router.navigateByUrl(
-                APP_URL.menu.name +
-                  "/" +
-                  APP_URL.menu.routes.production.main +
-                  "/" +
-                  APP_URL.menu.routes.production.routes.details,
-                {
-                  state: { production: this.production },
-                }
-              );
-            });
+        .then(async () => {
+          this.router.navigateByUrl(
+            APP_URL.menu.name +
+              "/" +
+              APP_URL.menu.routes.production.main +
+              "/" +
+              APP_URL.menu.routes.production.routes.details,
+            {
+              state: { production: this.production },
+            }
+          );
         })
         .catch(() => {
           this.presentToast(false);

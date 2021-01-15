@@ -29,7 +29,7 @@
           </app-ingredients-list>
           <app-mixing-steps
             *ngIf="showMixing"
-            [steps]="item.formula.mixing"
+            [steps]="item.formula.mixing[0].mixing_order"
           ></app-mixing-steps>
           <!-- Step ingredients -->
           <span *ngFor="let step of item.formula.steps">

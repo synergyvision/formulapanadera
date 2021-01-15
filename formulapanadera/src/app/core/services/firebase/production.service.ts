@@ -22,19 +22,19 @@ export class ProductionCRUDService {
       .collection<ProductionModel>(this.collection, (ref) =>
         ref.where("owner.email", "==", user_email)
       )
-      .get()
-      .pipe(
-        map((a) => {
-          const productions: ProductionModel[] = [];
-          a.forEach((production) => {
-            productions.push({
-              id: production.id,
-              ...production.data(),
-            } as ProductionModel);
-          });
-          return productions;
-        })
-      );
+      .valueChanges({ idField: "id" });
+  }
+
+  public getProduction(
+    id: string
+  ): Observable<ProductionModel> {
+    return this.afs.collection<ProductionModel>(this.collection).doc(id).snapshotChanges()
+    .pipe(
+      map( a => {
+        const data = a.payload.data();
+        return data as ProductionModel;
+      })
+    );
   }
 
   /*

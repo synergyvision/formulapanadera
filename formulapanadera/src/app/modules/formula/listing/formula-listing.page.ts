@@ -1,4 +1,4 @@
-import { Component, OnInit, HostBinding, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { DataStore } from "src/app/shared/shell/data-store";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { of } from "rxjs";

@@ -25,7 +25,6 @@ import { ICONS } from "src/app/config/icons";
 import { ProductionModel } from 'src/app/core/models/production.model';
 import { FormatNumberService } from 'src/app/core/services/format-number.service';
 import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
-import { ProductionStorageService } from 'src/app/core/services/storage/production.service';
 import { UserGroupPickerModal } from 'src/app/shared/modal/user-group/user-group-picker.modal';
 
 @Component({
@@ -87,7 +86,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private formatNumberService: FormatNumberService,
     private productionCRUDService: ProductionCRUDService,
-    private productionStorageService: ProductionStorageService
   ) {
     this.showOrganolepticCharacteristics = false;
     this.showReferences = false;
@@ -440,6 +438,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     }
 
     if (shared == false) {
+      delete(formula.id)
       this.formulaCRUDService
         .createFormula(formula)
         .then(() => {
@@ -478,6 +477,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           cssClass: "confirm-alert-accept",
           handler: () => {
             let formula = JSON.parse(JSON.stringify(this.formula));
+            delete(formula.id)
             formula.user.owner = this.user.email;
             formula.user.cloned = true;
             formula.user.reference = "";
@@ -657,22 +657,17 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     
     this.productionCRUDService
       .createProduction(production)
-      .then(async (document) => {
-        production.id = document.id;
-        await this.productionStorageService
-          .createProduction(production)
-          .then(() => {
-            this.router.navigateByUrl(
-              APP_URL.menu.name +
-                "/" +
-                APP_URL.menu.routes.production.main +
-                "/" +
-                APP_URL.menu.routes.production.routes.details,
-              {
-                state: { production: production },
-              }
-            );
-          });
+      .then(async () => {
+        this.router.navigateByUrl(
+          APP_URL.menu.name +
+            "/" +
+            APP_URL.menu.routes.production.main +
+            "/" +
+            APP_URL.menu.routes.production.routes.details,
+          {
+            state: { production: production },
+          }
+        );
       })
       .catch(() => {
         this.presentToast(false);
