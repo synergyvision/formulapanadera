@@ -98,6 +98,7 @@
           </span>
         </ion-col>
       </ion-row>
+      <app-divider *ngIf="ingredient.formula.mixing"></app-divider>
       <ion-row *ngIf="ingredient.formula.mixing">
         <ion-col class="no-padding">
           <app-show-hide-content
