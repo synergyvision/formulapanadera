@@ -103,7 +103,7 @@
     <form [formGroup]="isFlourForm" [hidden]="!showFilters">
       <ion-row class="range-item-row"
         ><ion-col>
-          <ion-item lines="full">
+          <ion-item lines="full" class="no-padding-item">
             <ion-label>{{'ingredients.filter.flour' | translate}}</ion-label>
             <ion-select
               formControlName="value"

@@ -1,0 +1,29 @@
+<ion-item
+  detail="true"
+  button="true"
+  class="user-item"
+  [ngClass]="{ 'background-gray': even, 'background-selected': selected }"
+>
+  <ion-row class="user-item-wrapper">
+    <ion-col class="user-wrapper">
+      <ion-row class="user-title">
+        <ion-col>
+          <h2 class="user-name">
+            <app-text-shell
+              animation="bouncing"
+              lines="3"
+              [data]="user.name"
+            ></app-text-shell>
+          </h2>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" class="properties-col">
+          <p class="user">
+            {{ user.email}}
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+</ion-item>

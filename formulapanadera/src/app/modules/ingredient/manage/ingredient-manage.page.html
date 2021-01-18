@@ -293,6 +293,27 @@
         </ion-card>
       </span>
     </ion-list>
+
+    <app-divider></app-divider>
+
+    <!-- Bread references -->
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'formulas.references.name' | translate}}
+          </ion-label>
+    
+          <ion-icon button (click)="addReferences()" class="pick-ingredient" [name]="ICONS.add"></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <app-references
+          *ngIf="ingredient.references"
+          [references]="ingredient.references"
+        ></app-references>
+      </ion-list>
+    </ion-card>
   </ion-content>
 
   <ion-footer>

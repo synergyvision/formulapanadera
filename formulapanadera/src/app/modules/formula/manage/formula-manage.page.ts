@@ -25,6 +25,8 @@ import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserResumeModel } from "src/app/core/models/user.model";
 import { OrganolepticCharacteristicsModal } from "src/app/shared/modal/organoleptic-characteristics/organoleptic-characteristics.modal";
+import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
+import { ReferenceModel } from "src/app/core/models/shared.model";
 
 @Component({
   selector: "app-formula-manage",
@@ -75,6 +77,8 @@ export class FormulaManagePage {
         owner: this.current_user.email,
         can_clone: false,
         cloned: true,
+        reference: "",
+        shared_users: [],
         creator: {
           name: this.current_user.name,
           email: this.current_user.email,
@@ -100,17 +104,23 @@ export class FormulaManagePage {
         this.public = true;
       }
       this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
+      this.formula.references = [];
       this.formula.ingredients = [];
       this.formula.mixing = [];
       this.formula.steps = [];
+      if (state.formula.references && state.formula.references.length>0) {
+        state.formula.references.forEach((reference) => {
+          this.formula.references.push(JSON.parse(JSON.stringify(reference)));
+        });
+      }
       state.formula.ingredients.forEach((ingredient) => {
         this.formula.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
       });
-      state.formula.mixing.forEach((ingredient) => {
-        this.formula.mixing.push(JSON.parse(JSON.stringify(ingredient)));
+      state.formula.mixing.forEach((step) => {
+        this.formula.mixing.push(JSON.parse(JSON.stringify(step)));
       });
-      state.formula.steps.forEach((ingredient) => {
-        this.formula.steps.push(JSON.parse(JSON.stringify(ingredient)));
+      state.formula.steps.forEach((step) => {
+        this.formula.steps.push(JSON.parse(JSON.stringify(step)));
       });
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
@@ -187,6 +197,26 @@ export class FormulaManagePage {
     }
   }
 
+  async addReferences() {
+    let references: Array<ReferenceModel>;
+    if (this.formula.references) {
+      references = JSON.parse(JSON.stringify(this.formula.references))
+    }
+    const modal = await this.modalController.create({
+      component: ReferencesModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        references: references
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      this.formula.references = data;
+    }
+  }
+
   async ingredientPicker(ingredients: Array<IngredientPercentageModel>) {
     const modal = await this.modalController.create({
       component: IngredientPickerModal,
@@ -260,13 +290,13 @@ export class FormulaManagePage {
           description: "",
         },
       ];
-      if (!this.formula.mixing || this.formula.mixing.length==0) {
+      if (!this.formula.mixing || this.formula.mixing.length==0 || !this.formula.mixing[0].mixing_order || this.formula.mixing[0].mixing_order.length==0) {
         this.formula.ingredients.forEach(
           (ingredient: IngredientPercentageModel) =>
             mixedIngredients[0].ingredients.push(ingredient)
         );
       } else {
-        mixedIngredients = this.formula.mixing;
+        mixedIngredients = this.formula.mixing[0].mixing_order;
       }
       const modal = await this.modalController.create({
         component: IngredientMixingModal,
@@ -280,7 +310,7 @@ export class FormulaManagePage {
       await modal.present();
       const { data } = await modal.onWillDismiss();
       if (data !== undefined) {
-        this.formula.mixing = data;
+        this.formula.mixing[0].mixing_order = data;
       }
     }
   }
@@ -357,6 +387,14 @@ export class FormulaManagePage {
     this.formula.units = this.manageFormulaForm.value.units;
     this.formula.unit_weight = this.manageFormulaForm.value.unit_weight;
     this.formula.description = this.manageFormulaForm.value.description;
+    if (this.formula.organoleptic_characteristics) {
+      this.formula.organoleptic_characteristics = JSON.parse(JSON.stringify(this.formula.organoleptic_characteristics));
+    } else {
+      this.formula.organoleptic_characteristics = null;
+    }
+    if (this.formula.references) {
+      this.formula.references = JSON.parse(JSON.stringify(this.formula.references))
+    }
     
     if (this.update) {
       this.formula.user.modifiers.push({
@@ -402,6 +440,8 @@ export class FormulaManagePage {
         owner: this.current_user.email,
         can_clone: this.formula.user.can_clone,
         cloned: true,
+        reference: "",
+        shared_users: [],
         creator: {
           name: this.current_user.name,
           email: this.current_user.email,
@@ -556,23 +596,23 @@ export class FormulaManagePage {
   }
 
   adjustFormulaMixing(new_ingredients: IngredientPercentageModel[], deleted_ingredients: IngredientPercentageModel[]) {
-    if (this.formula.mixing && this.formula.mixing.length>0) {
+    if (this.formula.mixing && this.formula.mixing.length>0 && this.formula.mixing[0] && this.formula.mixing[0].mixing_order.length>0) {
       if (new_ingredients.length > 0) {
         new_ingredients.forEach(ingredient=>{
-          this.formula.mixing[0].ingredients.push(ingredient)
+          this.formula.mixing[0].mixing_order[0].ingredients.push(ingredient)
         })
       }
       if (deleted_ingredients.length > 0) {
         deleted_ingredients.forEach(ingredient=>{
-          this.formula.mixing.forEach((mix, mix_i) => {
+          this.formula.mixing[0].mixing_order.forEach((mix, mix_i) => {
             mix.ingredients.forEach((mix_ingredient, ingredient_i) => {
               if (mix_ingredient.ingredient.id == ingredient.ingredient.id) {
-                this.formula.mixing[mix_i].ingredients.splice(
+                this.formula.mixing[0].mixing_order[mix_i].ingredients.splice(
                   ingredient_i,
                   1
                 );
-                if (this.formula.mixing[mix_i].ingredients.length == 0) {
-                  this.formula.mixing.splice(mix_i,1)
+                if (this.formula.mixing[0].mixing_order[mix_i].ingredients.length == 0) {
+                  this.formula.mixing[0].mixing_order.splice(mix_i,1)
                 }
               }
             })
@@ -586,7 +626,8 @@ export class FormulaManagePage {
     return (
       !this.manageFormulaForm.valid ||
       !this.formula.ingredients || this.formula.ingredients.length==0 ||
-      !this.formula.mixing || this.formula.mixing.length==0 ||
+      !this.formula.mixing || this.formula.mixing.length == 0 ||
+      !this.formula.mixing[0] || this.formula.mixing[0].mixing_order.length==0 ||
       !this.formula.steps || this.formula.steps.length==0 ||
       !this.ingredientsAreValid()
     )

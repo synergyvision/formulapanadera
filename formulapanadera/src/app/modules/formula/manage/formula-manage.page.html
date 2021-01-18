@@ -113,6 +113,27 @@
       </ion-list>
     </ion-card>
 
+    <app-divider></app-divider>
+
+    <!-- Bread references -->
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'formulas.references.name' | translate}}
+          </ion-label>
+    
+          <ion-icon button (click)="addReferences()" class="pick-ingredient" [name]="ICONS.add"></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <app-references
+          *ngIf="formula.references"
+          [references]="formula.references"
+        ></app-references>
+      </ion-list>
+    </ion-card>
+
     <app-divider *ngIf="!update || current_user.email === formula.user.creator.email || is_modifier"></app-divider>
 
     <!-- Ingredients -->
@@ -204,12 +225,12 @@
             button
             (click)="mixIngredients()"
             class="pick-ingredient"
-            [name]="(!formula.mixing || !formula.mixing[0]) ? ICONS.add : ICONS.edit"
+            [name]="(!formula.mixing || !formula.mixing[0] || !formula.mixing[0].mixing_order) ? ICONS.add : ICONS.edit"
             [ngClass]="{'disabled': !formula.ingredients}"
           ></ion-icon>
         </ion-item>
       </ion-card-header>
-      <app-mixing-steps [steps]="formula.mixing"></app-mixing-steps>
+      <app-mixing-steps [steps]="formula.mixing[0].mixing_order"></app-mixing-steps>
     </ion-card>
 
     <app-divider></app-divider>

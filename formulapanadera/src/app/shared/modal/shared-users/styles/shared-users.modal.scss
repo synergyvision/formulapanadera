@@ -21,33 +21,13 @@ ion-select {
   justify-content: center;
 }
 
-.ingredient-content {
+.shared-users-content {
   --background: var(--page-background);
 
-  .segment {
-    padding: 5px var(--page-margin);
-    border-radius: 0px;
-  }
-
-  .ingredients-list {
+  .shared-users-list {
     padding-top: 0;
     padding-bottom: 0;
   }
-
-  .empty-block {
-    height: 100%;
-
-    ion-col {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
-  }
-}
-
-ion-segment-button {
-  font-size: 14px;
 }
 
 .no-padding-item {

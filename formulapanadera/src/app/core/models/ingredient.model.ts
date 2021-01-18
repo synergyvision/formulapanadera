@@ -4,6 +4,7 @@ import {
   IngredientPercentageModel,
   IngredientMixingModel,
 } from "./formula.model";
+import { ReferenceModel } from "./shared.model";
 
 export type ProportionFactor = {
   factor: typeof PROPORTION_FACTOR[number];
@@ -18,6 +19,7 @@ export class IngredientModel {
   cost: number;
   can_be_modified: boolean;
   creator: string;
+  references: Array<ReferenceModel>;
   formula?: {
     // if the ingredient has its own formula
     ingredients: Array<IngredientPercentageModel>;

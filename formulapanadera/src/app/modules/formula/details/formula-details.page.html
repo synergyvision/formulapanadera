@@ -1,10 +1,13 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button
-        (click)="returnToList()"
-        mode="md"
-      ></ion-back-button>
+      <ion-button (click)="returnToList()">
+        <ion-icon
+          slot="icon-only"
+          [name]="ICONS.back"
+          mode="md"
+        ></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title> {{'formulas.name' | translate}} </ion-title>
     <ion-buttons slot="primary">
@@ -132,6 +135,26 @@
     </ion-row>
   </span>
 
+  <span *ngIf="formula.references && formula.references.length>0">
+    <app-divider></app-divider>
+
+    <ion-row>
+      <ion-col class="detail-col">
+        <app-show-hide-content
+          (click)="showReferences = !showReferences"
+          [show]="showReferences"
+          [title]="'formulas.references.name' | translate"
+        ></app-show-hide-content>
+        <ion-list lines="full" class="inputs-list">
+          <app-references
+            *ngIf="showReferences"
+            [references]="formula.references"
+          ></app-references>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </span>
+
   <app-divider></app-divider>
 
   <ion-row>
@@ -196,7 +219,7 @@
       </app-show-hide-content>
       <app-mixing-steps
         *ngIf="showMixing"
-        [steps]="formula.mixing"
+        [steps]="formula.mixing[0].mixing_order"
       ></app-mixing-steps>
     </ion-col>
   </ion-row>

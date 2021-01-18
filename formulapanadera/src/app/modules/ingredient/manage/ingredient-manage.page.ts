@@ -21,6 +21,8 @@ import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { UserResumeModel } from "src/app/core/models/user.model";
 import { IngredientService } from "src/app/core/services/ingredient.service";
+import { ReferenceModel } from "src/app/core/models/shared.model";
+import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -87,6 +89,12 @@ export class IngredientManagePage implements OnInit {
         cost: new FormControl(state.ingredient.cost, Validators.required),
       });
       this.public = this.ingredient.can_be_modified;
+      this.ingredient.references = []
+      if (state.ingredient.references && state.ingredient.references.length>0) {
+        state.ingredient.references.forEach((reference) => {
+          this.ingredient.references.push(JSON.parse(JSON.stringify(reference)));
+        });
+      }
     }
 
     let user = await this.userStorageService.getUser();
@@ -209,6 +217,26 @@ export class IngredientManagePage implements OnInit {
     }
   }
 
+  async addReferences() {
+    let references: Array<ReferenceModel>;
+    if (this.ingredient.references) {
+      references = JSON.parse(JSON.stringify(this.ingredient.references))
+    }
+    const modal = await this.modalController.create({
+      component: ReferencesModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        references: references
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      this.ingredient.references = data;
+    }
+  }
+
   async sendIngredient() {
     const loading = await this.loadingController.create({
       cssClass: "app-send-loading",
@@ -218,6 +246,9 @@ export class IngredientManagePage implements OnInit {
 
     this.ingredient.name = this.manageIngredientForm.value.name;
     this.ingredient.can_be_modified = this.public;
+    if (this.ingredient.references) {
+      this.ingredient.references = JSON.parse(JSON.stringify(this.ingredient.references))
+    }
 
     if (!this.ingredient.formula) {
       this.ingredient.hydration = this.manageIngredientForm.value.hydration;

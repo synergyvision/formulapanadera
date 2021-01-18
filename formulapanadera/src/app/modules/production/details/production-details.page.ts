@@ -14,7 +14,6 @@ import { ProductionCRUDService } from 'src/app/core/services/firebase/production
 import { FormulaService } from "src/app/core/services/formula.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
-import { ProductionStorageService } from 'src/app/core/services/storage/production.service';
 
 @Component({
   selector: "app-production-details",
@@ -47,7 +46,6 @@ export class ProductionDetailsPage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private productionCRUDService: ProductionCRUDService,
-    private productionStorageService: ProductionStorageService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
   ) {
     this.showIngredients = true;
@@ -263,15 +261,11 @@ export class ProductionDetailsPage implements OnInit {
             this.productionCRUDService
               .deleteProduction(this.production.id)
               .then(async () => {
-                await this.productionStorageService
-                  .deleteProduction(this.production.id)
-                  .then(() => {
-                    this.router.navigateByUrl(
-                      APP_URL.menu.name +
-                        "/" +
-                        APP_URL.menu.routes.production.main
-                    );
-                  });
+                this.router.navigateByUrl(
+                  APP_URL.menu.name +
+                    "/" +
+                    APP_URL.menu.routes.production.main
+                );
               })
               .catch(() => {
                 this.presentToast(false);

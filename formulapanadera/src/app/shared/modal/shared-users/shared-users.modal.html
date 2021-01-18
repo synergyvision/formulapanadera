@@ -1,0 +1,91 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.users"></ion-icon>
+    <ion-title>{{ 'action.manage_shared' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="filters-toolbar" mode="ios">
+    <ion-row class="searchbar-row" align-items-center>
+      <ion-col>
+        <ion-searchbar
+          mode="ios"
+          class="items-searchbar"
+          animated
+          [(ngModel)]="searchQuery"
+          (ionChange)="searchList()"
+          placeholder="{{'ingredients.filter.name' | translate}}"
+        ></ion-searchbar>
+      </ion-col>
+      <ion-col class="call-to-action-col">
+        <ion-button
+          fill="clear"
+          color="secondary"
+          class="filters-btn"
+          (click)="showFilters = !showFilters"
+        >
+          <ion-icon slot="icon-only" [name]="ICONS.options"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <form [formGroup]="groupForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row"
+        ><ion-col>
+          <ion-item lines="full" class="no-padding-item">
+            <ion-label>{{'formulas.share.options.group' | translate}}</ion-label>
+            <ion-select
+              formControlName="value"
+              (ionChange)="searchList()"
+              [cancelText]="'action.cancel'|translate"
+              [okText]="'action.ok'|translate"
+            >
+              <ion-select-option value="all"
+                >{{'ingredients.filter.all' | translate}}</ion-select-option
+              >
+              <ion-select-option
+                *ngFor="let group of user.user_groups"
+                [value]="group.name"
+              >{{group.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col></ion-row
+      >
+    </form>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="shared-users-content">
+  <ion-list
+    lines="none"
+    class="shared-users-list"
+    *ngIf="users?.length > 0"
+  >
+    <app-user-item
+      *ngFor="let user of users; index as i"
+      [user]="user"
+      [even]="(i%2==0)"
+      [selected]="isSelected(user.email)"
+      (click)="clickUser(user)"
+    ></app-user-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-row class="form-actions-wrapper">
+    <ion-col>
+      <ion-button
+        class="submit-btn"
+        expand="block"
+        color="primary"
+        (click)="stopShare()"
+        fill="solid"
+        [disabled]="!selectedUsers || selectedUsers.length == 0"
+      >
+        {{ 'action.stop_sharing' | translate }}</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-footer>

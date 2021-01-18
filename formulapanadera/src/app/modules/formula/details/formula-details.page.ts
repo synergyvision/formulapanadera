@@ -25,7 +25,6 @@ import { ICONS } from "src/app/config/icons";
 import { ProductionModel } from 'src/app/core/models/production.model';
 import { FormatNumberService } from 'src/app/core/services/format-number.service';
 import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
-import { ProductionStorageService } from 'src/app/core/services/storage/production.service';
 import { UserGroupPickerModal } from 'src/app/shared/modal/user-group/user-group-picker.modal';
 
 @Component({
@@ -60,6 +59,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   ingredients_formula: Array<any> = [];
 
   showOrganolepticCharacteristics: boolean;
+  showReferences: boolean;
   showIngredients: boolean;
   showSubIngredients: boolean;
   showMixing: boolean;
@@ -86,9 +86,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private formatNumberService: FormatNumberService,
     private productionCRUDService: ProductionCRUDService,
-    private productionStorageService: ProductionStorageService
   ) {
     this.showOrganolepticCharacteristics = false;
+    this.showReferences = false;
     this.showIngredients = true;
     this.showSubIngredients = true;
     this.showMixing = false;
@@ -325,19 +325,30 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       header: this.languageService.getTerm("action.share"),
       message: this.languageService.getTerm("formulas.share.options.instructions"),
       cssClass: "alert share-alert",
+      inputs: [
+        {
+          name: 'can_clone',
+          type: 'checkbox',
+          label: this.languageService.getTerm("formulas.can_clone"),
+          value: 'can_clone',
+          checked: this.formula.user.can_clone
+        },
+      ],
       buttons: [
         {
           text: this.languageService.getTerm("formulas.share.options.one"),
           cssClass: "confirm-alert-accept",
-          handler: () => {
-            this.shareOne()
+          handler: (data) => {
+            let can_clone: boolean = data && data.length > 0 && data[0] == "can_clone"
+            this.shareOne(can_clone)
           },
         },
         {
           text: this.languageService.getTerm("formulas.share.options.group"),
           cssClass: "confirm-alert-accept",
-          handler: () => {
-            this.shareGroup()
+          handler: (data) => {
+            let can_clone: boolean = data && data.length > 0 && data[0] == "can_clone"
+            this.shareGroup(can_clone)
           },
         },
       ],
@@ -345,7 +356,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async shareOne() {
+  async shareOne(can_clone: boolean) {
     const alert = await this.alertController.create({
       header: this.languageService.getTerm("action.share"),
       message: this.languageService.getTerm("formulas.share.instructions"),
@@ -367,7 +378,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: (data) => {
-            this.shareFormulaToEmail(data.email)
+            this.shareFormulaToEmail({name: "----", email: data.email}, can_clone)
           },
         },
       ],
@@ -375,7 +386,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     await alert.present();
   }
   
-  async shareGroup() {
+  async shareGroup(can_clone: boolean) {
     const modal = await this.modalController.create({
       component: UserGroupPickerModal,
       swipeToClose: true,
@@ -386,33 +397,68 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
     if (data !== undefined) {
       let user_groups: UserGroupModel[] = data.user_groups as UserGroupModel[]
-      let emails: string[] = [];
+      let users: UserResumeModel[] = [];
       user_groups.forEach(group => {
         group.users.forEach(user => {
-          emails.push(user.email)
+          users.push(user)
         })
       })
-      emails = [...new Set(emails)];
-      emails.forEach(email => {
-        this.shareFormulaToEmail(email, true)
+      users = [...new Set(users)];
+      users.forEach(user => {
+        this.shareFormulaToEmail(user, can_clone, true)
       })
     }
   }
   
-  shareFormulaToEmail(email: string, toast: boolean = true) {
+  shareFormulaToEmail(user_to_share: UserResumeModel, can_clone: boolean, toast: boolean = true) {
+    let shared: boolean = false
+
     let formula = JSON.parse(JSON.stringify(this.formula));
-    formula.user.owner = email;
+    formula.user.can_clone = can_clone;
+    formula.user.owner = user_to_share.email;
     formula.user.cloned = false;
-    this.formulaCRUDService
-      .createFormula(formula)
-      .then(() => {
-        if (toast) {
-          this.presentToast(true, email);
+    formula.user.reference = this.formula.id;
+    formula.user.shared_users = [];
+
+    if (this.formula.user.shared_users && this.formula.user.shared_users.length > 0) {
+      this.formula.user.shared_users.forEach(user => {
+        if (user.email == user_to_share.email) {
+          shared = true
         }
       })
-      .catch(() => {
-        this.presentToast(false, email);
-      });
+      if (shared == false) {
+        this.formula.user.shared_users.push(user_to_share);
+      }
+    } else {
+      this.formula.user.shared_users.push(user_to_share);
+    }
+
+    if (user_to_share.email == this.user.email) {
+      shared = true
+    }
+
+    if (shared == false) {
+      delete(formula.id)
+      this.formulaCRUDService
+        .createFormula(formula)
+        .then(() => {
+            this.formulaCRUDService
+              .updateFormula(this.formula)
+              .then(() => {
+                if (toast) {
+                  this.presentToast(true, user_to_share.email);
+                }
+              })
+              .catch(() => {
+                this.presentToast(false, user_to_share.email);
+              });
+        })
+        .catch(() => {
+          this.presentToast(false, user_to_share.email);
+        });
+    } else {
+      this.presentToast(false, user_to_share.email);
+    }
   }
 
   async cloneFormula() {
@@ -431,8 +477,10 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           cssClass: "confirm-alert-accept",
           handler: () => {
             let formula = JSON.parse(JSON.stringify(this.formula));
+            delete(formula.id)
             formula.user.owner = this.user.email;
             formula.user.cloned = true;
+            formula.user.reference = "";
             formula.name = `${
               this.formula.name
             } (${this.languageService.getTerm("action.copy")})`;
@@ -473,9 +521,30 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
             this.formulaCRUDService.deleteFormula(this.formula.id)
               .then(() => {
-              this.router.navigateByUrl(
-                APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-              )
+                if (this.formula.user.reference) {
+                  this.formulaCRUDService.getFormula(this.formula.user.reference)
+                    .subscribe((original_formula) => {
+                      original_formula.user.shared_users.forEach((user) => {
+                        if (user.email == this.user.email) {
+                          original_formula.user.shared_users.splice(original_formula.user.shared_users.indexOf(user), 1)
+                        }
+                      })
+                      this.formulaCRUDService.updateFormula(original_formula)
+                        .then(() => {
+                          this.router.navigateByUrl(
+                            APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+                          )
+                        })
+                    });
+                } else {
+                  this.router.navigateByUrl(
+                    APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+                  )
+                }
+                
+                this.router.navigateByUrl(
+                  APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+                )
               .catch(() => {
                 this.presentToast(false);
               })
@@ -588,22 +657,17 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     
     this.productionCRUDService
       .createProduction(production)
-      .then(async (document) => {
-        production.id = document.id;
-        await this.productionStorageService
-          .createProduction(production)
-          .then(() => {
-            this.router.navigateByUrl(
-              APP_URL.menu.name +
-                "/" +
-                APP_URL.menu.routes.production.main +
-                "/" +
-                APP_URL.menu.routes.production.routes.details,
-              {
-                state: { production: production },
-              }
-            );
-          });
+      .then(async () => {
+        this.router.navigateByUrl(
+          APP_URL.menu.name +
+            "/" +
+            APP_URL.menu.routes.production.main +
+            "/" +
+            APP_URL.menu.routes.production.routes.details,
+          {
+            state: { production: production },
+          }
+        );
       })
       .catch(() => {
         this.presentToast(false);

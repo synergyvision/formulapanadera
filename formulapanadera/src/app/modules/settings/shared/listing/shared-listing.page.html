@@ -1,0 +1,59 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button mode="md" [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.settings.main"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'formulas.share.my_shares' | translate }}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar class="filters-toolbar" mode="ios">
+    <ion-row class="searchbar-row" align-items-center>
+      <ion-col>
+        <ion-searchbar
+          mode="ios"
+          class="items-searchbar"
+          animated
+          [(ngModel)]="searchQuery"
+          (ionChange)="searchList()"
+          placeholder="{{'ingredients.filter.name' | translate}}"
+        ></ion-searchbar>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="shared-content">
+  <ion-segment
+    mode="ios"
+    (ionChange)="segmentChanged($event)"
+    [value]="segment"
+    class="segment"
+  >
+    <ion-segment-button value="formulas">
+      <ion-label>{{'formulas.name' | translate}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <span *ngIf="segment == 'formulas'">
+    <ion-list
+    lines="none"
+    class="shared-list"
+    *ngIf="formulas?.length > 0; else emptyBlock"
+  >
+    <app-formula-item
+      *ngFor="let formula of formulas; index as i"
+      (click)="presentFormulaOptions(formula)"
+      [formula]="formula"
+      [clickable]="true"
+      [even]="(i%2==0)"
+    ></app-formula-item>
+  </ion-list>
+  </span>
+  <ng-template #emptyBlock>
+    <ion-row class="empty-block">
+      <ion-col class="ion-text-center ion-padding">
+        <h5>
+          {{ 'formulas.share.empty' | translate }}
+        </h5>
+      </ion-col>
+    </ion-row>
+  </ng-template>
+</ion-content>

@@ -13,12 +13,16 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "share": "Share",
+    "stop_sharing": "Stop sharing",
     "clone": "Clone",
     "copy": "Copy",
     "create": "Create",
     "update": "Update",
     "delete": "Delete",
     "do_production": "Produce",
+    "view_details": "Details",
+    "sync_shared": "Sync shared",
+    "manage_shared": "Manage shared",
     "delete_question": "Do you want to delete {{item}}?",
     "sign_out_question": "Sign out?",
     "yes": "Yes",
@@ -76,7 +80,7 @@
     "unit_weight_short": "Unit weight",
     "total_weight": "Total weight",
     "ingredients": { "value": "Value" },
-    "mixing_order": "Mixing order",
+    "mixing_order": "Preparation order",
     "divition": "Divide into {{portions}} servings of {{grams}}g.",
     "steps": "Steps",
     "step": "Step",
@@ -117,6 +121,11 @@
       "bubbles_presence": "Bubbles presence",
       "useful_life": "Useful life"
     },
+    "references": {
+      "name": "References",
+      "reference_name": "Name",
+      "url": "URL"
+    },
     "cost": {
       "name": "Cost",
       "unitary": "Unitary cost",
@@ -143,6 +152,8 @@
       "error": "An error ocurred. Try again",
       "mine": "Mine",
       "shared": "Shared",
+      "my_shares": "My shares",
+      "empty": "No shared found",
       "public": "Public",
       "options": {
         "instructions": "Do you want to share to a single user or a group?",

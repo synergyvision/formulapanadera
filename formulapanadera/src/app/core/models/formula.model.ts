@@ -1,5 +1,6 @@
 import { IngredientModel } from "./ingredient.model";
-import { ModifierModel } from "./user.model";
+import { ModifierModel, UserResumeModel } from "./user.model";
+import { ReferenceModel } from "./shared.model"
 
 export class IngredientPercentageModel {
   ingredient: IngredientModel;
@@ -9,6 +10,12 @@ export class IngredientPercentageModel {
 export class IngredientMixingModel {
   ingredients: Array<IngredientPercentageModel>;
   description: string;
+}
+
+export class FormulaMixingModel {
+  name: string;
+  description: string;
+  mixing_order: Array<IngredientMixingModel>
 }
 
 export class StepDetailsModel {
@@ -51,15 +58,18 @@ export class FormulaModel {
   unit_weight: number; // weight of one bread
   description?: string;
   organoleptic_characteristics?: OrganolepticCharacteristicsModel;
+  references?: Array<ReferenceModel>;
   ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
-  mixing: Array<IngredientMixingModel>;
+  mixing: Array<FormulaMixingModel>;
   user: {
     // If empty formula is public
     owner: string;
     // Used to clone
     can_clone: boolean;
     cloned: boolean;
+    reference: string; // ID of original formula
+    shared_users: Array<UserResumeModel>;
     // Used to credit the users
     creator: ModifierModel;
     modifiers: Array<ModifierModel>;

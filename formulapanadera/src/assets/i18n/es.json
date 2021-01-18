@@ -13,12 +13,16 @@
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "share": "Compartir",
+    "stop_sharing": "Dejar de compartir",
     "clone": "Clonar",
     "copy": "Copia",
     "create": "Crear",
     "update": "Modificar",
     "delete": "Eliminar",
     "do_production": "Producir",
+    "view_details": "Detalle",
+    "sync_shared": "Sincronizar compartidos",
+    "manage_shared": "Gestionar compartidos",
     "delete_question": "¿Desea eliminar {{item}}?",
     "sign_out_question": "¿Cerrar sesión?",
     "yes": "Sí",
@@ -76,7 +80,7 @@
     "unit_weight_short": "Peso (unid.)",
     "total_weight": "Peso total",
     "ingredients": { "value": "Valor" },
-    "mixing_order": "Orden de la mezcla",
+    "mixing_order": "Orden de preparación",
     "divition": "Divida en {{portions}} porciones de {{grams}}g.",
     "steps": "Pasos",
     "step": "Paso",
@@ -117,6 +121,11 @@
       "bubbles_presence": "Presencia de burbujas",
       "useful_life": "Vida útil"
     },
+    "references": {
+      "name": "Referencias",
+      "reference_name": "Nombre",
+      "url": "URL"
+    },
     "cost": {
       "name": "Costo",
       "unitary": "Costo unitario",
@@ -143,6 +152,8 @@
       "error": "Ocurrió un error. Intente de nuevo",
       "mine": "Propias",
       "shared": "Compartidas",
+      "my_shares": "Mis compartidos",
+      "empty": "No se encontraron compartidos",
       "public": "Públicas",
       "options": {
         "instructions": "¿Deseas compartir la fórmula a un único usuario o a un grupo?",

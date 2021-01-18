@@ -11,17 +11,15 @@
   padding: 0 0;
 }
 
-.btn-med {
-  font-size: 26px;
-  margin: 0 0 0 10px;
+ion-back-button {
+  height: 0;
 }
 
-ion-select {
-  width: 100%;
-  justify-content: center;
+ion-segment-button {
+  font-size: 14px;
 }
 
-.ingredient-content {
+.shared-content {
   --background: var(--page-background);
 
   .segment {
@@ -29,7 +27,7 @@ ion-select {
     border-radius: 0px;
   }
 
-  .ingredients-list {
+  .shared-list {
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -44,12 +42,4 @@ ion-select {
       height: 100%;
     }
   }
-}
-
-ion-segment-button {
-  font-size: 14px;
-}
-
-.no-padding-item {
-  --padding-start: 0;
 }
