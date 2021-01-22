@@ -52,7 +52,7 @@
         <ion-textarea type="text" autoGrow="true" formControlName="description"></ion-textarea>
       </ion-item>
 
-      <app-divider></app-divider>
+      <app-divider *ngIf="!update || current_user.email === formula.user.creator.email || is_modifier"></app-divider>
 
       <!-- Public / clone -->
       <ion-row
@@ -134,7 +134,7 @@
       </ion-list>
     </ion-card>
 
-    <app-divider *ngIf="!update || current_user.email === formula.user.creator.email || is_modifier"></app-divider>
+    <app-divider></app-divider>
 
     <!-- Ingredients -->
     <ion-card class="card">
