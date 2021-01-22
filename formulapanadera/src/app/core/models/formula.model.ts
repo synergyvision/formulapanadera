@@ -14,7 +14,7 @@ export class IngredientMixingModel {
 
 export class FormulaMixingModel {
   name: string;
-  description: string;
+  description?: string;
   mixing_order: Array<IngredientMixingModel>
 }
 

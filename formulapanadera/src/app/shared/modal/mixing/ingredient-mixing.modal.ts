@@ -15,8 +15,9 @@ export class IngredientMixingModal implements AfterViewInit {
   ICONS = ICONS;
 
   @ViewChildren("stepdescription") private textAreas: QueryList<IonTextarea>
+  @Input() mixing_name: string;
   @Input() formulaMixing: Array<IngredientMixingModel>;
-  @Input() editable: boolean;
+  @Input() formula: boolean = false;
 
   constructor(public modalController: ModalController) { }
   
@@ -34,7 +35,7 @@ export class IngredientMixingModal implements AfterViewInit {
   }
 
   saveMixing() {
-    this.modalController.dismiss(this.formulaMixing);
+    this.modalController.dismiss({ name: this.mixing_name, mixing: this.formulaMixing });
   }
 
   addStep() {
@@ -65,6 +66,9 @@ export class IngredientMixingModal implements AfterViewInit {
         isEmpty = true;
       }
     });
+    if (this.formula && !this.mixing_name) {
+      isEmpty = true;
+    }
     return isEmpty;
   }
 }

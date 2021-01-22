@@ -28,6 +28,7 @@ import { UserGroupItemComponent } from './user-group/user-group-item/user-group-
 import { OrganolepticCharacteristicsComponent } from "./formula/organoleptic-characteristics/organoleptic-characteristics.component";
 import { ReferencesComponent } from "./general/references/references.component";
 import { UserItemComponent } from "./user-group/user-item/user-item.component";
+import { FormulaMixingComponent } from "./formula/formula-mixing/formula-mixing.component";
 
 @NgModule({
   imports: [
@@ -51,6 +52,7 @@ import { UserItemComponent } from "./user-group/user-item/user-item.component";
     FormulaTimeTableComponent,
     FormulaStepComponent,
     FormulaStepDetailsComponent,
+    FormulaMixingComponent,
     MixingStepsComponent,
     ProductionItemComponent,
     ProductionStepItemComponent,
@@ -75,6 +77,7 @@ import { UserItemComponent } from "./user-group/user-item/user-item.component";
     FormulaTimeTableComponent,
     FormulaStepComponent,
     FormulaStepDetailsComponent,
+    FormulaMixingComponent,
     MixingStepsComponent,
     ProductionItemComponent,
     ProductionStepItemComponent,

@@ -1,0 +1,11 @@
+<app-show-hide-content
+  (click)="showMixing = !showMixing"
+  [show]="showMixing"
+  [title]="mixing.name"
+  [subtitle]="true"
+>
+</app-show-hide-content>
+<app-mixing-steps
+  *ngIf="showMixing"
+  [steps]="mixing.mixing_order"
+></app-mixing-steps>

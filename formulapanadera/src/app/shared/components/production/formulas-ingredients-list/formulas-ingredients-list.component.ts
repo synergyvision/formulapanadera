@@ -11,8 +11,6 @@ export class FormulasIngredientsListComponent {
   ICONS = ICONS;
 
   @Input() formulas: Array<FormulaPresentModel & { show: boolean }>;
-  @Input() highlight: boolean = false;
-  @Input() showMixing: boolean = false;
 
   constructor() {}
 }

@@ -217,10 +217,18 @@
         [title]="'formulas.mixing_order' | translate"
       >
       </app-show-hide-content>
-      <app-mixing-steps
-        *ngIf="showMixing"
-        [steps]="formula.mixing[0].mixing_order"
-      ></app-mixing-steps>
+      <span *ngIf="showMixing">
+        <app-mixing-steps
+          *ngIf="formula.mixing && formula.mixing.length==1"
+          [steps]="formula.mixing[0].mixing_order"
+        ></app-mixing-steps>
+        <span *ngIf="formula.mixing && formula.mixing.length>1">
+          <app-formula-mixing
+            *ngFor="let mixing of formula.mixing"
+            [mixing]="mixing"
+          ></app-formula-mixing>
+        </span>
+      </span>
     </ion-col>
   </ion-row>
 

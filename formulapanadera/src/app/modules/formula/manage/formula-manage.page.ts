@@ -10,6 +10,7 @@ import {
   IngredientPercentageModel,
   FormulaModel,
   StepDetailsModel,
+  FormulaMixingModel,
 } from "src/app/core/models/formula.model";
 import { FormulaStepsModal } from "src/app/shared/modal/steps/formula-steps.modal";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -282,37 +283,60 @@ export class FormulaManagePage {
     }
   }
 
-  async mixIngredients() {
+  async addMixIngredients() {
     if (this.formula.ingredients) {
+      if (!this.formula.mixing) {
+        this.formula.mixing = []
+      }
       let mixedIngredients = [
         {
           ingredients: [],
           description: "",
         },
       ];
-      if (!this.formula.mixing || this.formula.mixing.length==0 || !this.formula.mixing[0].mixing_order || this.formula.mixing[0].mixing_order.length==0) {
-        this.formula.ingredients.forEach(
-          (ingredient: IngredientPercentageModel) =>
-            mixedIngredients[0].ingredients.push(ingredient)
-        );
-      } else {
-        mixedIngredients = this.formula.mixing[0].mixing_order;
-      }
+      this.formula.ingredients.forEach(
+        (ingredient: IngredientPercentageModel) =>
+          mixedIngredients[0].ingredients.push(ingredient)
+      );
       const modal = await this.modalController.create({
         component: IngredientMixingModal,
         swipeToClose: true,
         presentingElement: this.routerOutlet.nativeEl,
         componentProps: {
+          mixing_name: "",
           formulaMixing: mixedIngredients,
-          editable: true,
+          formula: true,
         },
       });
       await modal.present();
       const { data } = await modal.onWillDismiss();
       if (data !== undefined) {
-        this.formula.mixing[0].mixing_order = data;
+        this.formula.mixing.push({ name: data.name, mixing_order: data.mixing });
       }
     }
+  }
+
+  async editMixIngredients(mixing: FormulaMixingModel, index: number) {
+    let mixedIngredients = mixing.mixing_order;
+    const modal = await this.modalController.create({
+      component: IngredientMixingModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        mixing_name: mixing.name,
+        formulaMixing: mixedIngredients,
+        formula: true,
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      this.formula.mixing[index] = { name: data.name, mixing_order: data.mixing };
+    }
+  }
+
+  async deleteMix(index: number) {
+    this.formula.mixing.splice(index, 1);
   }
 
   async describeSteps() {
@@ -596,29 +620,31 @@ export class FormulaManagePage {
   }
 
   adjustFormulaMixing(new_ingredients: IngredientPercentageModel[], deleted_ingredients: IngredientPercentageModel[]) {
-    if (this.formula.mixing && this.formula.mixing.length>0 && this.formula.mixing[0] && this.formula.mixing[0].mixing_order.length>0) {
-      if (new_ingredients.length > 0) {
-        new_ingredients.forEach(ingredient=>{
-          this.formula.mixing[0].mixing_order[0].ingredients.push(ingredient)
-        })
-      }
-      if (deleted_ingredients.length > 0) {
-        deleted_ingredients.forEach(ingredient=>{
-          this.formula.mixing[0].mixing_order.forEach((mix, mix_i) => {
-            mix.ingredients.forEach((mix_ingredient, ingredient_i) => {
-              if (mix_ingredient.ingredient.id == ingredient.ingredient.id) {
-                this.formula.mixing[0].mixing_order[mix_i].ingredients.splice(
-                  ingredient_i,
-                  1
-                );
-                if (this.formula.mixing[0].mixing_order[mix_i].ingredients.length == 0) {
-                  this.formula.mixing[0].mixing_order.splice(mix_i,1)
+    if (this.formula.mixing && this.formula.mixing.length > 0 && this.formula.mixing[0] && this.formula.mixing[0].mixing_order.length > 0) {
+      this.formula.mixing.forEach((mixing, mixing_index) => {
+        if (new_ingredients.length > 0) {
+          new_ingredients.forEach(ingredient=>{
+            this.formula.mixing[mixing_index].mixing_order[0].ingredients.push(ingredient)
+          })
+        }
+        if (deleted_ingredients.length > 0) {
+          deleted_ingredients.forEach(ingredient=>{
+            mixing.mixing_order.forEach((mix, mix_i) => {
+              mix.ingredients.forEach((mix_ingredient, ingredient_i) => {
+                if (mix_ingredient.ingredient.id == ingredient.ingredient.id) {
+                  this.formula.mixing[mixing_index].mixing_order[mix_i].ingredients.splice(
+                    ingredient_i,
+                    1
+                  );
+                  if (this.formula.mixing[mixing_index].mixing_order[mix_i].ingredients.length == 0) {
+                    this.formula.mixing[mixing_index].mixing_order.splice(mix_i,1)
+                  }
                 }
-              }
+              })
             })
           })
-        })
-      }
+        }
+      })
     }
   }
 

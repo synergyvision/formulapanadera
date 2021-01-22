@@ -173,13 +173,13 @@ export class IngredientManagePage implements OnInit {
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
         formulaMixing: mixedIngredients,
-        editable: true,
+        formula: false
       },
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
-      this.ingredient.formula.mixing = data;
+      this.ingredient.formula.mixing = data.mixing;
     }
   }
 
