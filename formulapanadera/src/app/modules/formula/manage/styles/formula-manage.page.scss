@@ -25,10 +25,6 @@ ion-back-button {
 
   .inputs-list {
     padding: 0;
-
-    .no-padding {
-      padding: 0;
-    }
   }
 
   .card {
@@ -133,4 +129,32 @@ ion-back-button {
 
 .formula-checkbox {
   margin-right: var(--page-margin);
+}
+
+.content-title {
+  --padding-start: var(--app-narrow-margin);
+  border-top: 1px solid lightgray;
+
+  .title-row {
+    width: 100%;
+    padding: 0;
+
+    .content-subtitle-name {
+      text-align: start;
+      color: var(--ion-color-secondary);
+      font-size: 15px;
+    }
+
+    .icon-col {
+      align-self: center;
+      text-align: end;
+      ion-icon {
+        vertical-align: bottom;
+      }
+    }
+  }
+}
+
+.no-padding {
+  padding: 0;
 }

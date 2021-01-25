@@ -140,8 +140,15 @@
     ></app-show-hide-content>
     <span *ngIf="step.step.number == 1 && showMixing">
       <app-mixing-steps
+        *ngIf="formula.formula.mixing && formula.formula.mixing.length==1"
         [steps]="formula.formula.mixing[0].mixing_order"
       ></app-mixing-steps>
+      <span *ngIf="formula.formula.mixing && formula.formula.mixing.length>1">
+        <app-formula-mixing
+          *ngFor="let mixing of formula.formula.mixing"
+          [mixing]="mixing"
+        ></app-formula-mixing>
+      </span>
     </span>
     <span *ngIf="step.step.ingredients && stepHasMixing() && showMixing">
       <span *ngFor="let ingredientFormula of getStepCompoundIngredients()">

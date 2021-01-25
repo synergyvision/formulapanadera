@@ -1,3 +1,10 @@
+// Variables
+
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
 .btn-med {
   font-size: 26px;
   margin: 0 0 0 10px;

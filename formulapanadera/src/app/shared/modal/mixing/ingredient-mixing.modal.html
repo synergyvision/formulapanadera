@@ -12,6 +12,18 @@
 
 <ion-content class="ingredient-content">
   <ion-list lines="full" class="ingredients-list">
+    <ion-item class="input-item" *ngIf="formula">
+      <ion-label color="primary" position="stacked"
+        >{{'formulas.formula_name' | translate}}</ion-label
+      >
+      <ion-input
+        type="text"
+        [(ngModel)]="mixing_name"
+        class="formula-name"
+        required
+      ></ion-input>
+    </ion-item>
+    <app-divider *ngIf="formula"></app-divider>
     <span *ngFor="let mixStep of formulaMixing; index as i">
       <ion-item-divider class="divider">
         <ion-label>{{'formulas.step' | translate}} {{i+1}}</ion-label>
@@ -37,7 +49,7 @@
               </ion-col>
             </ion-row>
           </ion-col>
-          <ion-col size="3" *ngIf="editable">
+          <ion-col size="3">
             <ion-select
               [value]="i"
               (ionChange)="changeMixingOrder($event, i, item)"
@@ -56,7 +68,7 @@
         </ion-row>
       </ion-item>
 
-      <ion-item *ngIf="editable || mixStep.description">
+      <ion-item>
         <ion-label color="medium" position="stacked"
           >{{'formulas.description' | translate}}</ion-label
         >
@@ -66,19 +78,18 @@
           rows="1"
           type="text"
           [(ngModel)]="mixStep.description"
-          [readonly]="!editable"
         ></ion-textarea>
       </ion-item>
     </span>
   </ion-list>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="editable">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="addStep()">
       <ion-icon [name]="ICONS.add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
 
-<ion-footer *ngIf="editable">
+<ion-footer>
   <ion-row class="form-actions-wrapper">
     <ion-col>
       <ion-button
