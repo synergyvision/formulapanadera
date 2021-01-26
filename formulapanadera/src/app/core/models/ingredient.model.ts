@@ -31,6 +31,5 @@ export class IngredientModel {
       max: number;
     };
   };
-  creator: string;
   user: UserOwnerModel;
 }

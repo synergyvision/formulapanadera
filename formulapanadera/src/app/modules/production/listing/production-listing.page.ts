@@ -33,6 +33,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
   currency = CURRENCY;
   productions: ProductionModel[] & ShellModel;
 
+  segment: string = "mine";
   user_email: string;
 
   production_in_process: ProductionModel;
@@ -89,6 +90,11 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
       filters.cost.upper,
       filteredProductions
     );
+    filteredProductions = this.productionService.searchProductionsByShared(
+      this.segment,
+      filteredProductions,
+      this.user_email
+    );
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredProductions),
@@ -115,6 +121,11 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
     updateSearchObservable.subscribe((value) => {
       this.productions = this.productionService.sortProductions(value);
     });
+  }
+
+  segmentChanged(ev: any) {
+    this.segment = ev.detail.value;
+    this.searchList();
   }
 
   createProduction() {

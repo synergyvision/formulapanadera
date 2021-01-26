@@ -30,6 +30,11 @@
 .production-content {
   --background: var(--page-background);
 
+  .segment {
+    padding: 5px var(--page-margin);
+    border-radius: 0px;
+  }
+
   .productions-list {
     padding-top: 0;
     padding-bottom: 0;
@@ -45,4 +50,8 @@
       height: 100%;
     }
   }
+}
+
+ion-segment-button {
+  font-size: 14px;
 }

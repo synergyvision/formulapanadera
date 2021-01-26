@@ -33,7 +33,8 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   currency = CURRENCY;
   ingredients: IngredientModel[] & ShellModel;
 
-  segment: string = "simple";
+  segment: string = "mine";
+  typeSegment: string = "simple";
 
   user_email: string;
 
@@ -111,8 +112,13 @@ export class IngredientListingPage implements OnInit, OnDestroy {
       );
     }
     filteredIngredients = this.ingredientService.searchIngredientsByFormula(
-      this.segment,
+      this.typeSegment,
       filteredIngredients
+    );
+    filteredIngredients = this.ingredientService.searchIngredientsByShared(
+      this.segment,
+      filteredIngredients,
+      this.user_email
     );
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
@@ -144,6 +150,11 @@ export class IngredientListingPage implements OnInit, OnDestroy {
 
   segmentChanged(ev: any) {
     this.segment = ev.detail.value;
+    this.searchList();
+  }
+
+  typeSegmentChanged(ev: any) {
+    this.typeSegment = ev.detail.value;
     this.searchList();
   }
 
