@@ -11,6 +11,7 @@ import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
+import { UserStorageService } from "src/app/core/services/storage/user.service";
 
 @Component({
   selector: "app-ingredient-picker-modal",
@@ -37,16 +38,19 @@ export class IngredientPickerModal implements OnInit {
 
   segment: string = "simple";
 
+  user_email: string;
+
   @HostBinding("class.is-shell") get isShell() {
     return this.ingredients && this.ingredients.isShell ? true : false;
   }
   constructor(
     private ingredientService: IngredientService,
     private ingredientCRUDService: IngredientCRUDService,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private userStorageService: UserStorageService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
       dual: new FormControl({ lower: 0, upper: 1000 }),
@@ -61,9 +65,10 @@ export class IngredientPickerModal implements OnInit {
 
     this.searchingState();
 
+    this.user_email = (await this.userStorageService.getUser()).email;
     if (!this.ingredientService.getIngredients()) {
       this.ingredientCRUDService
-        .getIngredientsDataSource()
+        .getIngredientsDataSource(this.user_email)
         .subscribe((ingredients) => {
           this.ingredientService.setIngredients(
             ingredients as IngredientModel[] & ShellModel

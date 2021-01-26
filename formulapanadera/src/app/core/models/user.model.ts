@@ -1,3 +1,16 @@
+export class UserOwnerModel {
+  // If empty is public
+  owner: string;
+  // Used to clone
+  can_clone: boolean;
+  cloned: boolean;
+  reference: string; // ID of original
+  shared_users: Array<UserResumeModel>;
+  // Used to credit the users
+  creator: ModifierModel;
+  modifiers: Array<ModifierModel>;
+}
+
 export class UserResumeModel {
   name: string;
   email: string;

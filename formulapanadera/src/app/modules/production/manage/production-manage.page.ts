@@ -67,7 +67,7 @@ export class ProductionManagePage implements OnInit {
       state.production.formulas.forEach((formula) => {
         this.production.formulas.push(formula);
       });
-      this.production.owner = state.production.owner;
+      this.production.user = state.production.user;
     }
     let user = await this.userStorageService.getUser();
     this.current_user = {name: user.name, email: user.email}
@@ -103,7 +103,7 @@ export class ProductionManagePage implements OnInit {
           await loading.dismiss();
         });
     } else {
-      this.production.owner = {
+      this.production.user.creator = {
         name: this.current_user.name,
         email: this.current_user.email,
         date: new Date(),

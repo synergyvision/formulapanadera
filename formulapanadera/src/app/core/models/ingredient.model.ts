@@ -5,6 +5,7 @@ import {
   IngredientMixingModel,
 } from "./formula.model";
 import { ReferenceModel } from "./shared.model";
+import { UserOwnerModel } from "./user.model";
 
 export type ProportionFactor = {
   factor: typeof PROPORTION_FACTOR[number];
@@ -18,7 +19,6 @@ export class IngredientModel {
   hydration: number;
   cost: number;
   can_be_modified: boolean;
-  creator: string;
   references: Array<ReferenceModel>;
   formula?: {
     // if the ingredient has its own formula
@@ -31,4 +31,6 @@ export class IngredientModel {
       max: number;
     };
   };
+  creator: string;
+  user: UserOwnerModel;
 }

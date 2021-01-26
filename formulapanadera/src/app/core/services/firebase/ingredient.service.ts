@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 
 import { IngredientModel } from "../../models/ingredient.model";
 import { COLLECTIONS } from "src/app/config/firebase";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class IngredientCRUDService {
@@ -14,10 +15,26 @@ export class IngredientCRUDService {
   /*
     Ingredient Collection
   */
-  public getIngredientsDataSource(): Observable<Array<IngredientModel>> {
+  public getIngredientsDataSource(
+    user_email: string
+  ): Observable<Array<IngredientModel>> {
     return this.afs
-      .collection<IngredientModel>(this.collection)
+      .collection<IngredientModel>(this.collection, (ref) =>
+        ref.where("user.owner", "in", [user_email, ""])
+      )
       .valueChanges({ idField: "id" });
+  }
+
+  public getIngredient(
+    id: string
+  ): Observable<IngredientModel> {
+    return this.afs.collection<IngredientModel>(this.collection).doc(id).snapshotChanges()
+    .pipe(
+      map( a => {
+        const data = a.payload.data();
+        return data as IngredientModel;
+      })
+    );
   }
 
   /*

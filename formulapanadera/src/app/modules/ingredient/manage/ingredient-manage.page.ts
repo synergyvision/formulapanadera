@@ -286,7 +286,7 @@ export class IngredientManagePage implements OnInit {
       this.presentToast(false, true);
     } else {
       if (!this.update) {
-        this.ingredient.creator = this.user.email;
+        this.ingredient.user.owner = this.user.email;
         this.ingredientCRUDService
           .createIngredient(this.ingredient)
           .then(() => {

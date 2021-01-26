@@ -20,7 +20,7 @@ export class ProductionCRUDService {
   ): Observable<Array<ProductionModel>> {
     return this.afs
       .collection<ProductionModel>(this.collection, (ref) =>
-        ref.where("owner.email", "==", user_email)
+        ref.where("user.owner", "in", [user_email, ""])
       )
       .valueChanges({ idField: "id" });
   }

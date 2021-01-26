@@ -705,7 +705,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             let production: ProductionModel = new ProductionModel();
             production.name = this.formula.name;
             production.formulas = [{ formula: this.formula, number: data.number, warming_time: 10 }]
-            production.owner = {
+            production.user.creator = {
               name: this.user.name,
               email: this.user.email,
               date: new Date(),
