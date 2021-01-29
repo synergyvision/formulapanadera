@@ -18,6 +18,20 @@ ion-back-button {
 .manage-production-content {
   --background: var(--page-background);
 
+  .input-item {
+    --padding-start: var(--app-narrow-margin);
+
+    .label {
+      opacity: 1 !important;
+      color: var(--ion-color-medium);
+    }
+
+    .checkbox {
+      opacity: 1 !important;
+      margin-right: var(--page-margin);
+    }
+  }
+
   .list-col {
     padding: 0;
     background: white;
@@ -40,4 +54,9 @@ ion-back-button {
       color: var(--ion-color-secondary);
     }
   }
+}
+
+.detail-col {
+  padding: 0;
+  background: white;
 }

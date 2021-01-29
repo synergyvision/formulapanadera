@@ -17,14 +17,14 @@
           </h2>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="formula.id !== undefined">
+      <ion-row *ngIf="formula.name !== undefined">
         <ion-col size="12" class="properties-col">
           <p class="formula-user">
             {{ formula.user.creator.name }}
           </p>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="formula.id !== undefined">
+      <ion-row *ngIf="formula.name !== undefined">
         <ion-col size="3" class="properties-col">
           <p class="formulas-description">
             <ion-icon class="properties-icon" [name]="ICONS.water"></ion-icon

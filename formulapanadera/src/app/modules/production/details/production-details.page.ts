@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ActionSheetController, AlertController, LoadingController, ToastController } from "@ionic/angular";
+import { ActionSheetController, AlertController, IonRouterOutlet, LoadingController, ModalController, ToastController } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
 import { ICONS } from "src/app/config/icons";
@@ -10,10 +10,13 @@ import {
   FormulaPresentModel,
   ProductionModel,
 } from "src/app/core/models/production.model";
+import { UserGroupModel, UserResumeModel } from "src/app/core/models/user.model";
 import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
 import { FormulaService } from "src/app/core/services/formula.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
+import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group-picker.modal";
 
 @Component({
   selector: "app-production-details",
@@ -36,6 +39,10 @@ export class ProductionDetailsPage implements OnInit {
 
   production_in_process: boolean = false;
 
+  user: UserResumeModel = new UserResumeModel();
+  is_modifier: boolean = false
+  public: boolean = false
+
   constructor(
     private formulaService: FormulaService,
     private languageService: LanguageService,
@@ -47,6 +54,9 @@ export class ProductionDetailsPage implements OnInit {
     private toastController: ToastController,
     private productionCRUDService: ProductionCRUDService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
+    private userStorageService: UserStorageService,
+    private modalController: ModalController,
+    private routerOutlet: IonRouterOutlet
   ) {
     this.showIngredients = true;
     this.showDetails = false;
@@ -73,6 +83,18 @@ export class ProductionDetailsPage implements OnInit {
       ) {
         this.production_in_process = true;
       }
+
+      if (this.production.user.owner == "") {
+        this.public = true;
+      }
+      let user = await this.userStorageService.getUser();
+      this.user = {name: user.name, email: user.email}
+      this.is_modifier = false;
+      this.production.user.modifiers.forEach((user) => {
+        if (user.email == this.user.email) {
+          this.is_modifier = true;
+        }
+      });
     });
   }
 
@@ -176,33 +198,72 @@ export class ProductionDetailsPage implements OnInit {
   }
 
   async presentOptions() {
+    let current_user = this.user.email;
+    let buttons = [];
+    if (
+      this.production.user.cloned ||
+      (!this.production.user.cloned &&
+        this.production.user.creator.email == current_user)
+    ) {
+      buttons.push({
+        text: this.languageService.getTerm("action.update"),
+        icon: ICONS.create,
+        cssClass: "action-icon",
+        handler: () => {
+          this.updateProduction();
+        },
+      });
+    }
+    if (
+      this.production.user.owner &&
+      ((this.production.user.cloned && this.is_modifier) ||
+        this.production.user.creator.email == current_user)
+    ) {
+      // If not public but is cloned and was modified or user is creator
+      buttons.push({
+        text: this.languageService.getTerm("action.share"),
+        icon: ICONS.share,
+        cssClass: "action-icon",
+        handler: () => {
+          this.shareProduction();
+        },
+      });
+    }
+    if (this.production.user.can_clone || this.production.user.creator.email == current_user) {
+      buttons.push({
+        text: this.languageService.getTerm("action.clone"),
+        icon: ICONS.clone,
+        cssClass: "action-icon",
+        handler: () => {
+          this.cloneProduction();
+        },
+      });
+    }
+    if (this.production.user.owner == current_user ||
+      (this.production.user.owner == "" &&
+        this.production.user.creator.email == current_user)) {
+      // If not public or cloned
+      buttons.push({
+        text: this.languageService.getTerm("action.delete"),
+        icon: ICONS.trash,
+        cssClass: "delete-icon",
+        handler: () => {
+          this.deleteProduction();
+        },
+      });
+    }
+    buttons.push(
+      {
+        text: this.languageService.getTerm("action.cancel"),
+        icon: ICONS.close,
+        role: "cancel",
+        cssClass: "cancel-icon",
+        handler: () => {},
+      }
+    );
     const actionSheet = await this.actionSheetController.create({
       cssClass: "formula-options",
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.update"),
-          icon: ICONS.create,
-          cssClass: "action-icon",
-          handler: () => {
-            this.updateProduction();
-          },
-        },
-        {
-          text: this.languageService.getTerm("action.delete"),
-          icon: ICONS.trash,
-          cssClass: "delete-icon",
-          handler: () => {
-            this.deleteProduction();
-          },
-        },
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          icon: ICONS.close,
-          role: "cancel",
-          cssClass: "cancel-icon",
-          handler: () => {},
-        },
-      ],
+      buttons: buttons
     });
     await actionSheet.present();
   }
@@ -218,6 +279,182 @@ export class ProductionDetailsPage implements OnInit {
         state: { production: this.original_production },
       }
     );
+  }
+
+  async shareProduction() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.share"),
+      message: this.languageService.getTerm("formulas.share.options.instructions"),
+      cssClass: "alert share-alert",
+      inputs: [
+        {
+          name: 'can_clone',
+          type: 'checkbox',
+          label: this.languageService.getTerm("formulas.can_clone"),
+          value: 'can_clone',
+          checked: this.production.user.can_clone
+        },
+      ],
+      buttons: [
+        {
+          text: this.languageService.getTerm("formulas.share.options.one"),
+          cssClass: "confirm-alert-accept",
+          handler: (data) => {
+            let can_clone: boolean = data && data.length > 0 && data[0] == "can_clone"
+            this.shareOne(can_clone)
+          },
+        },
+        {
+          text: this.languageService.getTerm("formulas.share.options.group"),
+          cssClass: "confirm-alert-accept",
+          handler: (data) => {
+            let can_clone: boolean = data && data.length > 0 && data[0] == "can_clone"
+            this.shareGroup(can_clone)
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async shareOne(can_clone: boolean) {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.share"),
+      message: this.languageService.getTerm("formulas.share.instructions"),
+      cssClass: "alert share-alert",
+      inputs: [
+        {
+          name: "email",
+          type: "email",
+          placeholder: this.languageService.getTerm("input.email"),
+        },
+      ],
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: (data) => {
+            this.shareProductionToEmail({name: "----", email: data.email}, can_clone)
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+  
+  async shareGroup(can_clone: boolean) {
+    const modal = await this.modalController.create({
+      component: UserGroupPickerModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+
+    if (data !== undefined) {
+      let user_groups: UserGroupModel[] = data.user_groups as UserGroupModel[]
+      let users: UserResumeModel[] = [];
+      user_groups.forEach(group => {
+        group.users.forEach(user => {
+          users.push(user)
+        })
+      })
+      users = [...new Set(users)];
+      users.forEach(user => {
+        this.shareProductionToEmail(user, can_clone, true)
+      })
+    }
+  }
+  
+  shareProductionToEmail(user_to_share: UserResumeModel, can_clone: boolean, toast: boolean = true) {
+    let shared: boolean = false
+
+    let production = JSON.parse(JSON.stringify(this.production));
+    production.user.can_clone = can_clone;
+    production.user.owner = user_to_share.email;
+    production.user.cloned = false;
+    production.user.reference = this.production.id;
+    production.user.shared_users = [];
+
+    if (this.production.user.shared_users && this.production.user.shared_users.length > 0) {
+      this.production.user.shared_users.forEach(user => {
+        if (user.email == user_to_share.email) {
+          shared = true
+        }
+      })
+      if (shared == false) {
+        this.production.user.shared_users.push(user_to_share);
+      }
+    } else {
+      this.production.user.shared_users.push(user_to_share);
+    }
+
+    if (user_to_share.email == this.user.email) {
+      shared = true
+    }
+
+    if (shared == false) {
+      delete(production.id)
+      this.productionCRUDService
+        .createProduction(production)
+        .then(() => {
+            this.productionCRUDService
+              .updateProduction(this.production)
+              .then(() => {
+                if (toast) {
+                  this.presentToast(true, user_to_share.email);
+                }
+              })
+              .catch(() => {
+                this.presentToast(false, user_to_share.email);
+              });
+        })
+        .catch(() => {
+          this.presentToast(false, user_to_share.email);
+        });
+    } else {
+      this.presentToast(false, user_to_share.email);
+    }
+  }
+
+  async cloneProduction() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.clone"),
+      message: this.languageService.getTerm("formulas.clone.instructions"),
+      cssClass: "alert clone-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            let production = JSON.parse(JSON.stringify(this.production));
+            delete(production.id)
+            production.user.owner = this.user.email;
+            production.user.cloned = true;
+            production.user.reference = "";
+            production.name = `${
+              this.production.name
+            } (${this.languageService.getTerm("action.copy")})`;
+            this.productionCRUDService.createProduction(production).then(() => {
+              this.router.navigateByUrl(
+                APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
+              );
+            });
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 
   startProduction() {
@@ -280,11 +517,16 @@ export class ProductionDetailsPage implements OnInit {
     await alert.present();
   }
 
-  async presentToast(success: boolean) {
+  async presentToast(success: boolean, email?: string) {
+    let message = ""
+    message = `${email}: `;
+    if (success) {
+      message = message + this.languageService.getTerm("formulas.share.success")
+    } else {
+      message = message + this.languageService.getTerm("formulas.share.error")
+    }
     const toast = await this.toastController.create({
-      message: success
-        ? this.languageService.getTerm("send.success")
-        : this.languageService.getTerm("send.error"),
+      message: message,
       color: "secondary",
       duration: 5000,
       position: "top",
@@ -297,6 +539,34 @@ export class ProductionDetailsPage implements OnInit {
       ],
     });
     toast.present();
+  }
+
+  async changeProduction(type: 'public' | 'clone', value: any) {
+    const loading = await this.loadingController.create({
+      cssClass: "app-send-loading",
+      message: this.languageService.getTerm("loading"),
+    });
+    await loading.present();
+
+    if (type == 'public') {
+      if (value) {
+        this.production.user.owner = "";
+        this.production.user.cloned = false;
+      } else {
+        this.production.user.owner = this.user.email;
+      }
+    } else {
+      this.production.user.can_clone = value
+    }
+    this.productionCRUDService
+      .updateProduction(this.production)
+      .then(() => {})
+      .catch(() => {
+        this.presentToast(false);
+      })
+      .finally(async () => {
+        await loading.dismiss();
+      });
   }
 
   returnToList() {

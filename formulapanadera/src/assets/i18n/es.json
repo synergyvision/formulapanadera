@@ -182,6 +182,8 @@
     "empty": "No se encontraron ingredientes",
     "compensation_percentage": "Factor de compensación",
     "suggested_values": "Valores sugeridos",
+    "public": "Público",
+    "can_clone": "Puede ser clonado",
     "type": {
       "name": "Tipo",
       "simple": "Simple",

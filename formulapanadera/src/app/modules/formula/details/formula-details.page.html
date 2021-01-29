@@ -91,7 +91,7 @@
           [ngModel]="public"
           slot="start"
           [disabled]="!(user.email === formula.user.creator.email) && !is_modifier"
-          (ngModelChange)="changeFormula()"
+          (ngModelChange)="changeFormula('public', $event)"
         >
         </ion-checkbox>
       </ion-item>
@@ -108,7 +108,7 @@
           [ngModelOptions]="{standalone: true}"
           slot="start"
           [disabled]="!(user.email === formula.user.creator.email) && !is_modifier"
-          (ngModelChange)="changeFormula()"
+          (ngModelChange)="changeFormula('clone', $event)"
         >
         </ion-checkbox>
       </ion-item>

@@ -25,6 +25,16 @@ ion-back-button {
   .input-item {
     --padding-start: var(--app-narrow-margin);
 
+    .label {
+      opacity: 1 !important;
+      color: var(--ion-color-medium);
+    }
+
+    .checkbox {
+      opacity: 1 !important;
+      margin-right: var(--page-margin);
+    }
+
     .flour-label {
       opacity: 1 !important;
       color: var(--ion-color-medium);

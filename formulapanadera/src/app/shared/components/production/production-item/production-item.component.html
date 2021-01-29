@@ -1,6 +1,6 @@
 <ion-item
-  detail="true"
-  button="true"
+  [detail]="true"
+  [button]="true"
   class="production-item"
   [ngClass]="{ 'background-gray': even }"
 >
@@ -17,7 +17,14 @@
           </h2>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="production.id !== undefined">
+      <ion-row *ngIf="production.name !== undefined">
+        <ion-col size="12" class="properties-col">
+          <p class="production-user">
+            {{ production.user.creator.name }}
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="production.name !== undefined">
         <ion-col size="12" class="cost-col">
           <p class="productions-description production-cost" *ngIf="totalCost() && totalCost()>0">
             {{ totalCost() | number: FORMULA_COST_FORMAT }}

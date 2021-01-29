@@ -618,18 +618,22 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     toast.present();
   }
 
-  async changeFormula() {
+  async changeFormula(type: 'public' | 'clone', value: any) {
     const loading = await this.loadingController.create({
       cssClass: "app-send-loading",
       message: this.languageService.getTerm("loading"),
     });
     await loading.present();
 
-    if (this.public) {
-      this.formula.user.owner = "";
-      this.formula.user.cloned = false;
+    if (type == 'public') {
+      if (value) {
+        this.formula.user.owner = "";
+        this.formula.user.cloned = false;
+      } else {
+        this.formula.user.owner = this.user.email;
+      }
     } else {
-      this.formula.user.owner = this.user.email;
+      this.formula.user.can_clone = value
     }
     this.formulaCRUDService
       .updateFormula(this.formula)
