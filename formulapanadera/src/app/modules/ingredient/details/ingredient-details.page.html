@@ -12,7 +12,6 @@
     <ion-title> {{ 'ingredients.name' | translate }} </ion-title>
     <ion-buttons
       slot="primary"
-      *ngIf="user.email === ingredient.creator || ingredient.can_be_modified"
     >
       <ion-button (click)="presentOptions()">
         <ion-icon

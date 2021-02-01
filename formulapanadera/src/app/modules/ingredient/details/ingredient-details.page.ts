@@ -18,6 +18,7 @@ import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group
   templateUrl: "./ingredient-details.page.html",
   styleUrls: [
     "./styles/ingredient-details.page.scss",
+    "./../../../shared/styles/note.alert.scss",
     "./../../../shared/styles/confirm.alert.scss"
   ],
 })
@@ -292,16 +293,16 @@ export class IngredientDetailsPage implements OnInit {
       this.ingredientCRUDService
         .createIngredient(ingredient)
         .then(() => {
-            this.ingredientCRUDService
-              .updateIngredient(this.ingredient)
-              .then(() => {
-                if (toast) {
-                  this.presentToast(true, user_to_share.email);
-                }
-              })
-              .catch(() => {
-                this.presentToast(false, user_to_share.email);
-              });
+          this.ingredientCRUDService
+            .updateIngredient(this.ingredient)
+            .then(() => {
+              if (toast) {
+                this.presentToast(true, user_to_share.email);
+              }
+            })
+            .catch(() => {
+              this.presentToast(false, user_to_share.email);
+            });
         })
         .catch(() => {
           this.presentToast(false, user_to_share.email);
