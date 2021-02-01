@@ -20,6 +20,7 @@ ion-back-button {
 
   .input-item {
     --padding-start: var(--page-margin);
+    font-size: 14px;
 
     .proportion-label {
       font-size: 16px;
@@ -130,4 +131,8 @@ ion-back-button {
 
 .disabled {
   background: lightgray;
+}
+
+.formula-checkbox {
+  margin-right: var(--page-margin);
 }

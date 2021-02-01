@@ -519,7 +519,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             });
             await loading.present();
 
-            this.formulaCRUDService.deleteFormula(this.formula.id)
+            this.formulaCRUDService
+              .deleteFormula(this.formula.id)
               .then(() => {
                 if (this.formula.user.reference) {
                   this.formulaCRUDService.getFormula(this.formula.user.reference)
@@ -541,17 +542,13 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
                     APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
                   )
                 }
-                
-                this.router.navigateByUrl(
-                  APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-                )
+              })
               .catch(() => {
                 this.presentToast(false);
               })
               .finally(async () => {
                 await loading.dismiss();
               });
-            });
           },
         },
       ],

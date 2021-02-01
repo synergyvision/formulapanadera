@@ -498,11 +498,26 @@ export class ProductionDetailsPage implements OnInit {
             this.productionCRUDService
               .deleteProduction(this.production.id)
               .then(async () => {
-                this.router.navigateByUrl(
-                  APP_URL.menu.name +
-                    "/" +
-                    APP_URL.menu.routes.production.main
-                );
+                if (this.production.user.reference) {
+                  this.productionCRUDService.getProduction(this.production.user.reference)
+                    .subscribe((original_production) => {
+                      original_production.user.shared_users.forEach((user) => {
+                        if (user.email == this.user.email) {
+                          original_production.user.shared_users.splice(original_production.user.shared_users.indexOf(user), 1)
+                        }
+                      })
+                      this.productionCRUDService.updateProduction(original_production)
+                        .then(() => {
+                          this.router.navigateByUrl(
+                            APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
+                          )
+                        })
+                    });
+                } else {
+                  this.router.navigateByUrl(
+                    APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
+                  )
+                }
               })
               .catch(() => {
                 this.presentToast(false);

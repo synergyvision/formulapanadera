@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 import { IngredientModel } from "../../../core/models/ingredient.model";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -46,7 +46,6 @@ export class IngredientDetailsPage implements OnInit {
     private alertController: AlertController,
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private ngZone: NgZone,
     private languageService: LanguageService,
     private userStorageService: UserStorageService,
     private ingredientCRUDService: IngredientCRUDService,
@@ -391,13 +390,26 @@ export class IngredientDetailsPage implements OnInit {
             this.ingredientCRUDService
               .deleteIngredient(this.ingredient.id)
               .then(() => {
-                this.ngZone.run(() =>
-                  this.router.navigate([
-                    APP_URL.menu.name +
-                      "/" +
-                      APP_URL.menu.routes.ingredient.main,
-                  ])
-                );
+                if (this.ingredient.user.reference) {
+                  this.ingredientCRUDService.getIngredient(this.ingredient.user.reference)
+                    .subscribe((original_ingredient) => {
+                      original_ingredient.user.shared_users.forEach((user) => {
+                        if (user.email == this.user.email) {
+                          original_ingredient.user.shared_users.splice(original_ingredient.user.shared_users.indexOf(user), 1)
+                        }
+                      })
+                      this.ingredientCRUDService.updateIngredient(original_ingredient)
+                        .then(() => {
+                          this.router.navigateByUrl(
+                            APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+                          )
+                        })
+                    });
+                } else {
+                  this.router.navigateByUrl(
+                    APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+                  )
+                }
               })
               .catch(() => {
                 this.presentToast(false);

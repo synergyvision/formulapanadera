@@ -147,8 +147,8 @@
     },
     "empty": "No se encontraron fórmulas",
     "share": {
-      "instructions": "Ingresa el correo electrónico del usuario al que deseas compartir la fórmula",
-      "success": "Fórmula compartida",
+      "instructions": "Ingresa el correo electrónico del usuario al que deseas compartir",
+      "success": "Compartida correctamente",
       "error": "Ocurrió un error. Intente de nuevo",
       "mine": "Propias",
       "shared": "Compartidas",
@@ -156,7 +156,7 @@
       "empty": "No se encontraron compartidos",
       "public": "Públicas",
       "options": {
-        "instructions": "¿Deseas compartir la fórmula a un único usuario o a un grupo?",
+        "instructions": "¿Deseas compartir a un único usuario o a un grupo?",
         "one": "Usuario",
         "group": "Grupo"
       }
@@ -165,7 +165,7 @@
       "units": "Unidades a elaborar"
     },
     "clone": {
-      "instructions": "Al clonar esta fórmula podrás modificarla, esta aparecerá entre tus fórmulas. La versión original se conservará"
+      "instructions": "El clonar te permite modificar, una nueva versión aparecerá en la pestaña \"Propias\". La versión original se conservará"
     }
   },
   "ingredients": {
@@ -226,7 +226,7 @@
     "logout": "Cerrar sesión"
   },
   "production": {
-    "name": "Producción",
+    "name": "Producciones",
     "create": "Crear producción",
     "update": "Modificar producción",
     "production_name": "Nombre",

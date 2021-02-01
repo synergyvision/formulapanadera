@@ -45,7 +45,7 @@ export class FormulaManagePage {
   original_formula: FormulaModel = new FormulaModel();
 
   manageFormulaForm: FormGroup;
-  formulaUnit = "gr";
+  formulaUnit = "%";
   temperatureUnit = "C";
   update: boolean = false;
   public = false;
@@ -89,7 +89,6 @@ export class FormulaManagePage {
       };
     } else {
       this.update = true;
-      this.formulaUnit = "%";
       this.manageFormulaForm = new FormGroup({
         name: new FormControl(state.formula.name, Validators.required),
         units: new FormControl(state.formula.units, Validators.required),

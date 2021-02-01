@@ -169,7 +169,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   }
 
   ingredientDetails(ingredient: IngredientModel) {
-    if (ingredient.id !== undefined) {
+    if (ingredient.name !== undefined) {
       this.router.navigateByUrl(
         APP_URL.menu.name +
           "/" +

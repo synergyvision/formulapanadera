@@ -37,6 +37,16 @@ export class ProductionCRUDService {
     );
   }
 
+  public getSharedProductions(
+    id: string
+  ): Observable<Array<ProductionModel>> {
+    return this.afs
+      .collection<ProductionModel>(this.collection, (ref) =>
+        ref.where("user.reference", "==", id)
+      )
+      .valueChanges({ idField: "id" });
+  }
+
   /*
     Production Management
   */

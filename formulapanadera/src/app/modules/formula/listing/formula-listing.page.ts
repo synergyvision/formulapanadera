@@ -145,7 +145,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
   }
 
   formulaDetails(formula: FormulaModel) {
-    if (formula.id !== undefined) {
+    if (formula.name !== undefined) {
       this.router.navigateByUrl(
         APP_URL.menu.name +
           "/" +

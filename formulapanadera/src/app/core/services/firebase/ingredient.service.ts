@@ -37,6 +37,16 @@ export class IngredientCRUDService {
     );
   }
 
+  public getSharedIngredients(
+    id: string
+  ): Observable<Array<IngredientModel>> {
+    return this.afs
+      .collection<IngredientModel>(this.collection, (ref) =>
+        ref.where("user.reference", "==", id)
+      )
+      .valueChanges({ idField: "id" });
+  }
+
   /*
     Ingredient Management
   */

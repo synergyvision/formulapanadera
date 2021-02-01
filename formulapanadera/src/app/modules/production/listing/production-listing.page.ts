@@ -139,7 +139,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
   }
 
   productionDetails(production: ProductionModel) {
-    if (production.id !== undefined) {
+    if (production.name !== undefined) {
       this.router.navigateByUrl(
         APP_URL.menu.name +
           "/" +
