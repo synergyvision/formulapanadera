@@ -88,7 +88,7 @@
         <ion-checkbox
           class="checkbox"
           color="primary"
-          [ngModel]="public"
+          [ngModel]="!this.formula.user.owner"
           slot="start"
           [disabled]="!(user.email === formula.user.creator.email) && !is_modifier"
           (ngModelChange)="changeFormula('public', $event)"

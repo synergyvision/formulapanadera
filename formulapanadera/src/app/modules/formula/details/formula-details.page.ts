@@ -250,8 +250,20 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         text: this.languageService.getTerm("action.share"),
         icon: ICONS.share,
         cssClass: "action-icon",
-        handler: () => {
-          this.shareFormula();
+        handler: async () => {
+          let private_ing: boolean = false
+          let share: boolean = true
+          this.formula.ingredients.forEach(ingredient => {
+            if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+              private_ing = true
+            }
+          })
+          if (private_ing) {
+            share = await this.sharePrivateIngredientsFormulaQuestion()
+          }
+          if (share == true) {
+            this.shareFormula();
+          }
         },
       });
     }
@@ -354,6 +366,38 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     await alert.present();
+  }
+
+  async sharePrivateIngredientsFormulaQuestion() {
+    let share;
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.confirm"),
+      message: this.languageService.getTerm("action.formula_privacy_question"),
+      cssClass: "confirm-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {
+            alert.dismiss(false);
+            return false;
+          },
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            alert.dismiss(true);
+            return false;
+          },
+        },
+      ],
+    });
+    await alert.present();
+    await alert.onDidDismiss().then((data) => {
+        share = data.data
+    })
+    return share
   }
 
   async shareOne(can_clone: boolean) {
@@ -616,11 +660,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   }
 
   async changeFormula(type: 'public' | 'clone', value: any) {
-    const loading = await this.loadingController.create({
-      cssClass: "app-send-loading",
-      message: this.languageService.getTerm("loading"),
-    });
-    await loading.present();
+    let share: boolean = true;
 
     if (type == 'public') {
       if (value) {
@@ -632,15 +672,37 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     } else {
       this.formula.user.can_clone = value
     }
-    this.formulaCRUDService
-      .updateFormula(this.formula)
-      .then(() => {})
-      .catch(() => {
-        this.presentToast(false);
+    if (type == "public" && value) {
+      let private_ing: boolean = false
+      this.formula.ingredients.forEach(ingredient => {
+        if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+          private_ing = true
+        }
       })
-      .finally(async () => {
-        await loading.dismiss();
+      if (private_ing) {
+        share = await this.sharePrivateIngredientsFormulaQuestion()
+      }
+    }
+    
+    if (share == true) {
+      const loading = await this.loadingController.create({
+        cssClass: "app-send-loading",
+        message: this.languageService.getTerm("loading"),
       });
+      await loading.present();
+      this.formulaCRUDService
+        .updateFormula(this.formula)
+        .then(() => { })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
+    } else {
+      this.formula.user.owner = this.user.email;
+      this.public = false;
+    }
   }
 
   returnToList() {

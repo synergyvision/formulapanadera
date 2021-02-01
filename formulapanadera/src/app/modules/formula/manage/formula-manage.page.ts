@@ -5,6 +5,7 @@ import {
   IonRouterOutlet,
   LoadingController,
   ToastController,
+  AlertController,
 } from "@ionic/angular";
 import {
   IngredientPercentageModel,
@@ -62,7 +63,8 @@ export class FormulaManagePage {
     private router: Router,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private alertController: AlertController
   ) {}
 
   async ngOnInit() {
@@ -397,13 +399,39 @@ export class FormulaManagePage {
     step.ingredients.splice(step.ingredients.indexOf(ingredient), 1);
   }
 
-  async sendFormula() {
-    const loading = await this.loadingController.create({
-      cssClass: "app-send-loading",
-      message: this.languageService.getTerm("loading"),
+  async sharePrivateIngredientsFormulaQuestion() {
+    let share;
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.confirm"),
+      message: this.languageService.getTerm("action.formula_privacy_question"),
+      cssClass: "confirm-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {
+            alert.dismiss(false);
+            return false;
+          },
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            alert.dismiss(true);
+            return false;
+          },
+        },
+      ],
     });
-    await loading.present();
+    await alert.present();
+    await alert.onDidDismiss().then((data) => {
+        share = data.data
+    })
+    return share
+  }
 
+  async sendFormula() {
     this.verifyUnit();
     this.verifyTemperature();
     this.formula.name = this.manageFormulaForm.value.name;
@@ -434,29 +462,47 @@ export class FormulaManagePage {
 
       let valid: boolean = this.verifyCompoundIngredients()
       if (valid) {
-        this.formulaCRUDService
-          .updateFormula(this.formula)
-          .then(() => {
-            this.router.navigateByUrl(
-              APP_URL.menu.name +
+        let share: boolean = true;
+        if (this.formula.user.owner == "") {
+          let private_ing: boolean = false
+          this.formula.ingredients.forEach(ingredient => {
+            if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+              private_ing = true
+            }
+          })
+          if (private_ing) {
+            share = await this.sharePrivateIngredientsFormulaQuestion()
+          }
+        }
+        if (share == true) {
+          const loading = await this.loadingController.create({
+            cssClass: "app-send-loading",
+            message: this.languageService.getTerm("loading"),
+          });
+          await loading.present();
+          this.formulaCRUDService
+            .updateFormula(this.formula)
+            .then(() => {
+              this.router.navigateByUrl(
+                APP_URL.menu.name +
                 "/" +
                 APP_URL.menu.routes.formula.main +
                 "/" +
                 APP_URL.menu.routes.formula.routes.details,
-              {
-                state: { formula: this.formula },
-              }
-            );
-          })
-          .catch(() => {
-            this.presentToast(false);
-          })
-          .finally(async () => {
-            await loading.dismiss();
-          });
+                {
+                  state: { formula: this.formula },
+                }
+              );
+            })
+            .catch(() => {
+              this.presentToast(false);
+            })
+            .finally(async () => {
+              await loading.dismiss();
+            });
+        }
       } else {
         this.presentToast(false);
-        await loading.dismiss();
       }
     } else {
       this.formula.user = {
@@ -476,26 +522,45 @@ export class FormulaManagePage {
         this.formula.user.owner = "";
         this.formula.user.cloned = false;
       }
-      this.formulaCRUDService
-        .createFormula(this.formula)
-        .then(() => {
-          this.router.navigateByUrl(
-            APP_URL.menu.name +
+      let share: boolean = true;
+      if (this.formula.user.owner == "") {
+        let private_ing: boolean = false
+        this.formula.ingredients.forEach(ingredient => {
+          if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+            private_ing = true
+          }
+        })
+        if (private_ing) {
+          share = await this.sharePrivateIngredientsFormulaQuestion()
+        }
+      }
+      if (share == true) {
+        const loading = await this.loadingController.create({
+          cssClass: "app-send-loading",
+          message: this.languageService.getTerm("loading"),
+        });
+        await loading.present();
+        this.formulaCRUDService
+          .createFormula(this.formula)
+          .then(() => {
+            this.router.navigateByUrl(
+              APP_URL.menu.name +
               "/" +
               APP_URL.menu.routes.formula.main +
               "/" +
               APP_URL.menu.routes.formula.routes.details,
-            {
-              state: { formula: this.formula },
-            }
-          );
-        })
-        .catch(() => {
-          this.presentToast(false);
-        })
-        .finally(async () => {
-          await loading.dismiss();
-        });
+              {
+                state: { formula: this.formula },
+              }
+            );
+          })
+          .catch(() => {
+            this.presentToast(false);
+          })
+          .finally(async () => {
+            await loading.dismiss();
+          });
+      }
     }
   }
 

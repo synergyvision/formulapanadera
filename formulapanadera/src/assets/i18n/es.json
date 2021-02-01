@@ -24,6 +24,7 @@
     "sync_shared": "Sincronizar compartidos",
     "manage_shared": "Gestionar compartidos",
     "delete_question": "¿Desea eliminar {{item}}?",
+    "formula_privacy_question": "Esta fórmula contiene ingredientes privados. ¿Compartir de todas formas?",
     "sign_out_question": "¿Cerrar sesión?",
     "yes": "Sí",
     "no": "No"
