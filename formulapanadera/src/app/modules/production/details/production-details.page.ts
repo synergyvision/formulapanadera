@@ -544,7 +544,7 @@ export class ProductionDetailsPage implements OnInit {
       message: message,
       color: "secondary",
       duration: 5000,
-      position: "top",
+      position: "bottom",
       buttons: [
         {
           icon: ICONS.close,

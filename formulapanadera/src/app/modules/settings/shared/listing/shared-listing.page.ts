@@ -339,6 +339,8 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
       }
     });
     await modal.present();
+    await modal.onDidDismiss();
+    this.searchList();
   }
 
   details(
