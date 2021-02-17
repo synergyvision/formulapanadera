@@ -393,6 +393,7 @@ export class ProductionDetailsPage implements OnInit {
     } else {
       this.production.user.shared_users.push(user_to_share);
     }
+    this.original_production.user = this.production.user;
 
     if (user_to_share.email == this.user.email) {
       shared = true
