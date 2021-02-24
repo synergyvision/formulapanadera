@@ -327,7 +327,6 @@ export class IngredientManagePage implements OnInit {
           this.ingredient.user.owner = "";
           this.ingredient.user.cloned = false;
         }
-        console.log(this.ingredient)
         this.ingredientCRUDService
           .createIngredient(this.ingredient)
           .then(() => {
@@ -342,8 +341,7 @@ export class IngredientManagePage implements OnInit {
               }
             );
           })
-          .catch((error) => {
-            console.log(error)
+          .catch(() => {
             this.presentToast(false);
           })
           .finally(async () => {
@@ -361,7 +359,6 @@ export class IngredientManagePage implements OnInit {
         } else {
           this.ingredient.user.owner = this.current_user.email;
         }
-        console.log(this.ingredient)
         this.ingredientCRUDService
           .updateIngredient(this.ingredient)
           .then(() => {
@@ -376,8 +373,7 @@ export class IngredientManagePage implements OnInit {
               }
             );
           })
-          .catch((error) => {
-            console.log(error)
+          .catch(() => {
             this.presentToast(false);
           })
           .finally(async () => {

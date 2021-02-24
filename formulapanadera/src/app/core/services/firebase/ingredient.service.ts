@@ -78,7 +78,7 @@ export class IngredientCRUDService {
     }
     await this.afs.collection(this.collection).doc(id).set(ingredient);
     // Set sub ingredients
-    this.createSubIngredient(this.collection, id, ingredientData)
+    await this.createSubIngredient(this.collection, id, ingredientData)
   }
 
   private async createSubIngredient(collection: string, id: string, ingredientData: IngredientModel) {
@@ -86,7 +86,7 @@ export class IngredientCRUDService {
     if (ingredientData.formula) {
       let subingredients: IngredientPercentageModel[];
       subingredients = JSON.parse(JSON.stringify(ingredientData.formula.ingredients));
-      subingredients.forEach(async ingredient => {
+      const promises = subingredients.map(async ingredient => {
         let ing = JSON.parse(JSON.stringify(ingredient))
         if (ingredient.ingredient.formula) {
           delete ing.ingredient.formula.ingredients;
@@ -95,6 +95,7 @@ export class IngredientCRUDService {
         let subcollection = `${collection}/${id}/${this.collection}`
         this.createSubIngredient(subcollection, ingredient.ingredient.id, ingredient.ingredient)
       })
+      await Promise.all(promises)
     }
   }
 
@@ -105,7 +106,19 @@ export class IngredientCRUDService {
       .set({ ...ingredientData });
   }
 
-  public deleteIngredient(ingredientKey: string): Promise<void> {
-    return this.afs.collection(this.collection).doc(ingredientKey).delete();
+  public async deleteIngredient(ingredient: IngredientModel): Promise<void> {
+    await this.deleteSubIngredient(ingredient);
+    return this.afs.collection(this.collection).doc(ingredient.id).delete();
+  }
+
+  private async deleteSubIngredient(ingredientData: IngredientModel, collection = this.collection) {
+    if (ingredientData.formula) {
+      const promises = ingredientData.formula.ingredients.map(async ingredient => {
+        let subcollection = `${collection}/${ingredientData.id}/${this.collection}`
+        await this.deleteSubIngredient(ingredient.ingredient, subcollection)
+        await this.afs.collection(subcollection).doc(ingredient.ingredient.id).delete();
+      })
+      await Promise.all(promises)
+    }
   }
 }

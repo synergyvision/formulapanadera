@@ -398,7 +398,7 @@ export class IngredientDetailsPage implements OnInit {
             await loading.present();
 
             this.ingredientCRUDService
-              .deleteIngredient(this.ingredient.id)
+              .deleteIngredient(this.ingredient)
               .then(async () => {
                 if (this.ingredient.user.reference) {
                   let original_ingredient = await this.ingredientCRUDService.getIngredient(this.ingredient.user.reference)

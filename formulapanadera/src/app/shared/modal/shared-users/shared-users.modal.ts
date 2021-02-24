@@ -163,13 +163,15 @@ export class SharedUsersModal implements OnInit {
     if (this.type == "ingredient") {
       // Gets associated
       this.ingredientCRUDService.getSharedIngredients(this.item.id)
-        .subscribe((shared_ingredients) => {
+        .subscribe(async (shared_ingredients) => {
+          const promises = shared_ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
+          await Promise.all(promises)
           const ingredients_to_delete = shared_ingredients.filter((item) =>
             this.selectedUsers.find((name) => name == item.user.owner)
           );
           // Deletes each selected
           ingredients_to_delete.forEach((ingredient) => {
-            this.ingredientCRUDService.deleteIngredient(ingredient.id)
+            this.ingredientCRUDService.deleteIngredient(ingredient)
           })
         });
     

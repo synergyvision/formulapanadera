@@ -271,7 +271,9 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
   ) {
     if (type == "ingredient") {
       this.ingredientCRUDService.getSharedIngredients(item.id)
-        .subscribe((shared_ingredients) => {
+        .subscribe(async (shared_ingredients) => {
+          const promises = shared_ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
+          await Promise.all(promises)
           shared_ingredients.forEach(async (shared_ingredient, index) => {
             let updated_ingredient: IngredientModel;
             updated_ingredient = JSON.parse(JSON.stringify(item));
