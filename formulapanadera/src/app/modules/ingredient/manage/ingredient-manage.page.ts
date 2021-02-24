@@ -270,7 +270,6 @@ export class IngredientManagePage implements OnInit {
     await loading.present();
 
     this.ingredient.name = this.manageIngredientForm.value.name;
-    this.ingredient.can_be_modified = this.public;
     if (this.ingredient.references) {
       this.ingredient.references = JSON.parse(JSON.stringify(this.ingredient.references))
     }
@@ -328,6 +327,7 @@ export class IngredientManagePage implements OnInit {
           this.ingredient.user.owner = "";
           this.ingredient.user.cloned = false;
         }
+        console.log(this.ingredient)
         this.ingredientCRUDService
           .createIngredient(this.ingredient)
           .then(() => {
@@ -342,7 +342,8 @@ export class IngredientManagePage implements OnInit {
               }
             );
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log(error)
             this.presentToast(false);
           })
           .finally(async () => {
@@ -360,6 +361,7 @@ export class IngredientManagePage implements OnInit {
         } else {
           this.ingredient.user.owner = this.current_user.email;
         }
+        console.log(this.ingredient)
         this.ingredientCRUDService
           .updateIngredient(this.ingredient)
           .then(() => {
@@ -374,7 +376,8 @@ export class IngredientManagePage implements OnInit {
               }
             );
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log(error)
             this.presentToast(false);
           })
           .finally(async () => {

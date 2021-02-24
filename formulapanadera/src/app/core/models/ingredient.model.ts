@@ -18,7 +18,6 @@ export class IngredientModel {
   is_flour: boolean;
   hydration: number;
   cost: number;
-  can_be_modified: boolean;
   references: Array<ReferenceModel>;
   formula?: {
     // if the ingredient has its own formula

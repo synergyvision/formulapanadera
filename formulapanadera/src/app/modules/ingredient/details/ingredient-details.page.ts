@@ -12,6 +12,7 @@ import { DECIMAL_COST_FORMAT } from "src/app/config/formats";
 import { IngredientCRUDService } from 'src/app/core/services/firebase/ingredient.service';
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group-picker.modal";
+import { FormulaService } from "src/app/core/services/formula.service";
 
 @Component({
   selector: "app-ingredient-details",
@@ -50,6 +51,7 @@ export class IngredientDetailsPage implements OnInit {
     private languageService: LanguageService,
     private userStorageService: UserStorageService,
     private ingredientCRUDService: IngredientCRUDService,
+    private formulaService: FormulaService,
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet
   ) {
@@ -60,18 +62,25 @@ export class IngredientDetailsPage implements OnInit {
   async ngOnInit() {
     this.route.queryParams.subscribe(async () => {
       this.ingredients_formula = []
+      let ing_formula: IngredientPercentageModel[] = [];
       let navParams = this.router.getCurrentNavigation().extras.state;
       if (navParams) {
         this.ingredient = navParams.ingredient;
       }
 
-      if (this.ingredient.formula) {
+       if (this.ingredient.formula) {
         this.type = "compound";
-        this.ingredient.formula.ingredients.forEach(ingredient => {
-          if (ingredient.ingredient.formula) {
-            this.ingredients_formula.push(ingredient)
-          }
-        })
+        //Identifies ingredients with formula
+        this.formulaService.getIngredientsWithFormula(
+          this.ingredient.formula.ingredients,
+          ing_formula
+        );
+        this.formulaService.getAllIngredientsWithFormula(
+          0,
+          this.ingredient.formula.ingredients,
+          ing_formula,
+          this.ingredients_formula
+        )
       }
       if (this.ingredient.user.owner == "") {
         this.public = true;
@@ -390,22 +399,20 @@ export class IngredientDetailsPage implements OnInit {
 
             this.ingredientCRUDService
               .deleteIngredient(this.ingredient.id)
-              .then(() => {
+              .then(async () => {
                 if (this.ingredient.user.reference) {
-                  this.ingredientCRUDService.getIngredient(this.ingredient.user.reference)
-                    .subscribe((original_ingredient) => {
-                      original_ingredient.user.shared_users.forEach((user) => {
-                        if (user.email == this.user.email) {
-                          original_ingredient.user.shared_users.splice(original_ingredient.user.shared_users.indexOf(user), 1)
-                        }
-                      })
-                      this.ingredientCRUDService.updateIngredient(original_ingredient)
-                        .then(() => {
-                          this.router.navigateByUrl(
-                            APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-                          )
-                        })
-                    });
+                  let original_ingredient = await this.ingredientCRUDService.getIngredient(this.ingredient.user.reference)
+                  original_ingredient.user.shared_users.forEach((user) => {
+                    if (user.email == this.user.email) {
+                      original_ingredient.user.shared_users.splice(original_ingredient.user.shared_users.indexOf(user), 1)
+                    }
+                  })
+                  this.ingredientCRUDService.updateIngredient(original_ingredient)
+                    .then(() => {
+                      this.router.navigateByUrl(
+                        APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+                      )
+                    })
                 } else {
                   this.router.navigateByUrl(
                     APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main

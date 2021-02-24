@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
+import { AngularFirestore, AngularFirestoreDocument, DocumentReference } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 
 import { IngredientModel } from "../../models/ingredient.model";
 import { COLLECTIONS } from "src/app/config/firebase";
 import { map } from "rxjs/operators";
+import { IngredientPercentageModel } from "../../models/formula.model";
 
 @Injectable()
 export class IngredientCRUDService {
@@ -25,16 +26,31 @@ export class IngredientCRUDService {
       .valueChanges({ idField: "id" });
   }
 
-  public getIngredient(
-    id: string
-  ): Observable<IngredientModel> {
-    return this.afs.collection<IngredientModel>(this.collection).doc(id).snapshotChanges()
-    .pipe(
-      map( a => {
-        const data = a.payload.data();
-        return data as IngredientModel;
+  public async getSubIngredients(ingredient: IngredientModel, collection = this.collection) {
+    if (ingredient.formula && !ingredient.formula.ingredients) {
+      ingredient.formula.ingredients = [];
+      const docs = await this.afs.collection<IngredientModel>(`${collection}/${ingredient.id}/${this.collection}`).ref.get();
+      const promises = docs.docs.map(async doc => {
+        if (doc.exists) {
+          let subIng: IngredientPercentageModel = doc.data() as IngredientPercentageModel;
+          await this.getSubIngredients(subIng.ingredient, `${collection}/${ingredient.id}/${this.collection}`)
+          ingredient.formula.ingredients.push(subIng)
+        }
       })
-    );
+      await Promise.all(promises)
+    }
+  }
+
+  public async getIngredient(
+    id: string
+  ): Promise<IngredientModel> {
+    let doc = await this.afs.collection<IngredientModel>(this.collection).doc(id).ref.get()
+    if (doc.exists) {
+      let ingredient = doc.data() as IngredientModel;
+      await this.getSubIngredients(ingredient);
+      return ingredient;
+    }
+    return new IngredientModel;
   }
 
   public getSharedIngredients(
@@ -50,10 +66,36 @@ export class IngredientCRUDService {
   /*
     Ingredient Management
   */
-  public createIngredient(
+  public async createIngredient(
     ingredientData: IngredientModel
-  ): Promise<DocumentReference> {
-    return this.afs.collection(this.collection).add({ ...ingredientData });
+  ): Promise<void> {
+    let id = this.afs.createId();
+    // Set ingredient
+    let ingredient = JSON.parse(JSON.stringify(ingredientData));
+    ingredient.id = id;
+    if (ingredientData.formula) {
+      delete ingredient.formula.ingredients;
+    }
+    await this.afs.collection(this.collection).doc(id).set(ingredient);
+    // Set sub ingredients
+    this.createSubIngredient(this.collection, id, ingredientData)
+  }
+
+  private async createSubIngredient(collection: string, id: string, ingredientData: IngredientModel) {
+    // Set sub ingredients
+    if (ingredientData.formula) {
+      let subingredients: IngredientPercentageModel[];
+      subingredients = JSON.parse(JSON.stringify(ingredientData.formula.ingredients));
+      subingredients.forEach(async ingredient => {
+        let ing = JSON.parse(JSON.stringify(ingredient))
+        if (ingredient.ingredient.formula) {
+          delete ing.ingredient.formula.ingredients;
+        }
+        await this.afs.collection(collection).doc(id).collection(this.collection).doc(ingredient.ingredient.id).set(ing);
+        let subcollection = `${collection}/${id}/${this.collection}`
+        this.createSubIngredient(subcollection, ingredient.ingredient.id, ingredient.ingredient)
+      })
+    }
   }
 
   public updateIngredient(ingredientData: IngredientModel): Promise<void> {
