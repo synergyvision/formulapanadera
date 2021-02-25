@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { DECIMALS } from "src/app/config/formats";
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
+import { FormulaService } from "src/app/core/services/formula.service";
 
 @Component({
   selector: "app-ingredients-list",
@@ -17,9 +18,13 @@ export class IngredientsListComponent implements OnInit, OnChanges {
   @Input() formula_weight?: number;
   @Input() compound_ingredient: boolean = false;
 
-  constructor(private formatNumberService: FormatNumberService) {}
+  constructor(
+    private formatNumberService: FormatNumberService,
+    private formulaService: FormulaService
+  ) { }
 
   ngOnInit() {
+    this.ingredients = this.formulaService.sortIngredients(this.ingredients);
     if (this.units && this.units <= 1 || !(this.gramsTable())) {
       this.units = undefined
     }

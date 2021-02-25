@@ -75,10 +75,19 @@ export class IngredientCRUDService {
     ingredient.id = id;
     if (ingredientData.formula) {
       delete ingredient.formula.ingredients;
+      if (ingredient.formula.mixing && ingredient.formula.mixing.length > 0) {
+        ingredient.formula.mixing.forEach(step => {
+          step.ingredients.forEach(ing => {
+            if (ing.ingredient.formula) {
+              delete ing.ingredient.formula.ingredients
+            }
+          })
+        })
+      }
     }
     await this.afs.collection(this.collection).doc(id).set(ingredient);
     // Set sub ingredients
-    await this.createSubIngredient(this.collection, id, ingredientData)
+    await this.createSubIngredient(this.collection, id, ingredientData);
   }
 
   private async createSubIngredient(collection: string, id: string, ingredientData: IngredientModel) {
@@ -99,11 +108,27 @@ export class IngredientCRUDService {
     }
   }
 
-  public updateIngredient(ingredientData: IngredientModel): Promise<void> {
-    return this.afs
-      .collection(this.collection)
-      .doc(ingredientData.id)
-      .set({ ...ingredientData });
+  public async updateIngredient(ingredientData: IngredientModel): Promise<void> {
+    let ingredient = JSON.parse(JSON.stringify(ingredientData));
+    delete ingredient.can_be_modified
+    delete ingredient.creator
+    if (ingredientData.formula) {
+      delete ingredient.formula.ingredients;
+      if (ingredient.formula.mixing && ingredient.formula.mixing.length > 0) {
+        ingredient.formula.mixing.forEach(step => {
+          step.ingredients.forEach(ing => {
+            if (ing.ingredient.formula && ing.ingredient.formula.ingredients) {
+              delete ing.ingredient.formula.ingredients
+            }
+          })
+        })
+      }
+    }
+    await this.afs.collection(this.collection).doc(ingredientData.id).set(ingredient);
+    // Delete sub ingredients
+    await this.deleteSubIngredient(ingredientData);
+    // Set sub ingredients
+    await this.createSubIngredient(this.collection, ingredientData.id, ingredientData);
   }
 
   public async deleteIngredient(ingredient: IngredientModel): Promise<void> {
@@ -112,7 +137,7 @@ export class IngredientCRUDService {
   }
 
   private async deleteSubIngredient(ingredientData: IngredientModel, collection = this.collection) {
-    if (ingredientData.formula) {
+    if (ingredientData.formula && ingredientData.formula.ingredients) {
       const promises = ingredientData.formula.ingredients.map(async ingredient => {
         let subcollection = `${collection}/${ingredientData.id}/${this.collection}`
         await this.deleteSubIngredient(ingredient.ingredient, subcollection)

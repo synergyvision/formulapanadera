@@ -67,6 +67,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
     this.ingredientCRUDService
       .getIngredientsDataSource(this.user_email)
       .subscribe(async (ingredients) => {
+        this.searchingState();
         const promises = ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
         await Promise.all(promises)
         this.ingredientService.setIngredients(
