@@ -27,6 +27,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
   isFlourForm: FormGroup;
+  typeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
 
@@ -34,7 +35,6 @@ export class IngredientListingPage implements OnInit, OnDestroy {
   ingredients: IngredientModel[] & ShellModel;
 
   segment: string = "mine";
-  typeSegment: string = "simple";
 
   user_email: string;
 
@@ -58,6 +58,9 @@ export class IngredientListingPage implements OnInit, OnDestroy {
       upper: new FormControl(),
     });
     this.isFlourForm = new FormGroup({
+      value: new FormControl("all"),
+    });
+    this.typeForm = new FormGroup({
       value: new FormControl("all"),
     });
 
@@ -95,6 +98,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
         upper: this.costRangeForm.value.upper,
       },
       is_flour: this.isFlourForm.value.value,
+      type: this.typeForm.value.value,
       query: this.searchQuery,
     };
 
@@ -114,10 +118,12 @@ export class IngredientListingPage implements OnInit, OnDestroy {
         filteredIngredients
       );
     }
-    filteredIngredients = this.ingredientService.searchIngredientsByFormula(
-      this.typeSegment,
-      filteredIngredients
-    );
+    if (filters.type !== "all") {
+      filteredIngredients = this.ingredientService.searchIngredientsByFormula(
+        filters.type,
+        filteredIngredients
+      );
+    }
     filteredIngredients = this.ingredientService.searchIngredientsByShared(
       this.segment,
       filteredIngredients,
@@ -153,11 +159,6 @@ export class IngredientListingPage implements OnInit, OnDestroy {
 
   segmentChanged(ev: any) {
     this.segment = ev.detail.value;
-    this.searchList();
-  }
-
-  typeSegmentChanged(ev: any) {
-    this.typeSegment = ev.detail.value;
     this.searchList();
   }
 

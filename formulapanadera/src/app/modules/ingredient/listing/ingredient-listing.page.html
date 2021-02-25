@@ -126,6 +126,32 @@
         </ion-col></ion-row
       >
     </form>
+    <form [formGroup]="typeForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row" style="margin: 0;"
+        ><ion-col>
+          <ion-item lines="full" class="no-padding-item">
+            <ion-label>{{'ingredients.type.name' | translate}}</ion-label>
+            <ion-select
+              formControlName="value"
+              (ionChange)="searchList()"
+              [cancelText]="'action.cancel'|translate"
+              [okText]="'action.ok'|translate"
+            >
+              <ion-select-option value="all"
+                >{{'ingredients.filter.all' | translate}}</ion-select-option
+              >
+              <ion-select-option value="simple"
+                >{{'ingredients.type.simple' | translate}}</ion-select-option
+              >
+              <ion-select-option value="compound"
+                >{{'ingredients.type.compound' |
+                translate}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col></ion-row
+      >
+    </form>
   </ion-toolbar>
 </ion-header>
 
@@ -144,19 +170,6 @@
     </ion-segment-button>
     <ion-segment-button value="public">
       <ion-label>{{'formulas.share.public' | translate}}</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-  <ion-segment
-    mode="ios"
-    (ionChange)="typeSegmentChanged($event)"
-    [value]="typeSegment"
-    class="segment"
-  >
-    <ion-segment-button value="simple">
-      <ion-label>{{'ingredients.type.simple' | translate}}</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="compound">
-      <ion-label>{{'ingredients.type.compound' | translate}}</ion-label>
     </ion-segment-button>
   </ion-segment>
   <ion-list

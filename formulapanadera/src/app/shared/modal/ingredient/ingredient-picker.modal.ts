@@ -30,13 +30,14 @@ export class IngredientPickerModal implements OnInit {
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
   isFlourForm: FormGroup;
+  typeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
 
   currency = CURRENCY;
   ingredients: IngredientModel[] & ShellModel;
 
-  segment: string = "simple";
+  segment: string = "mine";
 
   user_email: string;
 
@@ -62,6 +63,9 @@ export class IngredientPickerModal implements OnInit {
     this.isFlourForm = new FormGroup({
       value: new FormControl("all"),
     });
+    this.typeForm = new FormGroup({
+      value: new FormControl("all"),
+    });
 
     this.searchingState();
 
@@ -69,7 +73,10 @@ export class IngredientPickerModal implements OnInit {
     if (!this.ingredientService.getIngredients()) {
       this.ingredientCRUDService
         .getIngredientsDataSource(this.user_email)
-        .subscribe((ingredients) => {
+        .subscribe(async (ingredients) => {
+          this.searchingState();
+          const promises = ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
+          await Promise.all(promises)
           this.ingredientService.setIngredients(
             ingredients as IngredientModel[] & ShellModel
           );
@@ -94,6 +101,7 @@ export class IngredientPickerModal implements OnInit {
         upper: this.costRangeForm.value.upper,
       },
       is_flour: this.isFlourForm.value.value,
+      type: this.typeForm.value.value,
       query: this.searchQuery,
     };
 
@@ -113,9 +121,16 @@ export class IngredientPickerModal implements OnInit {
         filteredIngredients
       );
     }
-    filteredIngredients = this.ingredientService.searchIngredientsByFormula(
+    if (filters.type !== "all") {
+      filteredIngredients = this.ingredientService.searchIngredientsByFormula(
+        filters.type,
+        filteredIngredients
+      );
+    }
+    filteredIngredients = this.ingredientService.searchIngredientsByShared(
       this.segment,
-      filteredIngredients
+      filteredIngredients,
+      this.user_email
     );
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
