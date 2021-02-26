@@ -554,7 +554,8 @@ export class FormulaManagePage {
               }
             );
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log(error)
             this.presentToast(false);
           })
           .finally(async () => {

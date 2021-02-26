@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, AngularFirestoreDocument, DocumentReference } from "@angular/fire/firestore";
+import { AngularFirestore } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 
 import { IngredientModel } from "../../models/ingredient.model";
 import { COLLECTIONS } from "src/app/config/firebase";
-import { map } from "rxjs/operators";
 import { IngredientPercentageModel } from "../../models/formula.model";
 
 @Injectable()
@@ -79,7 +78,8 @@ export class IngredientCRUDService {
         ingredient.formula.mixing.forEach(step => {
           step.ingredients.forEach(ing => {
             if (ing.ingredient.formula) {
-              delete ing.ingredient.formula.ingredients
+              delete ing.ingredient.formula.ingredients;
+              delete ing.ingredient.formula.mixing;
             }
           })
         })
@@ -90,7 +90,7 @@ export class IngredientCRUDService {
     await this.createSubIngredient(this.collection, id, ingredientData);
   }
 
-  private async createSubIngredient(collection: string, id: string, ingredientData: IngredientModel) {
+  public async createSubIngredient(collection: string, id: string, ingredientData: IngredientModel) {
     // Set sub ingredients
     if (ingredientData.formula) {
       let subingredients: IngredientPercentageModel[];
@@ -110,15 +110,14 @@ export class IngredientCRUDService {
 
   public async updateIngredient(ingredientData: IngredientModel): Promise<void> {
     let ingredient = JSON.parse(JSON.stringify(ingredientData));
-    delete ingredient.can_be_modified
-    delete ingredient.creator
     if (ingredientData.formula) {
       delete ingredient.formula.ingredients;
       if (ingredient.formula.mixing && ingredient.formula.mixing.length > 0) {
         ingredient.formula.mixing.forEach(step => {
           step.ingredients.forEach(ing => {
             if (ing.ingredient.formula && ing.ingredient.formula.ingredients) {
-              delete ing.ingredient.formula.ingredients
+              delete ing.ingredient.formula.ingredients;
+              delete ing.ingredient.formula.mixing;
             }
           })
         })
@@ -136,7 +135,7 @@ export class IngredientCRUDService {
     return this.afs.collection(this.collection).doc(ingredient.id).delete();
   }
 
-  private async deleteSubIngredient(ingredientData: IngredientModel, collection = this.collection) {
+  public async deleteSubIngredient(ingredientData: IngredientModel, collection = this.collection) {
     if (ingredientData.formula && ingredientData.formula.ingredients) {
       const promises = ingredientData.formula.ingredients.map(async ingredient => {
         let subcollection = `${collection}/${ingredientData.id}/${this.collection}`

@@ -564,23 +564,21 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             await loading.present();
 
             this.formulaCRUDService
-              .deleteFormula(this.formula.id)
-              .then(() => {
+              .deleteFormula(this.formula)
+              .then(async () => {
                 if (this.formula.user.reference) {
-                  this.formulaCRUDService.getFormula(this.formula.user.reference)
-                    .subscribe((original_formula) => {
-                      original_formula.user.shared_users.forEach((user) => {
-                        if (user.email == this.user.email) {
-                          original_formula.user.shared_users.splice(original_formula.user.shared_users.indexOf(user), 1)
-                        }
-                      })
-                      this.formulaCRUDService.updateFormula(original_formula)
-                        .then(() => {
-                          this.router.navigateByUrl(
-                            APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-                          )
-                        })
-                    });
+                  let original_formula = await this.formulaCRUDService.getFormula(this.formula.user.reference)
+                  original_formula.user.shared_users.forEach((user) => {
+                    if (user.email == this.user.email) {
+                      original_formula.user.shared_users.splice(original_formula.user.shared_users.indexOf(user), 1)
+                    }
+                  })
+                  this.formulaCRUDService.updateFormula(original_formula)
+                    .then(() => {
+                      this.router.navigateByUrl(
+                        APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+                      )
+                    })
                 } else {
                   this.router.navigateByUrl(
                     APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main

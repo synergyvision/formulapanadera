@@ -190,7 +190,7 @@ export class SharedUsersModal implements OnInit {
           );
           // Deletes each selected
           formulas_to_delete.forEach((formula) => {
-            this.formulaCRUDService.deleteFormula(formula.id)
+            this.formulaCRUDService.deleteFormula(formula)
           })
         });
     
