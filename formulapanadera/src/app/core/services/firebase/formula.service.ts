@@ -31,7 +31,7 @@ export class FormulaCRUDService {
   }
 
   public async getIngredients(formula: FormulaModel, collection = this.collection) {
-    if (!formula.ingredients) {
+    if (!formula.ingredients || formula.ingredients.length == 0) {
       formula.ingredients = [];
       const docs = await this.afs.collection<IngredientModel>(`${collection}/${formula.id}/${COLLECTIONS.ingredients}`).ref.get();
       const promises = docs.docs.map(async doc => {

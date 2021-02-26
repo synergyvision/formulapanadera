@@ -554,8 +554,7 @@ export class FormulaManagePage {
               }
             );
           })
-          .catch((error) => {
-            console.log(error)
+          .catch(() => {
             this.presentToast(false);
           })
           .finally(async () => {
@@ -702,7 +701,10 @@ export class FormulaManagePage {
                     1
                   );
                   if (this.formula.mixing[mixing_index].mixing_order[mix_i].ingredients.length == 0) {
-                    this.formula.mixing[mixing_index].mixing_order.splice(mix_i,1)
+                    this.formula.mixing[mixing_index].mixing_order.splice(mix_i, 1)
+                    if (this.formula.mixing[mixing_index].mixing_order.length == 0) {
+                      this.formula.mixing.splice(mixing_index, 1);
+                    }
                   }
                 }
               })
