@@ -11,6 +11,10 @@ import { FormulaModel } from "src/app/core/models/formula.model";
 import { UserModel, UserResumeModel } from "src/app/core/models/user.model";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { FormControl, FormGroup } from "@angular/forms";
+import { IngredientModel } from "src/app/core/models/ingredient.model";
+import { ProductionModel } from "src/app/core/models/production.model";
+import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 
 @Component({
   selector: "app-shared-users-modal",
@@ -23,7 +27,8 @@ import { FormControl, FormGroup } from "@angular/forms";
 export class SharedUsersModal implements OnInit {
   ICONS = ICONS;
 
-  @Input() formula: FormulaModel;
+  @Input() type: "ingredient" | "formula" | "production";
+  @Input() item: IngredientModel | FormulaModel | ProductionModel;
 
   searchQuery: string;
   groupForm: FormGroup;
@@ -37,7 +42,9 @@ export class SharedUsersModal implements OnInit {
   constructor(
     private userStorageService: UserStorageService,
     private modalController: ModalController,
-    private formulaCRUDService: FormulaCRUDService
+    private ingredientCRUDService: IngredientCRUDService,
+    private formulaCRUDService: FormulaCRUDService,
+    private productionCRUDService: ProductionCRUDService
   ) {}
 
   async ngOnInit() {
@@ -53,7 +60,7 @@ export class SharedUsersModal implements OnInit {
   }
 
   async searchList() {
-    let filteredUsers = this.formula.user.shared_users;
+    let filteredUsers = this.item.user.shared_users;
     let filters = {
       group: this.groupForm.value.value,
       query: this.searchQuery,
@@ -144,31 +151,73 @@ export class SharedUsersModal implements OnInit {
   // Manage shared
 
   stopShare() {
-    // Modifies shared_users array of formula
+    // Modifies shared_users array
     this.selectedUsers.forEach(selected_user => {
-      this.formula.user.shared_users.forEach((user) => {
+      this.item.user.shared_users.forEach((user) => {
         if (user.email == selected_user) {
-          this.formula.user.shared_users.splice(this.formula.user.shared_users.indexOf(user), 1)
+          this.item.user.shared_users.splice(this.item.user.shared_users.indexOf(user), 1)
         }
       })
     })
 
-    // Gets associated formulas
-    this.formulaCRUDService.getSharedFormulas(this.formula.id)
-      .subscribe((shared_formulas) => {
-        const formulas_to_delete = shared_formulas.filter((item) =>
-          this.selectedUsers.find((name)=> name == item.user.owner)
-        );
-        // Deletes each selected formula
-        formulas_to_delete.forEach((formula) => {
-          this.formulaCRUDService.deleteFormula(formula.id)
-        })
-      });
+    if (this.type == "ingredient") {
+      // Gets associated
+      this.ingredientCRUDService.getSharedIngredients(this.item.id)
+        .subscribe(async (shared_ingredients) => {
+          const promises = shared_ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
+          await Promise.all(promises)
+          const ingredients_to_delete = shared_ingredients.filter((item) =>
+            this.selectedUsers.find((name) => name == item.user.owner)
+          );
+          // Deletes each selected
+          ingredients_to_delete.forEach((ingredient) => {
+            this.ingredientCRUDService.deleteIngredient(ingredient)
+          })
+        });
     
-    // Updates original formula
-    this.formulaCRUDService.updateFormula(this.formula)
-      .then(() => {
-        this.dismissModal()
-      })
+      // Updates original
+      this.ingredientCRUDService.updateIngredient(this.item as IngredientModel)
+        .then(() => {
+          this.dismissModal()
+        })
+    }
+    if (this.type == "formula") {
+      // Gets associated
+      this.formulaCRUDService.getSharedFormulas(this.item.id)
+        .subscribe((shared_formulas) => {
+          const formulas_to_delete = shared_formulas.filter((item) =>
+            this.selectedUsers.find((name) => name == item.user.owner)
+          );
+          // Deletes each selected
+          formulas_to_delete.forEach((formula) => {
+            this.formulaCRUDService.deleteFormula(formula)
+          })
+        });
+    
+      // Updates original
+      this.formulaCRUDService.updateFormula(this.item as FormulaModel)
+        .then(() => {
+          this.dismissModal()
+        })
+    }
+    if (this.type == "production") {
+      // Gets associated
+      this.productionCRUDService.getSharedProductions(this.item.id)
+        .subscribe((shared_productions) => {
+          const productions_to_delete = shared_productions.filter((item) =>
+            this.selectedUsers.find((name) => name == item.user.owner)
+          );
+          // Deletes each selected
+          productions_to_delete.forEach((production) => {
+            this.productionCRUDService.deleteProduction(production.id)
+          })
+        });
+    
+      // Updates original
+      this.productionCRUDService.updateProduction(this.item as ProductionModel)
+        .then(() => {
+          this.dismissModal()
+        })
+    }
   }
 }

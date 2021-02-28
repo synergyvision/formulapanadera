@@ -41,6 +41,7 @@ ion-back-button {
 
     .input-item {
       --padding-start: var(--page-margin);
+      font-size: 14px;
     }
 
     .formulas-list {
@@ -113,4 +114,8 @@ ion-back-button {
 
 .no-padding {
   padding: 0;
+}
+
+.formula-checkbox {
+  margin-right: var(--page-margin);
 }

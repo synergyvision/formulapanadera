@@ -250,8 +250,20 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         text: this.languageService.getTerm("action.share"),
         icon: ICONS.share,
         cssClass: "action-icon",
-        handler: () => {
-          this.shareFormula();
+        handler: async () => {
+          let private_ing: boolean = false
+          let share: boolean = true
+          this.formula.ingredients.forEach(ingredient => {
+            if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+              private_ing = true
+            }
+          })
+          if (private_ing) {
+            share = await this.sharePrivateIngredientsFormulaQuestion()
+          }
+          if (share == true) {
+            this.shareFormula();
+          }
         },
       });
     }
@@ -354,6 +366,38 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       ],
     });
     await alert.present();
+  }
+
+  async sharePrivateIngredientsFormulaQuestion() {
+    let share;
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.confirm"),
+      message: this.languageService.getTerm("action.formula_privacy_question"),
+      cssClass: "confirm-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {
+            alert.dismiss(false);
+            return false;
+          },
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            alert.dismiss(true);
+            return false;
+          },
+        },
+      ],
+    });
+    await alert.present();
+    await alert.onDidDismiss().then((data) => {
+        share = data.data
+    })
+    return share
   }
 
   async shareOne(can_clone: boolean) {
@@ -519,39 +563,34 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             });
             await loading.present();
 
-            this.formulaCRUDService.deleteFormula(this.formula.id)
-              .then(() => {
+            this.formulaCRUDService
+              .deleteFormula(this.formula)
+              .then(async () => {
                 if (this.formula.user.reference) {
-                  this.formulaCRUDService.getFormula(this.formula.user.reference)
-                    .subscribe((original_formula) => {
-                      original_formula.user.shared_users.forEach((user) => {
-                        if (user.email == this.user.email) {
-                          original_formula.user.shared_users.splice(original_formula.user.shared_users.indexOf(user), 1)
-                        }
-                      })
-                      this.formulaCRUDService.updateFormula(original_formula)
-                        .then(() => {
-                          this.router.navigateByUrl(
-                            APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-                          )
-                        })
-                    });
+                  let original_formula = await this.formulaCRUDService.getFormula(this.formula.user.reference)
+                  original_formula.user.shared_users.forEach((user) => {
+                    if (user.email == this.user.email) {
+                      original_formula.user.shared_users.splice(original_formula.user.shared_users.indexOf(user), 1)
+                    }
+                  })
+                  this.formulaCRUDService.updateFormula(original_formula)
+                    .then(() => {
+                      this.router.navigateByUrl(
+                        APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+                      )
+                    })
                 } else {
                   this.router.navigateByUrl(
                     APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
                   )
                 }
-                
-                this.router.navigateByUrl(
-                  APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-                )
+              })
               .catch(() => {
                 this.presentToast(false);
               })
               .finally(async () => {
                 await loading.dismiss();
               });
-            });
           },
         },
       ],
@@ -618,28 +657,50 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     toast.present();
   }
 
-  async changeFormula() {
-    const loading = await this.loadingController.create({
-      cssClass: "app-send-loading",
-      message: this.languageService.getTerm("loading"),
-    });
-    await loading.present();
+  async changeFormula(type: 'public' | 'clone', value: any) {
+    let share: boolean = true;
 
-    if (this.public) {
-      this.formula.user.owner = "";
-      this.formula.user.cloned = false;
+    if (type == 'public') {
+      if (value) {
+        this.formula.user.owner = "";
+        this.formula.user.cloned = false;
+      } else {
+        this.formula.user.owner = this.user.email;
+      }
+    } else {
+      this.formula.user.can_clone = value
+    }
+    if (type == "public" && value) {
+      let private_ing: boolean = false
+      this.formula.ingredients.forEach(ingredient => {
+        if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+          private_ing = true
+        }
+      })
+      if (private_ing) {
+        share = await this.sharePrivateIngredientsFormulaQuestion()
+      }
+    }
+    
+    if (share == true) {
+      const loading = await this.loadingController.create({
+        cssClass: "app-send-loading",
+        message: this.languageService.getTerm("loading"),
+      });
+      await loading.present();
+      this.formulaCRUDService
+        .updateFormula(this.formula)
+        .then(() => { })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
     } else {
       this.formula.user.owner = this.user.email;
+      this.public = false;
     }
-    this.formulaCRUDService
-      .updateFormula(this.formula)
-      .then(() => {})
-      .catch(() => {
-        this.presentToast(false);
-      })
-      .finally(async () => {
-        await loading.dismiss();
-      });
   }
 
   returnToList() {
@@ -705,7 +766,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             let production: ProductionModel = new ProductionModel();
             production.name = this.formula.name;
             production.formulas = [{ formula: this.formula, number: data.number, warming_time: 10 }]
-            production.owner = {
+            production.user.creator = {
               name: this.user.name,
               email: this.user.email,
               date: new Date(),

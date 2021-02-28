@@ -40,11 +40,12 @@ export class IngredientManagePage implements OnInit {
   manageIngredientForm: FormGroup;
   update: boolean = false;
   public = false;
+  current_user = new UserResumeModel();
+  is_modifier: boolean = false;
+
   type: string = "simple";
 
   currency = CURRENCY;
-
-  user: UserResumeModel = new UserResumeModel();
 
   constructor(
     private ingredientCRUDService: IngredientCRUDService,
@@ -70,11 +71,28 @@ export class IngredientManagePage implements OnInit {
         is_flour: new FormControl(false, Validators.required),
         cost: new FormControl("0", Validators.required),
       });
+      this.ingredient.user = {
+        owner: this.current_user.email,
+        can_clone: false,
+        cloned: true,
+        reference: "",
+        shared_users: [],
+        creator: {
+          name: this.current_user.name,
+          email: this.current_user.email,
+          date: new Date(),
+        },
+        modifiers: [],
+      };
     } else {
       this.update = true;
       this.ingredient = JSON.parse(JSON.stringify(state.ingredient));
       if (this.ingredient.formula) {
         this.type = "compound";
+      }
+      this.ingredient.user = state.ingredient.user;
+      if (this.ingredient.user.owner == "") {
+        this.public = true;
       }
       this.manageIngredientForm = new FormGroup({
         name: new FormControl(state.ingredient.name, Validators.required),
@@ -88,7 +106,6 @@ export class IngredientManagePage implements OnInit {
         ),
         cost: new FormControl(state.ingredient.cost, Validators.required),
       });
-      this.public = this.ingredient.can_be_modified;
       this.ingredient.references = []
       if (state.ingredient.references && state.ingredient.references.length>0) {
         state.ingredient.references.forEach((reference) => {
@@ -98,7 +115,15 @@ export class IngredientManagePage implements OnInit {
     }
 
     let user = await this.userStorageService.getUser();
-    this.user = {name: user.name, email: user.email}
+    this.current_user = {name: user.name, email: user.email}
+    if (this.update) {
+      this.is_modifier = false;
+      this.ingredient.user.modifiers.forEach((user) => {
+        if (user.email == this.current_user.email) {
+          this.is_modifier = true;
+        }
+      });
+    }
   }
 
   async pickIngredient() {
@@ -245,7 +270,6 @@ export class IngredientManagePage implements OnInit {
     await loading.present();
 
     this.ingredient.name = this.manageIngredientForm.value.name;
-    this.ingredient.can_be_modified = this.public;
     if (this.ingredient.references) {
       this.ingredient.references = JSON.parse(JSON.stringify(this.ingredient.references))
     }
@@ -286,7 +310,23 @@ export class IngredientManagePage implements OnInit {
       this.presentToast(false, true);
     } else {
       if (!this.update) {
-        this.ingredient.creator = this.user.email;
+        this.ingredient.user = {
+          owner: this.current_user.email,
+          can_clone: this.ingredient.user.can_clone,
+          cloned: true,
+          reference: "",
+          shared_users: [],
+          creator: {
+            name: this.current_user.name,
+            email: this.current_user.email,
+            date: new Date(),
+          },
+          modifiers: [],
+        };
+        if (this.public) {
+          this.ingredient.user.owner = "";
+          this.ingredient.user.cloned = false;
+        }
         this.ingredientCRUDService
           .createIngredient(this.ingredient)
           .then(() => {
@@ -308,6 +348,17 @@ export class IngredientManagePage implements OnInit {
             await loading.dismiss();
           });
       } else {
+        this.ingredient.user.modifiers.push({
+          name: this.current_user.name,
+          email: this.current_user.email,
+          date: new Date(),
+        });
+        if (this.public) {
+          this.ingredient.user.owner = "";
+          this.ingredient.user.cloned = false;
+        } else {
+          this.ingredient.user.owner = this.current_user.email;
+        }
         this.ingredientCRUDService
           .updateIngredient(this.ingredient)
           .then(() => {

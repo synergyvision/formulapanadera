@@ -24,6 +24,7 @@
     "sync_shared": "Sincronizar compartidos",
     "manage_shared": "Gestionar compartidos",
     "delete_question": "¿Desea eliminar {{item}}?",
+    "formula_privacy_question": "Esta fórmula contiene ingredientes privados. ¿Compartir de todas formas?",
     "sign_out_question": "¿Cerrar sesión?",
     "yes": "Sí",
     "no": "No"
@@ -147,8 +148,8 @@
     },
     "empty": "No se encontraron fórmulas",
     "share": {
-      "instructions": "Ingresa el correo electrónico del usuario al que deseas compartir la fórmula",
-      "success": "Fórmula compartida",
+      "instructions": "Ingresa el correo electrónico del usuario al que deseas compartir",
+      "success": "Compartida correctamente",
       "error": "Ocurrió un error. Intente de nuevo",
       "mine": "Propias",
       "shared": "Compartidas",
@@ -156,7 +157,7 @@
       "empty": "No se encontraron compartidos",
       "public": "Públicas",
       "options": {
-        "instructions": "¿Deseas compartir la fórmula a un único usuario o a un grupo?",
+        "instructions": "¿Deseas compartir a un único usuario o a un grupo?",
         "one": "Usuario",
         "group": "Grupo"
       }
@@ -165,7 +166,7 @@
       "units": "Unidades a elaborar"
     },
     "clone": {
-      "instructions": "Al clonar esta fórmula podrás modificarla, esta aparecerá entre tus fórmulas. La versión original se conservará"
+      "instructions": "El clonar te permite modificar, una nueva versión aparecerá en la pestaña \"Propias\". La versión original se conservará"
     }
   },
   "ingredients": {
@@ -182,6 +183,8 @@
     "empty": "No se encontraron ingredientes",
     "compensation_percentage": "Factor de compensación",
     "suggested_values": "Valores sugeridos",
+    "public": "Público",
+    "can_clone": "Puede ser clonado",
     "type": {
       "name": "Tipo",
       "simple": "Simple",
@@ -224,7 +227,7 @@
     "logout": "Cerrar sesión"
   },
   "production": {
-    "name": "Producción",
+    "name": "Producciones",
     "create": "Crear producción",
     "update": "Modificar producción",
     "production_name": "Nombre",

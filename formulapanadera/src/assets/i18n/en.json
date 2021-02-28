@@ -24,6 +24,7 @@
     "sync_shared": "Sync shared",
     "manage_shared": "Manage shared",
     "delete_question": "Do you want to delete {{item}}?",
+    "formula_privacy_question": "This formula has private ingredients. Share anyway?",
     "sign_out_question": "Sign out?",
     "yes": "Yes",
     "no": "No"
@@ -147,8 +148,8 @@
     },
     "empty": "No formulas found",
     "share": {
-      "instructions": "Enter the email address of the user to whom you wish to share the formula",
-      "success": "Formula shared",
+      "instructions": "Enter the email address of the user to whom you wish to share",
+      "success": "Shared successfully",
       "error": "An error ocurred. Try again",
       "mine": "Mine",
       "shared": "Shared",
@@ -165,7 +166,7 @@
       "units": "Production units"
     },
     "clone": {
-      "instructions": "By cloning this formula you can modify it, it will appear among your formulas. The original version will be preserved"
+      "instructions": "By cloning you can modify, a new version will appear in \"Mine\" tab. The original version will be preserved"
     }
   },
   "ingredients": {
@@ -182,6 +183,8 @@
     "empty": "No ingredients found",
     "compensation_percentage": "Compensation factor",
     "suggested_values": "Suggested values",
+    "public": "Public",
+    "can_clone": "Can be cloned",
     "type": {
       "name": "Type",
       "simple": "Simple",
@@ -224,7 +227,7 @@
     "logout": "Log out"
   },
   "production": {
-    "name": "Production",
+    "name": "Productions",
     "create": "Create production",
     "update": "Update production",
     "production_name": "Name",

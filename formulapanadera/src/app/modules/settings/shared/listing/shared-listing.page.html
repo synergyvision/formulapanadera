@@ -28,10 +28,32 @@
     [value]="segment"
     class="segment"
   >
+    <ion-segment-button value="ingredients">
+      <ion-label>{{'ingredients.name' | translate}}</ion-label>
+    </ion-segment-button>
     <ion-segment-button value="formulas">
       <ion-label>{{'formulas.name' | translate}}</ion-label>
     </ion-segment-button>
+    <ion-segment-button value="productions">
+      <ion-label>{{'production.name' | translate}}</ion-label>
+    </ion-segment-button>
   </ion-segment>
+  <span *ngIf="segment == 'ingredients'">
+    <ion-list
+      lines="none"
+      class="shared-list"
+      *ngIf="ingredients?.length > 0; else emptyBlock"
+    >
+      <app-ingredient-item
+        *ngFor="let ingredient of ingredients; index as i"
+        (click)="presentOptions('ingredient', ingredient)"
+        [ingredient]="ingredient"
+        [clickable]="true"
+        [even]="(i%2==0)"
+      >
+      </app-ingredient-item>
+    </ion-list>
+  </span>
   <span *ngIf="segment == 'formulas'">
     <ion-list
     lines="none"
@@ -40,12 +62,26 @@
   >
     <app-formula-item
       *ngFor="let formula of formulas; index as i"
-      (click)="presentFormulaOptions(formula)"
+      (click)="presentOptions('formula', formula)"
       [formula]="formula"
       [clickable]="true"
       [even]="(i%2==0)"
     ></app-formula-item>
   </ion-list>
+  </span>
+  <span *ngIf="segment == 'productions'">
+    <ion-list
+      lines="none"
+      class="shared-list"
+      *ngIf="productions?.length > 0; else emptyBlock"
+    >
+      <app-production-item
+        *ngFor="let production of productions; index as i"
+        (click)="presentOptions('production', production)"
+        [production]="production"
+        [even]="(i%2==0)"
+      ></app-production-item>
+    </ion-list>
   </span>
   <ng-template #emptyBlock>
     <ion-row class="empty-block">

@@ -11,6 +11,7 @@ import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
+import { UserStorageService } from "src/app/core/services/storage/user.service";
 
 @Component({
   selector: "app-ingredient-picker-modal",
@@ -29,13 +30,16 @@ export class IngredientPickerModal implements OnInit {
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
   isFlourForm: FormGroup;
+  typeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
 
   currency = CURRENCY;
   ingredients: IngredientModel[] & ShellModel;
 
-  segment: string = "simple";
+  segment: string = "mine";
+
+  user_email: string;
 
   @HostBinding("class.is-shell") get isShell() {
     return this.ingredients && this.ingredients.isShell ? true : false;
@@ -43,10 +47,11 @@ export class IngredientPickerModal implements OnInit {
   constructor(
     private ingredientService: IngredientService,
     private ingredientCRUDService: IngredientCRUDService,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private userStorageService: UserStorageService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
       dual: new FormControl({ lower: 0, upper: 1000 }),
@@ -58,13 +63,20 @@ export class IngredientPickerModal implements OnInit {
     this.isFlourForm = new FormGroup({
       value: new FormControl("all"),
     });
+    this.typeForm = new FormGroup({
+      value: new FormControl("all"),
+    });
 
     this.searchingState();
 
+    this.user_email = (await this.userStorageService.getUser()).email;
     if (!this.ingredientService.getIngredients()) {
       this.ingredientCRUDService
-        .getIngredientsDataSource()
-        .subscribe((ingredients) => {
+        .getIngredientsDataSource(this.user_email)
+        .subscribe(async (ingredients) => {
+          this.searchingState();
+          const promises = ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
+          await Promise.all(promises)
           this.ingredientService.setIngredients(
             ingredients as IngredientModel[] & ShellModel
           );
@@ -89,6 +101,7 @@ export class IngredientPickerModal implements OnInit {
         upper: this.costRangeForm.value.upper,
       },
       is_flour: this.isFlourForm.value.value,
+      type: this.typeForm.value.value,
       query: this.searchQuery,
     };
 
@@ -108,9 +121,16 @@ export class IngredientPickerModal implements OnInit {
         filteredIngredients
       );
     }
-    filteredIngredients = this.ingredientService.searchIngredientsByFormula(
+    if (filters.type !== "all") {
+      filteredIngredients = this.ingredientService.searchIngredientsByFormula(
+        filters.type,
+        filteredIngredients
+      );
+    }
+    filteredIngredients = this.ingredientService.searchIngredientsByShared(
       this.segment,
-      filteredIngredients
+      filteredIngredients,
+      this.user_email
     );
 
     const dataSourceWithShellObservable = DataStore.AppendShell(

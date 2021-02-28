@@ -1,7 +1,7 @@
 import { PRODUCTION_STEP_STATUS } from "src/app/config/formula";
 
 import { FormulaModel, StepDetailsModel } from "./formula.model";
-import { ModifierModel } from "./user.model";
+import { UserOwnerModel } from "./user.model";
 
 export class FormulaNumberModel {
   formula: FormulaModel;
@@ -13,7 +13,7 @@ export class ProductionModel {
   id: string;
   name: string;
   formulas: Array<FormulaNumberModel>;
-  owner: ModifierModel;
+  user: UserOwnerModel;
 }
 
 /* Presenting formulas to the user */

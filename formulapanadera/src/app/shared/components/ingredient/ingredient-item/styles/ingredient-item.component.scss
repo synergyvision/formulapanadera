@@ -25,8 +25,7 @@
   padding-left: 0;
 
   .ingredients-name {
-    margin-top: 0px;
-    margin-bottom: 5px;
+    margin: 0px;
     font-size: 16px;
     font-weight: bold;
     letter-spacing: 0.2px;
@@ -72,4 +71,9 @@
 .image-icon {
   padding: 2px 5px 0px 2px !important;
   margin-top: -5px;
+}
+
+.ingredient-user {
+  font-size: 12px;
+  margin: 0px 0 5px 0;
 }

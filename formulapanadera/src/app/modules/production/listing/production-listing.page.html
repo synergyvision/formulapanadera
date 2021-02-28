@@ -87,6 +87,22 @@
 </ion-header>
 
 <ion-content class="production-content">
+  <ion-segment
+    mode="ios"
+    (ionChange)="segmentChanged($event)"
+    [value]="segment"
+    class="segment"
+  >
+    <ion-segment-button value="mine">
+      <ion-label>{{'formulas.share.mine' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="shared">
+      <ion-label>{{'formulas.share.shared' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="public">
+      <ion-label>{{'formulas.share.public' | translate}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
   <ion-list
     lines="none"
     class="productions-list"

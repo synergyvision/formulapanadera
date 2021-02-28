@@ -459,6 +459,9 @@ export class FormulaService {
   }
 
   public sortIngredients(ingredients: any) {
+    ingredients.sort((a: IngredientPercentageModel, b: IngredientPercentageModel) => {
+      return (a.ingredient.is_flour === b.ingredient.is_flour)? 0 : a.ingredient.is_flour? -1 : 1;
+    })
     ingredients.sort(
       (a: IngredientPercentageModel, b: IngredientPercentageModel) => {
         let num = 0;

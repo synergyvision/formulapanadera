@@ -1,15 +1,17 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button
-        (click)="returnToList()"
-        mode="md"
-      ></ion-back-button>
+      <ion-button (click)="returnToList()">
+        <ion-icon
+          slot="icon-only"
+          [name]="ICONS.back"
+          mode="md"
+        ></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title> {{ 'ingredients.name' | translate }} </ion-title>
     <ion-buttons
       slot="primary"
-      *ngIf="user.email === ingredient.creator || ingredient.can_be_modified"
     >
       <ion-button (click)="presentOptions()">
         <ion-icon
@@ -28,6 +30,45 @@
       [title]="'ingredients.ingredient_name' | translate"
       [data]="ingredient.name"
     ></app-data-item>
+
+    <app-divider></app-divider>
+  
+    <ion-row>
+      <ion-col class="detail-col">
+        <ion-item class="input-item" lines="full">
+          <ion-label color="primary" class="label">{{'ingredients.public' | translate}}</ion-label>
+          <ion-checkbox
+            class="checkbox"
+            color="primary"
+            [ngModel]="public"
+            slot="start"
+            [disabled]="!(user.email === ingredient.user.creator.email) && !is_modifier"
+            (ngModelChange)="changeIngredient('public', $event)"
+          >
+          </ion-checkbox>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="detail-col">
+        <ion-item class="input-item" lines="full">
+          <ion-label color="primary" class="label">{{'ingredients.can_clone' | translate}}</ion-label>
+          <ion-checkbox
+            class="checkbox"
+            color="primary"
+            [ngModel]="ingredient.user.can_clone"
+            [ngModelOptions]="{standalone: true}"
+            slot="start"
+            [disabled]="!(user.email === ingredient.user.creator.email) && !is_modifier"
+            (ngModelChange)="changeIngredient('clone', $event)"
+          >
+          </ion-checkbox>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <app-divider></app-divider>
+
     <span *ngIf="type == 'simple'">
       <app-data-item
         *ngIf="ingredient.hydration > 0"

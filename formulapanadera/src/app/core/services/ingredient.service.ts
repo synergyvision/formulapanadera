@@ -85,6 +85,30 @@ export class IngredientService {
     return filtered as IngredientModel[] & ShellModel;
   }
 
+  public searchIngredientsByShared(
+    type: string,
+    ingredients: IngredientModel[] & ShellModel,
+    user_email: string
+  ): IngredientModel[] & ShellModel {
+    const filtered = [];
+    ingredients.forEach((item) => {
+      if (
+        (type == "mine" &&
+          (item.user.creator.email == user_email || // creator or
+            item.user.cloned)) || // owner that cloned the formula
+        (type == "shared" &&
+          item.user.owner == user_email &&
+          !item.user.cloned) ||
+        (type == "public" &&
+          item.user.creator.email !== user_email && // public formulas, current user is not the creator
+          !item.user.owner)
+      ) {
+        filtered.push(item);
+      }
+    });
+    return filtered as IngredientModel[] & ShellModel;
+  }
+
   // Sort
   sortIngredients(ingredients: IngredientModel[]): IngredientModel[] & ShellModel {
     return ingredients.sort(function (a, b) {

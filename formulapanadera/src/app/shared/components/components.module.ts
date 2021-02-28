@@ -29,6 +29,7 @@ import { OrganolepticCharacteristicsComponent } from "./formula/organoleptic-cha
 import { ReferencesComponent } from "./general/references/references.component";
 import { UserItemComponent } from "./user-group/user-item/user-item.component";
 import { FormulaMixingComponent } from "./formula/formula-mixing/formula-mixing.component";
+import { TitleDividerComponent } from "./general/title-divider/title-divider.component";
 
 @NgModule({
   imports: [
@@ -42,6 +43,7 @@ import { FormulaMixingComponent } from "./formula/formula-mixing/formula-mixing.
     TitleComponent,
     DataItemComponent,
     DividerComponent,
+    TitleDividerComponent,
     ShowHidePasswordComponent,
     ShowHideContentComponent,
     IngredientItemComponent,
@@ -67,6 +69,7 @@ import { FormulaMixingComponent } from "./formula/formula-mixing/formula-mixing.
     TitleComponent,
     DataItemComponent,
     DividerComponent,
+    TitleDividerComponent,
     ShowHidePasswordComponent,
     ShowHideContentComponent,
     IngredientItemComponent,

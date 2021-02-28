@@ -37,7 +37,9 @@ export class ProductionManagePage implements OnInit {
   production: ProductionModel = new ProductionModel();
   manageProductionForm: FormGroup;
 
+  public = false;
   current_user = new UserResumeModel();
+  is_modifier: boolean = false;
 
   constructor(
     private productionCRUDService: ProductionCRUDService,
@@ -57,20 +59,45 @@ export class ProductionManagePage implements OnInit {
       this.manageProductionForm = new FormGroup({
         name: new FormControl(null, Validators.required),
       });
+      this.production.user = {
+        owner: this.current_user.email,
+        can_clone: false,
+        cloned: true,
+        reference: "",
+        shared_users: [],
+        creator: {
+          name: this.current_user.name,
+          email: this.current_user.email,
+          date: new Date(),
+        },
+        modifiers: [],
+      };
     } else {
       this.update = true;
       this.manageProductionForm = new FormGroup({
         name: new FormControl(state.production.name, Validators.required),
       });
       this.production.id = state.production.id;
+      this.production.user = state.production.user;
+      if (this.production.user.owner == "") {
+        this.public = true;
+      }
       this.production.formulas = [];
       state.production.formulas.forEach((formula) => {
         this.production.formulas.push(formula);
       });
-      this.production.owner = state.production.owner;
+      this.production.user = state.production.user;
     }
     let user = await this.userStorageService.getUser();
     this.current_user = {name: user.name, email: user.email}
+    if (this.update) {
+      this.is_modifier = false;
+      this.production.user.modifiers.forEach((user) => {
+        if (user.email == this.current_user.email) {
+          this.is_modifier = true;
+        }
+      });
+    }
   }
 
   async sendProduction() {
@@ -82,6 +109,17 @@ export class ProductionManagePage implements OnInit {
 
     this.production.name = this.manageProductionForm.value.name;
     if (this.update) {
+      this.production.user.modifiers.push({
+        name: this.current_user.name,
+        email: this.current_user.email,
+        date: new Date(),
+      });
+      if (this.public) {
+        this.production.user.owner = "";
+        this.production.user.cloned = false;
+      } else {
+        this.production.user.owner = this.current_user.email;
+      }
       this.productionCRUDService
         .updateProduction(this.production)
         .then(async () => {
@@ -103,11 +141,23 @@ export class ProductionManagePage implements OnInit {
           await loading.dismiss();
         });
     } else {
-      this.production.owner = {
-        name: this.current_user.name,
-        email: this.current_user.email,
-        date: new Date(),
+      this.production.user = {
+        owner: this.current_user.email,
+        can_clone: this.production.user.can_clone,
+        cloned: true,
+        reference: "",
+        shared_users: [],
+        creator: {
+          name: this.current_user.name,
+          email: this.current_user.email,
+          date: new Date(),
+        },
+        modifiers: [],
       };
+      if (this.public) {
+        this.production.user.owner = "";
+        this.production.user.cloned = false;
+      }
       this.productionCRUDService
         .createProduction(this.production)
         .then(async () => {

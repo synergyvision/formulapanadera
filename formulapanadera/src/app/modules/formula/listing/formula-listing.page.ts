@@ -58,7 +58,10 @@ export class FormulaListingPage implements OnInit, OnDestroy {
     this.user_email = (await this.userStorageService.getUser()).email;
     this.formulaCRUDService
       .getFormulasDataSource(this.user_email)
-      .subscribe((formulas) => {
+      .subscribe(async (formulas) => {
+        this.searchingState();
+        const promises = formulas.map((form)=>this.formulaCRUDService.getIngredients(form))
+        await Promise.all(promises)
         this.formulaService.setFormulas(
           formulas as FormulaModel[] & ShellModel
         );
@@ -145,7 +148,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
   }
 
   formulaDetails(formula: FormulaModel) {
-    if (formula.id !== undefined) {
+    if (formula.name !== undefined) {
       this.router.navigateByUrl(
         APP_URL.menu.name +
           "/" +
