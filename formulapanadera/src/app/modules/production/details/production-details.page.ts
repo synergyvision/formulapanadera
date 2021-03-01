@@ -376,6 +376,7 @@ export class ProductionDetailsPage implements OnInit {
       })
     } else {
       this.production.user.shared_users = users_to_share;
+      this.production.user.shared_references = [];
       users_to_share.forEach(user => {
         this.production.user.shared_references.push(user.email);
       })

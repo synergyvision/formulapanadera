@@ -280,6 +280,7 @@ export class IngredientDetailsPage implements OnInit {
       })
     } else {
       this.ingredient.user.shared_users = users_to_share;
+      this.ingredient.user.shared_references = [];
       users_to_share.forEach(user => {
         this.ingredient.user.shared_references.push(user.email);
       })

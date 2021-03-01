@@ -460,6 +460,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       })
     } else {
       this.formula.user.shared_users = users_to_share;
+      this.formula.user.shared_references = [];
       users_to_share.forEach(user => {
         this.formula.user.shared_references.push(user.email);
       })
