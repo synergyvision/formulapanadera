@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
 import { of } from "rxjs";
@@ -39,9 +39,6 @@ export class FormulaPickerModal implements OnInit {
 
   user_email: string;
 
-  @HostBinding("class.is-shell") get isShell() {
-    return this.formulas && this.formulas.isShell ? true : false;
-  }
   constructor(
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
@@ -65,7 +62,10 @@ export class FormulaPickerModal implements OnInit {
     if (!this.formulaService.getFormulas()) {
       this.formulaCRUDService
         .getFormulasDataSource(this.user_email)
-        .subscribe((formulas) => {
+        .subscribe(async (formulas) => {
+          this.searchingState();
+          const promises = formulas.map((form)=>this.formulaCRUDService.getIngredients(form))
+          await Promise.all(promises)
           this.formulaService.setFormulas(
             formulas as FormulaModel[] & ShellModel
           );

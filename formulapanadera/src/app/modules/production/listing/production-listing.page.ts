@@ -58,7 +58,10 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
     this.user_email = (await this.userStorageService.getUser()).email;
     this.productionCRUDService
       .getProductionsDataSource(this.user_email)
-      .subscribe((productions) => {
+      .subscribe(async (productions) => {
+        this.searchingState();
+        const promises = productions.map((prod)=>this.productionCRUDService.getFormulas(prod))
+        await Promise.all(promises)
         this.productionService.setProductions(
           productions as ProductionModel[] & ShellModel
         );

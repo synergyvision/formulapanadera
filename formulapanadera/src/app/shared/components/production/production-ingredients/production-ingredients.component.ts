@@ -3,6 +3,7 @@ import { DECIMALS } from "src/app/config/formats";
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { FormulaPresentModel } from "src/app/core/models/production.model";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
+import { FormulaService } from "src/app/core/services/formula.service";
 import { ProductionService } from "src/app/core/services/production.service";
 
 @Component({
@@ -17,13 +18,15 @@ export class ProductionIngredientsComponent implements OnInit {
 
   constructor(
     private productionService: ProductionService,
-    private formatNumberService: FormatNumberService
+    private formatNumberService: FormatNumberService,
+    private formulaService: FormulaService
   ) {}
 
   ngOnInit() {
     this.ingredients = this.productionService.calculateTotalIngredients(
       this.formulas
     );
+    this.ingredients = this.formulaService.sortIngredients(this.ingredients);
   }
 
   parseNumberGrams(number: number) {
