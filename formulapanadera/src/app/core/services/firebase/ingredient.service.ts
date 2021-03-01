@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
-import { Observable } from "rxjs";
+import { combineLatest, Observable } from "rxjs";
 
 import { IngredientModel } from "../../models/ingredient.model";
 import { COLLECTIONS } from "src/app/config/firebase";
 import { IngredientPercentageModel } from "../../models/formula.model";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class IngredientCRUDService {
@@ -18,11 +19,41 @@ export class IngredientCRUDService {
   public getIngredientsDataSource(
     user_email: string
   ): Observable<Array<IngredientModel>> {
-    return this.afs
+    let mine = this.afs
       .collection<IngredientModel>(this.collection, (ref) =>
-        ref.where("user.owner", "in", [user_email, ""])
+        ref.where("user.owner", "==", user_email)
       )
       .valueChanges({ idField: "id" });
+    let shared = this.afs
+      .collection<IngredientModel>(this.collection, (ref) =>
+        ref.where("user.shared_references", "array-contains", user_email)
+      )
+      .valueChanges({ idField: "id" });
+    let publics = this.afs
+      .collection<IngredientModel>(this.collection, (ref) =>
+        ref.where("user.public", "==", true)
+      )
+      .valueChanges({ idField: "id" });
+
+      
+    return combineLatest([mine,shared,publics]).pipe(
+      map(([mine, shared, publics]) => {
+        let aux1 = [...mine, ...shared, ...publics];
+        let aux2 = [];
+        aux1.forEach((item1) => {
+          let exists = false;
+          aux2.forEach((item2) => {
+            if (item1.id == item2.id) {
+              exists = true;
+            }
+          })
+          if (!exists) {
+            aux2.push(item1);
+          }
+        })
+        return aux2;
+      })
+    )
   }
 
   public async getSubIngredients(ingredient: IngredientModel, collection = this.collection) {

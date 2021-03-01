@@ -3,9 +3,10 @@ export class UserOwnerModel {
   owner: string;
   // Used to clone
   can_clone: boolean;
-  cloned: boolean;
+  public: boolean;
   reference: string; // ID of original
-  shared_users: Array<UserResumeModel>;
+  shared_references: Array<string>; // To search from email
+  shared_users: Array<UserResumeModel>; // Additional data
   // Used to credit the users
   creator: ModifierModel;
   modifiers: Array<ModifierModel>;

@@ -230,7 +230,7 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
         icon: ICONS.sync,
         cssClass: "action-icon",
         handler: () => {
-            this.syncShared(type, item)
+            //this.syncShared(type, item)
         },
       },
       {
@@ -263,68 +263,6 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
       buttons: buttons,
     });
     await actionSheet.present();
-  }
-
-  async syncShared(
-    type: "ingredient" | "formula" | "production",
-    item: IngredientModel | FormulaModel | ProductionModel
-  ) {
-    if (type == "ingredient") {
-      this.ingredientCRUDService.getSharedIngredients(item.id)
-        .subscribe(async (shared_ingredients) => {
-          const promises = shared_ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
-          await Promise.all(promises)
-          shared_ingredients.forEach(async (shared_ingredient, index) => {
-            let updated_ingredient: IngredientModel;
-            updated_ingredient = JSON.parse(JSON.stringify(item));
-            updated_ingredient.id = shared_ingredient.id;
-            updated_ingredient.user = shared_ingredient.user;
-            this.ingredientCRUDService.updateIngredient(updated_ingredient)
-              .then(() => {
-                this.presentToast(true, updated_ingredient.user.owner)
-              })
-              .catch(() => {
-                this.presentToast(false, updated_ingredient.user.owner)
-              })
-          })
-        });
-    }
-    if (type == "formula") {
-      this.formulaCRUDService.getSharedFormulas(item.id)
-        .subscribe((shared_formulas) => {
-          shared_formulas.forEach(async (shared_formula, index) => {
-            let updated_formula: FormulaModel;
-            updated_formula = JSON.parse(JSON.stringify(item));
-            updated_formula.id = shared_formula.id;
-            updated_formula.user = shared_formula.user;
-            this.formulaCRUDService.updateFormula(updated_formula)
-              .then(() => {
-                this.presentToast(true, updated_formula.user.owner)
-              })
-              .catch(() => {
-                this.presentToast(false, updated_formula.user.owner)
-              })
-          })
-        });
-    }
-    if (type == "production") {
-      this.productionCRUDService.getSharedProductions(item.id)
-        .subscribe((shared_productions) => {
-          shared_productions.forEach(async (shared_production, index) => {
-            let updated_production: ProductionModel;
-            updated_production = JSON.parse(JSON.stringify(item));
-            updated_production.id = shared_production.id;
-            updated_production.user = shared_production.user;
-            this.productionCRUDService.updateProduction(updated_production)
-              .then(() => {
-                this.presentToast(true, updated_production.user.owner)
-              })
-              .catch(() => {
-                this.presentToast(false, updated_production.user.owner)
-              })
-          })
-        });
-    }
   }
 
   async manageShared(

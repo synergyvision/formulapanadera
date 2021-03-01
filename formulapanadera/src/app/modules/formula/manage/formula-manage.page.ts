@@ -49,14 +49,12 @@ export class FormulaManagePage {
   formulaUnit = "%";
   temperatureUnit = "C";
   update: boolean = false;
-  public = false;
   current_user = new UserResumeModel();
-  is_modifier: boolean = false
 
   constructor(
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
-    public modalController: ModalController,
+    private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
@@ -79,9 +77,10 @@ export class FormulaManagePage {
       this.formula.user = {
         owner: this.current_user.email,
         can_clone: false,
-        cloned: true,
+        public: false,
         reference: "",
         shared_users: [],
+        shared_references: [],
         creator: {
           name: this.current_user.name,
           email: this.current_user.email,
@@ -102,9 +101,6 @@ export class FormulaManagePage {
       });
       this.formula.id = state.formula.id;
       this.formula.user = state.formula.user;
-      if (this.formula.user.owner == "") {
-        this.public = true;
-      }
       this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
       this.formula.references = [];
       this.formula.ingredients = [];
@@ -127,15 +123,7 @@ export class FormulaManagePage {
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
     let user = await this.userStorageService.getUser();
-    this.current_user = {name: user.name, email: user.email}
-    if (this.update) {
-      this.is_modifier = false;
-      this.formula.user.modifiers.forEach((user) => {
-        if (user.email == this.current_user.email) {
-          this.is_modifier = true;
-        }
-      });
-    }
+    this.current_user = { name: user.name, email: user.email };
   }
 
   changeUnit(ev: any) {
@@ -453,20 +441,13 @@ export class FormulaManagePage {
         email: this.current_user.email,
         date: new Date(),
       });
-      if (this.public) {
-        this.formula.user.owner = "";
-        this.formula.user.cloned = false;
-      } else {
-        this.formula.user.owner = this.current_user.email;
-      }
-
       let valid: boolean = this.verifyCompoundIngredients()
       if (valid) {
         let share: boolean = true;
         if (this.formula.user.owner == "") {
           let private_ing: boolean = false
           this.formula.ingredients.forEach(ingredient => {
-            if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+            if (ingredient.ingredient.user && !ingredient.ingredient.user.public) {
               private_ing = true
             }
           })
@@ -508,9 +489,10 @@ export class FormulaManagePage {
       this.formula.user = {
         owner: this.current_user.email,
         can_clone: this.formula.user.can_clone,
-        cloned: true,
+        public: this.formula.user.public,
         reference: "",
         shared_users: [],
+        shared_references: [],
         creator: {
           name: this.current_user.name,
           email: this.current_user.email,
@@ -518,15 +500,11 @@ export class FormulaManagePage {
         },
         modifiers: [],
       };
-      if (this.public) {
-        this.formula.user.owner = "";
-        this.formula.user.cloned = false;
-      }
       let share: boolean = true;
       if (this.formula.user.owner == "") {
         let private_ing: boolean = false
         this.formula.ingredients.forEach(ingredient => {
-          if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+          if (ingredient.ingredient.user && !ingredient.ingredient.user.public) {
             private_ing = true
           }
         })

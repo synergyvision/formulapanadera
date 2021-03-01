@@ -52,11 +52,11 @@
         <ion-textarea type="text" autoGrow="true" formControlName="description"></ion-textarea>
       </ion-item>
 
-      <app-divider *ngIf="!update || current_user.email === formula.user.creator.email || is_modifier"></app-divider>
+      <app-divider *ngIf="!update || current_user.email === formula.user.owner"></app-divider>
 
       <!-- Public / clone -->
       <ion-row
-        *ngIf="!update || current_user.email === formula.user.creator.email || is_modifier"
+        *ngIf="!update || current_user.email === formula.user.owner"
         ><ion-col class="no-padding"
           ><ion-item class="input-item" lines="full">
             <ion-label color="primary"
@@ -65,14 +65,14 @@
             <ion-checkbox
               class="formula-is-public formula-checkbox"
               color="primary"
-              [(ngModel)]="public"
+              [(ngModel)]="formula.user.public"
               [ngModelOptions]="{standalone: true}"
               slot="start"
             >
             </ion-checkbox> </ion-item></ion-col
       ></ion-row>
       <ion-row
-        *ngIf="!update || current_user.email === formula.user.creator.email"
+        *ngIf="!update || current_user.email === formula.user.owner"
       >
         <ion-col class="no-padding">
           <ion-item class="input-item" lines="full">

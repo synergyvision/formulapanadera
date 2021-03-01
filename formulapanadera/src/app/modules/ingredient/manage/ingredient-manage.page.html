@@ -34,24 +34,24 @@
         ></ion-input>
       </ion-item>
 
-      <app-divider *ngIf="!update || current_user.email === ingredient.user.creator.email || is_modifier"></app-divider>
+      <app-divider *ngIf="!update || current_user.email === ingredient.user.owner"></app-divider>
       
       <!-- Public / clone -->
-      <ion-row *ngIf="!update || current_user.email === ingredient.user.creator.email || is_modifier">
+      <ion-row *ngIf="!update || current_user.email === ingredient.user.owner">
         <ion-col class="no-padding">
           <ion-item class="input-item" lines="full">
             <ion-label color="primary">{{'ingredients.public' | translate}}</ion-label>
             <ion-checkbox
               class="formula-is-public formula-checkbox"
               color="primary"
-              [(ngModel)]="public"
+              [(ngModel)]="ingredient.user.public"
               [ngModelOptions]="{standalone: true}"
               slot="start">
             </ion-checkbox>
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="!update || current_user.email === ingredient.user.creator.email">
+      <ion-row *ngIf="!update || current_user.email === ingredient.user.owner">
         <ion-col class="no-padding">
           <ion-item class="input-item" lines="full">
             <ion-label color="primary">{{'ingredients.can_clone' | translate}}</ion-label>

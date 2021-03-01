@@ -39,9 +39,7 @@ export class IngredientManagePage implements OnInit {
   ingredient: IngredientModel = new IngredientModel();
   manageIngredientForm: FormGroup;
   update: boolean = false;
-  public = false;
   current_user = new UserResumeModel();
-  is_modifier: boolean = false;
 
   type: string = "simple";
 
@@ -56,7 +54,7 @@ export class IngredientManagePage implements OnInit {
     private formatNumberService: FormatNumberService,
     private loadingController: LoadingController,
     private toastController: ToastController,
-    public modalController: ModalController,
+    private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private router: Router,
   ) {}
@@ -74,9 +72,10 @@ export class IngredientManagePage implements OnInit {
       this.ingredient.user = {
         owner: this.current_user.email,
         can_clone: false,
-        cloned: true,
+        public: false,
         reference: "",
         shared_users: [],
+        shared_references: [],
         creator: {
           name: this.current_user.name,
           email: this.current_user.email,
@@ -91,9 +90,6 @@ export class IngredientManagePage implements OnInit {
         this.type = "compound";
       }
       this.ingredient.user = state.ingredient.user;
-      if (this.ingredient.user.owner == "") {
-        this.public = true;
-      }
       this.manageIngredientForm = new FormGroup({
         name: new FormControl(state.ingredient.name, Validators.required),
         hydration: new FormControl(
@@ -115,15 +111,7 @@ export class IngredientManagePage implements OnInit {
     }
 
     let user = await this.userStorageService.getUser();
-    this.current_user = {name: user.name, email: user.email}
-    if (this.update) {
-      this.is_modifier = false;
-      this.ingredient.user.modifiers.forEach((user) => {
-        if (user.email == this.current_user.email) {
-          this.is_modifier = true;
-        }
-      });
-    }
+    this.current_user = { name: user.name, email: user.email };
   }
 
   async pickIngredient() {
@@ -313,9 +301,10 @@ export class IngredientManagePage implements OnInit {
         this.ingredient.user = {
           owner: this.current_user.email,
           can_clone: this.ingredient.user.can_clone,
-          cloned: true,
+          public: this.ingredient.user.public,
           reference: "",
           shared_users: [],
+          shared_references: [],
           creator: {
             name: this.current_user.name,
             email: this.current_user.email,
@@ -323,10 +312,6 @@ export class IngredientManagePage implements OnInit {
           },
           modifiers: [],
         };
-        if (this.public) {
-          this.ingredient.user.owner = "";
-          this.ingredient.user.cloned = false;
-        }
         this.ingredientCRUDService
           .createIngredient(this.ingredient)
           .then(() => {
@@ -353,12 +338,6 @@ export class IngredientManagePage implements OnInit {
           email: this.current_user.email,
           date: new Date(),
         });
-        if (this.public) {
-          this.ingredient.user.owner = "";
-          this.ingredient.user.cloned = false;
-        } else {
-          this.ingredient.user.owner = this.current_user.email;
-        }
         this.ingredientCRUDService
           .updateIngredient(this.ingredient)
           .then(() => {
