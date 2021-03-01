@@ -52,10 +52,20 @@ ion-back-button {
           padding: 10px 0;
           height: 100%;
           align-self: center;
+          color: var(--ion-color-secondary);
+          font-size: 14px;
         }
+      }
 
-        .user-email {
-          padding-left: var(--page-margin);
+      .user-row {
+        border-bottom: 1px solid var(--ion-color-light-shade);
+
+        .user-col {
+          padding: 10px 0;
+          height: 100%;
+          align-self: center;
+          font-size: 14px;
+          color: var(--ion-color-secondary);
         }
       }
     }
@@ -96,8 +106,6 @@ ion-back-button {
 }
 
 .user-item {
-  --padding-start: 0 !important;
-
   .user-data {
     margin: 0;
     font-size: 14px;
