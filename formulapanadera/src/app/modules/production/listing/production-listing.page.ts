@@ -43,7 +43,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
     private productionCRUDService: ProductionCRUDService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
     private router: Router,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
   ) {}
 
   async ngOnInit() {

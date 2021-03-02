@@ -25,6 +25,15 @@ export class UserCRUDService {
     );
   }
 
+  public async getUser(email: string): Promise<UserModel> {
+    let docs = await this.afs.collection<UserModel>(this.collection).ref.where("email", "==", email).get()
+    if (docs.docs[0].exists) {
+      let user = docs.docs[0].data() as UserModel;
+      return user;
+    }
+    return new UserModel;
+  }
+
   /*
     User Management
   */

@@ -12,6 +12,7 @@ import {
 } from "src/app/core/models/production.model";
 import { UserGroupModel, UserResumeModel } from "src/app/core/models/user.model";
 import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
+import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
@@ -55,7 +56,8 @@ export class ProductionDetailsPage implements OnInit {
     private productionInProcessStorageService: ProductionInProcessStorageService,
     private userStorageService: UserStorageService,
     private modalController: ModalController,
-    private routerOutlet: IonRouterOutlet
+    private routerOutlet: IonRouterOutlet,
+    private userCRUDService: UserCRUDService
   ) {
     this.showIngredients = true;
     this.showDetails = false;
@@ -208,7 +210,7 @@ export class ProductionDetailsPage implements OnInit {
       });
     }
     if (
-      this.production.user.owner == current_user && this.is_modifier
+      this.production.user.owner == current_user && (this.is_modifier || this.production.user.creator.email == current_user)
     ) {
       buttons.push({
         text: this.languageService.getTerm("action.share"),
@@ -326,7 +328,12 @@ export class ProductionDetailsPage implements OnInit {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: (data) => {
-            this.shareProductionToEmail([{name: "----", email: data.email}], can_clone)
+            this.userCRUDService.getUser(data.email)
+              .then((user) => {
+                this.shareProductionToEmail([{name: user.name, email: user.email}], can_clone)
+              }).catch(() => {
+                this.presentToast(false);
+              })
           },
         },
       ],

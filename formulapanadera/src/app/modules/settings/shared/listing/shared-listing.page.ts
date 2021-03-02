@@ -63,7 +63,10 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
     if (!this.ingredientService.getIngredients()) {
       this.ingredientCRUDService
         .getIngredientsDataSource(this.user_email)
-        .subscribe((ingredients) => {
+        .subscribe(async (ingredients) => {
+          this.searchingState(this.segment);
+          const promises = ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
+          await Promise.all(promises)
           this.ingredientService.setIngredients(
             ingredients as IngredientModel[] & ShellModel
           );
@@ -72,7 +75,10 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
     if (!this.productionService.getProductions()) {
       this.productionCRUDService
         .getProductionsDataSource(this.user_email)
-        .subscribe((productions) => {
+        .subscribe(async (productions) => {
+          this.searchingState(this.segment);
+          const promises = productions.map((prod)=>this.productionCRUDService.getFormulas(prod))
+          await Promise.all(promises)
           this.productionService.setProductions(
             productions as ProductionModel[] & ShellModel
           );
@@ -81,7 +87,10 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
     if (!this.formulaService.getFormulas()) {
       this.formulaCRUDService
         .getFormulasDataSource(this.user_email)
-        .subscribe((formulas) => {
+        .subscribe(async (formulas) => {
+          this.searchingState(this.segment);
+          const promises = formulas.map((form)=>this.formulaCRUDService.getIngredients(form))
+          await Promise.all(promises)
           this.formulaService.setFormulas(
             formulas as FormulaModel[] & ShellModel
           );
@@ -225,14 +234,6 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
     item: IngredientModel | FormulaModel | ProductionModel
   ) {
     let buttons = [
-      {
-        text: this.languageService.getTerm("action.sync_shared"),
-        icon: ICONS.sync,
-        cssClass: "action-icon",
-        handler: () => {
-            //this.syncShared(type, item)
-        },
-      },
       {
         text: this.languageService.getTerm("action.manage_shared"),
         icon: ICONS.share,

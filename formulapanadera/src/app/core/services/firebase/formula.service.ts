@@ -1,12 +1,11 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
+import { AngularFirestore } from "@angular/fire/firestore";
 import { combineLatest, Observable } from "rxjs";
 
 import { FormulaModel, IngredientPercentageModel } from "../../models/formula.model";
 import { COLLECTIONS } from "src/app/config/firebase";
 import { map } from "rxjs/operators";
 import { IngredientCRUDService } from "./ingredient.service";
-import { IngredientModel } from "../../models/ingredient.model";
 
 @Injectable()
 export class FormulaCRUDService {
@@ -87,16 +86,6 @@ export class FormulaCRUDService {
     return new FormulaModel;
   }
 
-  public getSharedFormulas(
-    id: string
-  ): Observable<Array<FormulaModel>> {
-    return this.afs
-      .collection<FormulaModel>(this.collection, (ref) =>
-        ref.where("user.reference", "==", id)
-      )
-      .valueChanges({ idField: "id" });
-  }
-
   /*
     Formula Management
   */
@@ -117,9 +106,9 @@ export class FormulaCRUDService {
         })
       })
     }
-    await this.afs.collection(this.collection).doc(id).set(formula);
     // Set sub ingredients
     await this.createIngredients(`${this.collection}/${id}/${COLLECTIONS.ingredients}`, formulaData);
+    await this.afs.collection(this.collection).doc(id).set(formula);
   }
 
   public async createIngredients(collection: string, formulaData: FormulaModel) {
