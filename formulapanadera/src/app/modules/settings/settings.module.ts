@@ -36,6 +36,10 @@ const routes: Routes = [
     path: APP_URL.menu.routes.settings.routes.how_to_use,
     loadChildren: () => import('./how-to-use/how-to-use.module').then( m => m.HowToUsePageModule)
   },
+  {
+    path: APP_URL.menu.routes.settings.routes.tutorials,
+    loadChildren: () => import('./tutorials/tutorials.module').then( m => m.TutorialsPageModule)
+  },
 ];
 
 @NgModule({

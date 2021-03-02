@@ -69,7 +69,8 @@ export const APP_URL = {
               listing: "",
             },
           },
-          how_to_use: "how-to-use"
+          how_to_use: "how-to-use",
+          tutorials: "tutorials"
         },
       },
     },

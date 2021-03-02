@@ -28,6 +28,7 @@ import { UserCRUDService } from './services/firebase/user.service';
 import { UserService } from './services/user.service';
 import { TermsService } from "./services/terms.service";
 import { HowToService } from "./services/how-to.service";
+import { TutorialsService } from "./services/tutorials.service";
 @NgModule({
   imports: [
     IonicModule,
@@ -57,7 +58,8 @@ import { HowToService } from "./services/how-to.service";
     UserCRUDService,
     UserStorageService,
     TermsService,
-    HowToService
+    HowToService,
+    TutorialsService
   ]
 })
 export class CoreModule extends ModuleLoadedOnceGuard {

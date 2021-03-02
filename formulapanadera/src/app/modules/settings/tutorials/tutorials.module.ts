@@ -7,14 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { TutorialsPageRoutingModule } from './tutorials-routing.module';
 
 import { TutorialsPage } from './tutorials.page';
+import { TranslateModule } from '@ngx-translate/core';
+import { ReadTutorialComponent } from './read-tutorial/read-tutorial.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TutorialsPageRoutingModule
+    TutorialsPageRoutingModule,
+    TranslateModule
   ],
-  declarations: [TutorialsPage]
+  declarations: [TutorialsPage, ReadTutorialComponent]
 })
 export class TutorialsPageModule {}
