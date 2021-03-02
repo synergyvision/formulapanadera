@@ -1,0 +1,19 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="dismissModal()">
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title> {{ 'terms_conditions.name' | translate}} </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div *ngIf="terms">
+    <div *ngIf="termsOrPrivacy == 'terms'" style="font-size: 10px;" [appMarkdownContent]="terms?.content"></div>
+    <div *ngIf="termsOrPrivacy == 'privacy'" style="font-size: 10px;"[appMarkdownContent]="terms?.content"></div>
+  </div>
+  <div *ngIf="!terms || !privacy" class="no-content">
+    <ion-spinner color="secondary"></ion-spinner>
+  </div>
+</ion-content>

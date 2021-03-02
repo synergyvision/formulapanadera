@@ -6,8 +6,10 @@ import { LanguageAlert } from "src/app/shared/alert/language/language.alert";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
-import { AlertController } from "@ionic/angular";
+import { AlertController, IonRouterOutlet, ModalController } from "@ionic/angular";
 import { LanguageService } from "src/app/core/services/language.service";
+import { AboutUsComponent } from "src/app/shared/modal/about-us/about-us.component";
+import { TermConditionsComponent } from "src/app/shared/modal/term-conditions/term-conditions.component";
 
 @Component({
   selector: "app-options",
@@ -30,7 +32,9 @@ export class OptionsPage {
     private authService: AuthService,
     private userStorageService: UserStorageService,
     private alertController: AlertController,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private modalController: ModalController,
+    private routerOutlet: IonRouterOutlet
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -46,6 +50,39 @@ export class OptionsPage {
 
   async openLanguageChooser() {
     await this.languageAlert.openLanguageChooser();
+  }
+
+  async openAboutUs() {
+    const modal = await this.modalController.create({
+      component: AboutUsComponent,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl
+    })
+    await modal.present();
+  }
+
+  async openTermsConditionModal(terms) {
+    const modal = await this.modalController.create({
+      component: TermConditionsComponent,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        terms
+      }
+    })
+    await modal.present();
+  }
+
+  async openPrivacyPolicyModal(terms) {
+    const modal = await this.modalController.create({
+      component: TermConditionsComponent,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        terms
+      }
+    })
+    await modal.present();
   }
 
   async signOut() {

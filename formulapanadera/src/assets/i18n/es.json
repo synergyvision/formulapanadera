@@ -8,6 +8,15 @@
     "5": "Viernes",
     "6": "Sábado"
   },
+  "about_us": {
+    "name": "Acerca de",
+    "version": "Versión",
+    "client": "Cliente",
+    "rif": "Rif:",
+    "rights": "Derechos",
+    "close": "Cerrar",
+    "callback_version": "Development version"
+  },
   "action": {
     "ok": "Aceptar",
     "cancel": "Cancelar",
@@ -210,9 +219,31 @@
   },
   "settings": {
     "name": "Configuración",
+    "legal": {
+      "about_us": "Acerca de",
+      "terms_and_conditions": "Términos y condiciones",
+      "privacy_policy": "Políticas de privacidad"
+    },
     "language": {
       "change": "Cambiar idioma",
       "select": "Selecciona el idioma"
+    },
+    "support": {
+      "how_to_use": {
+        "name": "¿Cómo usar?"
+      },
+      "tutorials": "Tutoriales",
+      "contact": "Contacto",
+      "social_media": "Redes sociales",
+      "faq": "FAQ",
+      "report_problem": "Reportar problemas",
+      "help_center": "Centro de ayuda"
+    },
+    "more": {
+      "push_messages": "Mensajería push",
+      "flashcards": "Flashcards",
+      "invite_friends": "Invitar a tus amigos",
+      "rate_us": "Evalúanos"
     },
     "password": { "change": "Cambiar contraseña" },
     "user_groups": {

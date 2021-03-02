@@ -1,0 +1,24 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="dismissModal()">
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title> {{ 'about_us.name' | translate}} </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="logo ion-text-center">
+    <ion-img></ion-img>
+    <ion-label>
+      <p>{{ 'about_us.version' | translate}} {{ version }}</p>
+      <p>{{ 'about_us.client' | translate}}</p>
+      <p>{{ 'about_us.rif' | translate}}</p>
+      <p>{{ 'about_us.rights' | translate}}</p>
+    </ion-label>
+    <ion-button (click)="dismissModal()" expand="block" color="secondary">
+      {{ 'about_us.close' | translate}}
+    </ion-button>
+  </div>
+</ion-content>

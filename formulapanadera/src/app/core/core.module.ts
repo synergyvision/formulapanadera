@@ -25,8 +25,9 @@ import { ProductionInProcessStorageService } from "./services/storage/production
 import { ProductionInProcessService } from "./services/production-in-process.service";
 import { LanguageStorageService } from './services/storage/language.service';
 import { UserCRUDService } from './services/firebase/user.service';
-import { UserService } from './services/user.service'
-
+import { UserService } from './services/user.service';
+import { TermsService } from "./services/terms.service";
+import { HowToService } from "./services/how-to.service";
 @NgModule({
   imports: [
     IonicModule,
@@ -35,7 +36,7 @@ import { UserService } from './services/user.service'
     RouterModule,
     AngularFireModule.initializeApp(environment.connection),
     AngularFireAuthModule,
-    AngularFirestoreModule,
+    AngularFirestoreModule
   ],
   exports: [RouterModule, FormsModule],
   providers: [
@@ -55,7 +56,9 @@ import { UserService } from './services/user.service'
     UserService,
     UserCRUDService,
     UserStorageService,
-  ],
+    TermsService,
+    HowToService
+  ]
 })
 export class CoreModule extends ModuleLoadedOnceGuard {
   // Ensure that CoreModule is only loaded into AppModule

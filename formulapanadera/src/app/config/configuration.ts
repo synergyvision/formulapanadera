@@ -69,6 +69,7 @@ export const APP_URL = {
               listing: "",
             },
           },
+          how_to_use: "how-to-use"
         },
       },
     },
