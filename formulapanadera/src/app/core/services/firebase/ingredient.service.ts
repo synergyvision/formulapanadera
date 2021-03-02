@@ -83,16 +83,6 @@ export class IngredientCRUDService {
     return new IngredientModel;
   }
 
-  public getSharedIngredients(
-    id: string
-  ): Observable<Array<IngredientModel>> {
-    return this.afs
-      .collection<IngredientModel>(this.collection, (ref) =>
-        ref.where("user.reference", "==", id)
-      )
-      .valueChanges({ idField: "id" });
-  }
-
   /*
     Ingredient Management
   */
@@ -116,9 +106,9 @@ export class IngredientCRUDService {
         })
       }
     }
-    await this.afs.collection(this.collection).doc(id).set(ingredient);
     // Set sub ingredients
     await this.createSubIngredient(this.collection, id, ingredientData);
+    await this.afs.collection(this.collection).doc(id).set(ingredient);
   }
 
   public async createSubIngredient(collection: string, id: string, ingredientData: IngredientModel) {

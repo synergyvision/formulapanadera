@@ -444,7 +444,7 @@ export class FormulaManagePage {
       let valid: boolean = this.verifyCompoundIngredients()
       if (valid) {
         let share: boolean = true;
-        if (this.formula.user.owner == "") {
+        if (this.formula.user.public) {
           let private_ing: boolean = false
           this.formula.ingredients.forEach(ingredient => {
             if (ingredient.ingredient.user && !ingredient.ingredient.user.public) {

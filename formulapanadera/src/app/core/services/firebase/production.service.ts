@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, DocumentReference } from "@angular/fire/firestore";
+import { AngularFirestore } from "@angular/fire/firestore";
 import { combineLatest, Observable } from "rxjs";
 
 import { FormulaNumberModel, ProductionModel } from "../../models/production.model";
@@ -86,16 +86,6 @@ export class ProductionCRUDService {
     return new ProductionModel;
   }
 
-  public getSharedProductions(
-    id: string
-  ): Observable<Array<ProductionModel>> {
-    return this.afs
-      .collection<ProductionModel>(this.collection, (ref) =>
-        ref.where("user.reference", "==", id)
-      )
-      .valueChanges({ idField: "id" });
-  }
-
   /*
     Production Management
   */
@@ -106,9 +96,9 @@ export class ProductionCRUDService {
     productionData.id = id;
     let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
     delete production.formulas;
-    await this.afs.collection(this.collection).doc(id).set(production);
     // Set formulas
     await this.createFormulas(`${this.collection}/${id}/${COLLECTIONS.formula}`, productionData);
+    await this.afs.collection(this.collection).doc(id).set(production);
   }
 
   private async createFormulas(collection: string, productionData: ProductionModel) {

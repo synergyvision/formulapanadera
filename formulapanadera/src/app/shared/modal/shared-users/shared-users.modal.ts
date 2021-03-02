@@ -159,61 +159,27 @@ export class SharedUsersModal implements OnInit {
         }
       })
     })
+    this.selectedUsers.forEach(selected_user => {
+      this.item.user.shared_references.forEach((email) => {
+        if (email == selected_user) {
+          this.item.user.shared_references.splice(this.item.user.shared_references.indexOf(email), 1)
+        }
+      })
+    })
 
     if (this.type == "ingredient") {
-      // Gets associated
-      this.ingredientCRUDService.getSharedIngredients(this.item.id)
-        .subscribe(async (shared_ingredients) => {
-          const promises = shared_ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
-          await Promise.all(promises)
-          const ingredients_to_delete = shared_ingredients.filter((item) =>
-            this.selectedUsers.find((name) => name == item.user.owner)
-          );
-          // Deletes each selected
-          ingredients_to_delete.forEach((ingredient) => {
-            this.ingredientCRUDService.deleteIngredient(ingredient)
-          })
-        });
-    
-      // Updates original
       this.ingredientCRUDService.updateIngredient(this.item as IngredientModel)
         .then(() => {
           this.dismissModal()
         })
     }
     if (this.type == "formula") {
-      // Gets associated
-      this.formulaCRUDService.getSharedFormulas(this.item.id)
-        .subscribe((shared_formulas) => {
-          const formulas_to_delete = shared_formulas.filter((item) =>
-            this.selectedUsers.find((name) => name == item.user.owner)
-          );
-          // Deletes each selected
-          formulas_to_delete.forEach((formula) => {
-            this.formulaCRUDService.deleteFormula(formula)
-          })
-        });
-    
-      // Updates original
       this.formulaCRUDService.updateFormula(this.item as FormulaModel)
         .then(() => {
           this.dismissModal()
         })
     }
     if (this.type == "production") {
-      // Gets associated
-      this.productionCRUDService.getSharedProductions(this.item.id)
-        .subscribe((shared_productions) => {
-          const productions_to_delete = shared_productions.filter((item) =>
-            this.selectedUsers.find((name) => name == item.user.owner)
-          );
-          // Deletes each selected
-          productions_to_delete.forEach((production) => {
-            this.productionCRUDService.deleteProduction(production)
-          })
-        });
-    
-      // Updates original
       this.productionCRUDService.updateProduction(this.item as ProductionModel)
         .then(() => {
           this.dismissModal()

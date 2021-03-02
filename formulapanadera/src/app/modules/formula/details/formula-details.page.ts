@@ -26,6 +26,7 @@ import { ProductionModel } from 'src/app/core/models/production.model';
 import { FormatNumberService } from 'src/app/core/services/format-number.service';
 import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
 import { UserGroupPickerModal } from 'src/app/shared/modal/user-group/user-group-picker.modal';
+import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 
 @Component({
   selector: "app-formula-details",
@@ -85,6 +86,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private formatNumberService: FormatNumberService,
     private productionCRUDService: ProductionCRUDService,
+    private userCRUDService: UserCRUDService,
   ) {
     this.showOrganolepticCharacteristics = false;
     this.showReferences = false;
@@ -235,7 +237,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       });
     }
     if (
-      this.formula.user.owner == current_user && this.is_modifier
+      this.formula.user.owner == current_user && (this.is_modifier || this.formula.user.creator.email == current_user)
     ) {
       buttons.push({
         text: this.languageService.getTerm("action.share"),
@@ -410,7 +412,12 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: (data) => {
-            this.shareFormulaToEmail([{name: "----", email: data.email}], can_clone)
+            this.userCRUDService.getUser(data.email)
+              .then((user) => {
+                this.shareFormulaToEmail([{name: user.name, email: user.email}], can_clone)
+              }).catch(() => {
+                this.presentToast(false);
+              })
           },
         },
       ],
@@ -652,7 +659,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           await loading.dismiss();
         });
     } else {
-      this.formula.user.owner = this.user.email;
+      this.formula.user.public = false;
     }
   }
 

@@ -13,6 +13,7 @@ import { IngredientCRUDService } from 'src/app/core/services/firebase/ingredient
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group-picker.modal";
 import { FormulaService } from "src/app/core/services/formula.service";
+import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 
 @Component({
   selector: "app-ingredient-details",
@@ -52,7 +53,8 @@ export class IngredientDetailsPage implements OnInit {
     private ingredientCRUDService: IngredientCRUDService,
     private formulaService: FormulaService,
     private modalController: ModalController,
-    private routerOutlet: IonRouterOutlet
+    private routerOutlet: IonRouterOutlet,
+    private userCRUDService: UserCRUDService
   ) {
     this.showIngredients = true;
     this.showMixing = false;
@@ -110,7 +112,7 @@ export class IngredientDetailsPage implements OnInit {
       );
     }
     if (
-      this.ingredient.user.owner == current_user && this.is_modifier
+      this.ingredient.user.owner == current_user && (this.is_modifier || this.ingredient.user.creator.email == current_user)
     ) {
       buttons.push(
         {
@@ -230,7 +232,12 @@ export class IngredientDetailsPage implements OnInit {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: (data) => {
-            this.shareIngredientToEmail([{name: "----", email: data.email}], can_clone)
+            this.userCRUDService.getUser(data.email)
+              .then((user) => {
+                this.shareIngredientToEmail([{name: user.name, email: user.email}], can_clone)
+              }).catch(() => {
+                this.presentToast(false);
+              })
           },
         },
       ],
