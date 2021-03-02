@@ -209,7 +209,7 @@ export class SharedUsersModal implements OnInit {
           );
           // Deletes each selected
           productions_to_delete.forEach((production) => {
-            this.productionCRUDService.deleteProduction(production.id)
+            this.productionCRUDService.deleteProduction(production)
           })
         });
     

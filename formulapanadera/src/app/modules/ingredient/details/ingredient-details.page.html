@@ -40,7 +40,8 @@
           <ion-checkbox
             class="checkbox"
             color="primary"
-            [ngModel]="public"
+            [ngModel]="ingredient.user.public"
+            [ngModelOptions]="{standalone: true}"
             slot="start"
             [disabled]="!(user.email === ingredient.user.creator.email) && !is_modifier"
             (ngModelChange)="changeIngredient('public', $event)"

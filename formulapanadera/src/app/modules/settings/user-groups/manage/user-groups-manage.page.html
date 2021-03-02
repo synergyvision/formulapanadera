@@ -85,20 +85,19 @@
         </ion-item>
       </ion-card-header>
       <ion-list lines="full" class="users-list inputs-list">
-        <ion-row
-          class="title-row"
-          *ngIf="user_group.users && user_group.users.length>0"
-        >
-          <ion-col size="4" class="title-col">
-            {{'input.name' | translate}}
-          </ion-col>
-          <ion-col size="8" class="title-col user-email">
-            {{'input.email' | translate}}
-          </ion-col>
-        </ion-row>
-        <ion-item *ngFor="let item of user_group.users" class="input-item">
+        <ion-item *ngFor="let item of user_group.users index as index" class="input-item">
           <ion-row class="users-item-wrapper">
-            <ion-col size="5" class="users-wrapper">
+            <ion-col size="12" class="users-wrapper">
+              <ion-row class="user-row">
+                <ion-col class="user-col">
+                  {{'settings.user_groups.user' | translate}} #{{index+1}}
+                </ion-col>
+              </ion-row>
+              <ion-row class="title-row">
+                <ion-col class="title-col">
+                  {{'input.name' | translate}}
+                </ion-col>
+              </ion-row>
               <ion-item class="user-item">
                 <ion-input
                   class="user-data colored-field"
@@ -106,8 +105,11 @@
                   [ngModelOptions]="{standalone: true}"
                 ></ion-input>
               </ion-item>
-            </ion-col>
-            <ion-col size="7" class="users-wrapper">
+              <ion-row class="title-row">
+                <ion-col class="title-col">
+                  {{'input.email' | translate}}
+                </ion-col>
+              </ion-row>
               <ion-item class="user-item">
                 <ion-input
                   class="user-data colored-field"

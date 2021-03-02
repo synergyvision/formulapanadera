@@ -41,7 +41,6 @@ export class ProductionDetailsPage implements OnInit {
 
   user: UserResumeModel = new UserResumeModel();
   is_modifier: boolean = false
-  public: boolean = false
 
   constructor(
     private formulaService: FormulaService,
@@ -82,10 +81,6 @@ export class ProductionDetailsPage implements OnInit {
         this.production.id !== existing_production.production.id
       ) {
         this.production_in_process = true;
-      }
-
-      if (this.production.user.owner == "") {
-        this.public = true;
       }
       let user = await this.userStorageService.getUser();
       this.user = {name: user.name, email: user.email}
@@ -201,9 +196,7 @@ export class ProductionDetailsPage implements OnInit {
     let current_user = this.user.email;
     let buttons = [];
     if (
-      this.production.user.cloned ||
-      (!this.production.user.cloned &&
-        this.production.user.creator.email == current_user)
+      this.production.user.owner == current_user
     ) {
       buttons.push({
         text: this.languageService.getTerm("action.update"),
@@ -215,11 +208,8 @@ export class ProductionDetailsPage implements OnInit {
       });
     }
     if (
-      this.production.user.owner &&
-      ((this.production.user.cloned && this.is_modifier) ||
-        this.production.user.creator.email == current_user)
+      this.production.user.owner == current_user && this.is_modifier
     ) {
-      // If not public but is cloned and was modified or user is creator
       buttons.push({
         text: this.languageService.getTerm("action.share"),
         icon: ICONS.share,
@@ -229,7 +219,7 @@ export class ProductionDetailsPage implements OnInit {
         },
       });
     }
-    if (this.production.user.can_clone || this.production.user.creator.email == current_user) {
+    if (this.production.user.owner == current_user || this.production.user.can_clone) {
       buttons.push({
         text: this.languageService.getTerm("action.clone"),
         icon: ICONS.clone,
@@ -239,10 +229,7 @@ export class ProductionDetailsPage implements OnInit {
         },
       });
     }
-    if (this.production.user.owner == current_user ||
-      (this.production.user.owner == "" &&
-        this.production.user.creator.email == current_user)) {
-      // If not public or cloned
+    if (this.production.user.owner == current_user) {
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
         icon: ICONS.trash,
@@ -339,7 +326,7 @@ export class ProductionDetailsPage implements OnInit {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: (data) => {
-            this.shareProductionToEmail({name: "----", email: data.email}, can_clone)
+            this.shareProductionToEmail([{name: "----", email: data.email}], can_clone)
           },
         },
       ],
@@ -365,62 +352,47 @@ export class ProductionDetailsPage implements OnInit {
         })
       })
       users = [...new Set(users)];
-      users.forEach(user => {
-        this.shareProductionToEmail(user, can_clone, true)
-      })
+      this.shareProductionToEmail(users, can_clone, true)
     }
   }
   
-  shareProductionToEmail(user_to_share: UserResumeModel, can_clone: boolean, toast: boolean = true) {
+  shareProductionToEmail(users_to_share: UserResumeModel[], can_clone: boolean, toast: boolean = true) {
     let shared: boolean = false
 
-    let production = JSON.parse(JSON.stringify(this.production));
-    production.user.can_clone = can_clone;
-    production.user.owner = user_to_share.email;
-    production.user.cloned = false;
-    production.user.reference = this.production.id;
-    production.user.shared_users = [];
+    this.production.user.can_clone = can_clone;
 
-    if (this.production.user.shared_users && this.production.user.shared_users.length > 0) {
-      this.production.user.shared_users.forEach(user => {
-        if (user.email == user_to_share.email) {
-          shared = true
+    if (this.production.user.shared_references && this.production.user.shared_references.length > 0) {
+      users_to_share.forEach((newUser) => {
+        shared = false;
+        this.production.user.shared_references.forEach(user => {
+          if (user == newUser.email) {
+            shared = true
+          }
+        })
+        if (shared == false && newUser.email !== this.user.email) {
+          this.production.user.shared_users.push(newUser);
+          this.production.user.shared_references.push(newUser.email);
         }
       })
-      if (shared == false) {
-        this.production.user.shared_users.push(user_to_share);
-      }
     } else {
-      this.production.user.shared_users.push(user_to_share);
+      this.production.user.shared_users = users_to_share;
+      this.production.user.shared_references = [];
+      users_to_share.forEach(user => {
+        this.production.user.shared_references.push(user.email);
+      })
     }
     this.original_production.user = this.production.user;
 
-    if (user_to_share.email == this.user.email) {
-      shared = true
-    }
-
-    if (shared == false) {
-      delete(production.id)
-      this.productionCRUDService
-        .createProduction(production)
-        .then(() => {
-            this.productionCRUDService
-              .updateProduction(this.production)
-              .then(() => {
-                if (toast) {
-                  this.presentToast(true, user_to_share.email);
-                }
-              })
-              .catch(() => {
-                this.presentToast(false, user_to_share.email);
-              });
-        })
-        .catch(() => {
-          this.presentToast(false, user_to_share.email);
-        });
-    } else {
-      this.presentToast(false, user_to_share.email);
-    }
+    this.productionCRUDService
+      .updateProduction(this.production)
+      .then(() => {
+        if (toast) {
+          this.presentToast(true);
+        }
+      })
+      .catch(() => {
+        this.presentToast(false);
+      });
   }
 
   async cloneProduction() {
@@ -438,11 +410,13 @@ export class ProductionDetailsPage implements OnInit {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: () => {
-            let production = JSON.parse(JSON.stringify(this.production));
+            let production: ProductionModel = JSON.parse(JSON.stringify(this.production));
             delete(production.id)
             production.user.owner = this.user.email;
-            production.user.cloned = true;
-            production.user.reference = "";
+            production.user.public = false;
+            production.user.reference = this.production.id;
+            production.user.shared_references = [];
+            production.user.shared_users = [];
             production.name = `${
               this.production.name
             } (${this.languageService.getTerm("action.copy")})`;
@@ -497,28 +471,11 @@ export class ProductionDetailsPage implements OnInit {
             await loading.present();
 
             this.productionCRUDService
-              .deleteProduction(this.production.id)
+              .deleteProduction(this.production)
               .then(async () => {
-                if (this.production.user.reference) {
-                  this.productionCRUDService.getProduction(this.production.user.reference)
-                    .subscribe((original_production) => {
-                      original_production.user.shared_users.forEach((user) => {
-                        if (user.email == this.user.email) {
-                          original_production.user.shared_users.splice(original_production.user.shared_users.indexOf(user), 1)
-                        }
-                      })
-                      this.productionCRUDService.updateProduction(original_production)
-                        .then(() => {
-                          this.router.navigateByUrl(
-                            APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
-                          )
-                        })
-                    });
-                } else {
-                  this.router.navigateByUrl(
-                    APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
-                  )
-                }
+                this.router.navigateByUrl(
+                  APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
+                )
               })
               .catch(() => {
                 this.presentToast(false);
@@ -533,9 +490,8 @@ export class ProductionDetailsPage implements OnInit {
     await alert.present();
   }
 
-  async presentToast(success: boolean, email?: string) {
-    let message = ""
-    message = `${email}: `;
+  async presentToast(success: boolean) {
+    let message = "";
     if (success) {
       message = message + this.languageService.getTerm("formulas.share.success")
     } else {
@@ -565,12 +521,7 @@ export class ProductionDetailsPage implements OnInit {
     await loading.present();
 
     if (type == 'public') {
-      if (value) {
-        this.production.user.owner = "";
-        this.production.user.cloned = false;
-      } else {
-        this.production.user.owner = this.user.email;
-      }
+      this.production.user.public = value;
     } else {
       this.production.user.can_clone = value
     }

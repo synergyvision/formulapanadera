@@ -68,7 +68,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   user: UserResumeModel = new UserResumeModel();
   is_modifier: boolean = false
-  public: boolean = false
 
   constructor(
     private formulaService: FormulaService,
@@ -106,9 +105,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       this.units = this.formula.units;
       this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
       this.steps = JSON.parse(JSON.stringify(this.formula.steps));
-      if (this.formula.user.owner == "") {
-        this.public = true;
-      }
 
       let user = await this.userStorageService.getUser();
       this.user = {name: user.name, email: user.email}
@@ -227,9 +223,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       },
     });
     if (
-      this.formula.user.cloned ||
-      (!this.formula.user.cloned &&
-        this.formula.user.creator.email == current_user)
+      this.formula.user.owner == current_user
     ) {
       buttons.push({
         text: this.languageService.getTerm("action.update"),
@@ -241,11 +235,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       });
     }
     if (
-      this.formula.user.owner &&
-      ((this.formula.user.cloned && this.is_modifier) ||
-        this.formula.user.creator.email == current_user)
+      this.formula.user.owner == current_user && this.is_modifier
     ) {
-      // If not public but is cloned and was modified or user is creator
       buttons.push({
         text: this.languageService.getTerm("action.share"),
         icon: ICONS.share,
@@ -254,7 +245,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           let private_ing: boolean = false
           let share: boolean = true
           this.formula.ingredients.forEach(ingredient => {
-            if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+            if (ingredient.ingredient.user && !ingredient.ingredient.user.public) {
               private_ing = true
             }
           })
@@ -267,7 +258,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         },
       });
     }
-    if (this.formula.user.can_clone || this.formula.user.creator.email == current_user) {
+    if (this.formula.user.owner == current_user || this.formula.user.can_clone) {
       buttons.push({
         text: this.languageService.getTerm("action.clone"),
         icon: ICONS.clone,
@@ -287,10 +278,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         },
       },
     );
-    if (this.formula.user.owner == current_user ||
-      (this.formula.user.owner == "" &&
-        this.formula.user.creator.email == current_user)) {
-      // If not public or cloned
+    if (this.formula.user.owner == current_user) {
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
         icon: ICONS.trash,
@@ -422,7 +410,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: (data) => {
-            this.shareFormulaToEmail({name: "----", email: data.email}, can_clone)
+            this.shareFormulaToEmail([{name: "----", email: data.email}], can_clone)
           },
         },
       ],
@@ -448,61 +436,46 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         })
       })
       users = [...new Set(users)];
-      users.forEach(user => {
-        this.shareFormulaToEmail(user, can_clone, true)
-      })
+      this.shareFormulaToEmail(users, can_clone, true)
     }
   }
   
-  shareFormulaToEmail(user_to_share: UserResumeModel, can_clone: boolean, toast: boolean = true) {
+  shareFormulaToEmail(users_to_share: UserResumeModel[], can_clone: boolean, toast: boolean = true) {
     let shared: boolean = false
 
-    let formula = JSON.parse(JSON.stringify(this.formula));
-    formula.user.can_clone = can_clone;
-    formula.user.owner = user_to_share.email;
-    formula.user.cloned = false;
-    formula.user.reference = this.formula.id;
-    formula.user.shared_users = [];
+    this.formula.user.can_clone = can_clone;
 
-    if (this.formula.user.shared_users && this.formula.user.shared_users.length > 0) {
-      this.formula.user.shared_users.forEach(user => {
-        if (user.email == user_to_share.email) {
-          shared = true
+    if (this.formula.user.shared_references && this.formula.user.shared_references.length > 0) {
+      users_to_share.forEach((newUser) => {
+        shared = false;
+        this.formula.user.shared_references.forEach(user => {
+          if (user == newUser.email) {
+            shared = true
+          }
+        })
+        if (shared == false && newUser.email !== this.user.email) {
+          this.formula.user.shared_users.push(newUser);
+          this.formula.user.shared_references.push(newUser.email);
         }
       })
-      if (shared == false) {
-        this.formula.user.shared_users.push(user_to_share);
-      }
     } else {
-      this.formula.user.shared_users.push(user_to_share);
+      this.formula.user.shared_users = users_to_share;
+      this.formula.user.shared_references = [];
+      users_to_share.forEach(user => {
+        this.formula.user.shared_references.push(user.email);
+      })
     }
 
-    if (user_to_share.email == this.user.email) {
-      shared = true
-    }
-
-    if (shared == false) {
-      delete(formula.id)
-      this.formulaCRUDService
-        .createFormula(formula)
-        .then(() => {
-            this.formulaCRUDService
-              .updateFormula(this.formula)
-              .then(() => {
-                if (toast) {
-                  this.presentToast(true, user_to_share.email);
-                }
-              })
-              .catch(() => {
-                this.presentToast(false, user_to_share.email);
-              });
-        })
-        .catch(() => {
-          this.presentToast(false, user_to_share.email);
-        });
-    } else {
-      this.presentToast(false, user_to_share.email);
-    }
+    this.formulaCRUDService
+      .updateFormula(this.formula)
+      .then(() => {
+        if (toast) {
+          this.presentToast(true);
+        }
+      })
+      .catch(() => {
+        this.presentToast(false);
+      });
   }
 
   async cloneFormula() {
@@ -520,11 +493,13 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: () => {
-            let formula = JSON.parse(JSON.stringify(this.formula));
+            let formula: FormulaModel = JSON.parse(JSON.stringify(this.formula));
             delete(formula.id)
             formula.user.owner = this.user.email;
-            formula.user.cloned = true;
-            formula.user.reference = "";
+            formula.user.public = false;
+            formula.user.reference = this.formula.id;
+            formula.user.shared_references = [];
+            formula.user.shared_users = [];
             formula.name = `${
               this.formula.name
             } (${this.languageService.getTerm("action.copy")})`;
@@ -566,24 +541,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             this.formulaCRUDService
               .deleteFormula(this.formula)
               .then(async () => {
-                if (this.formula.user.reference) {
-                  let original_formula = await this.formulaCRUDService.getFormula(this.formula.user.reference)
-                  original_formula.user.shared_users.forEach((user) => {
-                    if (user.email == this.user.email) {
-                      original_formula.user.shared_users.splice(original_formula.user.shared_users.indexOf(user), 1)
-                    }
-                  })
-                  this.formulaCRUDService.updateFormula(original_formula)
-                    .then(() => {
-                      this.router.navigateByUrl(
-                        APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-                      )
-                    })
-                } else {
-                  this.router.navigateByUrl(
-                    APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-                  )
-                }
+                this.router.navigateByUrl(
+                  APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+                )
               })
               .catch(() => {
                 this.presentToast(false);
@@ -634,9 +594,8 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async presentToast(success: boolean, email?: string) {
-    let message = ""
-    message = `${email}: `;
+  async presentToast(success: boolean) {
+    let message = "";
     if (success) {
       message = message + this.languageService.getTerm("formulas.share.success")
     } else {
@@ -661,19 +620,14 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     let share: boolean = true;
 
     if (type == 'public') {
-      if (value) {
-        this.formula.user.owner = "";
-        this.formula.user.cloned = false;
-      } else {
-        this.formula.user.owner = this.user.email;
-      }
+      this.formula.user.public = value;
     } else {
       this.formula.user.can_clone = value
     }
     if (type == "public" && value) {
       let private_ing: boolean = false
       this.formula.ingredients.forEach(ingredient => {
-        if (ingredient.ingredient.user && ingredient.ingredient.user.owner) {
+        if (ingredient.ingredient.user && !ingredient.ingredient.user.public) {
           private_ing = true
         }
       })
@@ -699,7 +653,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         });
     } else {
       this.formula.user.owner = this.user.email;
-      this.public = false;
     }
   }
 

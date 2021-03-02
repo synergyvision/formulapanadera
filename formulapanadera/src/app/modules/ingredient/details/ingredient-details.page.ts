@@ -39,7 +39,6 @@ export class IngredientDetailsPage implements OnInit {
 
   user: UserResumeModel = new UserResumeModel();
   is_modifier: boolean = false
-  public: boolean = false
 
   constructor(
     private router: Router,
@@ -82,9 +81,6 @@ export class IngredientDetailsPage implements OnInit {
           this.ingredients_formula
         )
       }
-      if (this.ingredient.user.owner == "") {
-        this.public = true;
-      }
       let user = await this.userStorageService.getUser();
       this.user = {name: user.name, email: user.email}
       this.is_modifier = false;
@@ -100,35 +96,34 @@ export class IngredientDetailsPage implements OnInit {
     let current_user = this.user.email;
     let buttons = [];
     if (
-      this.ingredient.user.cloned ||
-      (!this.ingredient.user.cloned &&
-        this.ingredient.user.creator.email == current_user)
+      this.ingredient.user.owner == current_user
     ) {
-      buttons.push({
-        text: this.languageService.getTerm("action.update"),
-        icon: ICONS.create,
-        cssClass: "action-icon",
-        handler: () => {
-          this.updateIngredient();
-        },
-      });
+      buttons.push(
+        {
+          text: this.languageService.getTerm("action.update"),
+          icon: ICONS.create,
+          cssClass: "action-icon",
+          handler: () => {
+            this.updateIngredient();
+          },
+        }
+      );
     }
     if (
-      this.ingredient.user.owner &&
-      ((this.ingredient.user.cloned && this.is_modifier) ||
-        this.ingredient.user.creator.email == current_user)
+      this.ingredient.user.owner == current_user && this.is_modifier
     ) {
-      // If not public but is cloned and was modified or user is creator
-      buttons.push({
-        text: this.languageService.getTerm("action.share"),
-        icon: ICONS.share,
-        cssClass: "action-icon",
-        handler: () => {
-          this.shareIngredient();
-        },
-      });
+      buttons.push(
+        {
+          text: this.languageService.getTerm("action.share"),
+          icon: ICONS.share,
+          cssClass: "action-icon",
+          handler: () => {
+            this.shareIngredient();
+          },
+        }
+      );
     }
-    if (this.ingredient.user.can_clone || this.ingredient.user.creator.email == current_user) {
+    if (this.ingredient.user.owner == current_user || this.ingredient.user.can_clone) {
       buttons.push({
         text: this.languageService.getTerm("action.clone"),
         icon: ICONS.clone,
@@ -138,10 +133,7 @@ export class IngredientDetailsPage implements OnInit {
         },
       });
     }
-    if (this.ingredient.user.owner == current_user ||
-      (this.ingredient.user.owner == "" &&
-        this.ingredient.user.creator.email == current_user)) {
-      // If not public or cloned
+    if (this.ingredient.user.owner == current_user) {
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
         icon: ICONS.trash,
@@ -238,7 +230,7 @@ export class IngredientDetailsPage implements OnInit {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: (data) => {
-            this.shareIngredientToEmail({name: "----", email: data.email}, can_clone)
+            this.shareIngredientToEmail([{name: "----", email: data.email}], can_clone)
           },
         },
       ],
@@ -264,61 +256,46 @@ export class IngredientDetailsPage implements OnInit {
         })
       })
       users = [...new Set(users)];
-      users.forEach(user => {
-        this.shareIngredientToEmail(user, can_clone, true)
-      })
+      this.shareIngredientToEmail(users, can_clone, true)
     }
   }
   
-  shareIngredientToEmail(user_to_share: UserResumeModel, can_clone: boolean, toast: boolean = true) {
+  shareIngredientToEmail(users_to_share: UserResumeModel[], can_clone: boolean, toast: boolean = true) {
     let shared: boolean = false
 
-    let ingredient = JSON.parse(JSON.stringify(this.ingredient));
-    ingredient.user.can_clone = can_clone;
-    ingredient.user.owner = user_to_share.email;
-    ingredient.user.cloned = false;
-    ingredient.user.reference = this.ingredient.id;
-    ingredient.user.shared_users = [];
+    this.ingredient.user.can_clone = can_clone;
 
-    if (this.ingredient.user.shared_users && this.ingredient.user.shared_users.length > 0) {
-      this.ingredient.user.shared_users.forEach(user => {
-        if (user.email == user_to_share.email) {
-          shared = true
+    if (this.ingredient.user.shared_references && this.ingredient.user.shared_references.length > 0) {
+      users_to_share.forEach((newUser) => {
+        shared = false;
+        this.ingredient.user.shared_references.forEach(user => {
+          if (user == newUser.email) {
+            shared = true
+          }
+        })
+        if (shared == false && newUser.email !== this.user.email) {
+          this.ingredient.user.shared_users.push(newUser);
+          this.ingredient.user.shared_references.push(newUser.email);
         }
       })
-      if (shared == false) {
-        this.ingredient.user.shared_users.push(user_to_share);
-      }
     } else {
-      this.ingredient.user.shared_users.push(user_to_share);
+      this.ingredient.user.shared_users = users_to_share;
+      this.ingredient.user.shared_references = [];
+      users_to_share.forEach(user => {
+        this.ingredient.user.shared_references.push(user.email);
+      })
     }
 
-    if (user_to_share.email == this.user.email) {
-      shared = true
-    }
-
-    if (shared == false) {
-      delete(ingredient.id)
-      this.ingredientCRUDService
-        .createIngredient(ingredient)
-        .then(() => {
-          this.ingredientCRUDService
-            .updateIngredient(this.ingredient)
-            .then(() => {
-              if (toast) {
-                this.presentToast(true, user_to_share.email);
-              }
-            })
-            .catch(() => {
-              this.presentToast(false, user_to_share.email);
-            });
-        })
-        .catch(() => {
-          this.presentToast(false, user_to_share.email);
-        });
-    } else {
-      this.presentToast(false, user_to_share.email);
-    }
+    this.ingredientCRUDService
+      .updateIngredient(this.ingredient)
+      .then(() => {
+        if (toast) {
+          this.presentToast(true);
+        }
+      })
+      .catch(() => {
+        this.presentToast(false);
+      });
   }
 
   async cloneIngredient() {
@@ -336,11 +313,13 @@ export class IngredientDetailsPage implements OnInit {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
           handler: () => {
-            let ingredient = JSON.parse(JSON.stringify(this.ingredient));
-            delete(ingredient.id)
+            let ingredient: IngredientModel = JSON.parse(JSON.stringify(this.ingredient));
+            delete (ingredient.id)
             ingredient.user.owner = this.user.email;
-            ingredient.user.cloned = true;
-            ingredient.user.reference = "";
+            ingredient.user.public = false;
+            ingredient.user.reference = this.ingredient.id;
+            ingredient.user.shared_references = [];
+            ingredient.user.shared_users = [];
             ingredient.name = `${
               this.ingredient.name
             } (${this.languageService.getTerm("action.copy")})`;
@@ -400,24 +379,9 @@ export class IngredientDetailsPage implements OnInit {
             this.ingredientCRUDService
               .deleteIngredient(this.ingredient)
               .then(async () => {
-                if (this.ingredient.user.reference) {
-                  let original_ingredient = await this.ingredientCRUDService.getIngredient(this.ingredient.user.reference)
-                  original_ingredient.user.shared_users.forEach((user) => {
-                    if (user.email == this.user.email) {
-                      original_ingredient.user.shared_users.splice(original_ingredient.user.shared_users.indexOf(user), 1)
-                    }
-                  })
-                  this.ingredientCRUDService.updateIngredient(original_ingredient)
-                    .then(() => {
-                      this.router.navigateByUrl(
-                        APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-                      )
-                    })
-                } else {
-                  this.router.navigateByUrl(
-                    APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-                  )
-                }
+                this.router.navigateByUrl(
+                  APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+                )
               })
               .catch(() => {
                 this.presentToast(false);
@@ -432,9 +396,8 @@ export class IngredientDetailsPage implements OnInit {
     await alert.present();
   }
 
-  async presentToast(success: boolean, email?: string) {
+  async presentToast(success: boolean) {
     let message = ""
-    message = `${email}: `;
     if (success) {
       message = message + this.languageService.getTerm("formulas.share.success")
     } else {
@@ -463,12 +426,7 @@ export class IngredientDetailsPage implements OnInit {
     await loading.present();
 
     if (type == 'public') {
-      if (value) {
-        this.ingredient.user.owner = "";
-        this.ingredient.user.cloned = false;
-      } else {
-        this.ingredient.user.owner = this.user.email;
-      }
+      this.ingredient.user.public = value;
     } else {
       this.ingredient.user.can_clone = value
     }

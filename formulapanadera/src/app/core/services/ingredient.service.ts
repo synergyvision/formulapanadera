@@ -94,14 +94,13 @@ export class IngredientService {
     ingredients.forEach((item) => {
       if (
         (type == "mine" &&
-          (item.user.creator.email == user_email || // creator or
-            item.user.cloned)) || // owner that cloned the formula
+          (item.user.owner == user_email)) ||
         (type == "shared" &&
-          item.user.owner == user_email &&
-          !item.user.cloned) ||
+          !(item.user.owner == user_email) &&
+          !item.user.public) ||
         (type == "public" &&
-          item.user.creator.email !== user_email && // public formulas, current user is not the creator
-          !item.user.owner)
+          !(item.user.owner == user_email) &&
+          item.user.public)
       ) {
         filtered.push(item);
       }

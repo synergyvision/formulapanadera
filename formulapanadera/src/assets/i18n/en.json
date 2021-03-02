@@ -221,6 +221,7 @@
       "user_group_description": "Description",
       "user_group_image_url": "Image (URL)",
       "users": "Users",
+      "user": "User",
       "create": "Create user group",
       "empty": "No user groups found"
     },
