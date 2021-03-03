@@ -106,7 +106,9 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
       this.units = this.formula.units;
       this.ingredients = JSON.parse(JSON.stringify(this.formula.ingredients));
-      this.steps = JSON.parse(JSON.stringify(this.formula.steps));
+      if (this.formula.steps && this.formula.steps.length > 0) {
+        this.steps = JSON.parse(JSON.stringify(this.formula.steps));
+      }
 
       let user = await this.userStorageService.getUser();
       this.user = {name: user.name, email: user.email}
@@ -171,32 +173,35 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       this.ingredients_formula
     )
 
-    this.steps.forEach((step) => {
-      ing_formula = [];
-      if (step.ingredients) {
-        step.ingredients.forEach((ingredient) => {
-          if (ingredient.ingredient.formula) {
-            ing_formula.push(ingredient);
-          }
-        });
-        this.formulaService.getIngredientsCalculatedPercentages(
-          Number(this.total_weight),
-          Number(this.bakers_percentage),
-          JSON.parse(JSON.stringify(this.ingredients)),
-          ing_formula,
-          "ADD",
-          this.ingredients_formula
-        );
-      }
-    });
+    if (this.steps && this.steps.length > 0) {
+      this.steps.forEach((step) => {
+        ing_formula = [];
+        if (step.ingredients) {
+          step.ingredients.forEach((ingredient) => {
+            if (ingredient.ingredient.formula) {
+              ing_formula.push(ingredient);
+            }
+          });
+          this.formulaService.getIngredientsCalculatedPercentages(
+            Number(this.total_weight),
+            Number(this.bakers_percentage),
+            JSON.parse(JSON.stringify(this.ingredients)),
+            ing_formula,
+            "ADD",
+            this.ingredients_formula
+          );
+        }
+      });
 
-    this.steps.forEach((item) => {
-      if (item.ingredients) {
-        item.ingredients = this.formulaService.sortIngredients(
-          item.ingredients
-        );
-      }
-    });
+      this.steps.forEach((item) => {
+        if (item.ingredients) {
+          item.ingredients = this.formulaService.sortIngredients(
+            item.ingredients
+          );
+        }
+      });
+    }
+
     this.ingredients_formula.forEach((item) => {
       item.ingredient.formula.ingredients = this.formulaService.sortIngredients(
         item.ingredient.formula.ingredients
@@ -216,14 +221,16 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   async presentOptions() {
     let current_user = this.user.email;
     let buttons = [];
-    buttons.push({
-      text: this.languageService.getTerm("action.do_production"),
-      icon: ICONS.production_start,
-      cssClass: "action-icon",
-      handler: () => {
-        this.doFormula();
-      },
-    });
+    if (this.formula.steps && this.formula.steps.length > 0) {
+      buttons.push({
+        text: this.languageService.getTerm("action.do_production"),
+        icon: ICONS.production_start,
+        cssClass: "action-icon",
+        handler: () => {
+          this.doFormula();
+        },
+      });
+    }
     if (
       this.formula.user.owner == current_user
     ) {
@@ -741,15 +748,17 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
 
   compoundIngredientNotInStep(ingredientFormula: any) {
     let compound_in_step = false
-    this.formula.steps.forEach(step => {
-      if (step.ingredients) {
-        step.ingredients.forEach(ingredient => {
-          if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
-            compound_in_step = true
-          }
-        })
-      }
-    })
+    if (this.formula.steps && this.formula.steps.length > 0) {
+      this.formula.steps.forEach(step => {
+        if (step.ingredients) {
+          step.ingredients.forEach(ingredient => {
+            if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
+              compound_in_step = true
+            }
+          })
+        }
+      })
+    }
     return !compound_in_step
   }
 }

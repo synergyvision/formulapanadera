@@ -106,7 +106,7 @@ export class FormulaManagePage {
       this.formula.ingredients = [];
       this.formula.mixing = [];
       this.formula.steps = [];
-      if (state.formula.references && state.formula.references.length>0) {
+      if (state.formula.references && state.formula.references.length > 0) {
         state.formula.references.forEach((reference) => {
           this.formula.references.push(JSON.parse(JSON.stringify(reference)));
         });
@@ -114,12 +114,16 @@ export class FormulaManagePage {
       state.formula.ingredients.forEach((ingredient) => {
         this.formula.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
       });
-      state.formula.mixing.forEach((step) => {
-        this.formula.mixing.push(JSON.parse(JSON.stringify(step)));
-      });
-      state.formula.steps.forEach((step) => {
-        this.formula.steps.push(JSON.parse(JSON.stringify(step)));
-      });
+      if (state.formula.mixing && state.formula.mixing.length > 0) {
+        state.formula.mixing.forEach((step) => {
+          this.formula.mixing.push(JSON.parse(JSON.stringify(step)));
+        });
+      }
+      if (state.formula.steps && state.formula.steps.length > 0) {
+        state.formula.steps.forEach((step) => {
+          this.formula.steps.push(JSON.parse(JSON.stringify(step)));
+        });
+      }
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
     let user = await this.userStorageService.getUser();
@@ -326,6 +330,10 @@ export class FormulaManagePage {
 
   async deleteMix(index: number) {
     this.formula.mixing.splice(index, 1);
+  }
+
+  async deleteSteps() {
+    this.formula.steps = [];
   }
 
   async describeSteps() {
@@ -544,22 +552,24 @@ export class FormulaManagePage {
 
   verifyTemperature() {
     if (this.temperatureUnit == "F") {
-      this.formula.steps.forEach((step) => {
-        if (step.temperature !== null) {
-          step.temperature.min = Number(
-            this.formatNumberService.fromFahrenheitToCelsius(
-              step.temperature.min
-            )
-          );
-          if (step.temperature.max !== -1) {
-            step.temperature.max = Number(
+      if (this.formula.steps && this.formula.steps.length > 0) {
+        this.formula.steps.forEach((step) => {
+          if (step.temperature !== null) {
+            step.temperature.min = Number(
               this.formatNumberService.fromFahrenheitToCelsius(
-                step.temperature.max
+                step.temperature.min
               )
             );
+            if (step.temperature.max !== -1) {
+              step.temperature.max = Number(
+                this.formatNumberService.fromFahrenheitToCelsius(
+                  step.temperature.max
+                )
+              );
+            }
           }
-        }
-      });
+        });
+      }
     }
   }
 
@@ -697,9 +707,6 @@ export class FormulaManagePage {
     return (
       !this.manageFormulaForm.valid ||
       !this.formula.ingredients || this.formula.ingredients.length==0 ||
-      !this.formula.mixing || this.formula.mixing.length == 0 ||
-      !this.formula.mixing[0] || this.formula.mixing[0].mixing_order.length==0 ||
-      !this.formula.steps || this.formula.steps.length==0 ||
       !this.ingredientsAreValid()
     )
   }

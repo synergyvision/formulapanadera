@@ -157,6 +157,7 @@
         color="primary"
         (click)="saveSteps()"
         fill="solid"
+        [disabled]="!stepsAreValid()"
       >
         {{ 'action.confirm' | translate }}</ion-button
       >

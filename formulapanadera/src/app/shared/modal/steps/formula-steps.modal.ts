@@ -104,6 +104,16 @@ export class FormulaStepsModal implements AfterViewInit {
     );
   }
 
+  stepsAreValid(): boolean {
+    let valid = false;
+    this.formulaSteps.forEach(step => {
+      if (step.time > 0) {
+        valid = true;
+      }
+    })
+    return valid;
+  }
+
   //Change
   changeTemperature(event: any) {
     this.temperatureUnit = event.detail.value;

@@ -167,6 +167,7 @@ export class ProductionManagePage implements OnInit {
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
         selectedFormulas: formulas,
+        forProduction: true,
       },
     });
     await modal.present();
