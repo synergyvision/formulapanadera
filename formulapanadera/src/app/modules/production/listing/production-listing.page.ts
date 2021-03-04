@@ -150,7 +150,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
           "/" +
           APP_URL.menu.routes.production.routes.details,
         {
-          state: { production: production },
+          state: { production: JSON.parse(JSON.stringify(production)) },
         }
       );
     }
@@ -176,7 +176,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
           "/" +
           APP_URL.menu.routes.production.routes.start,
         {
-          state: { production: production },
+          state: { production: JSON.parse(JSON.stringify(production)) },
         }
       );
     }

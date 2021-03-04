@@ -44,7 +44,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   DECIMAL_BAKERS_PERCENTAGE_FORMAT = DECIMAL_BAKERS_PERCENTAGE_FORMAT
 
   formula: FormulaModel = new FormulaModel();
-  formulaUnit = "%";
   units: number;
 
   bakers_percentage: string;
@@ -324,7 +323,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         "/" +
         APP_URL.menu.routes.formula.routes.management,
       {
-        state: { formula: this.formula },
+        state: { formula: JSON.parse(JSON.stringify(this.formula)) },
       }
     );
   }
@@ -693,7 +692,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             "/" +
             APP_URL.menu.routes.production.routes.details,
           {
-            state: { production: production },
+            state: { production: JSON.parse(JSON.stringify(production)) },
           }
         );
       })

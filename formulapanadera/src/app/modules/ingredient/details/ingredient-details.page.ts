@@ -62,6 +62,7 @@ export class IngredientDetailsPage implements OnInit {
 
   async ngOnInit() {
     this.route.queryParams.subscribe(async () => {
+      this.type = "simple";
       this.ingredients_formula = []
       let ing_formula: IngredientPercentageModel[] = [];
       let navParams = this.router.getCurrentNavigation().extras.state;
@@ -169,7 +170,7 @@ export class IngredientDetailsPage implements OnInit {
         "/" +
         APP_URL.menu.routes.ingredient.routes.management,
       {
-        state: { ingredient: this.ingredient },
+        state: { ingredient: JSON.parse(JSON.stringify(this.ingredient)) },
       }
     );
   }

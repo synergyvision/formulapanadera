@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AlertController } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
 import { OVEN_STEP } from 'src/app/config/formula';
@@ -40,55 +40,63 @@ export class ProductionStartPage implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private productionInProcessService: ProductionInProcessService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
     private timeService: TimeService,
     private alertController: AlertController,
     private languageService: LanguageService
-  ) {
-    this.state = this.router.getCurrentNavigation().extras.state;
-  }
+  ){}
 
   async ngOnInit() {
-    this.production = JSON.parse(JSON.stringify(this.state.production));
-    let existing_production = await this.productionInProcessStorageService.getProduction();
+    this.route.queryParams.subscribe(async () => {
+      this.state = this.router.getCurrentNavigation().extras.state;
+      this.production = JSON.parse(JSON.stringify(this.state.production));
+      let existing_production = await this.productionInProcessStorageService.getProduction();
+      this.production_in_process = new ProductionInProcessModel();
+      this.original_production = new ProductionInProcessModel();
+      this.formulas = [];
+      this.in_process = false;
+      this.specify_time = false;
+      this.laboral_time = new TimeModel();
 
-    if (
-      existing_production &&
-      existing_production.production.id == this.production.id
-    ) {
-      this.production = existing_production.production;
-      this.formulas = existing_production.formulas;
-      this.productionInProcessService.setProductionInProcess(
-        existing_production.production_in_process
-      );
-      this.in_process = true;
-    } else {
-      this.formulas = JSON.parse(JSON.stringify(this.state.formulas));
-      this.original_production = this.productionInProcessService.getProductionSteps(
-        this.production
-      );
-    }
+      if (
+        existing_production &&
+        existing_production.production.id == this.production.id
+      ) {
+        this.production = existing_production.production;
+        this.formulas = existing_production.formulas;
+        this.productionInProcessService.setProductionInProcess(
+          existing_production.production_in_process
+        );
+        this.in_process = true;
+      } else {
+        this.formulas = JSON.parse(JSON.stringify(this.state.formulas));
+        this.original_production = this.productionInProcessService.getProductionSteps(
+          this.production
+        );
+      }
 
-    this.productionInProcessService
-      .getProductionInProcess()
-      .subscribe((value) => {
-        this.production_in_process = value;
-        if (this.in_process) {
-          this.productionInProcessStorageService.setProduction({
-            formulas: this.formulas,
-            production: this.production,
-            production_in_process: value,
-          });
-        }
-        if (
-          this.productionInProcessService.productionEnded(
-            this.production_in_process.steps
-          )
-        ) {
-          this.changeProcessStatus();
-        }
-      });
+      this.productionInProcessService
+        .getProductionInProcess()
+        .subscribe((value) => {
+          this.production_in_process = value;
+          if (this.in_process) {
+            this.productionInProcessStorageService.setProduction({
+              formulas: this.formulas,
+              production: this.production,
+              production_in_process: value,
+            });
+          }
+          if (
+            this.productionInProcessService.productionEnded(
+              this.production_in_process.steps
+            )
+          ) {
+            this.changeProcessStatus();
+          }
+        });
+    });
   }
 
   // Change
@@ -203,7 +211,7 @@ export class ProductionStartPage implements OnInit {
         "/" +
         APP_URL.menu.routes.production.routes.details,
       {
-        state: { production: this.production },
+        state: { production: JSON.parse(JSON.stringify(this.production)) },
       }
     );
   }

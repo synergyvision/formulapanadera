@@ -172,6 +172,21 @@ export class FormulaService {
     return ingredients;
   }
 
+  public fromFormulaToRecipe(ingredients: Array<IngredientPercentageModel>, unit_weight: number, units: number) {
+    let bakers_percentage = this.calculateBakersPercentage(
+      units * unit_weight,
+      ingredients
+    )
+    
+    ingredients.forEach((ingredient) => {
+      ingredient.percentage = Number(
+        (ingredient.percentage * Number(bakers_percentage)).toFixed(
+          DECIMALS.formula_percentage
+        )
+      );
+    });
+  }
+
   public totalFlour(ingredients: Array<IngredientPercentageModel>) {
     let flour = 0;
     ingredients.forEach((ingredient) => {
