@@ -156,7 +156,7 @@ export class FormulaListingPage implements OnInit, OnDestroy {
           "/" +
           APP_URL.menu.routes.formula.routes.details,
         {
-          state: { formula: formula },
+          state: { formula: JSON.parse(JSON.stringify(formula)) },
         }
       );
     }

@@ -297,7 +297,7 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
             "/" +
             APP_URL.menu.routes.ingredient.routes.details,
           {
-            state: { ingredient: item },
+            state: { ingredient: JSON.parse(JSON.stringify(item)) },
           }
         );
       }
@@ -309,7 +309,7 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
           "/" +
           APP_URL.menu.routes.formula.routes.details,
           {
-            state: { formula: item },
+            state: { formula: JSON.parse(JSON.stringify(item)) },
           }
         );
       }
@@ -321,7 +321,7 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
             "/" +
             APP_URL.menu.routes.production.routes.details,
           {
-            state: { production: item },
+            state: { production: JSON.parse(JSON.stringify(item)) },
           }
         );
       }

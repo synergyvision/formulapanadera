@@ -60,7 +60,7 @@ export class FormulaModel {
   organoleptic_characteristics?: OrganolepticCharacteristicsModel;
   references?: Array<ReferenceModel>;
   ingredients: Array<IngredientPercentageModel>;
-  steps: Array<StepDetailsModel>;
-  mixing: Array<FormulaMixingModel>;
+  steps?: Array<StepDetailsModel>;
+  mixing?: Array<FormulaMixingModel>;
   user: UserOwnerModel;
 }

@@ -16,7 +16,7 @@ import {
 import { FormulaStepsModal } from "src/app/shared/modal/steps/formula-steps.modal";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { LanguageService } from "src/app/core/services/language.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
@@ -59,6 +59,7 @@ export class FormulaManagePage {
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
     private router: Router,
+    private route: ActivatedRoute,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
     private toastController: ToastController,
@@ -66,70 +67,87 @@ export class FormulaManagePage {
   ) {}
 
   async ngOnInit() {
-    let state = this.router.getCurrentNavigation().extras.state;
-    if (state == undefined) {
-      this.manageFormulaForm = new FormGroup({
-        name: new FormControl(null, Validators.required),
-        units: new FormControl(null, Validators.required),
-        unit_weight: new FormControl(null, Validators.required),
-        description: new FormControl(null, null),
-      });
-      this.formula.user = {
-        owner: this.current_user.email,
-        can_clone: false,
-        public: false,
-        reference: "",
-        shared_users: [],
-        shared_references: [],
-        creator: {
-          name: this.current_user.name,
-          email: this.current_user.email,
-          date: new Date(),
-        },
-        modifiers: [],
-      };
-    } else {
-      this.update = true;
-      this.manageFormulaForm = new FormGroup({
-        name: new FormControl(state.formula.name, Validators.required),
-        units: new FormControl(state.formula.units, Validators.required),
-        unit_weight: new FormControl(
-          state.formula.unit_weight,
-          Validators.required
-        ),
-        description: new FormControl(state.formula.description, null),
-      });
-      this.formula.id = state.formula.id;
-      this.formula.user = state.formula.user;
-      this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
-      this.formula.references = [];
-      this.formula.ingredients = [];
-      this.formula.mixing = [];
-      this.formula.steps = [];
-      if (state.formula.references && state.formula.references.length>0) {
-        state.formula.references.forEach((reference) => {
-          this.formula.references.push(JSON.parse(JSON.stringify(reference)));
+    this.route.queryParams.subscribe(async () => {
+      let state = this.router.getCurrentNavigation().extras.state;
+      this.formula = new FormulaModel();
+      this.original_formula = new FormulaModel;
+      this.formulaUnit = "%";
+      this.temperatureUnit = "C";
+      this.update = false;
+      if (state == undefined) {
+        this.manageFormulaForm = new FormGroup({
+          name: new FormControl(null, Validators.required),
+          units: new FormControl(null, Validators.required),
+          unit_weight: new FormControl(null, Validators.required),
+          description: new FormControl(null, null),
         });
+        this.formula.user = {
+          owner: this.current_user.email,
+          can_clone: false,
+          public: false,
+          reference: "",
+          shared_users: [],
+          shared_references: [],
+          creator: {
+            name: this.current_user.name,
+            email: this.current_user.email,
+            date: new Date(),
+          },
+          modifiers: [],
+        };
+      } else {
+        this.update = true;
+        this.manageFormulaForm = new FormGroup({
+          name: new FormControl(state.formula.name, Validators.required),
+          units: new FormControl(state.formula.units, Validators.required),
+          unit_weight: new FormControl(
+            state.formula.unit_weight,
+            Validators.required
+          ),
+          description: new FormControl(state.formula.description, null),
+        });
+        this.formula.id = state.formula.id;
+        this.formula.user = state.formula.user;
+        this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
+        this.formula.references = [];
+        this.formula.ingredients = [];
+        this.formula.mixing = [];
+        this.formula.steps = [];
+        if (state.formula.references && state.formula.references.length > 0) {
+          state.formula.references.forEach((reference) => {
+            this.formula.references.push(JSON.parse(JSON.stringify(reference)));
+          });
+        }
+        state.formula.ingredients.forEach((ingredient) => {
+          this.formula.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
+        });
+        if (state.formula.mixing && state.formula.mixing.length > 0) {
+          state.formula.mixing.forEach((step) => {
+            this.formula.mixing.push(JSON.parse(JSON.stringify(step)));
+          });
+        }
+        if (state.formula.steps && state.formula.steps.length > 0) {
+          state.formula.steps.forEach((step) => {
+            this.formula.steps.push(JSON.parse(JSON.stringify(step)));
+          });
+        }
+        this.original_formula = JSON.parse(JSON.stringify(state.formula))
       }
-      state.formula.ingredients.forEach((ingredient) => {
-        this.formula.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
-      });
-      state.formula.mixing.forEach((step) => {
-        this.formula.mixing.push(JSON.parse(JSON.stringify(step)));
-      });
-      state.formula.steps.forEach((step) => {
-        this.formula.steps.push(JSON.parse(JSON.stringify(step)));
-      });
-      this.original_formula = JSON.parse(JSON.stringify(state.formula))
-    }
-    let user = await this.userStorageService.getUser();
-    this.current_user = { name: user.name, email: user.email };
+      let user = await this.userStorageService.getUser();
+      this.current_user = { name: user.name, email: user.email };
+    })
   }
 
   changeUnit(ev: any) {
     this.formulaUnit = ev.detail.value;
-    if (this.formulaUnit == 'gr') {
-      this.changeUnitWeight()
+    if (this.update && this.ingredientsAreValid()) {
+      if (this.formulaUnit == 'gr' && this.manageFormulaForm.value.unit_weight && this.manageFormulaForm.value.units) {
+        this.formulaService.fromFormulaToRecipe(this.formula.ingredients, this.manageFormulaForm.value.unit_weight, this.manageFormulaForm.value.units);
+      } else {
+        this.formula.ingredients = this.formulaService.fromRecipeToFormula(
+          this.formula.ingredients, true
+        );
+      }
     }
   }
 
@@ -137,17 +155,6 @@ export class FormulaManagePage {
     this.manageFormulaForm
       .get("units")
       .patchValue(this.formatNumberService.formatNumberDecimals(value, 0));
-    this.changeUnitWeight()
-  }
-
-  changeUnitWeight() {
-    if (this.formulaUnit == 'gr' && this.ingredientsAreValid()) {
-      let units = this.manageFormulaForm.value.units
-      if (this.formula.ingredients && units) {
-        let grams = this.formulaService.formulaWeight(this.formula.ingredients)
-        this.formatUnitWeight(grams / Number(units))
-      }
-    }
   }
 
   formatUnitWeight(value: number) {
@@ -160,9 +167,6 @@ export class FormulaManagePage {
     ingredient.percentage = Number(
       this.formatNumberService.formatNumberDecimals(ingredient.percentage, 1)
     );
-    if (this.formulaUnit == "gr") {
-      this.changeUnitWeight()
-    }
   }
 
   formatStepPercentage(ingredient: IngredientPercentageModel) {
@@ -328,6 +332,10 @@ export class FormulaManagePage {
     this.formula.mixing.splice(index, 1);
   }
 
+  async deleteSteps() {
+    this.formula.steps = [];
+  }
+
   async describeSteps() {
     let steps: Array<StepDetailsModel> = [];
     if (!this.formula.steps) {
@@ -377,7 +385,6 @@ export class FormulaManagePage {
       1
     );
     this.adjustFormulaMixing([], [ingredient])
-    this.changeUnitWeight()
   }
 
   deleteStepIngredient(
@@ -471,7 +478,7 @@ export class FormulaManagePage {
                 "/" +
                 APP_URL.menu.routes.formula.routes.details,
                 {
-                  state: { formula: this.formula },
+                  state: { formula: JSON.parse(JSON.stringify(this.formula)) },
                 }
               );
             })
@@ -528,7 +535,7 @@ export class FormulaManagePage {
               "/" +
               APP_URL.menu.routes.formula.routes.details,
               {
-                state: { formula: this.formula },
+                state: { formula: JSON.parse(JSON.stringify(this.formula)) },
               }
             );
           })
@@ -544,22 +551,24 @@ export class FormulaManagePage {
 
   verifyTemperature() {
     if (this.temperatureUnit == "F") {
-      this.formula.steps.forEach((step) => {
-        if (step.temperature !== null) {
-          step.temperature.min = Number(
-            this.formatNumberService.fromFahrenheitToCelsius(
-              step.temperature.min
-            )
-          );
-          if (step.temperature.max !== -1) {
-            step.temperature.max = Number(
+      if (this.formula.steps && this.formula.steps.length > 0) {
+        this.formula.steps.forEach((step) => {
+          if (step.temperature !== null) {
+            step.temperature.min = Number(
               this.formatNumberService.fromFahrenheitToCelsius(
-                step.temperature.max
+                step.temperature.min
               )
             );
+            if (step.temperature.max !== -1) {
+              step.temperature.max = Number(
+                this.formatNumberService.fromFahrenheitToCelsius(
+                  step.temperature.max
+                )
+              );
+            }
           }
-        }
-      });
+        });
+      }
     }
   }
 
@@ -697,9 +706,6 @@ export class FormulaManagePage {
     return (
       !this.manageFormulaForm.valid ||
       !this.formula.ingredients || this.formula.ingredients.length==0 ||
-      !this.formula.mixing || this.formula.mixing.length == 0 ||
-      !this.formula.mixing[0] || this.formula.mixing[0].mixing_order.length==0 ||
-      !this.formula.steps || this.formula.steps.length==0 ||
       !this.ingredientsAreValid()
     )
   }

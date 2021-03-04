@@ -112,7 +112,7 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
         "/" +
         APP_URL.menu.routes.settings.routes.user_groups.routes.management,
         {
-          state: { user_group: user_group },
+          state: { user_group: JSON.parse(JSON.stringify(user_group)) },
         }
       );
     }

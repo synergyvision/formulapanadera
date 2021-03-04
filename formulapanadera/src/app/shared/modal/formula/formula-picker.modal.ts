@@ -26,6 +26,7 @@ export class FormulaPickerModal implements OnInit {
   ICONS = ICONS;
 
   @Input() selectedFormulas: Array<FormulaNumberModel>;
+  @Input() forProduction: boolean = false;
 
   hydrationRangeForm: FormGroup;
   costRangeForm: FormGroup;
@@ -64,8 +65,17 @@ export class FormulaPickerModal implements OnInit {
         .getFormulasDataSource(this.user_email)
         .subscribe(async (formulas) => {
           this.searchingState();
-          const promises = formulas.map((form)=>this.formulaCRUDService.getIngredients(form))
-          await Promise.all(promises)
+          const promises = formulas.map((form) => this.formulaCRUDService.getIngredients(form));
+          await Promise.all(promises);
+          if (this.forProduction) {
+            let aux: FormulaModel[] = []
+            formulas.forEach(formula => {
+              if (formula.steps && formula.steps.length > 0) {
+                aux.push(formula)
+              }
+            })
+            formulas = aux;
+          }
           this.formulaService.setFormulas(
             formulas as FormulaModel[] & ShellModel
           );

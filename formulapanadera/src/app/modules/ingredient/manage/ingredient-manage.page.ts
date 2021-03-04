@@ -9,7 +9,7 @@ import { Validators, FormGroup, FormControl } from "@angular/forms";
 
 import { IngredientModel } from "../../../core/models/ingredient.model";
 import { IngredientCRUDService } from "../../../core/services/firebase/ingredient.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
@@ -57,61 +57,66 @@ export class IngredientManagePage implements OnInit {
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   async ngOnInit() {
-    let state = this.router.getCurrentNavigation().extras.state;
-    if (state == undefined) {
-      delete this.ingredient.formula;
-      this.manageIngredientForm = new FormGroup({
-        name: new FormControl("", Validators.required),
-        hydration: new FormControl("", Validators.required),
-        is_flour: new FormControl(false, Validators.required),
-        cost: new FormControl("0", Validators.required),
-      });
-      this.ingredient.user = {
-        owner: this.current_user.email,
-        can_clone: false,
-        public: false,
-        reference: "",
-        shared_users: [],
-        shared_references: [],
-        creator: {
-          name: this.current_user.name,
-          email: this.current_user.email,
-          date: new Date(),
-        },
-        modifiers: [],
-      };
-    } else {
-      this.update = true;
-      this.ingredient = JSON.parse(JSON.stringify(state.ingredient));
-      if (this.ingredient.formula) {
-        this.type = "compound";
-      }
-      this.ingredient.user = state.ingredient.user;
-      this.manageIngredientForm = new FormGroup({
-        name: new FormControl(state.ingredient.name, Validators.required),
-        hydration: new FormControl(
-          state.ingredient.hydration,
-          Validators.required
-        ),
-        is_flour: new FormControl(
-          state.ingredient.is_flour,
-          Validators.required
-        ),
-        cost: new FormControl(state.ingredient.cost, Validators.required),
-      });
-      this.ingredient.references = []
-      if (state.ingredient.references && state.ingredient.references.length>0) {
-        state.ingredient.references.forEach((reference) => {
-          this.ingredient.references.push(JSON.parse(JSON.stringify(reference)));
+    this.route.queryParams.subscribe(async () => {
+      this.ingredient = new IngredientModel();
+      this.update = false;
+      this.type = "simple";
+      let state = this.router.getCurrentNavigation().extras.state;
+      if (state == undefined) {
+        delete this.ingredient.formula;
+        this.manageIngredientForm = new FormGroup({
+          name: new FormControl("", Validators.required),
+          hydration: new FormControl("", Validators.required),
+          is_flour: new FormControl(false, Validators.required),
+          cost: new FormControl("0", Validators.required),
         });
+        this.ingredient.user = {
+          owner: this.current_user.email,
+          can_clone: false,
+          public: false,
+          reference: "",
+          shared_users: [],
+          shared_references: [],
+          creator: {
+            name: this.current_user.name,
+            email: this.current_user.email,
+            date: new Date(),
+          },
+          modifiers: [],
+        };
+      } else {
+        this.update = true;
+        this.ingredient = JSON.parse(JSON.stringify(state.ingredient));
+        if (this.ingredient.formula) {
+          this.type = "compound";
+        }
+        this.ingredient.user = state.ingredient.user;
+        this.manageIngredientForm = new FormGroup({
+          name: new FormControl(state.ingredient.name, Validators.required),
+          hydration: new FormControl(
+            state.ingredient.hydration,
+            Validators.required
+          ),
+          is_flour: new FormControl(
+            state.ingredient.is_flour,
+            Validators.required
+          ),
+          cost: new FormControl(state.ingredient.cost, Validators.required),
+        });
+        this.ingredient.references = []
+        if (state.ingredient.references && state.ingredient.references.length > 0) {
+          state.ingredient.references.forEach((reference) => {
+            this.ingredient.references.push(JSON.parse(JSON.stringify(reference)));
+          });
+        }
       }
-    }
-
-    let user = await this.userStorageService.getUser();
-    this.current_user = { name: user.name, email: user.email };
+      let user = await this.userStorageService.getUser();
+      this.current_user = { name: user.name, email: user.email };
+    });
   }
 
   async pickIngredient() {
@@ -322,7 +327,7 @@ export class IngredientManagePage implements OnInit {
                 "/" +
                 APP_URL.menu.routes.ingredient.routes.details,
               {
-                state: { ingredient: this.ingredient },
+                state: { ingredient: JSON.parse(JSON.stringify(this.ingredient)) },
               }
             );
           })
@@ -348,7 +353,7 @@ export class IngredientManagePage implements OnInit {
                 "/" +
                 APP_URL.menu.routes.ingredient.routes.details,
               {
-                state: { ingredient: this.ingredient },
+                state: { ingredient: JSON.parse(JSON.stringify(this.ingredient)) },
               }
             );
           })

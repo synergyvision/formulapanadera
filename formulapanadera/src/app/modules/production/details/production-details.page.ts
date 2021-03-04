@@ -69,10 +69,10 @@ export class ProductionDetailsPage implements OnInit {
       let navParams = this.router.getCurrentNavigation().extras.state;
       if (navParams) {
         this.production = JSON.parse(JSON.stringify(navParams.production));
-        this.production = JSON.parse(JSON.stringify(navParams.production));
         this.original_production = JSON.parse(
           JSON.stringify(navParams.production)
         );
+        this.production_in_process = false;
       }
 
       this.calculateFormulas();
@@ -265,7 +265,7 @@ export class ProductionDetailsPage implements OnInit {
         "/" +
         APP_URL.menu.routes.production.routes.management,
       {
-        state: { production: this.original_production },
+        state: { production: JSON.parse(JSON.stringify(this.original_production)) },
       }
     );
   }
@@ -448,7 +448,10 @@ export class ProductionDetailsPage implements OnInit {
           "/" +
           APP_URL.menu.routes.production.routes.start,
         {
-          state: { production: this.production, formulas: this.formulas },
+          state: {
+            production: JSON.parse(JSON.stringify(this.production)),
+            formulas: JSON.parse(JSON.stringify(this.formulas))
+          },
         }
       );
     }

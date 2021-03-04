@@ -181,7 +181,7 @@ export class IngredientListingPage implements OnInit, OnDestroy {
           "/" +
           APP_URL.menu.routes.ingredient.routes.details,
         {
-          state: { ingredient: ingredient },
+          state: { ingredient: JSON.parse(JSON.stringify(ingredient)) },
         }
       );
     }
