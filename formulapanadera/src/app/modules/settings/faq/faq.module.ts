@@ -4,22 +4,22 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { TutorialsPageRoutingModule } from './tutorials-routing.module';
+import { FaqPageRoutingModule } from './faq-routing.module';
 
-import { TutorialsPage } from './tutorials.page';
+import { FaqPage } from './faq.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { ReadTutorialComponent } from './read-tutorial/read-tutorial.component';
-
+import { AnswerComponent } from './answer/answer.component';
 import { MarkdownModule } from 'ngx-markdown';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TutorialsPageRoutingModule,
+    FaqPageRoutingModule,
     TranslateModule,
     MarkdownModule.forChild()
   ],
-  declarations: [TutorialsPage, ReadTutorialComponent]
+  declarations: [FaqPage, AnswerComponent]
 })
-export class TutorialsPageModule {}
+export class FaqPageModule {}

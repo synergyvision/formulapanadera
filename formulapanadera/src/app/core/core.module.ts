@@ -29,6 +29,9 @@ import { UserService } from './services/user.service';
 import { TermsService } from "./services/terms.service";
 import { HowToService } from "./services/how-to.service";
 import { TutorialsService } from "./services/tutorials.service";
+import { ContactService } from "./services/contact.service";
+import { SearchBarService } from "./services/search-bar.service";
+import { FaqService } from "./services/faq.service";
 @NgModule({
   imports: [
     IonicModule,
@@ -59,7 +62,10 @@ import { TutorialsService } from "./services/tutorials.service";
     UserStorageService,
     TermsService,
     HowToService,
-    TutorialsService
+    TutorialsService,
+    ContactService,
+    SearchBarService,
+    FaqService
   ]
 })
 export class CoreModule extends ModuleLoadedOnceGuard {

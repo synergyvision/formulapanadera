@@ -236,6 +236,7 @@
       "contact": "Contacto",
       "social_media": "Redes sociales",
       "faq": "FAQ",
+      "answer": "Respuesta",
       "report_problem": "Reportar problemas",
       "help_center": "Centro de ayuda"
     },
@@ -302,5 +303,21 @@
     "10": "Barnices, Coberturas y Greñado",
     "11": "Horneado",
     "12": "Enfriamiento"
+  },
+  "help_center": {
+    "name": "Centro de ayuda",
+    "content": "¿Cómo desea contactarnos?",
+    "whatsapp": "Whatsapp",
+    "telegram": "Telegram"
+  },
+  "social_sharing": {
+    "title": "Descarga Haz pan en casa",
+    "message": "Te invito a descargar la aplicación\n\niOS: {iosUrl}\n\nAndroid: {androidUrl}"
+  },
+  "rate_app": {
+    "title": "¿Disfrutas de Haz pan en casa?",
+    "message": "No te tomará más de un minuto para promover nuestra app. ¡Gracias por tu apoyo!",
+    "rate": "Reseñar ahora",
+    "cancel": "No, gracias"
   }
 }

@@ -104,6 +104,7 @@
     </ion-item>
     <ion-item
       button
+      [routerLink]="APP_URL.menu.routes.settings.routes.tutorials"
       routerDirection="forward"
       class="support-option"
     >
@@ -112,6 +113,7 @@
     </ion-item>
     <ion-item
       button
+      [routerLink]="APP_URL.menu.routes.settings.routes.contact"
       routerDirection="forward"
       class="support-option"
     >
@@ -120,6 +122,7 @@
     </ion-item>
     <ion-item
       button
+      [routerLink]="APP_URL.menu.routes.settings.routes.social_media"
       routerDirection="forward"
       class="support-option"
     >
@@ -128,6 +131,7 @@
     </ion-item>
     <ion-item
       button
+      [routerLink]="APP_URL.menu.routes.settings.routes.faq"
       routerDirection="forward"
       class="support-option"
     >
@@ -136,6 +140,7 @@
     </ion-item>
     <ion-item
       button
+      (click)="reportProblem()"
       routerDirection="forward"
       class="support-option"
     >
@@ -144,6 +149,7 @@
     </ion-item>
     <ion-item
       button
+      (click)="openHelpCenter()"
       routerDirection="forward"
       class="support-option"
     >
@@ -169,6 +175,7 @@
     </ion-item>
     <ion-item
       button
+      (click)="shareApp()"
       routerDirection="forward"
       class="more-option"
     >
@@ -177,6 +184,7 @@
     </ion-item>
     <ion-item
       button
+      (click)="rateApp()"
       routerDirection="forward"
       class="more-option"
     >

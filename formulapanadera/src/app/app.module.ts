@@ -16,6 +16,8 @@ import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { CoreModule } from "./core/core.module";
 import { AlertModule } from './shared/alert/alert.module';
 
+import { MarkdownModule } from 'ngx-markdown';
+
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
@@ -30,6 +32,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     CoreModule,
     AlertModule,
+    MarkdownModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

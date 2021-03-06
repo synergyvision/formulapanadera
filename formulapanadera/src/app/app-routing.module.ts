@@ -20,7 +20,7 @@ const routes: Routes = [
     path: APP_URL.auth.name,
     loadChildren: () =>
       import("./modules/auth/auth.module").then((m) => m.AuthModule),
-  }
+  },
 ];
 @NgModule({
   imports: [

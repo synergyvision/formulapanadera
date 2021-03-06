@@ -7,11 +7,29 @@ export const LANGUAGE = {
   ],
 };
 
+// Base url for getting content
+export const BASE_WEB_NEWS = 'https://synergy.vision/';
+
+// Report to email
+export const REPORT_TO = 'contacto@synergy.vision';
+
+// iOS makert url
+export const IOS_MARKET = '';
+// Android market url
+export const ANDROID_MARKET = '';
+
+// Help center
+export const HELP_CENTER = {
+  wa: "https://wa.me/+584142769752",
+  telegram: "https://t.me/bysynergyvision"
+}
+
 // Currency
 export const CURRENCY = "$";
 
 // Number of loading items on listing pages
 export const LOADING_ITEMS = 10;
+
 
 // Page URLs
 export const APP_URL = {
@@ -70,7 +88,10 @@ export const APP_URL = {
             },
           },
           how_to_use: "how-to-use",
-          tutorials: "tutorials"
+          tutorials: "tutorials",
+          contact: "contact",
+          social_media: "social-media",
+          faq: "faq"
         },
       },
     },
