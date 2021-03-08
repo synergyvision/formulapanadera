@@ -1,0 +1,20 @@
+// Variables
+
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+ion-back-button {
+  height: 0;
+}
+
+.course-content {
+  --background: var(--page-background);
+}

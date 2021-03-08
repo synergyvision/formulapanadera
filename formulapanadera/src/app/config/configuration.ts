@@ -63,6 +63,14 @@ export const APP_URL = {
               management: "manage",
             },
           },
+          course: {
+            main: "course",
+            routes: {
+              listing: "",
+              details: "details",
+              management: "manage",
+            },
+          },
           shared: {
             main: "shared",
             routes: {

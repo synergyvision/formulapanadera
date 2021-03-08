@@ -1,0 +1,19 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button
+        mode="md"
+        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.settings.main"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title> {{'settings.course.name' | translate}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="createCourse()" class="create-course">
+        <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="course-content">
+</ion-content>

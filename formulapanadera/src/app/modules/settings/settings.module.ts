@@ -32,6 +32,13 @@ const routes: Routes = [
         (m) => m.SharedModule
       ),
   },
+  {
+    path: APP_URL.menu.routes.settings.routes.course.main,
+    loadChildren: () =>
+      import("./course/course.module").then(
+        (m) => m.CourseModule
+      ),
+  },
 ];
 
 @NgModule({

@@ -24,9 +24,6 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
 
   user_groups: UserGroupModel[] & ShellModel;
   
-  @HostBinding("class.is-shell") get isShell() {
-    return this.user_groups && this.user_groups.isShell ? true : false;
-  }
   constructor(
     private router: Router,
     private userService: UserService,

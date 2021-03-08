@@ -32,6 +32,7 @@
   "input": {
     "fullName": "Nombre completo",
     "name": "Nombre",
+    "description": "Descripción",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "confirm_password": "Confirmación de contraseña",
@@ -224,6 +225,11 @@
       "user": "Usuario",
       "create": "Crear grupo",
       "empty": "No se encontraron grupos de usuarios"
+    },
+    "course": {
+      "name": "Cursos",
+      "create": "Crear curso",
+      "empty": "No se encontraron cursos"
     },
     "logout": "Cerrar sesión"
   },

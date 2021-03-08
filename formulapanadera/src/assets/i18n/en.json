@@ -32,6 +32,7 @@
   "input": {
     "fullName": "Full name",
     "name": "Name",
+    "description": "Description",
     "email": "Email",
     "password": "Password",
     "confirm_password": "Confirm password",
@@ -224,6 +225,11 @@
       "user": "User",
       "create": "Create user group",
       "empty": "No user groups found"
+    },
+    "course": {
+      "name": "Courses",
+      "create": "Create course",
+      "empty": "No courses found"
     },
     "logout": "Log out"
   },

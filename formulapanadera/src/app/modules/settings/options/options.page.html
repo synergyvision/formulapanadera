@@ -38,6 +38,17 @@
         >{{'settings.user_groups.name' | translate}}</ion-label
       >
     </ion-item>
+    <ion-item
+      button
+      [routerLink]="[APP_URL.menu.routes.settings.routes.course.main]"
+      routerDirection="forward"
+      class="course-option"
+    >
+      <ion-icon [name]="ICONS.courses"></ion-icon>
+      <ion-label class="option"
+        >{{'settings.course.name' | translate}}</ion-label
+      >
+    </ion-item>
     <app-divider></app-divider>
     <ion-item
       button

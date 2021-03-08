@@ -9,6 +9,7 @@ export const ICONS = {
   check: "checkmark-outline",
   clone: "add-circle-outline",
   close: "close-outline",
+  courses: "calendar-outline",
   create: "create-outline",
   credits: "people-outline",
   details: "search-outline",
