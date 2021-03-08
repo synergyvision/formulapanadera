@@ -7,6 +7,10 @@
   --background: rgba(221, 221, 221, 0.322) !important;
 }
 
+.background-selected {
+  --background: var(--ion-color-selected) !important;
+}
+
 .production-item-wrapper {
   --ion-grid-column-padding: 0px;
   padding: 10px 0 10px 0;

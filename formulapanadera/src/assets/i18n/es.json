@@ -229,6 +229,7 @@
     "course": {
       "name": "Cursos",
       "create": "Crear curso",
+      "update": "Modificar curso",
       "empty": "No se encontraron cursos"
     },
     "logout": "Cerrar sesión"

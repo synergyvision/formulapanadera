@@ -4,6 +4,7 @@ import { ProductionModel } from "./production.model";
 import { UserOwnerModel } from "./user.model";
 
 export class CourseModel {
+  id: string;
   name: string;
   description?: string;
   ingredients?: Array<IngredientModel>;

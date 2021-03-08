@@ -1,0 +1,132 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.production"></ion-icon>
+    <ion-title> {{ 'production.name' | translate }} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()" class="close-modal">
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="filters-toolbar" mode="ios">
+    <ion-row class="searchbar-row" align-items-center>
+      <ion-col>
+        <ion-searchbar
+          mode="ios"
+          class="items-searchbar"
+          animated
+          [(ngModel)]="searchQuery"
+          (ionChange)="searchList()"
+          placeholder="{{'ingredients.filter.name' | translate}}"
+        ></ion-searchbar>
+      </ion-col>
+      <ion-col class="call-to-action-col">
+        <ion-button
+          fill="clear"
+          color="secondary"
+          class="filters-btn"
+          (click)="showFilters = !showFilters"
+        >
+          <ion-icon slot="icon-only" [name]="ICONS.options"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <form [formGroup]="costRangeForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row">
+        <ion-col size="12">
+          <div class="range-header cost-range-header">
+            <span class="range-label"
+              >{{'ingredients.filter.cost' | translate}} ({{currency}})</span
+            >
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="cost-input">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="stacked"
+              >{{'ingredients.filter.min' | translate}}</ion-label
+            >
+            <ion-input
+              type="number"
+              formControlName="lower"
+              class="ingredient-cost-lower"
+              (ionChange)="searchList()"
+            >
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col class="cost-input">
+          <ion-item class="input-item">
+            <ion-label color="primary" position="stacked"
+              >{{'ingredients.filter.max' | translate}}
+            </ion-label>
+            <ion-input
+              type="number"
+              formControlName="upper"
+              class="ingredient-cost-upper"
+              (ionChange)="searchList()"
+            >
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </form>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="production-content">
+  <ion-segment
+    mode="ios"
+    (ionChange)="segmentChanged($event)"
+    [value]="segment"
+    class="segment"
+  >
+    <ion-segment-button value="mine">
+      <ion-label>{{'formulas.share.mine' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="shared">
+      <ion-label>{{'formulas.share.shared' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="public">
+      <ion-label>{{'formulas.share.public' | translate}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-list
+    lines="none"
+    class="productions-list"
+    *ngIf="productions?.length > 0; else emptyBlock"
+  >
+    <app-production-item
+      *ngFor="let production of productions; index as i"
+      [selected]="isSelected(production)"
+      (click)="clickProduction(production)"
+      [production]="production"
+      [even]="(i%2==0)"
+    ></app-production-item>
+  </ion-list>
+  <ng-template #emptyBlock>
+    <ion-row class="empty-block">
+      <ion-col class="ion-text-center ion-padding">
+        <h5>{{ 'formulas.empty' | translate }}</h5>
+      </ion-col>
+    </ion-row>
+  </ng-template>
+</ion-content>
+
+<ion-footer>
+  <ion-row class="form-actions-wrapper">
+    <ion-col>
+      <ion-button
+        class="submit-btn"
+        expand="block"
+        color="primary"
+        (click)="saveProductions()"
+        fill="solid"
+      >
+        {{ 'action.confirm' | translate }}</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-footer>

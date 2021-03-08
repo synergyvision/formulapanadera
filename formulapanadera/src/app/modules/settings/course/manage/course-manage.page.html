@@ -1,14 +1,223 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button
-        mode="md"
-        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.settings.main + '/' + APP_URL.menu.routes.settings.routes.course.main"
-      ></ion-back-button>
-    </ion-buttons>
-    <ion-title> {{'settings.course.name' | translate}} </ion-title>
-  </ion-toolbar>
-</ion-header>
+<form
+  class="manage-course-form ion-page"
+  [formGroup]="manageCourseForm"
+  (ngSubmit)="sendCourse()"
+>
+  <ion-header class="ion-no-border">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button
+          mode="md"
+          [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.settings.main + '/' + APP_URL.menu.routes.settings.routes.course.main"
+        ></ion-back-button>
+      </ion-buttons>
+      <ion-title *ngIf="!update"> {{'settings.course.create' | translate}} </ion-title>
+      <ion-title *ngIf="update"> {{'settings.course.update' | translate}} </ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-<ion-content class="course-manage-content">
-</ion-content>
+  <ion-content class="manage-course-content">
+    <ion-list class="inputs-list" lines="full">
+      <!-- Main characteristics -->
+      <ion-item class="input-item">
+        <ion-label color="primary" position="stacked"
+          >{{'input.name' | translate}}</ion-label
+        >
+        <ion-input
+          type="text"
+          formControlName="name"
+          class="course-name"
+          required
+        ></ion-input>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label color="primary" position="stacked"
+          >{{'formulas.description' | translate}}</ion-label
+        >
+        <ion-textarea
+          type="text"
+          autoGrow="true"
+          formControlName="description"
+        ></ion-textarea>
+      </ion-item>
+
+      <app-divider></app-divider>
+
+      <!-- Clone -->
+      <ion-row>
+        <ion-col class="no-padding">
+          <ion-item class="input-item" lines="full">
+            <ion-label color="primary"
+              >{{'formulas.can_clone' | translate}}</ion-label
+            >
+            <ion-checkbox
+              class="course-can-clone course-checkbox"
+              color="primary"
+              [(ngModel)]="course.user.can_clone"
+              [ngModelOptions]="{standalone: true}"
+              slot="start"
+            >
+            </ion-checkbox>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+
+    <app-divider></app-divider>
+
+    <!-- Productions -->
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'production.name' | translate}}
+          </ion-label>
+
+          <ion-icon
+            button
+            (click)="productionPicker()"
+            class="pick-item"
+            [name]="ICONS.add"
+          ></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <ion-item *ngFor="let item of course.productions" class="input-item">
+          <ion-row class="item-wrapper">
+            <ion-col class="wrapper">
+              <ion-row>
+                <ion-col>
+                  <h2 class="item-name">{{item.name}}</h2>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-icon
+            [name]="ICONS.close"
+            class="delete-item"
+            slot="end"
+            color="primary"
+            button
+            (click)="deleteProduction(item)"
+          ></ion-icon>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+
+    <app-divider></app-divider>
+
+    <!-- Formulas -->
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'formulas.name' | translate}}
+          </ion-label>
+
+          <ion-icon
+            button
+            (click)="formulaPicker()"
+            class="pick-item"
+            [name]="ICONS.add"
+          ></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <ion-item *ngFor="let item of course.formulas" class="input-item">
+          <ion-row class="item-wrapper">
+            <ion-col class="wrapper">
+              <ion-row>
+                <ion-col>
+                  <h2 class="item-name">{{item.name}}</h2>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-icon
+            [name]="ICONS.close"
+            class="delete-item"
+            slot="end"
+            color="primary"
+            button
+            (click)="deleteFormula(item)"
+          ></ion-icon>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+
+    <app-divider></app-divider>
+
+    <!-- Ingredients -->
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'ingredients.name' | translate}}
+          </ion-label>
+
+          <ion-icon
+            button
+            (click)="ingredientPicker()"
+            class="pick-item"
+            [name]="ICONS.add"
+          ></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <ion-item *ngFor="let item of course.ingredients" class="input-item">
+          <ion-row class="item-wrapper">
+            <ion-col class="wrapper">
+              <ion-row>
+                <ion-col>
+                  <h2 class="item-name">{{item.name}}</h2>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-icon
+            [name]="ICONS.close"
+            class="delete-item"
+            slot="end"
+            color="primary"
+            button
+            (click)="deleteIngredient(item)"
+          ></ion-icon>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  </ion-content>
+
+  <ion-footer>
+    <ion-row
+      *ngIf="update"
+      class="form-actions-wrapper"
+    >
+      <ion-col>
+        <ion-button
+          class="submit-btn"
+          expand="block"
+          color="primary"
+          type="submit"
+          fill="solid"
+          [disabled]="dontSubmitCourse()"
+          >{{ 'action.update' | translate }}</ion-button
+        >
+      </ion-col>
+    </ion-row>
+    <ion-row
+      *ngIf="!update"
+      class="form-actions-wrapper"
+      >
+      <ion-col>
+        <ion-button
+          class="submit-btn"
+          expand="block"
+          color="primary"
+          type="submit"
+          fill="solid"
+          [disabled]="dontSubmitCourse()"
+        >{{ 'action.create' | translate }}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-footer>
+</form>

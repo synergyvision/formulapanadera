@@ -12,6 +12,7 @@ import { UserGroupPickerModal } from './user-group/user-group-picker.modal';
 import { OrganolepticCharacteristicsModal } from "./organoleptic-characteristics/organoleptic-characteristics.modal";
 import { ReferencesModal } from "./references/references.modal";
 import { SharedUsersModal } from "./shared-users/shared-users.modal";
+import { ProductionPickerModal } from "./production/production-picker.modal";
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { SharedUsersModal } from "./shared-users/shared-users.modal";
     IngredientMixingModal,
     FormulaPickerModal,
     FormulaStepsModal,
+    ProductionPickerModal,
     OrganolepticCharacteristicsModal,
     ReferencesModal,
     UserGroupPickerModal,
@@ -37,6 +39,7 @@ import { SharedUsersModal } from "./shared-users/shared-users.modal";
     IngredientMixingModal,
     FormulaPickerModal,
     FormulaStepsModal,
+    ProductionPickerModal,
     OrganolepticCharacteristicsModal,
     ReferencesModal,
     UserGroupPickerModal,
