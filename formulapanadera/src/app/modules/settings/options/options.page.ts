@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { AuthService } from "../../../core/services/firebase/auth.service";
 import { Router } from "@angular/router";
-import { UserResumeModel } from "src/app/core/models/user.model";
+import { UserModel } from "src/app/core/models/user.model";
 import { LanguageAlert } from "src/app/shared/alert/language/language.alert";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { APP_URL } from "src/app/config/configuration";
@@ -22,7 +22,7 @@ export class OptionsPage {
   ICONS = ICONS;
   APP_URL = APP_URL;
 
-  user: UserResumeModel = new UserResumeModel();
+  user: UserModel = new UserModel();
 
   constructor(
     private router: Router,
@@ -34,8 +34,7 @@ export class OptionsPage {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    let user = await this.userStorageService.getUser();
-    this.user = {name: user.name, email: user.email}
+    this.user = await this.userStorageService.getUser();
     if (!this.user) {
       this.router.navigate(
         [APP_URL.auth.name + "/" + APP_URL.auth.routes.sign_in],

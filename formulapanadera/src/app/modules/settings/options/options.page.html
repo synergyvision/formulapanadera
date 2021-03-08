@@ -39,6 +39,7 @@
       >
     </ion-item>
     <ion-item
+      *ngIf="user.instructor"
       button
       [routerLink]="[APP_URL.menu.routes.settings.routes.course.main]"
       routerDirection="forward"
