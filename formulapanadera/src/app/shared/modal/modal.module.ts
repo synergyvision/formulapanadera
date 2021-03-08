@@ -12,7 +12,9 @@ import { UserGroupPickerModal } from './user-group/user-group-picker.modal';
 import { OrganolepticCharacteristicsModal } from "./organoleptic-characteristics/organoleptic-characteristics.modal";
 import { ReferencesModal } from "./references/references.modal";
 import { SharedUsersModal } from "./shared-users/shared-users.modal";
-
+import { AboutUsComponent } from "./about-us/about-us.component";
+import { TermConditionsComponent } from "./term-conditions/term-conditions.component";
+import { DirectivesModule } from '../directives/directives.module'
 @NgModule({
   imports: [
     CommonModule,
@@ -21,6 +23,7 @@ import { SharedUsersModal } from "./shared-users/shared-users.modal";
     IonicModule,
     TranslateModule,
     ComponentsModule,
+    DirectivesModule
   ],
   declarations: [
     IngredientPickerModal,
@@ -30,7 +33,9 @@ import { SharedUsersModal } from "./shared-users/shared-users.modal";
     OrganolepticCharacteristicsModal,
     ReferencesModal,
     UserGroupPickerModal,
-    SharedUsersModal
+    SharedUsersModal,
+    AboutUsComponent,
+    TermConditionsComponent,
   ],
   exports: [
     IngredientPickerModal,
@@ -40,7 +45,9 @@ import { SharedUsersModal } from "./shared-users/shared-users.modal";
     OrganolepticCharacteristicsModal,
     ReferencesModal,
     UserGroupPickerModal,
-    SharedUsersModal
+    SharedUsersModal,
+    AboutUsComponent,
+    TermConditionsComponent,
   ],
 })
 export class ModalModule {}

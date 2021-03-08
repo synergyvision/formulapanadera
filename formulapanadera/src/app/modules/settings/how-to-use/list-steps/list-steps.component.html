@@ -1,0 +1,46 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" fill="clear" color="primary">
+        <ion-icon name="arrow-back" size="large" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ set.name }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-segment mode="md" [value]="segementValue" color="secondary" (ionChange)="toggle()">
+    <ion-segment-button value="list" mode="md">
+      <ion-icon name="ios-list"></ion-icon>        
+    </ion-segment-button>
+    <ion-segment-button value="matrix" mode="md">
+      <ion-icon name="md-apps"></ion-icon>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-item-divider class="set-name">
+    <ion-label>{{ set.name }}</ion-label>
+  </ion-item-divider>
+  <ion-list *ngIf="segementValue == 'list' && set">
+    <ion-item *ngFor="let singlecard of set.steps; index as cardIndex" button lines="full" (click)="goToSlide(cardIndex)">
+      <ion-thumbnail slot="start">
+        <img class="smaller-img" [src]="singlecard.image"/>
+      </ion-thumbnail>
+      <ion-label class="normal-space">{{ singlecard.title }}</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-grid *ngIf="segementValue == 'matrix' && set">
+    <ion-row>
+      <ion-col [size]="4" *ngFor="let singlecard of set.steps; index as cardIndex"
+        (click)="goToSlide(cardIndex)"
+      >
+        <div class="image-bg"
+        [ngStyle]="{'background': 'url(' + singlecard.image + ') no-repeat center center / 100% 100%'}"
+        >
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

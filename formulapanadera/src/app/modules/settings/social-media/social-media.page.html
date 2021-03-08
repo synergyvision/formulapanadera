@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'settings.support.social_media' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear">
+        <ion-icon></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-segment mode="md" [value]="segementValue" color="secondary" (ionChange)="toggle()">
+    <ion-segment-button value="list" mode="md">
+      <ion-icon name="list-sharp"></ion-icon>        
+    </ion-segment-button>
+    <ion-segment-button value="matrix" mode="md">
+      <ion-icon name="apps-sharp"></ion-icon>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-item-group *ngIf="segementValue == 'list'" class="social-media-group">
+    <ion-item *ngFor="let media of socialMedias" button detail="false" (click)="openBrowser(media)">
+      <ion-thumbnail slot="start">
+        <ion-icon [src]="media.icon"></ion-icon>
+      </ion-thumbnail>
+      <ion-label>{{ media.username }}</ion-label>
+    </ion-item>
+  </ion-item-group>
+  <ion-row *ngIf="segementValue != 'list'">
+    <ion-col size="6" *ngFor="let media of socialMedias">
+      <div #ticket class="item-image-wrapper ion-text-center" (click)="openBrowser(media)">
+        <div class="iconContainer">
+          <ion-icon class="" [src]="media.icon"></ion-icon>
+          {{ media.name }}
+        </div>
+        <div class="username" [ngStyle]="{'background-color': media.bgColor}">
+          {{ media.username }}
+        </div>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>
