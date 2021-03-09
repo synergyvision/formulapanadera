@@ -338,7 +338,7 @@ export class FormulaManagePage {
 
   async describeSteps() {
     let steps: Array<StepDetailsModel> = [];
-    if (!this.formula.steps) {
+    if (!this.formula.steps || this.formula.steps.length == 0) {
       for (let i = 0; i < BAKERY_STEPS; i++) {
         var description = ""
         if (i == DIVITION_STEP - 1 &&

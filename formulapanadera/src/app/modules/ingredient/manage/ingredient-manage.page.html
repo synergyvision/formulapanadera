@@ -88,7 +88,7 @@
           >
           <ion-input
             type="number"
-            inputmode="numeric"
+            inputmode="decimal"
             step="0.1"
             min="0"
             max="100"
@@ -119,7 +119,7 @@
           </ion-label>
           <ion-input
             type="number"
-            inputmode="numeric"
+            inputmode="decimal"
             min="0"
             formControlName="cost"
             class="ingredient-cost"
@@ -141,7 +141,7 @@
                 >
                 <ion-input
                   type="number"
-                  inputmode="numeric"
+                  inputmode="decimal"
                   [(ngModel)]="ingredient.formula.suggested_values.min"
                   [ngModelOptions]="{standalone: true}"
                   (ionBlur)="formatSuggestedValues('min', ingredient.formula.suggested_values.min)"
@@ -155,7 +155,7 @@
                 >
                 <ion-input
                   type="number"
-                  inputmode="numeric"
+                  inputmode="decimal"
                   [(ngModel)]="ingredient.formula.suggested_values.max"
                   [ngModelOptions]="{standalone: true}"
                   (ionBlur)="formatSuggestedValues('max', ingredient.formula.suggested_values.max)"
@@ -169,7 +169,7 @@
           >
           <ion-input
             type="number"
-            inputmode="numeric"
+            inputmode="decimal"
             step="0.1"
             min="0"
             max="100"
@@ -261,7 +261,7 @@
                       [(ngModel)]="item.percentage"
                       [ngModelOptions]="{standalone: true}"
                       type="number"
-                      inputmode="numeric"
+                      inputmode="decimal"
                       (ionBlur)="formatDecimals(item)"
                     ></ion-input>
                   </ion-item>

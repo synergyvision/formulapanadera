@@ -29,7 +29,13 @@
     <ion-col class="detail-col" size="4">
       <ion-item class="formula-detail" lines="full" mode="ios">
         <ion-label color="medium" position="floating">{{'formulas.units' | translate}}</ion-label>
-        <ion-input class="editable-field" [(ngModel)]="units" (ionChange)="changeUnits($event)"></ion-input>
+        <ion-input
+          class="editable-field"
+          type="number"
+          inputmode="numeric"
+          [(ngModel)]="units"
+          (ionChange)="changeUnits($event)"
+        ></ion-input>
       </ion-item>
     </ion-col>
     <ion-col size="4" class="detail-col">

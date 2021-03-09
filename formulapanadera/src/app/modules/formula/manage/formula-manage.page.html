@@ -36,8 +36,8 @@
             <ion-label color="primary" position="stacked">{{'formulas.units' | translate}}</ion-label>
             <ion-input
               type="number"
-              formControlName="units"
               inputmode="numeric"
+              formControlName="units"
               class="formula-units"
               (ionBlur)="formatUnits(manageFormulaForm.value.units)"
               required
@@ -50,8 +50,8 @@
                     translate}})</ion-label>
             <ion-input
               type="number"
+              inputmode="decimal"
               formControlName="unit_weight"
-              inputmode="numeric"
               class="formula-unit-weight"
               (ionBlur)="formatUnitWeight(manageFormulaForm.value.unit_weight)"
               required
@@ -200,7 +200,7 @@
                   [(ngModel)]="item.percentage"
                   [ngModelOptions]="{standalone: true}"
                   type="number"
-                  inputmode="numeric"
+                  inputmode="decimal"
                   (ionBlur)="formatPercentage(item)"
                 ></ion-input
               ></ion-item>
@@ -349,7 +349,7 @@
                       [(ngModel)]="item.percentage"
                       [ngModelOptions]="{standalone: true}"
                       type="number"
-                      inputmode="numeric"
+                      inputmode="decimal"
                       (ionBlur)="formatStepPercentage(item)"
                     ></ion-input>
                   </ion-item>
