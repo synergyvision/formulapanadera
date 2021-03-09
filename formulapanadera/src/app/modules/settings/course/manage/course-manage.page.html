@@ -82,25 +82,28 @@
         </ion-item>
       </ion-card-header>
       <ion-list lines="full" class="inputs-list">
-        <ion-item *ngFor="let item of course.productions" class="input-item">
-          <ion-row class="item-wrapper">
-            <ion-col class="wrapper">
-              <ion-row>
-                <ion-col>
-                  <h2 class="item-name">{{item.name}}</h2>
-                </ion-col>
-              </ion-row>
-            </ion-col>
-          </ion-row>
-          <ion-icon
-            [name]="ICONS.close"
-            class="delete-item"
-            slot="end"
-            color="primary"
-            button
-            (click)="deleteProduction(item)"
-          ></ion-icon>
-        </ion-item>
+        <ion-reorder-group (ionItemReorder)="reorderProductions($event)" disabled="false">
+          <ion-item *ngFor="let item of course.productions" class="input-item">
+            <ion-row class="item-wrapper">
+              <ion-col class="wrapper">
+                <ion-row>
+                  <ion-col>
+                    <h2 class="item-name">{{item.name}}</h2>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+            <ion-reorder slot="start"></ion-reorder>
+            <ion-icon
+              [name]="ICONS.close"
+              class="delete-item"
+              slot="end"
+              color="primary"
+              button
+              (click)="deleteProduction(item)"
+            ></ion-icon>
+          </ion-item>
+        </ion-reorder-group>
       </ion-list>
     </ion-card>
 
@@ -123,25 +126,28 @@
         </ion-item>
       </ion-card-header>
       <ion-list lines="full" class="inputs-list">
-        <ion-item *ngFor="let item of course.formulas" class="input-item">
-          <ion-row class="item-wrapper">
-            <ion-col class="wrapper">
-              <ion-row>
-                <ion-col>
-                  <h2 class="item-name">{{item.name}}</h2>
-                </ion-col>
-              </ion-row>
-            </ion-col>
-          </ion-row>
-          <ion-icon
-            [name]="ICONS.close"
-            class="delete-item"
-            slot="end"
-            color="primary"
-            button
-            (click)="deleteFormula(item)"
-          ></ion-icon>
-        </ion-item>
+        <ion-reorder-group (ionItemReorder)="reorderFormulas($event)" disabled="false">
+          <ion-item *ngFor="let item of course.formulas" class="input-item">
+            <ion-row class="item-wrapper">
+              <ion-col class="wrapper">
+                <ion-row>
+                  <ion-col>
+                    <h2 class="item-name">{{item.name}}</h2>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+            <ion-reorder slot="start"></ion-reorder>
+            <ion-icon
+              [name]="ICONS.close"
+              class="delete-item"
+              slot="end"
+              color="primary"
+              button
+              (click)="deleteFormula(item)"
+            ></ion-icon>
+          </ion-item>
+        </ion-reorder-group>
       </ion-list>
     </ion-card>
 
@@ -164,12 +170,56 @@
         </ion-item>
       </ion-card-header>
       <ion-list lines="full" class="inputs-list">
-        <ion-item *ngFor="let item of course.ingredients" class="input-item">
+        <ion-reorder-group (ionItemReorder)="reorderIngredients($event)" disabled="false">
+          <ion-item *ngFor="let item of course.ingredients" class="input-item">
+            <ion-row class="item-wrapper">
+              <ion-col class="wrapper">
+                <ion-row>
+                  <ion-col>
+                    <h2 class="item-name">{{item.name}}</h2>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+            <ion-reorder slot="start"></ion-reorder>
+            <ion-icon
+              [name]="ICONS.close"
+              class="delete-item"
+              slot="end"
+              color="primary"
+              button
+              (click)="deleteIngredient(item)"
+            ></ion-icon>
+          </ion-item>
+        </ion-reorder-group>
+      </ion-list>
+    </ion-card>
+
+    <app-divider></app-divider>
+
+    <!-- Users -->
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'settings.user_groups.users' | translate}}
+          </ion-label>
+
+          <ion-icon
+            button
+            (click)="userGroupsPicker()"
+            class="pick-item"
+            [name]="ICONS.add"
+          ></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <ion-item *ngFor="let group of course.user.shared_groups" class="input-item">
           <ion-row class="item-wrapper">
             <ion-col class="wrapper">
               <ion-row>
                 <ion-col>
-                  <h2 class="item-name">{{item.name}}</h2>
+                  <h2 class="item-name">{{group}}</h2>
                 </ion-col>
               </ion-row>
             </ion-col>
@@ -180,7 +230,7 @@
             slot="end"
             color="primary"
             button
-            (click)="deleteIngredient(item)"
+            (click)="deleteUserGroup(group)"
           ></ion-icon>
         </ion-item>
       </ion-list>

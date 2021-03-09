@@ -10,5 +10,5 @@ export class CourseModel {
   ingredients?: Array<IngredientModel>;
   formulas?: Array<FormulaModel>;
   productions?: Array<ProductionModel>;
-  user: UserOwnerModel;
+  user: UserOwnerModel & { shared_groups: string[]};
 }

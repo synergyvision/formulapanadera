@@ -1,0 +1,58 @@
+<ion-item
+  [detail]="clickable"
+  [button]="true"
+  class="course-item"
+  [ngClass]="{ 'background-gray': even, 'background-selected': selected }"
+>
+  <ion-row class="course-item-wrapper">
+    <ion-col class="courses-wrapper">
+      <ion-row>
+        <ion-col>
+          <h2 class="courses-name">
+            <app-text-shell
+              animation="bouncing"
+              lines="3"
+              [data]="course.name"
+            ></app-text-shell>
+          </h2>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="course.name !== undefined">
+        <ion-col size="12" class="properties-col">
+          <p class="course-user">
+            {{ course.user.creator.name }}
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="course.name !== undefined">
+        <ion-col size="2" class="properties-col">
+          <p *ngIf="course.productions?.length > 0" class="courses-description">
+              <ion-icon
+                class="properties-icon"
+                [name]="ICONS.production"
+              ></ion-icon
+              >{{ course.productions.length }}
+          </p>
+        </ion-col>
+        <ion-col size="2" class="properties-col">
+          <p *ngIf="course.formulas?.length > 0" class="courses-description">
+            <ion-icon
+              class="properties-icon"
+              [name]="ICONS.formula"
+            ></ion-icon
+            >{{ course.formulas.length }}
+          </p>
+        </ion-col>
+        <ion-col size="2" class="properties-col">
+          <p *ngIf="course.ingredients?.length > 0" class="courses-description">
+            <ion-icon
+              class="properties-icon"
+              [name]="ICONS.ingredient"
+            ></ion-icon
+            >{{ course.ingredients.length }}
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+</ion-item>

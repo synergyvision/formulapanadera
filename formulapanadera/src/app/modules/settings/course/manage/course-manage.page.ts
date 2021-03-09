@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { UserResumeModel } from "src/app/core/models/user.model";
+import { UserGroupModel, UserModel } from "src/app/core/models/user.model";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { CourseModel } from "src/app/core/models/course.model";
@@ -14,6 +14,8 @@ import { LanguageService } from "src/app/core/services/language.service";
 import { FormulaNumberModel, ProductionModel } from "src/app/core/models/production.model";
 import { FormulaPickerModal } from "src/app/shared/modal/formula/formula-picker.modal";
 import { ProductionPickerModal } from "src/app/shared/modal/production/production-picker.modal";
+import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group-picker.modal";
+import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 
 @Component({
   selector: "app-course-manage",
@@ -33,12 +35,13 @@ export class CourseManagePage implements OnInit {
   manageCourseForm: FormGroup;
   update: boolean = false;
 
-  user: UserResumeModel = new UserResumeModel();
+  user: UserModel = new UserModel();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private routerOutlet: IonRouterOutlet,
+    private courseCRUDService: CourseCRUDService,
     private userStorageService: UserStorageService,
     private languageService: LanguageService,
     private loadingController: LoadingController,
@@ -62,6 +65,7 @@ export class CourseManagePage implements OnInit {
           public: false,
           reference: "",
           shared_users: [],
+          shared_groups: [],
           shared_references: [],
           creator: {
             name: this.user.name,
@@ -116,69 +120,63 @@ export class CourseManagePage implements OnInit {
           message: this.languageService.getTerm("loading"),
         });
         await loading.present();
-        // this.courseCRUDService
-        //   .updateCourse(this.course)
-        //   .then(() => {
-        //     this.router.navigateByUrl(
-        //       APP_URL.menu.name +
-        //       "/" +
-        //       APP_URL.menu.routes.formula.main +
-        //       "/" +
-        //       APP_URL.menu.routes.formula.routes.details,
-        //       {
-        //         state: { course: JSON.parse(JSON.stringify(this.course)) },
-        //       }
-        //     );
-        //   })
-        //   .catch(() => {
-        //     this.presentToast(false);
-        //   })
-        //   .finally(async () => {
-        //     await loading.dismiss();
-        //   });
+        this.courseCRUDService
+          .updateCourse(this.course)
+          .then(() => {
+            this.router.navigateByUrl(
+              APP_URL.menu.name +
+              "/" +
+              APP_URL.menu.routes.settings.main +
+              "/" +
+              APP_URL.menu.routes.settings.routes.course.main +
+              "/" +
+              APP_URL.menu.routes.settings.routes.course.routes.details,
+              {
+                state: { course: JSON.parse(JSON.stringify(this.course)) },
+              }
+            );
+          })
+          .catch(() => {
+            this.presentToast(false);
+          })
+          .finally(async () => {
+            await loading.dismiss();
+          });
     } else {
-      this.course.user = {
-        owner: this.user.email,
-        can_clone: this.course.user.can_clone,
-        public: this.course.user.public,
-        reference: "",
-        shared_users: [],
-        shared_references: [],
-        creator: {
-          name: this.user.name,
-          email: this.user.email,
-          date: new Date(),
-        },
-        modifiers: [],
+      this.course.user.owner = this.user.email;
+      this.course.user.creator = {
+        name: this.user.name,
+        email: this.user.email,
+        date: new Date(),
       };
       const loading = await this.loadingController.create({
         cssClass: "app-send-loading",
         message: this.languageService.getTerm("loading"),
       });
       await loading.present();
-      // this.formulaCRUDService
-      //   .createFormula(this.formula)
-      //   .then(() => {
-      //     this.router.navigateByUrl(
-      //       APP_URL.menu.name +
-      //       "/" +
-      //       APP_URL.menu.routes.formula.main +
-      //       "/" +
-      //       APP_URL.menu.routes.formula.routes.details,
-      //       {
-      //         state: { formula: JSON.parse(JSON.stringify(this.formula)) },
-      //       }
-      //     );
-      //   })
-      //   .catch(() => {
-      //     this.presentToast(false);
-      //   })
-      //   .finally(async () => {
-      //     await loading.dismiss();
-      //   });
+      this.courseCRUDService
+        .createCourse(this.course)
+        .then(() => {
+          this.router.navigateByUrl(
+            APP_URL.menu.name +
+            "/" +
+            APP_URL.menu.routes.settings.main +
+            "/" +
+            APP_URL.menu.routes.settings.routes.course.main +
+            "/" +
+            APP_URL.menu.routes.settings.routes.course.routes.details,
+            {
+              state: { course: JSON.parse(JSON.stringify(this.course)) },
+            }
+          );
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
     }
-
-    console.log(this.course)
   }
 
   async presentToast(success: boolean) {
@@ -240,6 +238,12 @@ export class CourseManagePage implements OnInit {
     }
   }
 
+  reorderIngredients(event) {
+    const draggedItem = this.course.ingredients.splice(event.detail.from, 1)[0];
+    this.course.ingredients.splice(event.detail.to, 0, draggedItem);
+    event.detail.complete();  
+  }
+
   deleteIngredient(ingredient: IngredientModel) {
     this.course.ingredients.splice(
       this.course.ingredients.indexOf(ingredient),
@@ -275,6 +279,12 @@ export class CourseManagePage implements OnInit {
     }
   }
 
+  reorderFormulas(event) {
+    const draggedItem = this.course.formulas.splice(event.detail.from, 1)[0];
+    this.course.formulas.splice(event.detail.to, 0, draggedItem);
+    event.detail.complete();  
+  }
+
   deleteFormula(formula: FormulaModel) {
     this.course.formulas.splice(
       this.course.formulas.indexOf(formula),
@@ -300,9 +310,66 @@ export class CourseManagePage implements OnInit {
     }
   }
 
+  reorderProductions(event) {
+    const draggedItem = this.course.productions.splice(event.detail.from, 1)[0];
+    this.course.productions.splice(event.detail.to, 0, draggedItem);
+    event.detail.complete();  
+  }
+
   deleteProduction(production: ProductionModel) {
     this.course.productions.splice(
       this.course.productions.indexOf(production),
+      1
+    );
+  }
+
+  async userGroupsPicker() {
+    let aux_user_groups: UserGroupModel[] = [];
+    if (this.course.user.shared_groups && this.course.user.shared_groups.length > 0) {
+      this.course.user.shared_groups.forEach(group => {
+        this.user.user_groups.forEach(userGroup => {
+          if (userGroup.name == group) {
+            aux_user_groups.push(userGroup)
+          }
+        })
+      })
+    }
+    const modal = await this.modalController.create({
+      component: UserGroupPickerModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        selectedGroups: aux_user_groups
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      let user_groups: UserGroupModel[] = data.user_groups as UserGroupModel[]
+      this.course.user.shared_groups = [];
+      this.course.user.shared_references = [];
+      user_groups.forEach(userGroup => {
+        this.course.user.shared_groups.push(userGroup.name);
+        userGroup.users.forEach(user => {
+          this.course.user.shared_references.push(user.email);
+        })
+      })
+    }
+  }
+
+  deleteUserGroup(userGroup: string) {
+    this.user.user_groups.forEach(group => {
+      if (group.name == userGroup) {
+        group.users.forEach(user => {
+          this.course.user.shared_references.splice(
+            this.course.user.shared_references.indexOf(user.email),
+            1
+          );
+        })
+      }
+    })
+    this.course.user.shared_groups.splice(
+      this.course.user.shared_groups.indexOf(userGroup),
       1
     );
   }

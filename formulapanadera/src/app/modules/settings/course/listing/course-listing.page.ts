@@ -8,12 +8,16 @@ import { map } from "rxjs/operators";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { Router } from "@angular/router";
+import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
+import { CourseModel } from "src/app/core/models/course.model";
+import { CourseService } from "src/app/core/services/course.service";
 
 @Component({
   selector: "app-course-listing",
   templateUrl: "course-listing.page.html",
   styleUrls: [
     "./styles/course-listing.page.scss",
+    "../../../../shared/styles/filter.scss",
     "../../../../shared/styles/note.alert.scss",
     "../../../../shared/styles/confirm.alert.scss",
   ],
@@ -23,23 +27,33 @@ export class CourseListingPage implements OnInit {
   ICONS = ICONS;
 
   searchQuery: string;
-  courses: any[] & ShellModel;
+  courses: CourseModel[] & ShellModel;
 
   user: UserResumeModel = new UserResumeModel();
 
   constructor(
     private router: Router,
+    private courseService: CourseService,
+    private courseCRUDService: CourseCRUDService,
     private userStorageService: UserStorageService,
   ) {}
 
   async ngOnInit() {
     this.searchQuery = "";
     this.searchingState();
-    //this.searchList();
-  }
 
-  ionViewWillEnter() {
-    //this.searchList();
+    this.user = await this.userStorageService.getUser();
+    this.courseCRUDService
+      .getMyCoursesDataSource(this.user.email)
+      .subscribe(async (courses) => {
+        this.searchingState();
+        const promises = courses.map((course)=>this.courseCRUDService.getData(course))
+        await Promise.all(promises)
+        this.courseService.setCourses(
+          courses as CourseModel[] & ShellModel
+        );
+        this.searchList(courses);
+      });
   }
 
   // Navigation
@@ -65,7 +79,7 @@ export class CourseListingPage implements OnInit {
         "/" +
         APP_URL.menu.routes.settings.routes.course.main +
         "/" +
-        APP_URL.menu.routes.settings.routes.course.routes.details,
+        APP_URL.menu.routes.settings.routes.course.routes.management,
         {
           state: { course: JSON.parse(JSON.stringify(course)) },
         }
@@ -75,8 +89,8 @@ export class CourseListingPage implements OnInit {
 
   // Search
 
-  async searchList() {
-    let filteredCourses = JSON.parse(JSON.stringify([]));
+  async searchList(courses: CourseModel[]) {
+    let filteredCourses = JSON.parse(JSON.stringify(courses));
     let filters = {
       query: this.searchQuery,
     };
@@ -109,10 +123,10 @@ export class CourseListingPage implements OnInit {
   }
 
   searchingState() {
-    let searchingShellModel: any[] &
-      ShellModel = [] as any[] & ShellModel;
+    let searchingShellModel: CourseModel[] &
+      ShellModel = [] as CourseModel[] & ShellModel;
     for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push([]);
+      searchingShellModel.push(new CourseModel);
     }
     searchingShellModel.isShell = true;
     this.courses = searchingShellModel;

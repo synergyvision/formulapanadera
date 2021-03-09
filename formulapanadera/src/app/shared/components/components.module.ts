@@ -30,6 +30,7 @@ import { ReferencesComponent } from "./general/references/references.component";
 import { UserItemComponent } from "./user-group/user-item/user-item.component";
 import { FormulaMixingComponent } from "./formula/formula-mixing/formula-mixing.component";
 import { TitleDividerComponent } from "./general/title-divider/title-divider.component";
+import { CourseItemComponent } from "./course/course-item/course-item.component";
 
 @NgModule({
   imports: [
@@ -64,6 +65,7 @@ import { TitleDividerComponent } from "./general/title-divider/title-divider.com
     ReferencesComponent,
     UserItemComponent,
     UserGroupItemComponent,
+    CourseItemComponent,
   ],
   exports: [
     TitleComponent,
@@ -90,6 +92,7 @@ import { TitleDividerComponent } from "./general/title-divider/title-divider.com
     ReferencesComponent,
     UserItemComponent,
     UserGroupItemComponent,
+    CourseItemComponent,
     ShellModule,
   ],
 })

@@ -13,7 +13,56 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
+  <ion-toolbar class="filters-toolbar" mode="ios">
+    <ion-row class="searchbar-row" align-items-center>
+      <ion-col>
+        <ion-searchbar
+          mode="ios"
+          class="items-searchbar"
+          animated
+          [(ngModel)]="searchQuery"
+          (ionChange)="searchList()"
+          placeholder="{{'ingredients.filter.name' | translate}}"
+        ></ion-searchbar>
+      </ion-col>
+      <ion-col class="call-to-action-col">
+        <ion-button
+          fill="clear"
+          color="secondary"
+          class="filters-btn"
+          (click)="showFilters = !showFilters"
+        >
+          <ion-icon slot="icon-only" [name]="ICONS.options"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="course-content">
+  <ion-list
+    lines="none"
+    class="courses-list"
+    *ngIf="courses?.length > 0; else emptyBlock"
+  >
+    <app-course-item
+      *ngFor="let course of courses; index as i"
+      (click)="courseDetails(course)"
+      [course]="course"
+      [clickable]="true"
+      [even]="(i%2==0)"
+    ></app-course-item>
+  </ion-list>
+  <ng-template #emptyBlock>
+    <ion-row class="empty-block">
+      <ion-col class="ion-text-center ion-padding">
+        <h5>
+          {{ 'settings.course.empty' | translate }}<br /><a (click)="createCourse()"
+            >{{ 'settings.course.create' | translate }}</a
+          >
+        </h5>
+      </ion-col>
+    </ion-row>
+  </ng-template>
 </ion-content>

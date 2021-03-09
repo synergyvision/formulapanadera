@@ -101,7 +101,7 @@ export class ProductionCRUDService {
     await this.afs.collection(this.collection).doc(id).set(production);
   }
 
-  private async createFormulas(collection: string, productionData: ProductionModel) {
+  public async createFormulas(collection: string, productionData: ProductionModel) {
     let formulas: FormulaNumberModel[] = JSON.parse(JSON.stringify(productionData.formulas));
     const promises = formulas.map(async formula => {
       let form: FormulaNumberModel = JSON.parse(JSON.stringify(formula));

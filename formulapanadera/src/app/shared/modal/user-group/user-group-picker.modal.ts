@@ -23,7 +23,7 @@ export class UserGroupPickerModal implements OnInit {
 
   searchQuery: string;
 
-  selectedGroups: Array<UserGroupModel>;
+  @Input() selectedGroups: Array<UserGroupModel>;
 
   user_groups: UserGroupModel[] & ShellModel;
 
