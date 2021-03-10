@@ -20,4 +20,118 @@
 </ion-header>
 
 <ion-content class="course-detail-content">
+  <app-title [title]="course.name"></app-title>
+  <ion-row *ngIf="course.description">
+    <ion-col class="detail-col">
+      <app-data-item
+        [title]="'input.description' | translate"
+        [data]="course.description"
+      ></app-data-item>
+    </ion-col>
+  </ion-row>
+
+  <app-divider></app-divider>
+
+  <ion-row>
+    <ion-col class="detail-col">
+      <ion-item class="input-item" lines="full">
+        <ion-label color="primary" class="label">{{'formulas.can_clone' | translate}}</ion-label>
+        <ion-checkbox
+          class="checkbox"
+          color="primary"
+          [ngModel]="course.user.can_clone"
+          [ngModelOptions]="{standalone: true}"
+          slot="start"
+          [disabled]="!(user.email === course.user.owner)"
+          (ngModelChange)="changeCourse($event)"
+        >
+        </ion-checkbox>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <app-divider></app-divider>
+
+  <ion-segment
+    mode="ios"
+    (ionChange)="segmentChanged($event)"
+    [value]="segment"
+    class="segment"
+  >
+    <ion-segment-button *ngIf="course.productions?.length > 0" value="productions">
+      <ion-label>{{'production.name' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button *ngIf="course.formulas?.length > 0" value="formulas">
+      <ion-label>{{'formulas.name' | translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button *ngIf="course.ingredients?.length > 0" value="ingredients">
+      <ion-label>{{'ingredients.name' | translate}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <span *ngIf="segment == 'ingredients'">
+    <ion-list
+      lines="none"
+      class="shared-list"
+    >
+      <app-ingredient-item
+        *ngFor="let ingredient of course.ingredients; index as i"
+        (click)="details('ingredient', ingredient.item)"
+        [ingredient]="ingredient.item"
+        [clickable]="true"
+        [even]="(i%2==0)"
+      >
+      </app-ingredient-item>
+    </ion-list>
+  </span>
+  <span *ngIf="segment == 'formulas'">
+    <ion-list
+    lines="none"
+    class="shared-list"
+  >
+    <app-formula-item
+      *ngFor="let formula of course.formulas; index as i"
+      (click)="details('formula', formula.item)"
+      [formula]="formula.item"
+      [clickable]="true"
+      [even]="(i%2==0)"
+    ></app-formula-item>
+  </ion-list>
+  </span>
+  <span *ngIf="segment == 'productions'">
+    <ion-list
+      lines="none"
+      class="shared-list"
+    >
+      <app-production-item
+        *ngFor="let production of course.productions; index as i"
+        (click)="details('production', production.item)"
+        [production]="production.item"
+        [even]="(i%2==0)"
+      ></app-production-item>
+    </ion-list>
+  </span>
+
+  <app-divider *ngIf="user.email === course.user.owner && course.user.shared_groups?.length > 0"></app-divider>
+
+  <ion-row *ngIf="user.email === course.user.owner && course.user.shared_groups?.length > 0">
+    <ion-col class="detail-col">
+      <app-show-hide-content
+        (click)="showUserGroups = !showUserGroups"
+        [show]="showUserGroups"
+        [title]="'settings.user_groups.users' | translate"
+      ></app-show-hide-content>
+      <ion-list
+        lines="none"
+        class="user-group-list"
+        *ngIf="showUserGroups"
+      >
+        <app-user-group-item
+          *ngFor="let user_group of course.user.shared_groups; index as i"
+          [user_group]="user_group"
+          [even]="(i%2==0)"
+          [clickable]="false"
+        ></app-user-group-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
 </ion-content>

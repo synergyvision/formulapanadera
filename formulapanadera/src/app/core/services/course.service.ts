@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { ShellModel } from "src/app/shared/shell/shell.model";
-import { CourseModel } from "../models/course.model";
+import { CourseModel, OrderedItemModel } from "../models/course.model";
 
 @Injectable()
 export class CourseService {
@@ -17,6 +17,10 @@ export class CourseService {
     return of(this.courses);
   }
 
+  public getMyCourses(): CourseModel[] {
+    return this.courses;
+  }
+
   public clearCourses() {
     this.courses = null;
   }
@@ -24,15 +28,21 @@ export class CourseService {
   // Sort
   sortCourses(courses: CourseModel[]): CourseModel[] & ShellModel {
     return courses.sort(function (a, b) {
-      if (a.name && b.name) {
-        if (a.name.toUpperCase() > b.name.toUpperCase()) {
-          return 1;
-        }
-        if (b.name.toUpperCase() > a.name.toUpperCase()) {
-          return -1;
-        }
+      if (a.name.toUpperCase() > b.name.toUpperCase()) {
+        return 1;
+      } else {
+        return -1;
       }
-      return 0;
     }) as CourseModel[] & ShellModel
+  }
+
+  orderItems(items: OrderedItemModel[]): OrderedItemModel[] {
+    return items.sort(function (a, b) {
+      if (a.order > b.order) {
+        return 1;
+      } else{
+        return -1;
+      }
+    }) as OrderedItemModel[]
   }
 }

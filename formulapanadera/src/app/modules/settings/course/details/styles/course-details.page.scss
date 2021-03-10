@@ -15,6 +15,38 @@ ion-back-button {
   height: 0;
 }
 
+ion-segment-button {
+  font-size: 14px;
+}
+
 .course-detail-content {
   --background: var(--page-background);
+
+  .segment {
+    padding: 5px var(--page-margin);
+    border-radius: 0px;
+  }
+
+  .detail-col {
+    padding: 0;
+    background: white;
+  }
+
+  .inputs-list {
+    padding: 0;
+  }
+
+  .input-item {
+    --padding-start: var(--page-margin);
+
+    .label {
+      opacity: 1 !important;
+      color: var(--ion-color-medium);
+    }
+
+    .checkbox {
+      opacity: 1 !important;
+      margin-right: var(--page-margin);
+    }
+  }
 }

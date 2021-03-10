@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 
 import { ProductionModel } from "../../models/production.model";
 import { COLLECTIONS } from "src/app/config/firebase";
-import { CourseModel } from "../../models/course.model";
+import { CourseModel, OrderedItemModel } from "../../models/course.model";
 import { FormulaModel } from "../../models/formula.model";
 import { IngredientModel } from "../../models/ingredient.model";
 import { FormulaCRUDService } from "./formula.service";
@@ -48,11 +48,11 @@ export class CourseCRUDService {
   public async getData(course: CourseModel, collection = this.collection) {
     if (!course.productions || course.productions.length == 0) {
       course.productions = [];
-      const docs = await this.afs.collection<ProductionModel>(`${collection}/${course.id}/${COLLECTIONS.production}`).ref.get();
+      const docs = await this.afs.collection<OrderedItemModel>(`${collection}/${course.id}/${COLLECTIONS.production}`).ref.get();
       const promises = docs.docs.map(async doc => {
         if (doc.exists) {
-          let production: ProductionModel = doc.data() as ProductionModel;
-          await this.productionCRUDService.getFormulas(production, `${collection}/${course.id}/${COLLECTIONS.production}`);
+          let production: OrderedItemModel = doc.data() as OrderedItemModel;
+          await this.productionCRUDService.getFormulas(production.item as ProductionModel, `${collection}/${course.id}/${COLLECTIONS.production}`);
           course.productions.push(production)
         }
       })
@@ -60,11 +60,11 @@ export class CourseCRUDService {
     }
     if (!course.formulas || course.formulas.length == 0) {
       course.formulas = [];
-      const docs = await this.afs.collection<FormulaModel>(`${collection}/${course.id}/${COLLECTIONS.formula}`).ref.get();
+      const docs = await this.afs.collection<OrderedItemModel>(`${collection}/${course.id}/${COLLECTIONS.formula}`).ref.get();
       const promises = docs.docs.map(async doc => {
         if (doc.exists) {
-          let formula: FormulaModel = doc.data() as FormulaModel;
-          await this.formulaCRUDService.getIngredients(formula, `${collection}/${course.id}/${COLLECTIONS.formula}`);
+          let formula: OrderedItemModel = doc.data() as OrderedItemModel;
+          await this.formulaCRUDService.getIngredients(formula.item as FormulaModel, `${collection}/${course.id}/${COLLECTIONS.formula}`);
           course.formulas.push(formula)
         }
       })
@@ -72,11 +72,11 @@ export class CourseCRUDService {
     }
     if (!course.ingredients || course.ingredients.length == 0) {
       course.ingredients = [];
-      const docs = await this.afs.collection<IngredientModel>(`${collection}/${course.id}/${COLLECTIONS.ingredients}`).ref.get();
+      const docs = await this.afs.collection<OrderedItemModel>(`${collection}/${course.id}/${COLLECTIONS.ingredients}`).ref.get();
       const promises = docs.docs.map(async doc => {
         if (doc.exists) {
-          let ingredient: IngredientModel = doc.data() as IngredientModel;
-          await this.ingredientCRUDService.getSubIngredients(ingredient, `${collection}/${course.id}/${COLLECTIONS.ingredients}`);
+          let ingredient: OrderedItemModel = doc.data() as OrderedItemModel;
+          await this.ingredientCRUDService.getSubIngredients(ingredient.item as IngredientModel, `${collection}/${course.id}/${COLLECTIONS.ingredients}`);
           course.ingredients.push(ingredient)
         }
       })
@@ -115,22 +115,22 @@ export class CourseCRUDService {
 
   private async createData(collection: string, courseData: CourseModel) {
     if (courseData.productions && courseData.productions.length > 0) {
-      let productions: ProductionModel[] = JSON.parse(JSON.stringify(courseData.productions));
+      let productions: OrderedItemModel[] = JSON.parse(JSON.stringify(courseData.productions));
       const production_promises = productions.map(async production => {
-        let prod: ProductionModel = JSON.parse(JSON.stringify(production));
-        delete prod.formulas;
-        await this.afs.collection(`${collection}/${COLLECTIONS.production}`).doc(production.id).set(prod);
-        await this.productionCRUDService.createFormulas(`${collection}/${COLLECTIONS.production}/${production.id}/${COLLECTIONS.formula}`, production);
+        let prod: OrderedItemModel = JSON.parse(JSON.stringify(production));
+        delete (prod.item as ProductionModel).formulas;
+        await this.afs.collection(`${collection}/${COLLECTIONS.production}`).doc(production.item.id).set(prod);
+        await this.productionCRUDService.createFormulas(`${collection}/${COLLECTIONS.production}/${production.item.id}/${COLLECTIONS.formula}`, production.item as ProductionModel);
       })
       await Promise.all(production_promises)
     }
     if (courseData.formulas && courseData.formulas.length > 0) {
-      let formulas: FormulaModel[] = JSON.parse(JSON.stringify(courseData.formulas));
+      let formulas: OrderedItemModel[] = JSON.parse(JSON.stringify(courseData.formulas));
       const formula_promises = formulas.map(async formula => {
-        let form: FormulaModel = JSON.parse(JSON.stringify(formula));
-        delete form.ingredients;
-        if (form.mixing && form.mixing.length > 0) {
-          form.mixing.forEach(mix => {
+        let form: OrderedItemModel = JSON.parse(JSON.stringify(formula));
+        delete (form.item as FormulaModel).ingredients;
+        if ((form.item as FormulaModel).mixing && (form.item as FormulaModel).mixing.length > 0) {
+          (form.item as FormulaModel).mixing.forEach(mix => {
             mix.mixing_order.forEach(step => {
               step.ingredients.forEach(ing => {
                 if (ing.ingredient.formula) {
@@ -141,20 +141,20 @@ export class CourseCRUDService {
             })
           })
         }
-        await this.afs.collection(`${collection}/${COLLECTIONS.formula}`).doc(formula.id).set(form);
-        await this.formulaCRUDService.createIngredients(`${collection}/${COLLECTIONS.formula}/${formula.id}/${COLLECTIONS.ingredients}`, formula);
+        await this.afs.collection(`${collection}/${COLLECTIONS.formula}`).doc(formula.item.id).set(form);
+        await this.formulaCRUDService.createIngredients(`${collection}/${COLLECTIONS.formula}/${formula.item.id}/${COLLECTIONS.ingredients}`, formula.item as FormulaModel);
       })
       await Promise.all(formula_promises)
     }
     if (courseData.ingredients && courseData.ingredients.length > 0) {
-      let ingredients: IngredientModel[] = JSON.parse(JSON.stringify(courseData.ingredients));
+      let ingredients: OrderedItemModel[] = JSON.parse(JSON.stringify(courseData.ingredients));
       const ingredient_promises = ingredients.map(async ingredient => {
-        let ing: IngredientModel = JSON.parse(JSON.stringify(ingredient))
-        if (ingredient.formula) {
-          delete ing.formula.ingredients;
+        let ing: OrderedItemModel = JSON.parse(JSON.stringify(ingredient))
+        if ((ingredient.item as IngredientModel).formula) {
+          delete (ing.item as IngredientModel).formula.ingredients;
         }
-        await this.afs.collection(`${collection}/${COLLECTIONS.ingredients}`).doc(ingredient.id).set(ing);
-        await this.ingredientCRUDService.createSubIngredient(`${collection}/${COLLECTIONS.ingredients}`, ingredient.id, ingredient);
+        await this.afs.collection(`${collection}/${COLLECTIONS.ingredients}`).doc(ingredient.item.id).set(ing);
+        await this.ingredientCRUDService.createSubIngredient(`${collection}/${COLLECTIONS.ingredients}`, ingredient.item.id, ingredient.item as IngredientModel);
       })
       await Promise.all(ingredient_promises)
     }
@@ -181,24 +181,24 @@ export class CourseCRUDService {
     if (courseData.productions && courseData.productions.length > 0) {
       const promises = courseData.productions.map(async production => {
         let subcollection = `${collection}/${courseData.id}/${COLLECTIONS.production}`;
-        await this.productionCRUDService.deleteFormulas(production, subcollection);
-        await this.afs.collection(subcollection).doc(production.id).delete();
+        await this.productionCRUDService.deleteFormulas(production.item as ProductionModel, subcollection);
+        await this.afs.collection(subcollection).doc(production.item.id).delete();
       })
       await Promise.all(promises)
     }
     if (courseData.formulas && courseData.formulas.length > 0) {
       const promises = courseData.formulas.map(async formula => {
         let subcollection = `${collection}/${courseData.id}/${COLLECTIONS.formula}`;
-        await this.formulaCRUDService.deleteIngredients(formula, subcollection);
-        await this.afs.collection(subcollection).doc(formula.id).delete();
+        await this.formulaCRUDService.deleteIngredients(formula.item as FormulaModel, subcollection);
+        await this.afs.collection(subcollection).doc(formula.item.id).delete();
       })
       await Promise.all(promises)
     }
     if (courseData.ingredients && courseData.ingredients.length > 0) {
       const promises = courseData.ingredients.map(async ingredient => {
         let subcollection = `${collection}/${courseData.id}/${COLLECTIONS.ingredients}`;
-        await this.ingredientCRUDService.deleteSubIngredient(ingredient, subcollection);
-        await this.afs.collection(subcollection).doc(ingredient.id).delete();
+        await this.ingredientCRUDService.deleteSubIngredient(ingredient.item as IngredientModel, subcollection);
+        await this.afs.collection(subcollection).doc(ingredient.item.id).delete();
       })
       await Promise.all(promises)
     }

@@ -52,7 +52,7 @@ export class CourseListingPage implements OnInit {
         this.courseService.setCourses(
           courses as CourseModel[] & ShellModel
         );
-        this.searchList(courses);
+        this.searchList();
       });
   }
 
@@ -70,7 +70,7 @@ export class CourseListingPage implements OnInit {
     );
   }
 
-  courseDetails(course: any) {
+  courseDetails(course: CourseModel) {
     if (course) {
       this.router.navigateByUrl(
         APP_URL.menu.name +
@@ -79,7 +79,7 @@ export class CourseListingPage implements OnInit {
         "/" +
         APP_URL.menu.routes.settings.routes.course.main +
         "/" +
-        APP_URL.menu.routes.settings.routes.course.routes.management,
+        APP_URL.menu.routes.settings.routes.course.routes.details,
         {
           state: { course: JSON.parse(JSON.stringify(course)) },
         }
@@ -89,8 +89,8 @@ export class CourseListingPage implements OnInit {
 
   // Search
 
-  async searchList(courses: CourseModel[]) {
-    let filteredCourses = JSON.parse(JSON.stringify(courses));
+  async searchList() {
+    let filteredCourses = JSON.parse(JSON.stringify(this.courseService.getMyCourses()));
     let filters = {
       query: this.searchQuery,
     };

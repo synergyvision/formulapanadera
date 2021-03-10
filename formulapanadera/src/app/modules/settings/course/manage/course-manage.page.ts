@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { UserGroupModel, UserModel } from "src/app/core/models/user.model";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
-import { CourseModel } from "src/app/core/models/course.model";
+import { CourseModel, OrderedItemModel } from "src/app/core/models/course.model";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
@@ -16,6 +16,7 @@ import { FormulaPickerModal } from "src/app/shared/modal/formula/formula-picker.
 import { ProductionPickerModal } from "src/app/shared/modal/production/production-picker.modal";
 import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group-picker.modal";
 import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
+import { CourseService } from "src/app/core/services/course.service";
 
 @Component({
   selector: "app-course-manage",
@@ -41,6 +42,7 @@ export class CourseManagePage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private routerOutlet: IonRouterOutlet,
+    private courseService: CourseService,
     private courseCRUDService: CourseCRUDService,
     private userStorageService: UserStorageService,
     private languageService: LanguageService,
@@ -89,16 +91,19 @@ export class CourseManagePage implements OnInit {
           state.course.ingredients.forEach((ingredient) => {
             this.course.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
           });
+          this.course.ingredients = this.courseService.orderItems(this.course.ingredients);
         }
         if (state.course.formulas && state.course.formulas.length > 0) {
           state.course.formulas.forEach((formula) => {
             this.course.formulas.push(JSON.parse(JSON.stringify(formula)));
           });
+          this.course.formulas = this.courseService.orderItems(this.course.formulas);
         }
         if (state.course.productions && state.course.productions.length > 0) {
           state.course.productions.forEach((production) => {
             this.course.productions.push(JSON.parse(JSON.stringify(production)));
           });
+          this.course.productions = this.courseService.orderItems(this.course.productions);
         }
       }
       this.user = await this.userStorageService.getUser();
@@ -108,6 +113,8 @@ export class CourseManagePage implements OnInit {
   async sendCourse() {
     this.course.name = this.manageCourseForm.value.name;
     this.course.description = this.manageCourseForm.value.description;
+
+    this.saveOrder();
     
     if (this.update) {
       this.course.user.modifiers.push({
@@ -179,6 +186,24 @@ export class CourseManagePage implements OnInit {
     }
   }
 
+  saveOrder() {
+    if (this.course.productions?.length > 0) {
+      this.course.productions.forEach((production, index) => {
+        production.order = index
+      })
+    }
+    if (this.course.formulas?.length > 0) {
+      this.course.formulas.forEach((formula, index) => {
+        formula.order = index
+      })
+    }
+    if (this.course.ingredients?.length > 0) {
+      this.course.ingredients.forEach((ingredient, index) => {
+        ingredient.order = index
+      })
+    }
+  }
+
   async presentToast(success: boolean) {
     const toast = await this.toastController.create({
       message: success
@@ -216,7 +241,7 @@ export class CourseManagePage implements OnInit {
     let aux_ingredients: IngredientPercentageModel[] = [];
     ingredients.forEach(ing => {
       aux_ingredients.push({
-        ingredient: ing,
+        ingredient: ing.item as IngredientModel,
         percentage: 0
       })
     })
@@ -232,8 +257,8 @@ export class CourseManagePage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
       this.course.ingredients = [];
-      data.ingredients.forEach(ing => {
-        this.course.ingredients.push(ing.ingredient)
+      data.ingredients.forEach((ing: IngredientPercentageModel, index: number) => {
+        this.course.ingredients.push({ order: index, item: ing.ingredient })
       })
     }
   }
@@ -244,7 +269,7 @@ export class CourseManagePage implements OnInit {
     event.detail.complete();  
   }
 
-  deleteIngredient(ingredient: IngredientModel) {
+  deleteIngredient(ingredient: OrderedItemModel) {
     this.course.ingredients.splice(
       this.course.ingredients.indexOf(ingredient),
       1
@@ -256,7 +281,7 @@ export class CourseManagePage implements OnInit {
     let aux_formulas: FormulaNumberModel[] = [];
     formulas.forEach(formula => {
       aux_formulas.push({
-        formula: formula,
+        formula: formula.item as FormulaModel,
         number: 0
       })
     })
@@ -273,8 +298,8 @@ export class CourseManagePage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
       this.course.formulas = [];
-      data.formulas.forEach(formula => {
-        this.course.formulas.push(formula.formula)
+      data.formulas.forEach((formula: FormulaNumberModel, index: number) => {
+        this.course.formulas.push({ order: index, item: formula.formula })
       })
     }
   }
@@ -285,7 +310,7 @@ export class CourseManagePage implements OnInit {
     event.detail.complete();  
   }
 
-  deleteFormula(formula: FormulaModel) {
+  deleteFormula(formula: OrderedItemModel) {
     this.course.formulas.splice(
       this.course.formulas.indexOf(formula),
       1
@@ -294,6 +319,10 @@ export class CourseManagePage implements OnInit {
 
   async productionPicker() {
     let productions = this.course.productions ? this.course.productions : [];
+    let aux_productions: ProductionModel[] = [];
+    productions.forEach(production => {
+      aux_productions.push(production.item as ProductionModel)
+    })
     const modal = await this.modalController.create({
       component: ProductionPickerModal,
       swipeToClose: true,
@@ -306,7 +335,10 @@ export class CourseManagePage implements OnInit {
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
-      this.course.productions = data.productions;
+      this.course.productions = [];
+      data.productions.forEach((production: ProductionModel, index: number) => {
+        this.course.productions.push({ order: index, item: production })
+      })
     }
   }
 
@@ -316,7 +348,7 @@ export class CourseManagePage implements OnInit {
     event.detail.complete();  
   }
 
-  deleteProduction(production: ProductionModel) {
+  deleteProduction(production: OrderedItemModel) {
     this.course.productions.splice(
       this.course.productions.indexOf(production),
       1
@@ -324,16 +356,7 @@ export class CourseManagePage implements OnInit {
   }
 
   async userGroupsPicker() {
-    let aux_user_groups: UserGroupModel[] = [];
-    if (this.course.user.shared_groups && this.course.user.shared_groups.length > 0) {
-      this.course.user.shared_groups.forEach(group => {
-        this.user.user_groups.forEach(userGroup => {
-          if (userGroup.name == group) {
-            aux_user_groups.push(userGroup)
-          }
-        })
-      })
-    }
+    let aux_user_groups: UserGroupModel[] = this.course.user.shared_groups ? this.course.user.shared_groups : [];
     const modal = await this.modalController.create({
       component: UserGroupPickerModal,
       swipeToClose: true,
@@ -346,10 +369,9 @@ export class CourseManagePage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
       let user_groups: UserGroupModel[] = data.user_groups as UserGroupModel[]
-      this.course.user.shared_groups = [];
+      this.course.user.shared_groups = user_groups;
       this.course.user.shared_references = [];
-      user_groups.forEach(userGroup => {
-        this.course.user.shared_groups.push(userGroup.name);
+      this.course.user.shared_groups.forEach(userGroup => {
         userGroup.users.forEach(user => {
           this.course.user.shared_references.push(user.email);
         })
@@ -357,9 +379,9 @@ export class CourseManagePage implements OnInit {
     }
   }
 
-  deleteUserGroup(userGroup: string) {
+  deleteUserGroup(userGroup: UserGroupModel) {
     this.user.user_groups.forEach(group => {
-      if (group.name == userGroup) {
+      if (group.name == userGroup.name) {
         group.users.forEach(user => {
           this.course.user.shared_references.splice(
             this.course.user.shared_references.indexOf(user.email),
