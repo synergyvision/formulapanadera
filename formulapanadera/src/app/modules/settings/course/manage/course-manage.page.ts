@@ -189,17 +189,20 @@ export class CourseManagePage implements OnInit {
   saveOrder() {
     if (this.course.productions?.length > 0) {
       this.course.productions.forEach((production, index) => {
-        production.order = index
+        production.order = index;
+        production.item.user.can_clone = this.course.user.can_clone;
       })
     }
     if (this.course.formulas?.length > 0) {
       this.course.formulas.forEach((formula, index) => {
-        formula.order = index
+        formula.order = index;
+        formula.item.user.can_clone = this.course.user.can_clone;
       })
     }
     if (this.course.ingredients?.length > 0) {
       this.course.ingredients.forEach((ingredient, index) => {
-        ingredient.order = index
+        ingredient.order = index;
+        ingredient.item.user.can_clone = this.course.user.can_clone;
       })
     }
   }
@@ -223,7 +226,7 @@ export class CourseManagePage implements OnInit {
     toast.present();
   }
 
-  dontSubmitCourse(): boolean{
+  dontSubmitCourse(): boolean {
     return (
       !this.manageCourseForm.valid ||
       (
@@ -328,7 +331,7 @@ export class CourseManagePage implements OnInit {
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
       componentProps: {
-        selectedProductions: productions,
+        selectedProductions: aux_productions,
         forProduction: true,
       },
     });

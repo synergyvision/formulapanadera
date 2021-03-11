@@ -49,7 +49,7 @@ export class CourseListingPage implements OnInit {
         this.searchingState();
         const promises = courses.map((course)=>this.courseCRUDService.getData(course))
         await Promise.all(promises)
-        this.courseService.setCourses(
+        this.courseService.setMyCourses(
           courses as CourseModel[] & ShellModel
         );
         this.searchList();

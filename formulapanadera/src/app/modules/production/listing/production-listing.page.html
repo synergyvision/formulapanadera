@@ -105,18 +105,38 @@
       <ion-label>{{'formulas.share.public' | translate}}</ion-label>
     </ion-segment-button>
   </ion-segment>
-  <ion-list
-    lines="none"
-    class="productions-list"
-    *ngIf="productions?.length > 0; else emptyBlock"
-  >
-    <app-production-item
-      *ngFor="let production of productions; index as i"
-      (click)="productionDetails(production)"
-      [production]="production"
-      [even]="(i%2==0)"
-    ></app-production-item>
-  </ion-list>
+  <span *ngIf="productions?.length > 0 || (courses?.length > 0 && segment == 'shared'); else emptyBlock">
+    <ion-list
+      lines="none"
+      class="productions-list"
+      *ngIf="courses?.length > 0 && segment == 'shared'"
+    >
+      <span *ngFor="let course of courses">
+        <app-title-divider
+          [title]="course.name"
+          (click)="courseDetails(course)"
+        ></app-title-divider>
+        <app-production-item
+          *ngFor="let production of course.productions; index as i"
+          (click)="productionDetails(production.item)"
+          [production]="production.item"
+          [even]="(i%2==0)"
+        ></app-production-item>
+      </span>
+    </ion-list>
+    <ion-list
+      lines="none"
+      class="productions-list"
+      *ngIf="productions?.length > 0"
+    >
+      <app-production-item
+        *ngFor="let production of productions; index as i"
+        (click)="productionDetails(production)"
+        [production]="production"
+        [even]="(i%2==0)"
+      ></app-production-item>
+    </ion-list>
+  </span>
   <ng-template #emptyBlock>
     <ion-row class="empty-block">
       <ion-col class="ion-text-center ion-padding">

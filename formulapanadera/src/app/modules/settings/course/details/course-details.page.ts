@@ -65,7 +65,8 @@ export class CourseDetailsPage implements OnInit {
   }
 
   async changeCourse(value: any) {
-    this.course.user.can_clone = value
+    this.course.user.can_clone = value;
+    this.setPermissions();
     const loading = await this.loadingController.create({
       cssClass: "app-send-loading",
       message: this.languageService.getTerm("loading"),
@@ -80,6 +81,24 @@ export class CourseDetailsPage implements OnInit {
       .finally(async () => {
         await loading.dismiss();
       });
+  }
+
+  setPermissions() {
+    if (this.course.productions?.length > 0) {
+      this.course.productions.forEach((production) => {
+        production.item.user.can_clone = this.course.user.can_clone;
+      })
+    }
+    if (this.course.formulas?.length > 0) {
+      this.course.formulas.forEach((formula) => {
+        formula.item.user.can_clone = this.course.user.can_clone;
+      })
+    }
+    if (this.course.ingredients?.length > 0) {
+      this.course.ingredients.forEach((ingredient) => {
+        ingredient.item.user.can_clone = this.course.user.can_clone;
+      })
+    }
   }
 
   segmentChanged(ev: any) {

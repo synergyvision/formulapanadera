@@ -11,6 +11,9 @@ import { APP_URL, CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { CourseModel } from "src/app/core/models/course.model";
+import { CourseService } from "src/app/core/services/course.service";
+import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 
 @Component({
   selector: "app-ingredient-listing",
@@ -38,12 +41,16 @@ export class IngredientListingPage implements OnInit, OnDestroy {
 
   user_email: string;
 
+  courses: CourseModel[];
+
   @HostBinding("class.is-shell") get isShell() {
     return this.ingredients && this.ingredients.isShell ? true : false;
   }
   constructor(
     private ingredientService: IngredientService,
     private ingredientCRUDService: IngredientCRUDService,
+    private courseService: CourseService,
+    private courseCRUDService: CourseCRUDService,
     private router: Router,
     private userStorageService: UserStorageService
   ) {}
@@ -78,6 +85,17 @@ export class IngredientListingPage implements OnInit, OnDestroy {
         );
         this.searchList();
       });
+    this.courseService.getSharedCourses().subscribe(async courses => {
+      const promises = courses.map((course)=>this.courseCRUDService.getData(course))
+      await Promise.all(promises)
+      this.courses = [];
+      courses.forEach(course => {
+        if (course.ingredients?.length > 0) {
+          course.ingredients = this.courseService.orderItems(course.ingredients);
+          this.courses.push(course);
+        }
+      })
+    })
   }
 
   ngOnDestroy(): void {
@@ -182,6 +200,23 @@ export class IngredientListingPage implements OnInit, OnDestroy {
           APP_URL.menu.routes.ingredient.routes.details,
         {
           state: { ingredient: JSON.parse(JSON.stringify(ingredient)) },
+        }
+      );
+    }
+  }
+
+  courseDetails(course: CourseModel) {
+    if (course) {
+      this.router.navigateByUrl(
+        APP_URL.menu.name +
+        "/" +
+        APP_URL.menu.routes.settings.main +
+        "/" +
+        APP_URL.menu.routes.settings.routes.course.main +
+        "/" +
+        APP_URL.menu.routes.settings.routes.course.routes.details,
+        {
+          state: { course: JSON.parse(JSON.stringify(course)) },
         }
       );
     }

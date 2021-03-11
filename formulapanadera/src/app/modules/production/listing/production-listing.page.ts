@@ -6,7 +6,10 @@ import { of } from "rxjs";
 import { map } from "rxjs/operators";
 import { APP_URL, CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
+import { CourseModel } from "src/app/core/models/course.model";
 import { ProductionModel } from "src/app/core/models/production.model";
+import { CourseService } from "src/app/core/services/course.service";
+import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { ProductionService } from "src/app/core/services/production.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
@@ -38,10 +41,14 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
 
   production_in_process: ProductionModel;
 
+  courses: CourseModel[];
+
   constructor(
     private productionService: ProductionService,
     private productionCRUDService: ProductionCRUDService,
     private productionInProcessStorageService: ProductionInProcessStorageService,
+    private courseService: CourseService,
+    private courseCRUDService: CourseCRUDService,
     private router: Router,
     private userStorageService: UserStorageService,
   ) {}
@@ -67,6 +74,17 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
         );
         this.searchList();
       });
+    this.courseService.getSharedCourses().subscribe(async courses => {
+      const promises = courses.map((course)=>this.courseCRUDService.getData(course))
+      await Promise.all(promises)
+      this.courses = [];
+      courses.forEach(course => {
+        if (course.productions?.length > 0) {
+          course.productions = this.courseService.orderItems(course.productions);
+          this.courses.push(course);
+        }
+      })
+    })
   }
 
   async ionViewWillEnter() {
@@ -151,6 +169,23 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
           APP_URL.menu.routes.production.routes.details,
         {
           state: { production: JSON.parse(JSON.stringify(production)) },
+        }
+      );
+    }
+  }
+
+  courseDetails(course: CourseModel) {
+    if (course) {
+      this.router.navigateByUrl(
+        APP_URL.menu.name +
+        "/" +
+        APP_URL.menu.routes.settings.main +
+        "/" +
+        APP_URL.menu.routes.settings.routes.course.main +
+        "/" +
+        APP_URL.menu.routes.settings.routes.course.routes.details,
+        {
+          state: { course: JSON.parse(JSON.stringify(course)) },
         }
       );
     }

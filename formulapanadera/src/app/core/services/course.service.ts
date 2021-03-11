@@ -1,24 +1,29 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { CourseModel, OrderedItemModel } from "../models/course.model";
 
 @Injectable()
 export class CourseService {
   private courses: CourseModel[] & ShellModel;
+  private shared_courses: BehaviorSubject<CourseModel[]> = new BehaviorSubject<CourseModel[]>([]);
 
   constructor() {}
   
-  public setCourses(courses: CourseModel[] & ShellModel) {
+  public setMyCourses(courses: CourseModel[] & ShellModel) {
     this.courses = courses;
   }
 
-  public getCourses(): Observable<CourseModel[]> {
-    return of(this.courses);
+  public setSharedCourses(courses: CourseModel[]) {
+    this.shared_courses.next(courses);
   }
 
   public getMyCourses(): CourseModel[] {
     return this.courses;
+  }
+
+  public getSharedCourses(): Observable<CourseModel[]> {
+    return this.shared_courses.asObservable();
   }
 
   public clearCourses() {
