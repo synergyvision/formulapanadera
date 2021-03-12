@@ -6,7 +6,7 @@ import { CourseModel, OrderedItemModel } from "../models/course.model";
 @Injectable()
 export class CourseService {
   private courses: CourseModel[] & ShellModel;
-  private shared_courses: BehaviorSubject<CourseModel[]> = new BehaviorSubject<CourseModel[]>([]);
+  private shared_courses: BehaviorSubject<CourseModel[]> = new BehaviorSubject<CourseModel[]>(undefined);
 
   constructor() {}
   
@@ -27,7 +27,8 @@ export class CourseService {
   }
 
   public clearCourses() {
-    this.courses = null;
+    this.courses = undefined;
+    this.shared_courses = new BehaviorSubject<CourseModel[]>(undefined);
   }
 
   // Sort

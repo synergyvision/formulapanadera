@@ -90,36 +90,39 @@ export class CourseListingPage implements OnInit {
   // Search
 
   async searchList() {
-    let filteredCourses = JSON.parse(JSON.stringify(this.courseService.getMyCourses()));
-    let filters = {
-      query: this.searchQuery,
-    };
+    let courses = this.courseService.getMyCourses();
+    if (courses) {
+      let filteredCourses = JSON.parse(JSON.stringify(courses));
+      let filters = {
+        query: this.searchQuery,
+      };
     
-    const dataSourceWithShellObservable = DataStore.AppendShell(
-      of(filteredCourses),
-      this.searchingState()
-    );
+      const dataSourceWithShellObservable = DataStore.AppendShell(
+        of(filteredCourses),
+        this.searchingState()
+      );
 
-    let updateSearchObservable = dataSourceWithShellObservable.pipe(
-      map((filteredItems) => {
-        // Just filter items by name if there is a search query and they are not shell values
-        if (filters.query !== "" && !filteredItems.isShell) {
-          const queryFilteredItems = filteredItems.filter((item) =>
-            item.name.toLowerCase().includes(filters.query.toLowerCase())
-          );
-          // While filtering we strip out the isShell property, add it again
-          return Object.assign(queryFilteredItems, {
-            isShell: filteredItems.isShell,
-          });
-        } else {
-          return filteredItems;
-        }
-      })
-    );
+      let updateSearchObservable = dataSourceWithShellObservable.pipe(
+        map((filteredItems) => {
+          // Just filter items by name if there is a search query and they are not shell values
+          if (filters.query !== "" && !filteredItems.isShell) {
+            const queryFilteredItems = filteredItems.filter((item) =>
+              item.name.toLowerCase().includes(filters.query.toLowerCase())
+            );
+            // While filtering we strip out the isShell property, add it again
+            return Object.assign(queryFilteredItems, {
+              isShell: filteredItems.isShell,
+            });
+          } else {
+            return filteredItems;
+          }
+        })
+      );
 
-    updateSearchObservable.subscribe((value) => {
-      this.courses = value;
-    });
+      updateSearchObservable.subscribe((value) => {
+        this.courses = value;
+      });
+    }
   }
 
   searchingState() {

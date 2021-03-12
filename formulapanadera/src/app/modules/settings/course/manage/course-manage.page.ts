@@ -4,10 +4,10 @@ import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { CourseModel, OrderedItemModel } from "src/app/core/models/course.model";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { IngredientModel } from "src/app/core/models/ingredient.model";
-import { IonRouterOutlet, LoadingController, ModalController, ToastController } from "@ionic/angular";
+import { IonRouterOutlet, LoadingController, ModalController, ToastController, ViewWillEnter } from "@ionic/angular";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { FormulaModel, IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { LanguageService } from "src/app/core/services/language.service";
@@ -27,7 +27,7 @@ import { CourseService } from "src/app/core/services/course.service";
     "../../../../shared/styles/confirm.alert.scss",
   ],
 })
-export class CourseManagePage implements OnInit {
+export class CourseManagePage implements OnInit, ViewWillEnter {
   APP_URL = APP_URL;
   ICONS = ICONS;
 
@@ -39,7 +39,6 @@ export class CourseManagePage implements OnInit {
   user: UserModel = new UserModel();
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     private routerOutlet: IonRouterOutlet,
     private courseService: CourseService,
@@ -52,62 +51,68 @@ export class CourseManagePage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.route.queryParams.subscribe(async () => {
-      let state = this.router.getCurrentNavigation().extras.state;
-      this.course = new CourseModel();
-      this.update = false;
-      if (state == undefined) {
-        this.manageCourseForm = new FormGroup({
-          name: new FormControl(null, Validators.required),
-          description: new FormControl(null, null),
+    let state = this.router.getCurrentNavigation().extras.state;
+    this.course = new CourseModel();
+    this.update = false;
+    if (state == undefined) {
+      this.manageCourseForm = new FormGroup({
+        name: new FormControl(null, Validators.required),
+        description: new FormControl(null, null),
+      });
+      this.course.user = {
+        owner: this.user.email,
+        can_clone: false,
+        public: false,
+        reference: "",
+        shared_users: [],
+        shared_groups: [],
+        shared_references: [],
+        creator: {
+          name: this.user.name,
+          email: this.user.email,
+          date: new Date(),
+        },
+        modifiers: [],
+      };
+    } else {
+      this.update = true;
+      this.manageCourseForm = new FormGroup({
+        name: new FormControl(state.course.name, Validators.required),
+        description: new FormControl(state.course.description, null)
+      });
+      this.course.id = state.course.id;
+      this.course.user = state.course.user;
+      this.course.ingredients = [];
+      this.course.formulas = [];
+      this.course.productions = [];
+      if (state.course.ingredients && state.course.ingredients.length > 0) {
+        state.course.ingredients.forEach((ingredient) => {
+          this.course.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
         });
-        this.course.user = {
-          owner: this.user.email,
-          can_clone: false,
-          public: false,
-          reference: "",
-          shared_users: [],
-          shared_groups: [],
-          shared_references: [],
-          creator: {
-            name: this.user.name,
-            email: this.user.email,
-            date: new Date(),
-          },
-          modifiers: [],
-        };
-      } else {
-        this.update = true;
-        this.manageCourseForm = new FormGroup({
-          name: new FormControl(state.course.name, Validators.required),
-          description: new FormControl(state.course.description, null)
-        });
-        this.course.id = state.course.id;
-        this.course.user = state.course.user;
-        this.course.ingredients = [];
-        this.course.formulas = [];
-        this.course.productions = [];
-        if (state.course.ingredients && state.course.ingredients.length > 0) {
-          state.course.ingredients.forEach((ingredient) => {
-            this.course.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
-          });
-          this.course.ingredients = this.courseService.orderItems(this.course.ingredients);
-        }
-        if (state.course.formulas && state.course.formulas.length > 0) {
-          state.course.formulas.forEach((formula) => {
-            this.course.formulas.push(JSON.parse(JSON.stringify(formula)));
-          });
-          this.course.formulas = this.courseService.orderItems(this.course.formulas);
-        }
-        if (state.course.productions && state.course.productions.length > 0) {
-          state.course.productions.forEach((production) => {
-            this.course.productions.push(JSON.parse(JSON.stringify(production)));
-          });
-          this.course.productions = this.courseService.orderItems(this.course.productions);
-        }
+        this.course.ingredients = this.courseService.orderItems(this.course.ingredients);
       }
-      this.user = await this.userStorageService.getUser();
-    })
+      if (state.course.formulas && state.course.formulas.length > 0) {
+        state.course.formulas.forEach((formula) => {
+          this.course.formulas.push(JSON.parse(JSON.stringify(formula)));
+        });
+        this.course.formulas = this.courseService.orderItems(this.course.formulas);
+      }
+      if (state.course.productions && state.course.productions.length > 0) {
+        state.course.productions.forEach((production) => {
+          this.course.productions.push(JSON.parse(JSON.stringify(production)));
+        });
+        this.course.productions = this.courseService.orderItems(this.course.productions);
+      }
+    }
+    this.user = await this.userStorageService.getUser();
+  }
+
+  ionViewWillEnter() {
+    if (this.course.id) {
+      this.update = true;
+    } else {
+      this.update = false;
+    }
   }
 
   async sendCourse() {
@@ -189,20 +194,20 @@ export class CourseManagePage implements OnInit {
   saveOrder() {
     if (this.course.productions?.length > 0) {
       this.course.productions.forEach((production, index) => {
-        production.order = index;
-        production.item.user.can_clone = this.course.user.can_clone;
+        this.course.productions[index].order = index;
+        this.course.productions[index].item.user.can_clone = this.course.user.can_clone;
       })
     }
     if (this.course.formulas?.length > 0) {
       this.course.formulas.forEach((formula, index) => {
-        formula.order = index;
-        formula.item.user.can_clone = this.course.user.can_clone;
+        this.course.formulas[index].order = index;
+        this.course.formulas[index].item.user.can_clone = this.course.user.can_clone;
       })
     }
     if (this.course.ingredients?.length > 0) {
       this.course.ingredients.forEach((ingredient, index) => {
-        ingredient.order = index;
-        ingredient.item.user.can_clone = this.course.user.can_clone;
+        this.course.ingredients[index].order = index;
+        this.course.ingredients[index].item.user.can_clone = this.course.user.can_clone;
       })
     }
   }
@@ -260,8 +265,8 @@ export class CourseManagePage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
       this.course.ingredients = [];
-      data.ingredients.forEach((ing: IngredientPercentageModel, index: number) => {
-        this.course.ingredients.push({ order: index, item: ing.ingredient })
+      data.ingredients.forEach((ing: IngredientPercentageModel) => {
+        this.course.ingredients.push({ order: 0, item: ing.ingredient })
       })
     }
   }
@@ -301,8 +306,8 @@ export class CourseManagePage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
       this.course.formulas = [];
-      data.formulas.forEach((formula: FormulaNumberModel, index: number) => {
-        this.course.formulas.push({ order: index, item: formula.formula })
+      data.formulas.forEach((formula: FormulaNumberModel) => {
+        this.course.formulas.push({ order: 0, item: formula.formula })
       })
     }
   }
@@ -339,8 +344,8 @@ export class CourseManagePage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
       this.course.productions = [];
-      data.productions.forEach((production: ProductionModel, index: number) => {
-        this.course.productions.push({ order: index, item: production })
+      data.productions.forEach((production: ProductionModel) => {
+        this.course.productions.push({ order: 0, item: production })
       })
     }
   }

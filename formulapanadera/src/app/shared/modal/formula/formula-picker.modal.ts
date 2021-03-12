@@ -35,6 +35,7 @@ export class FormulaPickerModal implements OnInit {
 
   currency = CURRENCY;
   formulas: FormulaModel[] & ShellModel;
+  all_formulas: FormulaModel[] & ShellModel;
 
   segment: string = "mine";
 
@@ -42,7 +43,6 @@ export class FormulaPickerModal implements OnInit {
 
   constructor(
     private formulaService: FormulaService,
-    private formulaCRUDService: FormulaCRUDService,
     public modalController: ModalController,
     private userStorageService: UserStorageService
   ) {}
@@ -60,35 +60,27 @@ export class FormulaPickerModal implements OnInit {
     this.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
-    if (!this.formulaService.getFormulas()) {
-      this.formulaCRUDService
-        .getFormulasDataSource(this.user_email)
-        .subscribe(async (formulas) => {
-          this.searchingState();
-          const promises = formulas.map((form) => this.formulaCRUDService.getIngredients(form));
-          await Promise.all(promises);
-          if (this.forProduction) {
-            let aux: FormulaModel[] = []
-            formulas.forEach(formula => {
-              if (formula.steps && formula.steps.length > 0) {
-                aux.push(formula)
-              }
-            })
-            formulas = aux;
-          }
-          this.formulaService.setFormulas(
-            formulas as FormulaModel[] & ShellModel
-          );
-          this.searchList();
-        });
-    } else {
-      this.searchList();
-    }
+    this.formulaService
+      .getFormulas()
+      .subscribe(async (formulas) => {
+        this.searchingState();
+        if (this.forProduction) {
+          let aux: FormulaModel[] = []
+          formulas.forEach(formula => {
+            if (formula.steps && formula.steps.length > 0) {
+              aux.push(formula)
+            }
+          })
+          formulas = aux;
+        }
+        this.all_formulas = formulas as FormulaModel[] & ShellModel;
+        this.searchList();
+      });
   }
 
   searchList() {
     let filteredFormulas = JSON.parse(
-      JSON.stringify(this.formulaService.getFormulas())
+      JSON.stringify(this.all_formulas ? this.all_formulas : [])
     );
     let filters = {
       hydration: {

@@ -6,7 +6,6 @@ import { map } from "rxjs/operators";
 import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { ProductionModel } from "src/app/core/models/production.model";
-import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { ProductionService } from "src/app/core/services/production.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DataStore } from "../../shell/data-store";
@@ -31,13 +30,13 @@ export class ProductionPickerModal implements OnInit {
 
   currency = CURRENCY;
   productions: ProductionModel[] & ShellModel;
+  all_productions: ProductionModel[] & ShellModel;
 
   segment: string = "mine";
   user_email: string;
 
   constructor(
     private productionService: ProductionService,
-    private productionCRUDService: ProductionCRUDService,
     public modalController: ModalController,
     private userStorageService: UserStorageService
   ) {}
@@ -52,26 +51,18 @@ export class ProductionPickerModal implements OnInit {
     this.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
-    if (!this.productionService.getProductions()) {
-      this.productionCRUDService
-        .getProductionsDataSource(this.user_email)
-        .subscribe(async (productions) => {
-          this.searchingState();
-          const promises = productions.map((prod) => this.productionCRUDService.getFormulas(prod));
-          await Promise.all(promises);
-          this.productionService.setProductions(
-            productions as ProductionModel[] & ShellModel
-          );
-          this.searchList();
-        });
-    } else {
-      this.searchList();
-    }
+    this.productionService
+      .getProductions()
+      .subscribe(async (productions) => {
+        this.searchingState();
+        this.all_productions = productions as ProductionModel[] & ShellModel;
+        this.searchList();
+      });
   }
 
   searchList() {
     let filteredProductions = JSON.parse(
-      JSON.stringify(this.productionService.getProductions())
+      JSON.stringify(this.all_productions ? this.all_productions : [])
     );
     let filters = {
       cost: {

@@ -2,23 +2,24 @@ import { Injectable } from "@angular/core";
 import { IngredientModel } from "../models/ingredient.model";
 
 import { ShellModel } from "src/app/shared/shell/shell.model";
+import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable()
 export class IngredientService {
-  private ingredients: IngredientModel[] & ShellModel;
+  private ingredients: BehaviorSubject<IngredientModel[]> = new BehaviorSubject<IngredientModel[]>(undefined);
 
   constructor() {}
 
   public setIngredients(ingredients: IngredientModel[] & ShellModel) {
-    this.ingredients = ingredients;
+    this.ingredients.next(ingredients);
   }
 
-  public getIngredients() {
-    return this.ingredients;
+  public getIngredients(): Observable<IngredientModel[]> {
+    return this.ingredients.asObservable();
   }
 
   public clearIngredients() {
-    this.ingredients = null;
+    this.ingredients = new BehaviorSubject<IngredientModel[]>(undefined);
   }
 
   /*

@@ -109,6 +109,18 @@
     <ion-list
       lines="none"
       class="productions-list"
+      *ngIf="productions?.length > 0"
+    >
+      <app-production-item
+        *ngFor="let production of productions; index as i"
+        (click)="productionDetails(production)"
+        [production]="production"
+        [even]="(i%2==0)"
+      ></app-production-item>
+    </ion-list>
+    <ion-list
+      lines="none"
+      class="productions-list"
       *ngIf="courses?.length > 0 && segment == 'shared'"
     >
       <span *ngFor="let course of courses">
@@ -123,18 +135,6 @@
           [even]="(i%2==0)"
         ></app-production-item>
       </span>
-    </ion-list>
-    <ion-list
-      lines="none"
-      class="productions-list"
-      *ngIf="productions?.length > 0"
-    >
-      <app-production-item
-        *ngFor="let production of productions; index as i"
-        (click)="productionDetails(production)"
-        [production]="production"
-        [even]="(i%2==0)"
-      ></app-production-item>
     </ion-list>
   </span>
   <ng-template #emptyBlock>

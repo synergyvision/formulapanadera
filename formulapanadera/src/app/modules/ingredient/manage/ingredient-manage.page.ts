@@ -4,6 +4,7 @@ import {
   IonRouterOutlet,
   LoadingController,
   ToastController,
+  ViewWillEnter,
 } from "@ionic/angular";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
 
@@ -32,7 +33,7 @@ import { ReferencesModal } from "src/app/shared/modal/references/references.moda
     "./styles/ingredient-manage.page.scss",
   ],
 })
-export class IngredientManagePage implements OnInit {
+export class IngredientManagePage implements OnInit, ViewWillEnter {
   APP_URL = APP_URL;
   ICONS = ICONS;
 
@@ -47,7 +48,6 @@ export class IngredientManagePage implements OnInit {
 
   constructor(
     private ingredientCRUDService: IngredientCRUDService,
-    private ingredientService: IngredientService,
     private userStorageService: UserStorageService,
     private formulaService: FormulaService,
     private languageService: LanguageService,
@@ -61,62 +61,68 @@ export class IngredientManagePage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.route.queryParams.subscribe(async () => {
-      this.ingredient = new IngredientModel();
-      this.update = false;
-      this.type = "simple";
-      let state = this.router.getCurrentNavigation().extras.state;
-      if (state == undefined) {
-        delete this.ingredient.formula;
-        this.manageIngredientForm = new FormGroup({
-          name: new FormControl("", Validators.required),
-          hydration: new FormControl("", Validators.required),
-          is_flour: new FormControl(false, Validators.required),
-          cost: new FormControl("0", Validators.required),
-        });
-        this.ingredient.user = {
-          owner: this.current_user.email,
-          can_clone: false,
-          public: false,
-          reference: "",
-          shared_users: [],
-          shared_references: [],
-          creator: {
-            name: this.current_user.name,
-            email: this.current_user.email,
-            date: new Date(),
-          },
-          modifiers: [],
-        };
-      } else {
-        this.update = true;
-        this.ingredient = JSON.parse(JSON.stringify(state.ingredient));
-        if (this.ingredient.formula) {
-          this.type = "compound";
-        }
-        this.ingredient.user = state.ingredient.user;
-        this.manageIngredientForm = new FormGroup({
-          name: new FormControl(state.ingredient.name, Validators.required),
-          hydration: new FormControl(
-            state.ingredient.hydration,
-            Validators.required
-          ),
-          is_flour: new FormControl(
-            state.ingredient.is_flour,
-            Validators.required
-          ),
-          cost: new FormControl(state.ingredient.cost, Validators.required),
-        });
-        this.ingredient.references = []
-        if (state.ingredient.references && state.ingredient.references.length > 0) {
-          state.ingredient.references.forEach((reference) => {
-            this.ingredient.references.push(JSON.parse(JSON.stringify(reference)));
-          });
-        }
+    this.ingredient = new IngredientModel();
+    this.update = false;
+    this.type = "simple";
+    let state = this.router.getCurrentNavigation().extras.state;
+    if (state == undefined) {
+      delete this.ingredient.formula;
+      this.manageIngredientForm = new FormGroup({
+        name: new FormControl("", Validators.required),
+        hydration: new FormControl("", Validators.required),
+        is_flour: new FormControl(false, Validators.required),
+        cost: new FormControl("0", Validators.required),
+      });
+      this.ingredient.user = {
+        owner: this.current_user.email,
+        can_clone: false,
+        public: false,
+        reference: "",
+        shared_users: [],
+        shared_references: [],
+        creator: {
+          name: this.current_user.name,
+          email: this.current_user.email,
+          date: new Date(),
+        },
+        modifiers: [],
+      };
+    } else {
+      this.update = true;
+      this.ingredient = JSON.parse(JSON.stringify(state.ingredient));
+      if (this.ingredient.formula) {
+        this.type = "compound";
       }
-      let user = await this.userStorageService.getUser();
-      this.current_user = { name: user.name, email: user.email };
-    });
+      this.ingredient.user = state.ingredient.user;
+      this.manageIngredientForm = new FormGroup({
+        name: new FormControl(state.ingredient.name, Validators.required),
+        hydration: new FormControl(
+          state.ingredient.hydration,
+          Validators.required
+        ),
+        is_flour: new FormControl(
+          state.ingredient.is_flour,
+          Validators.required
+        ),
+        cost: new FormControl(state.ingredient.cost, Validators.required),
+      });
+      this.ingredient.references = []
+      if (state.ingredient.references && state.ingredient.references.length > 0) {
+        state.ingredient.references.forEach((reference) => {
+          this.ingredient.references.push(JSON.parse(JSON.stringify(reference)));
+        });
+      }
+    }
+    let user = await this.userStorageService.getUser();
+    this.current_user = { name: user.name, email: user.email };
+  }
+
+  ionViewWillEnter() {
+    if (this.ingredient.id) {
+      this.update = true;
+    } else {
+      this.update = false;
+    }
   }
 
   async pickIngredient() {
@@ -287,83 +293,67 @@ export class IngredientManagePage implements OnInit {
       }
     }
 
-    let ingredients = this.ingredientService.getIngredients();
-    let ingredient_exists = false;
-    if (ingredients) {
-      ingredients.forEach((ingredient) => {
-        if (ingredient.name == this.ingredient.name) {
-          if (!this.ingredient.id || this.ingredient.id !== ingredient.id) {
-            ingredient_exists = true;
-          }
-        }
-      });
-    }
-    if (ingredient_exists) {
-      loading.dismiss();
-      this.presentToast(false, true);
-    } else {
-      if (!this.update) {
-        this.ingredient.user = {
-          owner: this.current_user.email,
-          can_clone: this.ingredient.user.can_clone,
-          public: this.ingredient.user.public,
-          reference: "",
-          shared_users: [],
-          shared_references: [],
-          creator: {
-            name: this.current_user.name,
-            email: this.current_user.email,
-            date: new Date(),
-          },
-          modifiers: [],
-        };
-        this.ingredientCRUDService
-          .createIngredient(this.ingredient)
-          .then(() => {
-            this.router.navigateByUrl(
-              APP_URL.menu.name +
-                "/" +
-                APP_URL.menu.routes.ingredient.main +
-                "/" +
-                APP_URL.menu.routes.ingredient.routes.details,
-              {
-                state: { ingredient: JSON.parse(JSON.stringify(this.ingredient)) },
-              }
-            );
-          })
-          .catch(() => {
-            this.presentToast(false);
-          })
-          .finally(async () => {
-            await loading.dismiss();
-          });
-      } else {
-        this.ingredient.user.modifiers.push({
+    if (!this.update) {
+      this.ingredient.user = {
+        owner: this.current_user.email,
+        can_clone: this.ingredient.user.can_clone,
+        public: this.ingredient.user.public,
+        reference: "",
+        shared_users: [],
+        shared_references: [],
+        creator: {
           name: this.current_user.name,
           email: this.current_user.email,
           date: new Date(),
+        },
+        modifiers: [],
+      };
+      this.ingredientCRUDService
+        .createIngredient(this.ingredient)
+        .then(() => {
+          this.router.navigateByUrl(
+            APP_URL.menu.name +
+              "/" +
+              APP_URL.menu.routes.ingredient.main +
+              "/" +
+              APP_URL.menu.routes.ingredient.routes.details,
+            {
+              state: { ingredient: JSON.parse(JSON.stringify(this.ingredient)) },
+            }
+          );
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
         });
-        this.ingredientCRUDService
-          .updateIngredient(this.ingredient)
-          .then(() => {
-            this.router.navigateByUrl(
-              APP_URL.menu.name +
-                "/" +
-                APP_URL.menu.routes.ingredient.main +
-                "/" +
-                APP_URL.menu.routes.ingredient.routes.details,
-              {
-                state: { ingredient: JSON.parse(JSON.stringify(this.ingredient)) },
-              }
-            );
-          })
-          .catch(() => {
-            this.presentToast(false);
-          })
-          .finally(async () => {
-            await loading.dismiss();
-          });
-      }
+    } else {
+      this.ingredient.user.modifiers.push({
+        name: this.current_user.name,
+        email: this.current_user.email,
+        date: new Date(),
+      });
+      this.ingredientCRUDService
+        .updateIngredient(this.ingredient)
+        .then(() => {
+          this.router.navigateByUrl(
+            APP_URL.menu.name +
+              "/" +
+              APP_URL.menu.routes.ingredient.main +
+              "/" +
+              APP_URL.menu.routes.ingredient.routes.details,
+            {
+              state: { ingredient: JSON.parse(JSON.stringify(this.ingredient)) },
+            }
+          );
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
     }
   }
 

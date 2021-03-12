@@ -8,23 +8,24 @@ import {
 import { DECIMALS } from "src/app/config/formats";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { OVEN_STEP } from "src/app/config/formula";
+import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable()
 export class FormulaService {
-  private formulas: FormulaModel[] & ShellModel;
+  private formulas: BehaviorSubject<FormulaModel[]> = new BehaviorSubject<FormulaModel[]>(undefined);
 
   constructor() {}
 
   public setFormulas(formulas: FormulaModel[] & ShellModel) {
-    this.formulas = formulas;
+    this.formulas.next(formulas);
   }
 
-  public getFormulas() {
-    return this.formulas;
+  public getFormulas(): Observable<FormulaModel[]> {
+    return this.formulas.asObservable();
   }
 
   public clearFormulas() {
-    this.formulas = null;
+    this.formulas = new BehaviorSubject<FormulaModel[]>(undefined);
   }
 
   /*

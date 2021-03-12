@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ActionSheetController, AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { ActionSheetController, AlertController, LoadingController, ToastController, ViewWillEnter } from '@ionic/angular';
 import { APP_URL } from 'src/app/config/configuration';
 import { ICONS } from 'src/app/config/icons';
 import { UserGroupModel, UserModel, UserResumeModel } from 'src/app/core/models/user.model';
@@ -14,7 +14,7 @@ import { UserStorageService } from 'src/app/core/services/storage/user.service';
   templateUrl: "./user-groups-manage.page.html",
   styleUrls: ["./styles/user-groups-manage.page.scss", "../../../../shared/styles/confirm.alert.scss"],
 })
-export class UserGroupsManagePage implements OnInit {
+export class UserGroupsManagePage implements OnInit, ViewWillEnter {
   ICONS = ICONS;
   APP_URL = APP_URL;
 
@@ -28,7 +28,6 @@ export class UserGroupsManagePage implements OnInit {
   
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private userStorageService: UserStorageService,
     private userCRUDService: UserCRUDService,
     private languageService: LanguageService,
@@ -40,35 +39,41 @@ export class UserGroupsManagePage implements OnInit {
   ){}
 
   async ngOnInit() {
-    this.route.queryParams.subscribe(async () => {
-      let state = this.router.getCurrentNavigation().extras.state;
-      this.user_group = new UserGroupModel();
-      this.user_group.users = [];
+    let state = this.router.getCurrentNavigation().extras.state;
+    this.user_group = new UserGroupModel();
+    this.user_group.users = [];
+    this.update = false;
+    this.original_name = "";
+    if (state == undefined) {
+      this.manageUserGroupForm = new FormGroup({
+        name: new FormControl(null, Validators.required),
+        description: new FormControl(null, null),
+        image_url: new FormControl(null, null),
+      });
+    } else {
+      this.update = true;
+      this.manageUserGroupForm = new FormGroup({
+        name: new FormControl(state.user_group.name, Validators.required),
+        description: new FormControl(state.user_group.description, null),
+        image_url: new FormControl(state.user_group.image_url, null),
+      });
+      this.original_name = state.user_group.name;
+      this.user_group.name = state.user_group.name;
+      this.user_group.description = state.user_group.description;
+      this.user_group.image_url = state.user_group.image_url;
+      state.user_group.users.forEach((user) => {
+        this.user_group.users.push(user);
+      });
+    }
+    this.user = await this.userStorageService.getUser();
+  }
+
+  ionViewWillEnter() {
+    if (this.user_group.users?.length > 0) {
+      this.update = true;
+    } else {
       this.update = false;
-      this.original_name = "";
-      if (state == undefined) {
-        this.manageUserGroupForm = new FormGroup({
-          name: new FormControl(null, Validators.required),
-          description: new FormControl(null, null),
-          image_url: new FormControl(null, null),
-        });
-      } else {
-        this.update = true;
-        this.manageUserGroupForm = new FormGroup({
-          name: new FormControl(state.user_group.name, Validators.required),
-          description: new FormControl(state.user_group.description, null),
-          image_url: new FormControl(state.user_group.image_url, null),
-        });
-        this.original_name = state.user_group.name;
-        this.user_group.name = state.user_group.name;
-        this.user_group.description = state.user_group.description;
-        this.user_group.image_url = state.user_group.image_url;
-        state.user_group.users.forEach((user) => {
-          this.user_group.users.push(user);
-        });
-      }
-      this.user = await this.userStorageService.getUser();
-    });
+    }
   }
 
   async sendUserGroup() {
