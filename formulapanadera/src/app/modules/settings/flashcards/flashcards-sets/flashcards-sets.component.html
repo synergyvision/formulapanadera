@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'more.flashcards.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content slot="fixed">
+  <ion-segment mode="md" [value]="segementValue" color="secondary" (ionChange)="toggle()">
+    <ion-segment-button value="list" mode="md">
+      <ion-icon name="list-sharp"></ion-icon>        
+    </ion-segment-button>
+    <ion-segment-button value="matrix" mode="md">
+      <ion-icon name="apps-sharp"></ion-icon>
+    </ion-segment-button>
+  </ion-segment>
+  <!-- List -->
+  <ion-list *ngIf="segementValue == 'list'">
+    <ion-item *ngFor="let category of flashcardsCategories | keyvalue" button lines="full" (click)="goToSet(category)">
+      <ion-thumbnail slot="start">
+        <img class="smaller-img" [src]="category.value.image"/>
+      </ion-thumbnail>
+      <ion-label class="normal-space">{{ category.value.name }}</ion-label>
+    </ion-item>
+  </ion-list>
+  <!-- Matrix -->
+  <ion-grid *ngIf="segementValue == 'matrix'">
+    <ion-row>
+      <ion-col size="6" *ngFor="let category of flashcardsCategories | keyvalue">
+        <div #ticket class="item-image-wrapper ion-text-center" (click)="goToSet(category)">
+          <div class="iconContainer">
+            <img [src]="category.value.image" />
+          </div>
+          <div class="category-name">
+            {{ category.value.name }}
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- Skeleton -->
+  <ion-list *ngIf="!flashcardsCategories">
+    <ion-item *ngFor="let i of [1,2,3]">
+      <ion-thumbnail slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

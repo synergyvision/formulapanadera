@@ -7,6 +7,8 @@ export const LANGUAGE = {
   ],
 };
 
+export const APP_NAME = "Haz pan en casa";
+
 // Base url for getting content
 export const BASE_WEB_NEWS = 'https://synergy.vision/';
 
@@ -14,9 +16,10 @@ export const BASE_WEB_NEWS = 'https://synergy.vision/';
 export const REPORT_TO = 'contacto@synergy.vision';
 
 // iOS makert url
-export const IOS_MARKET = '';
+export const IOS_MARKET = 'ios market url';
+export const IOS_APP_ID = 'ios app id';
 // Android market url
-export const ANDROID_MARKET = '';
+export const ANDROID_MARKET = 'market://details?id=<package_name>';
 
 // Help center
 export const HELP_CENTER = {
@@ -91,7 +94,9 @@ export const APP_URL = {
           tutorials: "tutorials",
           contact: "contact",
           social_media: "social-media",
-          faq: "faq"
+          faq: "faq",
+          flashcards: "flashcards",
+          push_messages: "pushMessages"
         },
       },
     },

@@ -315,9 +315,10 @@
     "message": "Te invito a descargar la aplicación\n\niOS: {iosUrl}\n\nAndroid: {androidUrl}"
   },
   "rate_app": {
-    "title": "¿Disfrutas de Haz pan en casa?",
+    "title": "¿Disfrutas de %@?",
     "message": "No te tomará más de un minuto para promover nuestra app. ¡Gracias por tu apoyo!",
-    "rate": "Reseñar ahora",
-    "cancel": "No, gracias"
+    "cancelButtonLabel": "No, gracias",
+    "laterButtonLabel": "Recuérdame después",
+    "rateButtonLabel": "Reseñar ahora"
   }
 }

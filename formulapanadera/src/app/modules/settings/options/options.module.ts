@@ -6,6 +6,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { OptionsPage } from "./options.page";
 import { ComponentsModule } from "src/app/shared/components/components.module";
+import { AppRate } from "@ionic-native/app-rate/ngx";
 
 const routes: Routes = [
   {
@@ -23,5 +24,6 @@ const routes: Routes = [
     TranslateModule,
   ],
   declarations: [OptionsPage],
+  providers: [AppRate]
 })
 export class OptionsPageModule {}

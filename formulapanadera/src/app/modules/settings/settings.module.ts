@@ -4,6 +4,7 @@ import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 import { ComponentsModule } from "../../shared/components/components.module";
 import { APP_URL } from "src/app/config/configuration";
+import { AppRate } from "@ionic-native/app-rate/ngx";
 
 const routes: Routes = [
   {
@@ -51,6 +52,14 @@ const routes: Routes = [
   {
     path: APP_URL.menu.routes.settings.routes.faq,
     loadChildren: () => import('./faq/faq.module').then( m => m.FaqPageModule)
+  },
+  {
+    path: APP_URL.menu.routes.settings.routes.flashcards,
+    loadChildren: () => import('./flashcards/flashcards.module').then(m => m.FlashcardsPageModule)
+  },
+  {
+    path: APP_URL.menu.routes.settings.routes.push_messages,
+    loadChildren: () => import('./flashcards/flashcards.module').then(m => m.FlashcardsPageModule)
   }
 ];
 
@@ -61,5 +70,8 @@ const routes: Routes = [
     ComponentsModule,
     RouterModule.forChild(routes),
   ],
+  providers: [
+    AppRate
+  ]
 })
 export class SettingsModule {}

@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button disabled>
+        <ion-icon></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content slot="fixed">
+  <ion-grid >
+    <!-- START seconds and list  -->
+    <ion-row class="autoplay-options top ion-justify-content-between">
+      <ion-col size="2" size-md="1" class="ion-no-padding">
+        <ion-item detail="false" lines="none" class="seconds-input">
+          <ion-input type="number" min="1" max="10" step="1" [(ngModel)]="secondsByCard"></ion-input>s
+        </ion-item>
+      </ion-col>
+      <ion-col size="2" size-md="1" class="ion-no-padding">
+        <ion-button class="menu-button" fill="clear" expand="full" (click)="openCardsModal()">
+          <ion-icon name="list-sharp" ></ion-icon>
+        </ion-button>
+        <ion-button class="menu-button" fill="clear" expand="full" (click)="shareCard()">
+          <ion-icon name="share-sharp" ></ion-icon>
+        </ion-button>
+        <ion-button class="menu-button" fill="clear" expand="full" *ngIf="cardWithLink" (click)="openLink()">
+          <ion-icon name="link-sharp" ></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <!-- END seconds and list -->
+    <!-- START cards slides -->
+    <div class="remaining-space" *ngIf="cardsCategory">
+      <ion-slides #allCards [options]="allCardsOptions" class="all-cards" (ionSlideTransitionEnd)="changeTitle()">
+        <!-- START slide -->
+        <ion-slide *ngFor="let singlecard of cardsCategory.cards; index as cardIndex">
+          <ion-slides #card [options]="cardOptions" class="flashcard">
+            <ion-slide class="front"
+              [ngStyle]="styleHelper('front', singlecard)"
+            >
+              <div katex *ngIf="singlecard.types[0] != 'image'" >
+                <div markdown [data]="singlecard.front" class="text" ngPreserveWhitespaces></div>
+              </div>
+            </ion-slide>
+            <ion-slide class="back"
+              [ngStyle]="styleHelper('back', singlecard)"
+            >
+              <div  *ngIf="singlecard.types[1] != 'image'" class="text-container">
+                <div markdown [data]="singlecard.back"  class="text"></div>
+              </div>
+            </ion-slide>
+          </ion-slides>
+        </ion-slide>
+        <!-- END slide -->
+      </ion-slides>
+    </div>
+    <!-- END cards slides -->
+    <!-- START reproduction buttons -->
+    <ion-row class="ion-justify-content-center autoplay-options bottom">
+      <!-- OPtions -->
+      <ion-col size="12" class="ion-no-padding slides-rep">
+        <ion-button fill="clear" (click)="goToFirst()">
+          <ion-icon name="skip-backward"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" (click)="goToPrevious()">
+          <ion-icon name="play" class="flip-horizontal"></ion-icon>
+        </ion-button>
+        <!-- START Play/pause -->
+        <ion-button fill="clear" *ngIf="!autoplaying" (click)="playAuto()">
+          <ion-icon size="large" name="play-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" *ngIf="autoplaying" (click)="stopAuto()">
+          <ion-icon size="large" name="pause-circle-outline"></ion-icon>
+        </ion-button>
+        <!-- END play/pause -->
+        <ion-button fill="clear" (click)="goToNext()">
+          <ion-icon name="play" ></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" (click)="goToLast()">
+          <ion-icon name="skip-forward" ></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <!-- END reproduction buttons -->
+  </ion-grid>
+</ion-content>

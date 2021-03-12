@@ -291,5 +291,22 @@
     "10": "Coverings",
     "11": "Baking",
     "12": "Cooling"
+  },
+  "help_center": {
+    "name": "Help center",
+    "content": "How would you like to contact us?",
+    "whatsapp": "Whatsapp",
+    "telegram": "Telegram"
+  },
+  "social_sharing": {
+    "title": "Download Haz pan en casa",
+    "message": "I invite you to downloadn this app\n\niOS: {iosUrl}\n\nAndroid: {androidUrl}"
+  },
+  "rate_app": {
+    "title": "Do you enjoy %@?",
+    "message": "It won’t take more than a minute and helps to promote our app. Thanks for your support!",
+    "cancelButtonLabel": "No, thanks",
+    "laterButtonLabel": "Remind me later",
+    "rateButtonLabel": "Rate now"
   }
 }

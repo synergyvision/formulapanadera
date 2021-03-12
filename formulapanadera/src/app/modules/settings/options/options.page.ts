@@ -4,15 +4,18 @@ import { Router } from "@angular/router";
 import { UserResumeModel } from "src/app/core/models/user.model";
 import { LanguageAlert } from "src/app/shared/alert/language/language.alert";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
-import { ANDROID_MARKET, APP_URL, IOS_MARKET, REPORT_TO } from "src/app/config/configuration";
+import { ANDROID_MARKET, APP_NAME, APP_URL, IOS_APP_ID, IOS_MARKET, REPORT_TO } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { HELP_CENTER } from 'src/app/config/configuration';
-import { AlertController, IonRouterOutlet, ModalController } from "@ionic/angular";
+import { AlertController, IonRouterOutlet, ModalController, Platform } from "@ionic/angular";
 import { LanguageService } from "src/app/core/services/language.service";
 import { AboutUsComponent } from "src/app/shared/modal/about-us/about-us.component";
 import { TermConditionsComponent } from "src/app/shared/modal/term-conditions/term-conditions.component";
-import { Plugins } from '@capacitor/core'
-const { Browser, Share, Device } = Plugins;
+import { Plugins } from '@capacitor/core';
+import { AppRate } from '@ionic-native/app-rate/ngx';
+import { TranslateService } from "@ngx-translate/core";
+
+const { Browser, Share } = Plugins;
 @Component({
   selector: "app-options",
   templateUrl: "options.page.html",
@@ -36,7 +39,10 @@ export class OptionsPage {
     private alertController: AlertController,
     private languageService: LanguageService,
     private modalController: ModalController,
-    private routerOutlet: IonRouterOutlet
+    private routerOutlet: IonRouterOutlet,
+    private appRate: AppRate,
+    private platform: Platform,
+    private translateService: TranslateService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -48,6 +54,18 @@ export class OptionsPage {
         { replaceUrl: true }
       );
     }
+    // Settings app rate plugin
+    this.platform.ready().then(() => {
+      this.appRate.setPreferences({
+        displayAppName: APP_NAME,
+        storeAppURL: {
+          ios: IOS_APP_ID,
+          android: ANDROID_MARKET,
+        },
+        simpleMode: true,
+        customLocale: this.translateService.instant("rate_app")
+      })
+    })
   }
 
   async openLanguageChooser() {
@@ -164,37 +182,6 @@ export class OptionsPage {
   }
 
   async rateApp() {
-    const alert = await this.alertController.create({
-      header: this.languageService.getTerm("rate_app.title"),
-      message: this.languageService.getTerm("rate_app.message"),
-      cssClass: "vertical-buttons-group",
-      buttons: [
-        {
-          text: this.languageService.getTerm("rate_app.cancel"),
-          handler: () => { }
-
-        },
-        {
-          text: this.languageService.getTerm("rate_app.rate"),
-          cssClass: 'normal-font-weight',
-          handler: () => {
-            Device.getInfo().then((info) => {
-              if (info.platform == "android") {
-                Browser.open({
-                  url: ANDROID_MARKET,
-                  windowName: '_system',
-                })
-              } else if (info.platform == "ios") {
-                Browser.open({
-                  url: IOS_MARKET,
-                  windowName: "_system"
-                })
-              }
-            });
-          }
-        }
-      ],
-    });
-    await alert.present();
+    this.appRate.promptForRating(false);
   }
 }

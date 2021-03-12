@@ -21,6 +21,10 @@ const routes: Routes = [
     loadChildren: () =>
       import("./modules/auth/auth.module").then((m) => m.AuthModule),
   },
+  {
+    path: 'flashcards',
+    loadChildren: () => import('./modules/settings/flashcards/flashcards.module').then( m => m.FlashcardsPageModule)
+  },
 ];
 @NgModule({
   imports: [
