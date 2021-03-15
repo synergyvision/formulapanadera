@@ -124,6 +124,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
               APP_URL.menu.routes.production.routes.details,
             {
               state: { production: JSON.parse(JSON.stringify(this.production)) },
+              replaceUrl: true
             }
           );
         })
@@ -159,6 +160,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
               APP_URL.menu.routes.production.routes.details,
             {
               state: { production: JSON.parse(JSON.stringify(this.production)) },
+              replaceUrl: true
             }
           );
         })

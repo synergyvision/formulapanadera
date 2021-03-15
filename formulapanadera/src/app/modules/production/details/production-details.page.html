@@ -1,13 +1,10 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button (click)="returnToList()">
-        <ion-icon
-          slot="icon-only"
-          [name]="ICONS.back"
-          mode="md"
-        ></ion-icon>
-      </ion-button>
+      <ion-back-button
+        mode="md"
+        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.production.main"
+      ></ion-back-button>
     </ion-buttons>
     <ion-title> {{'production.name' | translate}} </ion-title>
     <ion-buttons slot="primary">

@@ -448,10 +448,4 @@ export class IngredientDetailsPage implements OnInit {
         await loading.dismiss();
       });
   }
-
-  returnToList() {
-    this.router.navigateByUrl(
-      APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-    );
-  }
 }

@@ -669,12 +669,6 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     }
   }
 
-  returnToList() {
-    this.router.navigateByUrl(
-      APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-    );
-  }
-
   async startProduction(production: ProductionModel) {
     const loading = await this.loadingController.create({
       cssClass: "app-send-loading",

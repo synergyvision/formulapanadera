@@ -145,6 +145,7 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
               APP_URL.menu.routes.settings.routes.course.routes.details,
               {
                 state: { course: JSON.parse(JSON.stringify(this.course)) },
+                replaceUrl: true
               }
             );
           })
@@ -179,6 +180,7 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
             APP_URL.menu.routes.settings.routes.course.routes.details,
             {
               state: { course: JSON.parse(JSON.stringify(this.course)) },
+              replaceUrl: true
             }
           );
         })

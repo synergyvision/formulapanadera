@@ -477,6 +477,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
           this.formulaCRUDService
             .updateFormula(this.formula)
             .then(() => {
+              
               this.router.navigateByUrl(
                 APP_URL.menu.name +
                 "/" +
@@ -485,6 +486,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
                 APP_URL.menu.routes.formula.routes.details,
                 {
                   state: { formula: JSON.parse(JSON.stringify(this.formula)) },
+                  replaceUrl: true
                 }
               );
             })
@@ -542,6 +544,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
               APP_URL.menu.routes.formula.routes.details,
               {
                 state: { formula: JSON.parse(JSON.stringify(this.formula)) },
+                replaceUrl: true
               }
             );
           })

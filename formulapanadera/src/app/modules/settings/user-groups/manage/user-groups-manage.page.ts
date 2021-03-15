@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ActionSheetController, AlertController, LoadingController, ToastController, ViewWillEnter } from '@ionic/angular';
@@ -34,8 +34,7 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
-    private alertController: AlertController,
-    private ngZone: NgZone
+    private alertController: AlertController
   ){}
 
   async ngOnInit() {
@@ -116,16 +115,15 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
           await this.userStorageService
             .setUser(this.user)
             .then(() => {
-              this.ngZone.run(() =>
-                this.router.navigate(
-                  [
-                    APP_URL.menu.name +
-                    "/" +
-                    APP_URL.menu.routes.settings.main +
-                    "/" +
-                    APP_URL.menu.routes.settings.routes.user_groups.main
-                  ]
-                )
+              this.router.navigateByUrl(
+                  APP_URL.menu.name +
+                  "/" +
+                  APP_URL.menu.routes.settings.main +
+                  "/" +
+                APP_URL.menu.routes.settings.routes.user_groups.main,
+                {
+                  replaceUrl: true
+                }
               );
             });
         })
@@ -253,16 +251,15 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
               .then(() => {
                 this.userStorageService.setUser(user)
                   .then(() => {
-                    this.ngZone.run(() =>
-                      this.router.navigate(
-                        [
-                          APP_URL.menu.name +
-                          "/" +
-                          APP_URL.menu.routes.settings.main +
-                          "/" +
-                          APP_URL.menu.routes.settings.routes.user_groups.main
-                        ]
-                      )
+                    this.router.navigateByUrl(
+                        APP_URL.menu.name +
+                        "/" +
+                        APP_URL.menu.routes.settings.main +
+                        "/" +
+                      APP_URL.menu.routes.settings.routes.user_groups.main,
+                      {
+                        replaceUrl: true
+                      }
                     );
                   })
               })

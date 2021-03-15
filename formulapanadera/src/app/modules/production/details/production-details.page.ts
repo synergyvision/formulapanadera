@@ -545,10 +545,4 @@ export class ProductionDetailsPage implements OnInit {
         await loading.dismiss();
       });
   }
-
-  returnToList() {
-    this.router.navigateByUrl(
-      APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
-    );
-  }
 }

@@ -319,6 +319,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
               APP_URL.menu.routes.ingredient.routes.details,
             {
               state: { ingredient: JSON.parse(JSON.stringify(this.ingredient)) },
+              replaceUrl: true
             }
           );
         })
@@ -345,6 +346,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
               APP_URL.menu.routes.ingredient.routes.details,
             {
               state: { ingredient: JSON.parse(JSON.stringify(this.ingredient)) },
+              replaceUrl: true
             }
           );
         })
