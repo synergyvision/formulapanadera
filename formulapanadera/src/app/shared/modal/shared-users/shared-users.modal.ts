@@ -174,13 +174,13 @@ export class SharedUsersModal implements OnInit {
         })
     }
     if (this.type == "formula") {
-      this.formulaCRUDService.updateFormula(this.item as FormulaModel, this.item as IngredientModel)
+      this.formulaCRUDService.updateFormula(this.item as FormulaModel, this.item as FormulaModel)
         .then(() => {
           this.dismissModal()
         })
     }
     if (this.type == "production") {
-      this.productionCRUDService.updateProduction(this.item as ProductionModel, this.item as IngredientModel)
+      this.productionCRUDService.updateProduction(this.item as ProductionModel, this.item as ProductionModel)
         .then(() => {
           this.dismissModal()
         })
