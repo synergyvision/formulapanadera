@@ -69,7 +69,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
   async ngOnInit() {
     let state = this.router.getCurrentNavigation().extras.state;
     this.formula = new FormulaModel();
-    this.original_formula = new FormulaModel;
+    this.original_formula = new FormulaModel();
     this.formulaUnit = "%";
     this.temperatureUnit = "C";
     this.update = false;
@@ -475,9 +475,8 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
           });
           await loading.present();
           this.formulaCRUDService
-            .updateFormula(this.formula)
+            .updateFormula(this.formula, this.original_formula)
             .then(() => {
-              
               this.router.navigateByUrl(
                 APP_URL.menu.name +
                 "/" +

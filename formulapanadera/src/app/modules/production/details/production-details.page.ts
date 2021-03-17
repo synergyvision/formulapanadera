@@ -391,7 +391,7 @@ export class ProductionDetailsPage implements OnInit {
     this.original_production.user = this.production.user;
 
     this.productionCRUDService
-      .updateProduction(this.production)
+      .updateProduction(this.production, this.production)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -536,7 +536,7 @@ export class ProductionDetailsPage implements OnInit {
       this.production.user.can_clone = value
     }
     this.productionCRUDService
-      .updateProduction(this.production)
+      .updateProduction(this.production, this.production)
       .then(() => {})
       .catch(() => {
         this.presentToast(false);

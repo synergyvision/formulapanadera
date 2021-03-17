@@ -73,7 +73,7 @@ export class CourseDetailsPage implements OnInit {
     });
     await loading.present();
     this.courseCRUDService
-      .updateCourse(this.course)
+      .updateCourse(this.course, this.course)
       .then(() => { })
       .catch(() => {
         this.presentToast(false);

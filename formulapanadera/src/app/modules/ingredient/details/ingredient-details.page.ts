@@ -295,7 +295,7 @@ export class IngredientDetailsPage implements OnInit {
     }
 
     this.ingredientCRUDService
-      .updateIngredient(this.ingredient)
+      .updateIngredient(this.ingredient, this.ingredient)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -439,7 +439,7 @@ export class IngredientDetailsPage implements OnInit {
       this.ingredient.user.can_clone = value
     }
     this.ingredientCRUDService
-      .updateIngredient(this.ingredient)
+      .updateIngredient(this.ingredient, this.ingredient)
       .then(() => {})
       .catch(() => {
         this.presentToast(false);

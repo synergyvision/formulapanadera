@@ -160,13 +160,13 @@ export class CourseCRUDService {
     }
   }
 
-  public async updateCourse(courseData: CourseModel): Promise<void> {
+  public async updateCourse(courseData: CourseModel, originalCourse: CourseModel): Promise<void> {
     let course: CourseModel = JSON.parse(JSON.stringify(courseData));
     delete course.productions;
     delete course.formulas;
     delete course.ingredients;
     // Delete formulas
-    await this.deleteData(courseData);
+    await this.deleteData(originalCourse);
     // Set formulas
     await this.createData(`${this.collection}/${courseData.id}`, courseData);
     await this.afs.collection(this.collection).doc(courseData.id).set(course);

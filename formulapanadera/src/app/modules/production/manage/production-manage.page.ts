@@ -36,6 +36,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
   update: boolean = false;
 
   production: ProductionModel = new ProductionModel();
+  original_production: ProductionModel = new ProductionModel();
   manageProductionForm: FormGroup;
 
   current_user = new UserResumeModel();
@@ -79,6 +80,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
       this.manageProductionForm = new FormGroup({
         name: new FormControl(state.production.name, Validators.required),
       });
+      this.original_production = JSON.parse(JSON.stringify(state.production))
       this.production.id = state.production.id;
       this.production.user = state.production.user;
       this.production.formulas = [];
@@ -114,7 +116,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
         date: new Date(),
       });
       this.productionCRUDService
-        .updateProduction(this.production)
+        .updateProduction(this.production, this.original_production)
         .then(async () => {
           this.router.navigateByUrl(
             APP_URL.menu.name +

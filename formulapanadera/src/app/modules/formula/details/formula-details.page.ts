@@ -480,7 +480,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     }
 
     this.formulaCRUDService
-      .updateFormula(this.formula)
+      .updateFormula(this.formula, this.formula)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -656,7 +656,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       });
       await loading.present();
       this.formulaCRUDService
-        .updateFormula(this.formula)
+        .updateFormula(this.formula, this.formula)
         .then(() => { })
         .catch(() => {
           this.presentToast(false);

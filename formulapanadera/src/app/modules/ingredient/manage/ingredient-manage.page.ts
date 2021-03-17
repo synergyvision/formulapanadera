@@ -21,7 +21,6 @@ import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { UserResumeModel } from "src/app/core/models/user.model";
-import { IngredientService } from "src/app/core/services/ingredient.service";
 import { ReferenceModel } from "src/app/core/models/shared.model";
 import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
 
@@ -38,6 +37,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
   ICONS = ICONS;
 
   ingredient: IngredientModel = new IngredientModel();
+  original_ingredient: IngredientModel = new IngredientModel();
   manageIngredientForm: FormGroup;
   update: boolean = false;
   current_user = new UserResumeModel();
@@ -90,6 +90,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     } else {
       this.update = true;
       this.ingredient = JSON.parse(JSON.stringify(state.ingredient));
+      this.original_ingredient = JSON.parse(JSON.stringify(state.ingredient))
       if (this.ingredient.formula) {
         this.type = "compound";
       }
@@ -336,7 +337,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
         date: new Date(),
       });
       this.ingredientCRUDService
-        .updateIngredient(this.ingredient)
+        .updateIngredient(this.ingredient, this.original_ingredient)
         .then(() => {
           this.router.navigateByUrl(
             APP_URL.menu.name +

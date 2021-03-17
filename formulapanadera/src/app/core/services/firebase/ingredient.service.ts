@@ -129,7 +129,7 @@ export class IngredientCRUDService {
     }
   }
 
-  public async updateIngredient(ingredientData: IngredientModel): Promise<void> {
+  public async updateIngredient(ingredientData: IngredientModel, originalIngredient: IngredientModel): Promise<void> {
     let ingredient = JSON.parse(JSON.stringify(ingredientData));
     if (ingredientData.formula) {
       delete ingredient.formula.ingredients;
@@ -145,7 +145,7 @@ export class IngredientCRUDService {
       }
     }
     // Delete sub ingredients
-    await this.deleteSubIngredient(ingredientData);
+    await this.deleteSubIngredient(originalIngredient);
     // Set sub ingredients
     await this.createSubIngredient(this.collection, ingredientData.id, ingredientData);
     await this.afs.collection(this.collection).doc(ingredientData.id).set(ingredient);

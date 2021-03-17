@@ -124,11 +124,11 @@ export class ProductionCRUDService {
     await Promise.all(promises)
   }
 
-  public async updateProduction(productionData: ProductionModel): Promise<void> {
+  public async updateProduction(productionData: ProductionModel, originalProduction: ProductionModel): Promise<void> {
     let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
     delete production.formulas;
     // Delete formulas
-    await this.deleteFormulas(productionData);
+    await this.deleteFormulas(originalProduction);
     // Set formulas
     await this.createFormulas(`${this.collection}/${productionData.id}/${COLLECTIONS.formula}`, productionData);
     await this.afs.collection(this.collection).doc(productionData.id).set(production);

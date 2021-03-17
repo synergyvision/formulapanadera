@@ -32,6 +32,7 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
   ICONS = ICONS;
 
   course: CourseModel = new CourseModel();
+  original_course: CourseModel = new CourseModel();
 
   manageCourseForm: FormGroup;
   update: boolean = false;
@@ -80,6 +81,7 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
         name: new FormControl(state.course.name, Validators.required),
         description: new FormControl(state.course.description, null)
       });
+      this.original_course = JSON.parse(JSON.stringify(state.course))
       this.course.id = state.course.id;
       this.course.user = state.course.user;
       this.course.ingredients = [];
@@ -133,7 +135,7 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
         });
         await loading.present();
         this.courseCRUDService
-          .updateCourse(this.course)
+          .updateCourse(this.course, this.original_course)
           .then(() => {
             this.router.navigateByUrl(
               APP_URL.menu.name +
