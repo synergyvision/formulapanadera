@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'settings.support.contact' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear">
+        <ion-icon></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row *ngFor="let info of contact" class="info ion-text-center">
+      <ion-col size="12">
+        <ion-list class="contact-info">
+          <!-- Phone numbers -->
+          <ion-item button detail="false" class="phone-number">
+            <ion-icon name="phone-portrait"></ion-icon>
+            <ion-label>{{ info.phone }}</ion-label>
+            <ion-button slot="end" color="dark" expand="full" fill="clear">
+              <ion-icon name="call" ></ion-icon>
+            </ion-button>
+            <ion-button slot="end" color="dark" expand="full" fill="clear" (click)="openWhatsapp(info.phone)">
+              <ion-icon name="logo-whatsapp"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <!-- Email -->
+          <ion-item button detail="false" (click)="sendEmail(info.email)">
+            <ion-icon name="mail"></ion-icon>
+            <ion-label>{{ info.email }}</ion-label>
+          </ion-item>
+          <!-- Address -->
+          <ion-item button lines="none" detail="false">
+            <ion-icon name="pin"></ion-icon>
+            <ion-label class="address">{{ info.address }}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

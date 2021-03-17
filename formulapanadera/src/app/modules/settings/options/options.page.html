@@ -18,6 +18,34 @@
     <app-divider></app-divider>
     <ion-item
       button
+      routerDirection="forward"
+      (click)="openAboutUs()"
+      class="legal-information-option"
+    >
+      <ion-icon name="information-outline"></ion-icon>
+      <ion-label class="option">{{ 'settings.legal.about_us' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      routerDirection="forward"
+      (click)="openTermsConditionModal('terms')"
+      class="legal-information-option"
+    >
+      <ion-icon name="information-outline"></ion-icon>
+      <ion-label class="option">{{ 'settings.legal.terms_and_conditions' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      routerDirection="forward"
+      (click)="openPrivacyPolicyModal('privacy')"
+      class="legal-information-option"
+    >
+      <ion-icon name="information-outline"></ion-icon>
+      <ion-label class="option">{{ 'settings.legal.privacy_policy' | translate }}</ion-label>
+    </ion-item>
+    <app-divider></app-divider>
+    <ion-item
+      button
       [routerLink]="[APP_URL.menu.routes.settings.routes.shared.main]"
       routerDirection="forward"
       class="users-group-option"
@@ -75,6 +103,105 @@
     <ion-item button (click)="signOut()" class="sign-out-option">
       <ion-icon [name]="ICONS.sign_out"></ion-icon>
       <ion-label class="option">{{'settings.logout' | translate}}</ion-label>
+    </ion-item>
+    <app-divider></app-divider>
+    <ion-item
+      button
+      [routerLink]="APP_URL.menu.routes.settings.routes.how_to_use"
+      routerDirection="forward"
+      class="support-option"
+    >
+      <ion-icon name="help-circle"></ion-icon>
+      <ion-label class="option">{{ 'settings.support.how_to_use.name' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      [routerLink]="APP_URL.menu.routes.settings.routes.tutorials"
+      routerDirection="forward"
+      class="support-option"
+    >
+      <ion-icon name="help-circle"></ion-icon>
+      <ion-label class="option">{{ 'settings.support.tutorials' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      [routerLink]="APP_URL.menu.routes.settings.routes.contact"
+      routerDirection="forward"
+      class="support-option"
+    >
+      <ion-icon name="help-circle"></ion-icon>
+      <ion-label class="option">{{ 'settings.support.contact' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      [routerLink]="APP_URL.menu.routes.settings.routes.social_media"
+      routerDirection="forward"
+      class="support-option"
+    >
+      <ion-icon name="help-circle"></ion-icon>
+      <ion-label class="option">{{ 'settings.support.social_media' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      [routerLink]="APP_URL.menu.routes.settings.routes.faq"
+      routerDirection="forward"
+      class="support-option"
+    >
+      <ion-icon name="help-circle"></ion-icon>
+      <ion-label class="option">{{ 'settings.support.faq' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      (click)="reportProblem()"
+      routerDirection="forward"
+      class="support-option"
+    >
+      <ion-icon name="help-circle"></ion-icon>
+      <ion-label class="option">{{ 'settings.support.report_problem' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      (click)="openHelpCenter()"
+      routerDirection="forward"
+      class="support-option"
+    >
+      <ion-icon name="help-circle"></ion-icon>
+      <ion-label class="option">{{ 'settings.support.help_center' | translate }}</ion-label>
+    </ion-item>
+    <app-divider></app-divider>
+    <ion-item
+      button
+      routerDirection="forward"
+      class="more-option"
+    >
+      <ion-icon name="mail"></ion-icon>
+      <ion-label class="option">{{ 'settings.more.push_messages' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      routerDirection="forward"
+      class="more-option"
+    >
+      <ion-icon name="mail"></ion-icon>
+      <ion-label class="option">{{ 'settings.more.flashcards' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      (click)="shareApp()"
+      routerDirection="forward"
+      class="more-option"
+    >
+      <ion-icon name="mail"></ion-icon>
+      <ion-label class="option">{{ 'settings.more.invite_friends' | translate }}</ion-label>
+    </ion-item>
+    <ion-item
+      button
+      (click)="rateApp()"
+      routerDirection="forward"
+      class="more-option"
+    >
+      <ion-icon name="mail"></ion-icon>
+      <ion-label class="option">{{ 'settings.more.rate_us' | translate }}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

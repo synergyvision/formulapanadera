@@ -1,0 +1,32 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'settings.support.faq' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear">
+        <ion-icon></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar #searchBar mode="ios"
+  showCancelButton="focus"
+  (ionChange)="search()">
+  </ion-searchbar>
+  <ion-list *ngFor="let faqCat of faqs; index as faqIndex">
+    <ion-list-header *ngIf="!allHidden(faqCat)">
+      {{ faqCat['title-'+translateService.currentLang] }}
+    </ion-list-header>
+    <ion-item button lines="none" *ngFor="let question of faqCat.questions; index as questionIndex"
+    (click)="goToAnswer(question.answer)" [hidden]="question.hidden"
+    >
+      <ion-label class="normal-space ">
+        {{ question['title-'+translateService.currentLang] }}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

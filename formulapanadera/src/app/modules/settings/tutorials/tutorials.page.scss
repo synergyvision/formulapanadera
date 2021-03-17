@@ -1,0 +1,23 @@
+:host {
+    --page-margin: var(--app-fair-margin);
+    --page-background: var(--app-background);
+  
+    --page-items-gutter: calc(var(--page-margin) / 2);
+  
+    --primary: var(--ion-color-primary);
+    --secondary: var(--ion-color-secondary);
+    --success: var(--ion-color-success);
+    --success-rgb: var(--ion-color-success-rgb);
+    --success-contrast: var(--ion-color-success-contrast);
+    --danger: var(--ion-color-danger);
+    --danger-rgb: var(--ion-color-danger-rgb);
+    --danger-contrast: var(--ion-color-danger-contrast);
+    --lh: 1em;
+    --lines: 3;
+  }
+  ion-label {
+      white-space: normal;
+  }
+  h3, p {
+      white-space: normal;
+  }

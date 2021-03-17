@@ -39,6 +39,26 @@ const routes: Routes = [
         (m) => m.CourseModule
       ),
   },
+  {
+    path: APP_URL.menu.routes.settings.routes.how_to_use,
+    loadChildren: () => import('./how-to-use/how-to-use.module').then( m => m.HowToUsePageModule)
+  },
+  {
+    path: APP_URL.menu.routes.settings.routes.tutorials,
+    loadChildren: () => import('./tutorials/tutorials.module').then( m => m.TutorialsPageModule)
+  },
+  {
+    path: APP_URL.menu.routes.settings.routes.contact,
+    loadChildren: () => import('./contact/contact.module').then( m => m.ContactPageModule)
+  },
+  {
+    path: APP_URL.menu.routes.settings.routes.social_media,
+    loadChildren: () => import('./social-media/social-media.module').then( m => m.SocialMediaPageModule)
+  },
+  {
+    path: APP_URL.menu.routes.settings.routes.faq,
+    loadChildren: () => import('./faq/faq.module').then( m => m.FaqPageModule)
+  }
 ];
 
 @NgModule({

@@ -1,0 +1,61 @@
+:host {
+    --margin: calc(var(--app-fair-margin) / 2);
+    --light: var(--ion-color-light);
+  }
+  ion-grid {
+    --ion-grid-padding: 0;
+  }
+  
+  ion-row.banner{
+  
+    ion-col {
+      padding: 0;
+      text-align: center;
+      text-align: -moz-center;
+      display: flex;
+      ion-avatar {
+        width: 3em;
+        height: 3em;
+        background-color: var(--ion-color-medium);
+        color: white;
+        margin-right: var(--page-items-gutter);
+        ion-icon {
+          display: initial;
+        }
+      }
+    }
+  }
+  ion-row.info {
+    
+    .logo {
+      ion-avatar {
+        width: 5em;
+        height: 5em;
+        display: inline-block;
+      }
+      ion-label {
+        p.name {
+          font-weight: bold;
+          color: black;
+        }
+        p.link {
+          color: rgb(37, 179, 179);
+        }
+      }
+    }
+  
+    .contact-info {
+      margin-bottom: var(--page-items-gutter);
+      ion-icon{
+        margin-right: calc( var(--app-fair-margin) / 2);
+      }
+      ion-label.address {
+        overflow: visible;
+        white-space: normal;
+      }
+      .phone-number ion-button{
+        margin: 0;
+      }
+    }
+  }
+  

@@ -211,9 +211,29 @@
   },
   "settings": {
     "name": "Settings",
+    "legal": {
+      "about_us": "About us",
+      "terms_and_conditions": "Terms and conditions",
+      "privacy_policy": "Privacy policy"
+    },
     "language": {
       "change": "Change language",
       "select": "Select language"
+    },
+    "support": {
+      "how_to_use": "How to use?",
+      "tutorials": "Tutorials",
+      "contact": "Contact",
+      "social_media": "Social medias",
+      "faq": "FAQ",
+      "report_problem": "Report problem",
+      "help_center": "Help center"
+    },
+    "more": {
+      "push_messages": "Push messages",
+      "flashcards": "Flashcards",
+      "invite_friends": "Invite your friens",
+      "rate_us": "Rate us"
     },
     "password": { "change": "Change password" },
     "user_groups": {
