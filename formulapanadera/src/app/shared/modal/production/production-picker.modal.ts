@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
 import { of } from "rxjs";
 import { map } from "rxjs/operators";
-import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { ProductionModel } from "src/app/core/models/production.model";
 import { ProductionService } from "src/app/core/services/production.service";
@@ -48,13 +48,13 @@ export class ProductionPickerModal implements OnInit {
       upper: new FormControl(),
     });
 
-    this.searchingState();
+    this.productions = this.productionService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
     this.productionService
       .getProductions()
       .subscribe(async (productions) => {
-        this.searchingState();
+        this.productions = this.productionService.searchingState();
         this.all_productions = productions as ProductionModel[] & ShellModel;
         this.searchList();
       });
@@ -85,7 +85,7 @@ export class ProductionPickerModal implements OnInit {
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredProductions),
-      this.searchingState()
+      this.productionService.searchingState()
     );
 
     let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -151,16 +151,5 @@ export class ProductionPickerModal implements OnInit {
       });
     }
     return isSelected;
-  }
-
-  searchingState() {
-    let searchingShellModel: ProductionModel[] &
-      ShellModel = [] as ProductionModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new ProductionModel());
-    }
-    searchingShellModel.isShell = true;
-    this.productions = searchingShellModel;
-    return searchingShellModel;
   }
 }

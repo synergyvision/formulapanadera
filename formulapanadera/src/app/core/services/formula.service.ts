@@ -9,6 +9,7 @@ import { DECIMALS } from "src/app/config/formats";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { OVEN_STEP } from "src/app/config/formula";
 import { BehaviorSubject, Observable } from "rxjs";
+import { LOADING_ITEMS } from "src/app/config/configuration";
 
 @Injectable()
 export class FormulaService {
@@ -26,6 +27,16 @@ export class FormulaService {
 
   public clearFormulas() {
     this.formulas = new BehaviorSubject<FormulaModel[]>(undefined);
+  }
+
+  public searchingState() {
+    let searchingShellModel: FormulaModel[] &
+      ShellModel = [] as FormulaModel[] & ShellModel;
+    for (let index = 0; index < LOADING_ITEMS; index++) {
+      searchingShellModel.push(new FormulaModel());
+    }
+    searchingShellModel.isShell = true;
+    return searchingShellModel;
   }
 
   /*

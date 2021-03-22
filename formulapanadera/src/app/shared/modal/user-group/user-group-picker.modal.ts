@@ -4,7 +4,6 @@ import { DataStore } from "../../shell/data-store";
 import { of } from "rxjs";
 import { ModalController } from "@ionic/angular";
 import { map } from "rxjs/operators";
-import { LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserGroupModel } from 'src/app/core/models/user.model';
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
@@ -38,7 +37,7 @@ export class UserGroupPickerModal implements OnInit {
 
   ngOnInit() {
     this.searchQuery = "";
-    this.searchingState();
+    this.user_groups = this.userService.userGroupSearchingState();
     this.searchList();
   }
 
@@ -52,7 +51,7 @@ export class UserGroupPickerModal implements OnInit {
     
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredUserGroups),
-      this.searchingState()
+      this.userService.userGroupSearchingState()
     );
 
     let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -113,16 +112,5 @@ export class UserGroupPickerModal implements OnInit {
       });
     }
     return isSelected;
-  }
-
-  searchingState() {
-    let searchingShellModel: UserGroupModel[] &
-      ShellModel = [] as UserGroupModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new UserGroupModel());
-    }
-    searchingShellModel.isShell = true;
-    this.user_groups = searchingShellModel;
-    return searchingShellModel;
   }
 }

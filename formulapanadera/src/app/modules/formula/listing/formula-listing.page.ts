@@ -7,7 +7,7 @@ import { FormulaService } from "src/app/core/services/formula.service";
 import { Router } from "@angular/router";
 import { FormGroup, FormControl } from "@angular/forms";
 import { map } from "rxjs/operators";
-import { APP_URL, CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { ICONS } from "src/app/config/icons";
 import { CourseModel } from "src/app/core/models/course.model";
@@ -57,13 +57,14 @@ export class FormulaListingPage implements OnInit {
       upper: new FormControl(),
     });
 
-    this.searchingState();
+    this.formulas = this.formulaService.searchingState();
+    this.courses = this.courseService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
     this.formulaService
       .getFormulas()
       .subscribe((formulas) => {
-        this.searchingState();
+        this.formulas = this.formulaService.searchingState();
         this.all_formulas = formulas  as FormulaModel[] & ShellModel;
         this.searchList();
       });
@@ -113,7 +114,7 @@ export class FormulaListingPage implements OnInit {
 
       const dataSourceWithShellObservable = DataStore.AppendShell(
         of(filteredFormulas),
-        this.searchingState()
+        this.formulaService.searchingState()
       );
 
       let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -167,33 +168,5 @@ export class FormulaListingPage implements OnInit {
         }
       );
     }
-  }
-
-  courseDetails(course: CourseModel) {
-    if (course) {
-      this.router.navigateByUrl(
-        APP_URL.menu.name +
-        "/" +
-        APP_URL.menu.routes.settings.main +
-        "/" +
-        APP_URL.menu.routes.settings.routes.course.main +
-        "/" +
-        APP_URL.menu.routes.settings.routes.course.routes.details,
-        {
-          state: { course: JSON.parse(JSON.stringify(course)) },
-        }
-      );
-    }
-  }
-
-  searchingState() {
-    let searchingShellModel: FormulaModel[] &
-      ShellModel = [] as FormulaModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new FormulaModel());
-    }
-    searchingShellModel.isShell = true;
-    this.formulas = searchingShellModel;
-    return searchingShellModel;
   }
 }

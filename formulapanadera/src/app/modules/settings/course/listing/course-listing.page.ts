@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { UserResumeModel } from "src/app/core/models/user.model";
-import { APP_URL, LOADING_ITEMS } from "src/app/config/configuration";
+import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { DataStore } from "src/app/shared/shell/data-store";
 import { of } from "rxjs";
@@ -39,13 +39,13 @@ export class CourseListingPage implements OnInit {
 
   async ngOnInit() {
     this.searchQuery = "";
-    this.searchingState();
+    this.courses = this.courseService.searchingState();
 
     this.user = await this.userStorageService.getUser();
     this.courseService
       .getMyCourses()
       .subscribe(async (courses) => {
-        this.searchingState();
+        this.courses = this.courseService.searchingState();
         this.all_courses = courses  as CourseModel[] & ShellModel;
         this.searchList();
       });
@@ -93,7 +93,7 @@ export class CourseListingPage implements OnInit {
     
       const dataSourceWithShellObservable = DataStore.AppendShell(
         of(filteredCourses),
-        this.searchingState()
+        this.courseService.searchingState()
       );
 
       let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -117,16 +117,5 @@ export class CourseListingPage implements OnInit {
         this.courses = value;
       });
     }
-  }
-
-  searchingState() {
-    let searchingShellModel: CourseModel[] &
-      ShellModel = [] as CourseModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new CourseModel);
-    }
-    searchingShellModel.isShell = true;
-    this.courses = searchingShellModel;
-    return searchingShellModel;
   }
 }

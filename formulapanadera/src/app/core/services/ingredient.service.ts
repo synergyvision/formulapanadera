@@ -3,6 +3,7 @@ import { IngredientModel } from "../models/ingredient.model";
 
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { BehaviorSubject, Observable } from "rxjs";
+import { LOADING_ITEMS } from "src/app/config/configuration";
 
 @Injectable()
 export class IngredientService {
@@ -20,6 +21,16 @@ export class IngredientService {
 
   public clearIngredients() {
     this.ingredients = new BehaviorSubject<IngredientModel[]>(undefined);
+  }
+
+  public searchingState() {
+    let searchingShellModel: IngredientModel[] &
+      ShellModel = [] as IngredientModel[] & ShellModel;
+    for (let index = 0; index < LOADING_ITEMS; index++) {
+      searchingShellModel.push(new IngredientModel());
+    }
+    searchingShellModel.isShell = true;
+    return searchingShellModel;
   }
 
   /*

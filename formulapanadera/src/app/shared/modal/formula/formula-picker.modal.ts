@@ -3,12 +3,11 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
 import { of } from "rxjs";
 import { map } from "rxjs/operators";
-import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { CURRENCY } from "src/app/config/configuration";
 import { FORMULA_WARMING_TIME } from "src/app/config/formula";
 import { ICONS } from "src/app/config/icons";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { FormulaNumberModel } from "src/app/core/models/production.model";
-import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DataStore } from "../../shell/data-store";
@@ -57,13 +56,13 @@ export class FormulaPickerModal implements OnInit {
       upper: new FormControl(),
     });
 
-    this.searchingState();
+    this.formulas = this.formulaService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
     this.formulaService
       .getFormulas()
       .subscribe(async (formulas) => {
-        this.searchingState();
+        this.formulas = this.formulaService.searchingState();
         if (this.forProduction) {
           let aux: FormulaModel[] = []
           formulas.forEach(formula => {
@@ -112,7 +111,7 @@ export class FormulaPickerModal implements OnInit {
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredFormulas),
-      this.searchingState()
+      this.formulaService.searchingState()
     );
 
     let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -182,16 +181,5 @@ export class FormulaPickerModal implements OnInit {
       });
     }
     return isSelected;
-  }
-
-  searchingState() {
-    let searchingShellModel: FormulaModel[] &
-      ShellModel = [] as FormulaModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new FormulaModel());
-    }
-    searchingShellModel.isShell = true;
-    this.formulas = searchingShellModel;
-    return searchingShellModel;
   }
 }

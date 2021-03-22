@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
+import { LOADING_ITEMS } from "src/app/config/configuration";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { CourseModel, OrderedItemModel } from "../models/course.model";
 
@@ -29,6 +30,16 @@ export class CourseService {
   public clearCourses() {
     this.courses = new BehaviorSubject<CourseModel[]>(undefined);
     this.shared_courses = new BehaviorSubject<CourseModel[]>(undefined);
+  }
+  
+  public searchingState() {
+    let searchingShellModel: CourseModel[] &
+      ShellModel = [] as CourseModel[] & ShellModel;
+    for (let index = 0; index < LOADING_ITEMS; index++) {
+      searchingShellModel.push(new CourseModel);
+    }
+    searchingShellModel.isShell = true;
+    return searchingShellModel;
   }
 
   // Sort

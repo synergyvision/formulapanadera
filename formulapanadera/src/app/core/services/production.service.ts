@@ -10,6 +10,7 @@ import { ShellModel } from "src/app/shared/shell/shell.model";
 import { FormulaService } from "./formula.service";
 import { OVEN_STEP } from "src/app/config/formula";
 import { BehaviorSubject, Observable } from "rxjs";
+import { LOADING_ITEMS } from "src/app/config/configuration";
 
 @Injectable()
 export class ProductionService {
@@ -27,6 +28,16 @@ export class ProductionService {
 
   public clearProductions() {
     this.productions = new BehaviorSubject<ProductionModel[]>(undefined);
+  }
+
+  public searchingState() {
+    let searchingShellModel: ProductionModel[] &
+      ShellModel = [] as ProductionModel[] & ShellModel;
+    for (let index = 0; index < LOADING_ITEMS; index++) {
+      searchingShellModel.push(new ProductionModel());
+    }
+    searchingShellModel.isShell = true;
+    return searchingShellModel;
   }
 
   /*

@@ -8,7 +8,7 @@ import { IngredientService } from "../../../core/services/ingredient.service";
 import { ModalController } from "@ionic/angular";
 import { map } from "rxjs/operators";
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
-import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 
@@ -66,13 +66,13 @@ export class IngredientPickerModal implements OnInit {
       value: new FormControl("all"),
     });
 
-    this.searchingState();
+    this.ingredients = this.ingredientService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
     this.ingredientService
       .getIngredients()
       .subscribe(async (ingredients) => {
-        this.searchingState();
+        this.ingredients = this.ingredientService.searchingState();
         this.all_ingredients = ingredients as IngredientModel[] & ShellModel;
         this.searchList();
       });
@@ -126,7 +126,7 @@ export class IngredientPickerModal implements OnInit {
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredIngredients),
-      this.searchingState()
+      this.ingredientService.searchingState()
     );
 
     let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -198,16 +198,5 @@ export class IngredientPickerModal implements OnInit {
       });
     }
     return isSelected;
-  }
-
-  searchingState() {
-    let searchingShellModel: IngredientModel[] &
-      ShellModel = [] as IngredientModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new IngredientModel());
-    }
-    searchingShellModel.isShell = true;
-    this.ingredients = searchingShellModel;
-    return searchingShellModel;
   }
 }

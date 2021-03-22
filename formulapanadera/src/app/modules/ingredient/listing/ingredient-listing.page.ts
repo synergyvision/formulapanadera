@@ -7,7 +7,7 @@ import { of } from "rxjs";
 import { IngredientService } from "../../../core/services/ingredient.service";
 import { Router } from "@angular/router";
 import { map } from "rxjs/operators";
-import { APP_URL, CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { CourseModel } from "src/app/core/models/course.model";
@@ -68,13 +68,14 @@ export class IngredientListingPage implements OnInit {
       value: new FormControl("all"),
     });
 
-    this.searchingState();
+    this.ingredients = this.ingredientService.searchingState();
+    this.courses = this.courseService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
     this.ingredientService
       .getIngredients()
       .subscribe((ingredients) => {
-        this.searchingState();
+        this.ingredients = this.ingredientService.searchingState();
         this.all_ingredients = ingredients  as IngredientModel[] & ShellModel;
         this.searchList();
       });
@@ -138,7 +139,7 @@ export class IngredientListingPage implements OnInit {
 
       const dataSourceWithShellObservable = DataStore.AppendShell(
         of(filteredIngredients),
-        this.searchingState()
+        this.ingredientService.searchingState()
       );
 
       let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -192,33 +193,5 @@ export class IngredientListingPage implements OnInit {
         }
       );
     }
-  }
-
-  courseDetails(course: CourseModel) {
-    if (course) {
-      this.router.navigateByUrl(
-        APP_URL.menu.name +
-        "/" +
-        APP_URL.menu.routes.settings.main +
-        "/" +
-        APP_URL.menu.routes.settings.routes.course.main +
-        "/" +
-        APP_URL.menu.routes.settings.routes.course.routes.details,
-        {
-          state: { course: JSON.parse(JSON.stringify(course)) },
-        }
-      );
-    }
-  }
-
-  searchingState() {
-    let searchingShellModel: IngredientModel[] &
-      ShellModel = [] as IngredientModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new IngredientModel());
-    }
-    searchingShellModel.isShell = true;
-    this.ingredients = searchingShellModel;
-    return searchingShellModel;
   }
 }

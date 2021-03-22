@@ -130,8 +130,28 @@
     <ion-list
       lines="none"
       class="formulas-list"
+      *ngIf="courses?.length > 0 && segment == 'shared'"
+    >
+      <app-title-divider
+        [title]="'settings.course.name' | translate"
+      ></app-title-divider>
+      <span *ngFor="let course of courses; index as i">
+        <app-shared-course-item
+          [course]="course"
+          type="formula"
+          [even]="(i%2==0)"
+        ></app-shared-course-item>
+      </span>
+    </ion-list>
+    <ion-list
+      lines="none"
+      class="formulas-list"
       *ngIf="formulas?.length > 0"
     >
+      <app-title-divider
+        *ngIf="formulas?.length > 0 && (courses?.length > 0 && segment == 'shared')"
+        [title]="'formulas.name' | translate"
+      ></app-title-divider>
       <app-formula-item
         *ngFor="let formula of formulas; index as i"
         (click)="formulaDetails(formula)"
@@ -139,25 +159,6 @@
         [clickable]="true"
         [even]="(i%2==0)"
       ></app-formula-item>
-    </ion-list>
-    <ion-list
-      lines="none"
-      class="formulas-list"
-      *ngIf="courses?.length > 0 && segment == 'shared'"
-    >
-      <span *ngFor="let course of courses">
-        <app-title-divider
-          [title]="course.name"
-          (click)="courseDetails(course)"
-        ></app-title-divider>
-        <app-formula-item
-          *ngFor="let formula of course.formulas; index as i"
-          (click)="formulaDetails(formula.item)"
-          [formula]="formula.item"
-          [clickable]="true"
-          [even]="(i%2==0)"
-        ></app-formula-item>
-      </span>
     </ion-list>
   </span>
   <ng-template #emptyBlock>

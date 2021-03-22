@@ -178,8 +178,28 @@
     <ion-list
       class="ingredients-list"
       lines="none"
+      *ngIf="courses?.length > 0 && segment == 'shared'"
+    >
+      <app-title-divider
+        [title]="'settings.course.name' | translate"
+      ></app-title-divider>
+      <span *ngFor="let course of courses; index as i">
+        <app-shared-course-item
+          [course]="course"
+          type="ingredient"
+          [even]="(i%2==0)"
+        ></app-shared-course-item>
+      </span>
+    </ion-list>
+    <ion-list
+      class="ingredients-list"
+      lines="none"
       *ngIf="ingredients?.length > 0"
     >
+      <app-title-divider
+        *ngIf="ingredients?.length > 0 && (courses?.length > 0 && segment == 'shared')"
+        [title]="'ingredients.name' | translate"
+      ></app-title-divider>
       <app-ingredient-item
         *ngFor="let ingredient of ingredients; index as i"
         (click)="ingredientDetails(ingredient)"
@@ -188,26 +208,6 @@
         [even]="(i%2==0)"
       >
       </app-ingredient-item>
-    </ion-list>
-    <ion-list
-      class="ingredients-list"
-      lines="none"
-      *ngIf="courses?.length > 0 && segment == 'shared'"
-    >
-      <span *ngFor="let course of courses">
-        <app-title-divider
-          [title]="course.name"
-          (click)="courseDetails(course)"
-        ></app-title-divider>
-        <app-ingredient-item
-          *ngFor="let ingredient of course.ingredients; index as i"
-          (click)="ingredientDetails(ingredient.item)"
-          [ingredient]="ingredient.item"
-          [clickable]="true"
-          [even]="(i%2==0)"
-        >
-        </app-ingredient-item>
-      </span>
     </ion-list>
   </span>
   <ng-template #emptyBlock>

@@ -1,9 +1,9 @@
-import { Component, HostBinding, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router } from '@angular/router';
 import { ViewWillEnter } from '@ionic/angular';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { APP_URL, LOADING_ITEMS } from 'src/app/config/configuration';
+import { APP_URL } from 'src/app/config/configuration';
 import { ICONS } from 'src/app/config/icons';
 import { UserGroupModel } from 'src/app/core/models/user.model';
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
@@ -32,7 +32,7 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
   
   async ngOnInit() {
     this.searchQuery = "";
-    this.searchingState();
+    this.user_groups = this.userService.userGroupSearchingState();
     this.searchList();
   }
 
@@ -50,7 +50,7 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
     
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredUserGroups),
-      this.searchingState()
+      this.user_groups = this.userService.userGroupSearchingState()
     );
 
     let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -85,17 +85,6 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
         "/" +
         APP_URL.menu.routes.settings.routes.user_groups.routes.management
     );
-  }
-
-  searchingState() {
-    let searchingShellModel: UserGroupModel[] &
-      ShellModel = [] as UserGroupModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new UserGroupModel());
-    }
-    searchingShellModel.isShell = true;
-    this.user_groups = searchingShellModel;
-    return searchingShellModel;
   }
 
   updateUserGroup(user_group: UserGroupModel) {

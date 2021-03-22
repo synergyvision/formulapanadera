@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { ViewWillEnter } from "@ionic/angular";
 import { of } from "rxjs";
 import { map } from "rxjs/operators";
-import { APP_URL, CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { CourseModel } from "src/app/core/models/course.model";
 import { ProductionModel } from "src/app/core/models/production.model";
@@ -57,13 +57,14 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
       upper: new FormControl(),
     });
 
-    this.searchingState();
+    this.productions = this.productionService.searchingState();
+    this.courses = this.courseService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
     this.productionService
       .getProductions()
       .subscribe(async (productions) => {
-        this.searchingState();
+        this.productions = this.productionService.searchingState();
         this.all_productions = productions as ProductionModel[] & ShellModel;
         this.searchList();
       });
@@ -111,7 +112,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
 
       const dataSourceWithShellObservable = DataStore.AppendShell(
         of(filteredProductions),
-        this.searchingState()
+        this.productionService.searchingState()
       );
 
       let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -165,34 +166,6 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
         }
       );
     }
-  }
-
-  courseDetails(course: CourseModel) {
-    if (course) {
-      this.router.navigateByUrl(
-        APP_URL.menu.name +
-        "/" +
-        APP_URL.menu.routes.settings.main +
-        "/" +
-        APP_URL.menu.routes.settings.routes.course.main +
-        "/" +
-        APP_URL.menu.routes.settings.routes.course.routes.details,
-        {
-          state: { course: JSON.parse(JSON.stringify(course)) },
-        }
-      );
-    }
-  }
-
-  searchingState() {
-    let searchingShellModel: ProductionModel[] &
-      ShellModel = [] as ProductionModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new ProductionModel());
-    }
-    searchingShellModel.isShell = true;
-    this.productions = searchingShellModel;
-    return searchingShellModel;
   }
 
   navigateToProductionInProcess(production: ProductionModel) {

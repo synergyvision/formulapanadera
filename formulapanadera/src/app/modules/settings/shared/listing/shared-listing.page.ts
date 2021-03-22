@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ActionSheetController, IonRouterOutlet, ModalController, ToastController, ViewWillEnter } from "@ionic/angular";
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { APP_URL, LOADING_ITEMS } from 'src/app/config/configuration';
+import { APP_URL } from 'src/app/config/configuration';
 import { ICONS } from 'src/app/config/icons';
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { IngredientModel } from "src/app/core/models/ingredient.model";
@@ -155,34 +155,16 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
 
   searchingState(segment: string) {
     if (segment == "ingredients") {
-      let searchingShellModel: IngredientModel[] &
-        ShellModel = [] as IngredientModel[] & ShellModel;
-      for (let index = 0; index < LOADING_ITEMS; index++) {
-        searchingShellModel.push(new IngredientModel());
-      }
-      searchingShellModel.isShell = true;
-      this.ingredients = searchingShellModel;
-      return searchingShellModel;
+      this.ingredients = this.ingredientService.searchingState();
+      return this.ingredients;
     }
     if (segment == "formulas") {
-      let searchingShellModel: FormulaModel[] &
-        ShellModel = [] as FormulaModel[] & ShellModel;
-      for (let index = 0; index < LOADING_ITEMS; index++) {
-        searchingShellModel.push(new FormulaModel());
-      }
-      searchingShellModel.isShell = true;
-      this.formulas = searchingShellModel;
-      return searchingShellModel;
+      this.formulas = this.formulaService.searchingState();
+      return this.formulas;
     }
     if (segment == "productions") {
-      let searchingShellModel: ProductionModel[] &
-        ShellModel = [] as ProductionModel[] & ShellModel;
-      for (let index = 0; index < LOADING_ITEMS; index++) {
-        searchingShellModel.push(new ProductionModel());
-      }
-      searchingShellModel.isShell = true;
-      this.productions = searchingShellModel;
-      return searchingShellModel;
+      this.productions = this.productionService.searchingState();
+      return this.productions;
     }
   }
 
