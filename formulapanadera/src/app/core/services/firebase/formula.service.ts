@@ -153,7 +153,6 @@ export class FormulaCRUDService {
 
   public async deleteIngredients(formulaData: FormulaModel, collection = this.collection): Promise<void>{
     const promises = formulaData.ingredients.map(async ingredient => {
-      console.log(`${collection}/${formulaData.id}/${COLLECTIONS.ingredients}`)
       let subcollection = `${collection}/${formulaData.id}/${COLLECTIONS.ingredients}`;
       await this.ingredientCRUDService.deleteSubIngredient(ingredient.ingredient, subcollection);
       await this.afs.collection(subcollection).doc(ingredient.ingredient.id).delete();

@@ -8,7 +8,6 @@ import { map } from "rxjs/operators";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { Router } from "@angular/router";
-import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 import { CourseModel } from "src/app/core/models/course.model";
 import { CourseService } from "src/app/core/services/course.service";
 
@@ -28,13 +27,13 @@ export class CourseListingPage implements OnInit {
 
   searchQuery: string;
   courses: CourseModel[] & ShellModel;
+  all_courses: CourseModel[] & ShellModel;
 
   user: UserResumeModel = new UserResumeModel();
 
   constructor(
     private router: Router,
     private courseService: CourseService,
-    private courseCRUDService: CourseCRUDService,
     private userStorageService: UserStorageService,
   ) {}
 
@@ -43,15 +42,11 @@ export class CourseListingPage implements OnInit {
     this.searchingState();
 
     this.user = await this.userStorageService.getUser();
-    this.courseCRUDService
-      .getMyCoursesDataSource(this.user.email)
+    this.courseService
+      .getMyCourses()
       .subscribe(async (courses) => {
         this.searchingState();
-        const promises = courses.map((course)=>this.courseCRUDService.getData(course))
-        await Promise.all(promises)
-        this.courseService.setMyCourses(
-          courses as CourseModel[] & ShellModel
-        );
+        this.all_courses = courses  as CourseModel[] & ShellModel;
         this.searchList();
       });
   }
@@ -90,9 +85,8 @@ export class CourseListingPage implements OnInit {
   // Search
 
   async searchList() {
-    let courses = this.courseService.getMyCourses();
-    if (courses) {
-      let filteredCourses = JSON.parse(JSON.stringify(courses));
+    if (this.all_courses) {
+      let filteredCourses = JSON.parse(JSON.stringify(this.all_courses));
       let filters = {
         query: this.searchQuery,
       };

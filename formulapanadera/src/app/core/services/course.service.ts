@@ -5,21 +5,21 @@ import { CourseModel, OrderedItemModel } from "../models/course.model";
 
 @Injectable()
 export class CourseService {
-  private courses: CourseModel[] & ShellModel;
+  private courses: BehaviorSubject<CourseModel[]> = new BehaviorSubject<CourseModel[]>(undefined);
   private shared_courses: BehaviorSubject<CourseModel[]> = new BehaviorSubject<CourseModel[]>(undefined);
 
   constructor() {}
   
-  public setMyCourses(courses: CourseModel[] & ShellModel) {
-    this.courses = courses;
+  public setMyCourses(courses: CourseModel[]) {
+    this.courses.next(courses);
   }
 
   public setSharedCourses(courses: CourseModel[]) {
     this.shared_courses.next(courses);
   }
 
-  public getMyCourses(): CourseModel[] {
-    return this.courses;
+  public getMyCourses(): Observable<CourseModel[]> {
+    return this.courses.asObservable();
   }
 
   public getSharedCourses(): Observable<CourseModel[]> {
@@ -27,7 +27,7 @@ export class CourseService {
   }
 
   public clearCourses() {
-    this.courses = undefined;
+    this.courses = new BehaviorSubject<CourseModel[]>(undefined);
     this.shared_courses = new BehaviorSubject<CourseModel[]>(undefined);
   }
 
