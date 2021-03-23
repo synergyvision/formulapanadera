@@ -176,7 +176,6 @@ export class CourseCRUDService {
   }
 
   public async updateGroup(groupData: UserGroupModel) {
-    console.log("AQUITEVOY")
     let courses = this.courseService.getMyCurrentCourses();
     courses.forEach(async (course: CourseModel) => {
       let courseHasGroup = false;
