@@ -52,7 +52,10 @@ export class SharedCourseItemComponent {
           "/" +
           APP_URL.menu.routes.production.routes.details,
         {
-          state: { production: JSON.parse(JSON.stringify(production)) },
+          state: {
+            production: JSON.parse(JSON.stringify(production)),
+            isCourse: true
+          },
         }
       );
     }
@@ -67,7 +70,10 @@ export class SharedCourseItemComponent {
           "/" +
           APP_URL.menu.routes.formula.routes.details,
         {
-          state: { formula: JSON.parse(JSON.stringify(formula)) },
+          state: {
+            formula: JSON.parse(JSON.stringify(formula)),
+            isCourse: true
+          },
         }
       );
     }
@@ -82,7 +88,10 @@ export class SharedCourseItemComponent {
           "/" +
           APP_URL.menu.routes.ingredient.routes.details,
         {
-          state: { ingredient: JSON.parse(JSON.stringify(ingredient)) },
+          state: {
+            ingredient: JSON.parse(JSON.stringify(ingredient)),
+            isCourse: true
+          },
         }
       );
     }

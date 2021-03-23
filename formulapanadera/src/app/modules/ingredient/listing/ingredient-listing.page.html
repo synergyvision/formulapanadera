@@ -197,7 +197,7 @@
       *ngIf="ingredients?.length > 0"
     >
       <app-title-divider
-        *ngIf="ingredients?.length > 0 && (courses?.length > 0 && segment == 'shared')"
+        *ngIf="!isLoading && (courses?.length > 0 && segment == 'shared')"
         [title]="'ingredients.name' | translate"
       ></app-title-divider>
       <app-ingredient-item

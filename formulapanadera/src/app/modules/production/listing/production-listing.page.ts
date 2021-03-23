@@ -36,6 +36,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
   all_productions: ProductionModel[] & ShellModel;
 
   segment: string = "mine";
+  isLoading: boolean = true;
   user_email: string;
 
   production_in_process: ProductionModel;
@@ -66,6 +67,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
       .subscribe(async (productions) => {
         this.productions = this.productionService.searchingState();
         this.all_productions = productions as ProductionModel[] & ShellModel;
+        this.isLoading = true;
         this.searchList();
       });
     this.courseService.getSharedCourses().subscribe(async courses => {
@@ -134,12 +136,14 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
 
       updateSearchObservable.subscribe((value) => {
         this.productions = this.productionService.sortProductions(value);
+        this.isLoading = value.isShell;
       });
     }
   }
 
   segmentChanged(ev: any) {
     this.segment = ev.detail.value;
+    this.isLoading = true;
     this.searchList();
   }
 

@@ -37,6 +37,7 @@ export class IngredientListingPage implements OnInit {
   all_ingredients: IngredientModel[] & ShellModel;
 
   segment: string = "mine";
+  isLoading: boolean = true;
 
   user_email: string;
 
@@ -76,7 +77,8 @@ export class IngredientListingPage implements OnInit {
       .getIngredients()
       .subscribe((ingredients) => {
         this.ingredients = this.ingredientService.searchingState();
-        this.all_ingredients = ingredients  as IngredientModel[] & ShellModel;
+        this.all_ingredients = ingredients as IngredientModel[] & ShellModel;
+        this.isLoading = true;
         this.searchList();
       });
     this.courseService.getSharedCourses().subscribe(async courses => {
@@ -161,12 +163,14 @@ export class IngredientListingPage implements OnInit {
 
       updateSearchObservable.subscribe((value) => {
         this.ingredients = this.ingredientService.sortIngredients(value);
+        this.isLoading = value.isShell;
       });
     }
   }
 
   segmentChanged(ev: any) {
     this.segment = ev.detail.value;
+    this.isLoading = true;
     this.searchList();
   }
 

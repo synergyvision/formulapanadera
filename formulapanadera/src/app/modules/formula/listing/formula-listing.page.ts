@@ -35,6 +35,7 @@ export class FormulaListingPage implements OnInit {
   formulas: FormulaModel[] & ShellModel;
 
   segment: string = "mine";
+  isLoading: boolean = true;
 
   user_email: string;
 
@@ -65,7 +66,8 @@ export class FormulaListingPage implements OnInit {
       .getFormulas()
       .subscribe((formulas) => {
         this.formulas = this.formulaService.searchingState();
-        this.all_formulas = formulas  as FormulaModel[] & ShellModel;
+        this.all_formulas = formulas as FormulaModel[] & ShellModel;
+        this.isLoading = true;
         this.searchList();
       });
     this.courseService.getSharedCourses().subscribe(async courses => {
@@ -136,12 +138,14 @@ export class FormulaListingPage implements OnInit {
 
       updateSearchObservable.subscribe((value) => {
         this.formulas = this.formulaService.sortFormulas(value);
+        this.isLoading = value.isShell;
       });
     }
   }
 
   segmentChanged(ev: any) {
     this.segment = ev.detail.value;
+    this.isLoading = true;
     this.searchList();
   }
 

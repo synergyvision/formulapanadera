@@ -12,6 +12,7 @@ import { IngredientModel } from "src/app/core/models/ingredient.model";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { ProductionModel } from "src/app/core/models/production.model";
 import { CourseService } from "src/app/core/services/course.service";
+import { Location } from '@angular/common';
 
 @Component({
   selector: "app-course-details",
@@ -42,6 +43,7 @@ export class CourseDetailsPage implements OnInit {
     private alertController: AlertController,
     private loadingController: LoadingController,
     private toastController: ToastController,
+    private location: Location
   ) {}
 
   async ngOnInit() {
@@ -273,5 +275,9 @@ export class CourseDetailsPage implements OnInit {
         );
       }
     }
+  }
+
+  back() {
+    this.location.back();
   }
 }

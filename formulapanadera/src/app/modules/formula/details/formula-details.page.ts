@@ -57,6 +57,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   ingredients: Array<IngredientPercentageModel>;
   steps: Array<StepDetailsModel>;
   ingredients_formula: Array<any> = [];
+  isCourse: boolean = false;
 
   showOrganolepticCharacteristics: boolean;
   showReferences: boolean;
@@ -101,6 +102,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       let navParams = this.router.getCurrentNavigation().extras.state;
       if (navParams) {
         this.formula = navParams.formula;
+        this.isCourse = navParams.isCourse ? navParams.isCourse : false;
       }
 
       this.units = this.formula.units;
@@ -230,41 +232,43 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         },
       });
     }
-    if (
-      this.formula.user.owner == current_user
-    ) {
-      buttons.push({
-        text: this.languageService.getTerm("action.update"),
-        icon: ICONS.create,
-        cssClass: "action-icon",
-        handler: () => {
-          this.updateFormula();
-        },
-      });
-    }
-    if (
-      this.formula.user.owner == current_user && (this.is_modifier || this.formula.user.creator.email == current_user)
-    ) {
-      buttons.push({
-        text: this.languageService.getTerm("action.share"),
-        icon: ICONS.share,
-        cssClass: "action-icon",
-        handler: async () => {
-          let private_ing: boolean = false
-          let share: boolean = true
-          this.formula.ingredients.forEach(ingredient => {
-            if (ingredient.ingredient.user && !ingredient.ingredient.user.public) {
-              private_ing = true
+    if (!this.isCourse) {
+      if (
+        this.formula.user.owner == current_user
+      ) {
+        buttons.push({
+          text: this.languageService.getTerm("action.update"),
+          icon: ICONS.create,
+          cssClass: "action-icon",
+          handler: () => {
+            this.updateFormula();
+          },
+        });
+      }
+      if (
+        this.formula.user.owner == current_user && (this.is_modifier || this.formula.user.creator.email == current_user)
+      ) {
+        buttons.push({
+          text: this.languageService.getTerm("action.share"),
+          icon: ICONS.share,
+          cssClass: "action-icon",
+          handler: async () => {
+            let private_ing: boolean = false
+            let share: boolean = true
+            this.formula.ingredients.forEach(ingredient => {
+              if (ingredient.ingredient.user && !ingredient.ingredient.user.public) {
+                private_ing = true
+              }
+            })
+            if (private_ing) {
+              share = await this.sharePrivateIngredientsFormulaQuestion()
             }
-          })
-          if (private_ing) {
-            share = await this.sharePrivateIngredientsFormulaQuestion()
-          }
-          if (share == true) {
-            this.shareFormula();
-          }
-        },
-      });
+            if (share == true) {
+              this.shareFormula();
+            }
+          },
+        });
+      }
     }
     if (this.formula.user.owner == current_user || this.formula.user.can_clone) {
       buttons.push({
@@ -286,7 +290,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         },
       },
     );
-    if (this.formula.user.owner == current_user) {
+    if (!this.isCourse && this.formula.user.owner == current_user) {
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
         icon: ICONS.trash,

@@ -128,7 +128,7 @@
       *ngIf="productions?.length > 0"
     >
       <app-title-divider
-        *ngIf="productions?.length > 0 && (courses?.length > 0 && segment == 'shared')"
+        *ngIf="!isLoading && (courses?.length > 0 && segment == 'shared')"
         [title]="'production.name' | translate"
       ></app-title-divider>
       <app-production-item
