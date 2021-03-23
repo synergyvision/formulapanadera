@@ -53,6 +53,7 @@ export class TabsPage implements OnInit, OnDestroy {
     this.timeService.startCurrentTime();
     let user = await this.userStorageService.getUser();
     this.user = await this.userCRUDService.getUser(user.email)
+    await this.userStorageService.setUser(this.user);
     this.ingredientsSubscriber = this.ingredientCRUDService
       .getIngredientsDataSource(this.user.email)
       .subscribe(async (ingredients) => {

@@ -114,9 +114,9 @@
     </ion-list>
   </span>
 
-  <app-divider *ngIf="user.email === course.user.owner && course.user.shared_groups?.length > 0"></app-divider>
+  <app-divider *ngIf="user.email === course.user.owner && (course.user.shared_groups?.length > 0 || course.user.shared_users?.length > 0)"></app-divider>
 
-  <ion-row *ngIf="user.email === course.user.owner && course.user.shared_groups?.length > 0">
+  <ion-row *ngIf="user.email === course.user.owner && (course.user.shared_groups?.length > 0 || course.user.shared_users?.length > 0)">
     <ion-col class="detail-col">
       <app-show-hide-content
         (click)="showUserGroups = !showUserGroups"
@@ -134,6 +134,12 @@
           [even]="(i%2==0)"
           [clickable]="false"
         ></app-user-group-item>
+        <app-user-item
+          *ngFor="let user of course.user.shared_users; index as i"
+          [user]="user"
+          [even]="course.user.shared_groups?.length%2==0 ? (i%2==0) : (i%2!=0)"
+          [clickable]="false"
+        ></app-user-item>
       </ion-list>
     </ion-col>
   </ion-row>

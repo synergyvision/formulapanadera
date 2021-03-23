@@ -23,6 +23,10 @@ export class CourseService {
     return this.courses.asObservable();
   }
 
+  public getMyCurrentCourses(): CourseModel[] {
+    return this.courses.getValue();
+  }
+
   public getSharedCourses(): Observable<CourseModel[]> {
     return this.shared_courses.asObservable();
   }

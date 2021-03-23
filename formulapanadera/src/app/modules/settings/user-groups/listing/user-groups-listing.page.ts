@@ -88,7 +88,7 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
   }
 
   updateUserGroup(user_group: UserGroupModel) {
-    if (user_group.name) {
+    if (user_group.id) {
       this.router.navigateByUrl(
         APP_URL.menu.name +
         "/" +

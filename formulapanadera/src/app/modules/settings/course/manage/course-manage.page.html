@@ -207,7 +207,7 @@
 
           <ion-icon
             button
-            (click)="userGroupsPicker()"
+            (click)="shareCourse()"
             class="pick-item"
             [name]="ICONS.add"
           ></ion-icon>
@@ -231,6 +231,25 @@
             color="primary"
             button
             (click)="deleteUserGroup(group)"
+          ></ion-icon>
+        </ion-item>
+        <ion-item *ngFor="let user of course.user.shared_users" class="input-item">
+          <ion-row class="item-wrapper">
+            <ion-col class="wrapper">
+              <ion-row>
+                <ion-col>
+                  <h2 class="item-name">{{user.name}}</h2>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-icon
+            [name]="ICONS.close"
+            class="delete-item"
+            slot="end"
+            color="primary"
+            button
+            (click)="deleteUser(user)"
           ></ion-icon>
         </ion-item>
       </ion-list>

@@ -77,13 +77,13 @@ export class UserGroupPickerModal implements OnInit {
   }
 
   clickUserGroup(user_group: UserGroupModel) {
-    if (user_group !== undefined && user_group.name !== undefined) {
+    if (user_group !== undefined && user_group.id !== undefined) {
       if (this.selectedGroups === undefined) {
         this.selectedGroups = [];
       }
       if (this.isSelected(user_group)) {
         for (let index = 0; index < this.selectedGroups.length; index++) {
-          if (this.selectedGroups[index].name === user_group.name)
+          if (this.selectedGroups[index].id === user_group.id)
             this.selectedGroups.splice(index, 1);
         }
       } else {
@@ -106,7 +106,7 @@ export class UserGroupPickerModal implements OnInit {
     let isSelected = false;
     if (this.selectedGroups !== undefined) {
       this.selectedGroups.map((selected) => {
-        if (user_group.name == selected.name) {
+        if (user_group.id == selected.id) {
           isSelected = true;
         }
       });

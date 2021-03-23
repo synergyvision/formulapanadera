@@ -4,13 +4,17 @@ import { Observable } from "rxjs";
 import { map } from 'rxjs/operators';
 
 import { COLLECTIONS } from "src/app/config/firebase";
-import { UserModel } from '../../models/user.model';
+import { UserGroupModel, UserModel } from '../../models/user.model';
+import { CourseCRUDService } from "./course.service";
 
 @Injectable()
 export class UserCRUDService {
   collection = COLLECTIONS.user;
 
-  constructor(private afs: AngularFirestore) {}
+  constructor(
+    private afs: AngularFirestore,
+    private courseCRUDService: CourseCRUDService
+  ) { }
 
   /*
     User Collection
@@ -50,6 +54,31 @@ export class UserCRUDService {
       .collection(this.collection)
       .doc(userData.id)
       .set(JSON.parse(JSON.stringify(data)));
+  }
+
+  public createUserGroup(userData: UserModel, groupData: UserGroupModel): Promise<void> {
+    let id = this.afs.createId();
+    groupData.id = id;
+    userData.user_groups.push(groupData);
+    return this.afs
+      .collection(this.collection)
+      .doc(userData.id)
+      .set(JSON.parse(JSON.stringify(userData)));
+  }
+
+  public async updateUserGroup(userData: UserModel, groupData: UserGroupModel): Promise<void> {
+    userData.user_groups.forEach(async (group, group_index) => {
+      if (group.id == groupData.id) {
+        userData.user_groups[group_index] = groupData;
+        if (userData.instructor) {
+          await this.courseCRUDService.updateGroup(groupData);
+        }
+      }
+    })
+    return this.afs
+      .collection(this.collection)
+      .doc(userData.id)
+      .set(JSON.parse(JSON.stringify(userData)));
   }
 
   public deleteUser(userKey: string): Promise<void> {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { UserGroupModel, UserModel } from "src/app/core/models/user.model";
+import { UserGroupModel, UserModel, UserResumeModel } from "src/app/core/models/user.model";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { CourseModel, OrderedItemModel } from "src/app/core/models/course.model";
@@ -7,7 +7,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { IngredientModel } from "src/app/core/models/ingredient.model";
-import { IonRouterOutlet, LoadingController, ModalController, ToastController, ViewWillEnter } from "@ionic/angular";
+import { AlertController, IonRouterOutlet, LoadingController, ModalController, ToastController, ViewWillEnter } from "@ionic/angular";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { FormulaModel, IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { LanguageService } from "src/app/core/services/language.service";
@@ -17,6 +17,7 @@ import { ProductionPickerModal } from "src/app/shared/modal/production/productio
 import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group-picker.modal";
 import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 import { CourseService } from "src/app/core/services/course.service";
+import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 
 @Component({
   selector: "app-course-manage",
@@ -49,6 +50,8 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
     private loadingController: LoadingController,
     private modalController: ModalController,
     private toastController: ToastController,
+    private alertController: AlertController,
+    private userCRUDService: UserCRUDService,
   ) {}
 
   async ngOnInit() {
@@ -120,6 +123,16 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
   async sendCourse() {
     this.course.name = this.manageCourseForm.value.name;
     this.course.description = this.manageCourseForm.value.description;
+
+    this.course.user.shared_references = [];
+    this.course.user.shared_groups.forEach(userGroup => {
+      userGroup.users.forEach(user => {
+        this.course.user.shared_references.push(user.email);
+      })
+    })
+    this.course.user.shared_users.forEach(user => {
+      this.course.user.shared_references.push(user.email);
+    })
 
     this.saveOrder();
     
@@ -367,6 +380,91 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
     );
   }
 
+  async shareCourse() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.share"),
+      message: this.languageService.getTerm("formulas.share.options.instructions"),
+      cssClass: "alert share-alert",
+      buttons: [
+        {
+          text: this.languageService.getTerm("formulas.share.options.one"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            this.shareOne();
+          },
+        },
+        {
+          text: this.languageService.getTerm("formulas.share.options.group"),
+          cssClass: "confirm-alert-accept",
+          handler: () => {
+            this.userGroupsPicker();
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async shareOne() {
+    const alert = await this.alertController.create({
+      header: this.languageService.getTerm("action.share"),
+      message: this.languageService.getTerm("formulas.share.instructions"),
+      cssClass: "alert share-alert",
+      inputs: [
+        {
+          name: "email",
+          type: "email",
+          placeholder: this.languageService.getTerm("input.email"),
+        },
+      ],
+      buttons: [
+        {
+          text: this.languageService.getTerm("action.cancel"),
+          role: "cancel",
+          handler: () => {},
+        },
+        {
+          text: this.languageService.getTerm("action.ok"),
+          cssClass: "confirm-alert-accept",
+          handler: (data) => {
+            this.userCRUDService.getUser(data.email)
+              .then((user) => {
+                this.shareCourseToEmail({ name: user.name, email: user.email })
+              }).catch(() => {
+                this.presentToast(false);
+              })
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  shareCourseToEmail(user_to_share: UserResumeModel) {
+    let shared: boolean = false
+
+    if (this.course.user.shared_users && this.course.user.shared_users.length > 0) {
+      shared = false;
+      this.course.user.shared_users.forEach(user => {
+        if (user.email == user_to_share.email) {
+          shared = true
+        }
+      })
+      if (shared == false && user_to_share.email !== this.user.email) {
+        this.course.user.shared_users.push(user_to_share);
+      }
+    } else {
+      this.course.user.shared_users = [user_to_share];
+    }
+  }
+
+  deleteUser(user: UserResumeModel) {
+    this.course.user.shared_users.splice(
+      this.course.user.shared_users.indexOf(user),
+      1
+    );
+  }
+
   async userGroupsPicker() {
     let aux_user_groups: UserGroupModel[] = this.course.user.shared_groups ? this.course.user.shared_groups : [];
     const modal = await this.modalController.create({
@@ -382,26 +480,10 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
     if (data !== undefined) {
       let user_groups: UserGroupModel[] = data.user_groups as UserGroupModel[]
       this.course.user.shared_groups = user_groups;
-      this.course.user.shared_references = [];
-      this.course.user.shared_groups.forEach(userGroup => {
-        userGroup.users.forEach(user => {
-          this.course.user.shared_references.push(user.email);
-        })
-      })
     }
   }
 
   deleteUserGroup(userGroup: UserGroupModel) {
-    this.user.user_groups.forEach(group => {
-      if (group.name == userGroup.name) {
-        group.users.forEach(user => {
-          this.course.user.shared_references.splice(
-            this.course.user.shared_references.indexOf(user.email),
-            1
-          );
-        })
-      }
-    })
     this.course.user.shared_groups.splice(
       this.course.user.shared_groups.indexOf(userGroup),
       1

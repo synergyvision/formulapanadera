@@ -22,7 +22,6 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
 
   user_group: UserGroupModel = new UserGroupModel();
   manageUserGroupForm: FormGroup;
-  original_name: string = "";
 
   user: UserModel = new UserModel()
   
@@ -42,7 +41,6 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
     this.user_group = new UserGroupModel();
     this.user_group.users = [];
     this.update = false;
-    this.original_name = "";
     if (state == undefined) {
       this.manageUserGroupForm = new FormGroup({
         name: new FormControl(null, Validators.required),
@@ -56,7 +54,7 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
         description: new FormControl(state.user_group.description, null),
         image_url: new FormControl(state.user_group.image_url, null),
       });
-      this.original_name = state.user_group.name;
+      this.user_group.id = state.user_group.id;
       this.user_group.name = state.user_group.name;
       this.user_group.description = state.user_group.description;
       this.user_group.image_url = state.user_group.image_url;
@@ -85,7 +83,7 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
     let group_exists = false;
     if (this.user.user_groups && this.user.user_groups.length>0) {
       this.user.user_groups.forEach((group) => {
-        if (group.name == this.manageUserGroupForm.value.name && group.name !== this.original_name) {
+        if (group.name == this.manageUserGroupForm.value.name && group.id !== this.user_group.id) {
           group_exists = true;
         }
       });
@@ -94,23 +92,13 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
       loading.dismiss();
       this.presentToast(false, true);
     } else {
+      this.user_group.name = this.manageUserGroupForm.value.name;
+      this.user_group.description = this.manageUserGroupForm.value.description;
+      this.user_group.image_url = this.manageUserGroupForm.value.image_url;
+
       if (this.update) {
-        this.user.user_groups.forEach((group, group_index) => {
-          if (group.name == this.user_group.name) {
-            this.user.user_groups[group_index].name = this.manageUserGroupForm.value.name;
-            this.user.user_groups[group_index].description = this.manageUserGroupForm.value.description;
-            this.user.user_groups[group_index].image_url = this.manageUserGroupForm.value.image_url;
-            this.user.user_groups[group_index].users = this.user_group.users;
-          }
-        })
-      } else {
-        this.user_group.name = this.manageUserGroupForm.value.name;
-        this.user_group.description = this.manageUserGroupForm.value.description;
-        this.user_group.image_url = this.manageUserGroupForm.value.image_url;
-        this.user.user_groups.push(this.user_group)
-      }
-      this.userCRUDService
-        .updateUser(this.user)
+        this.userCRUDService
+        .updateUserGroup(this.user, this.user_group)
         .then(async () => {
           await this.userStorageService
             .setUser(this.user)
@@ -133,6 +121,32 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
         .finally(async () => {
           await loading.dismiss();
         });
+      } else {
+        this.userCRUDService
+        .createUserGroup(this.user, this.user_group)
+        .then(async () => {
+          await this.userStorageService
+            .setUser(this.user)
+            .then(() => {
+              this.router.navigateByUrl(
+                  APP_URL.menu.name +
+                  "/" +
+                  APP_URL.menu.routes.settings.main +
+                  "/" +
+                APP_URL.menu.routes.settings.routes.user_groups.main,
+                {
+                  replaceUrl: true
+                }
+              );
+            });
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
+      }
     }
   }
 
@@ -220,7 +234,7 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
   async deleteUserGroup(user_group: UserGroupModel) {
     let user = await this.userStorageService.getUser();
     user.user_groups.forEach((group, index) => {
-      if (group.name == user_group.name) {
+      if (group.id == user_group.id) {
         user.user_groups.splice(index, 1)
       }
     })

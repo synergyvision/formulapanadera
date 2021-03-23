@@ -20,6 +20,7 @@ export class UserItemComponent {
   @Input() user: UserResumeModel;
   @Input() even: boolean = false;
   @Input() selected: boolean = false;
+  @Input() clickable: boolean = true;
 
   constructor() { }
 }

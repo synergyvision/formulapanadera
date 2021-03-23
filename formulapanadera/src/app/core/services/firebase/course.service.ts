@@ -10,6 +10,8 @@ import { IngredientModel } from "../../models/ingredient.model";
 import { FormulaCRUDService } from "./formula.service";
 import { ProductionCRUDService } from "./production.service";
 import { IngredientCRUDService } from "./ingredient.service";
+import { UserGroupModel } from "../../models/user.model";
+import { CourseService } from "../course.service";
 
 @Injectable()
 export class CourseCRUDService {
@@ -17,6 +19,7 @@ export class CourseCRUDService {
 
   constructor(
     private afs: AngularFirestore,
+    private courseService: CourseService,
     private ingredientCRUDService: IngredientCRUDService,
     private formulaCRUDService: FormulaCRUDService,
     private productionCRUDService: ProductionCRUDService
@@ -170,6 +173,36 @@ export class CourseCRUDService {
     // Set formulas
     await this.createData(`${this.collection}/${courseData.id}`, courseData);
     await this.afs.collection(this.collection).doc(courseData.id).set(course);
+  }
+
+  public async updateGroup(groupData: UserGroupModel) {
+    console.log("AQUITEVOY")
+    let courses = this.courseService.getMyCurrentCourses();
+    courses.forEach(async (course: CourseModel) => {
+      let courseHasGroup = false;
+      course.user.shared_groups.forEach((courseGroup, index) => {
+        if (courseGroup.id == groupData.id) {
+          courseHasGroup = true;
+          course.user.shared_groups[index] = groupData;
+        }
+      })
+      if (courseHasGroup) {
+        delete course.productions;
+        delete course.formulas;
+        delete course.ingredients;
+        course.user.shared_references = [];
+        course.user.shared_groups.forEach(userGroup => {
+          userGroup.users.forEach(user => {
+            course.user.shared_references.push(user.email);
+          })
+        })
+        course.user.shared_users.forEach(user => {
+          course.user.shared_references.push(user.email);
+        })
+        let new_course = JSON.parse(JSON.stringify(course)) as CourseModel
+        await this.afs.collection(this.collection).doc(new_course.id).set(new_course);
+      }
+    })
   }
 
   public async deleteCourse(courseData: CourseModel): Promise<void> {

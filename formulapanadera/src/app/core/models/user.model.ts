@@ -22,6 +22,7 @@ export class ModifierModel extends UserResumeModel {
 }
 
 export class UserGroupModel {
+  id: string;
   name: string;
   image_url: string;
   description: string;
