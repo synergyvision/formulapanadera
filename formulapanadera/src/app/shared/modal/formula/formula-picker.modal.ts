@@ -3,12 +3,11 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { ModalController } from "@ionic/angular";
 import { of } from "rxjs";
 import { map } from "rxjs/operators";
-import { CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { CURRENCY } from "src/app/config/configuration";
 import { FORMULA_WARMING_TIME } from "src/app/config/formula";
 import { ICONS } from "src/app/config/icons";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { FormulaNumberModel } from "src/app/core/models/production.model";
-import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DataStore } from "../../shell/data-store";
@@ -35,6 +34,7 @@ export class FormulaPickerModal implements OnInit {
 
   currency = CURRENCY;
   formulas: FormulaModel[] & ShellModel;
+  all_formulas: FormulaModel[] & ShellModel;
 
   segment: string = "mine";
 
@@ -42,7 +42,6 @@ export class FormulaPickerModal implements OnInit {
 
   constructor(
     private formulaService: FormulaService,
-    private formulaCRUDService: FormulaCRUDService,
     public modalController: ModalController,
     private userStorageService: UserStorageService
   ) {}
@@ -57,38 +56,30 @@ export class FormulaPickerModal implements OnInit {
       upper: new FormControl(),
     });
 
-    this.searchingState();
+    this.formulas = this.formulaService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
-    if (!this.formulaService.getFormulas()) {
-      this.formulaCRUDService
-        .getFormulasDataSource(this.user_email)
-        .subscribe(async (formulas) => {
-          this.searchingState();
-          const promises = formulas.map((form) => this.formulaCRUDService.getIngredients(form));
-          await Promise.all(promises);
-          if (this.forProduction) {
-            let aux: FormulaModel[] = []
-            formulas.forEach(formula => {
-              if (formula.steps && formula.steps.length > 0) {
-                aux.push(formula)
-              }
-            })
-            formulas = aux;
-          }
-          this.formulaService.setFormulas(
-            formulas as FormulaModel[] & ShellModel
-          );
-          this.searchList();
-        });
-    } else {
-      this.searchList();
-    }
+    this.formulaService
+      .getFormulas()
+      .subscribe(async (formulas) => {
+        this.formulas = this.formulaService.searchingState();
+        if (this.forProduction) {
+          let aux: FormulaModel[] = []
+          formulas.forEach(formula => {
+            if (formula.steps && formula.steps.length > 0) {
+              aux.push(formula)
+            }
+          })
+          formulas = aux;
+        }
+        this.all_formulas = formulas as FormulaModel[] & ShellModel;
+        this.searchList();
+      });
   }
 
   searchList() {
     let filteredFormulas = JSON.parse(
-      JSON.stringify(this.formulaService.getFormulas())
+      JSON.stringify(this.all_formulas ? this.all_formulas : [])
     );
     let filters = {
       hydration: {
@@ -120,7 +111,7 @@ export class FormulaPickerModal implements OnInit {
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredFormulas),
-      this.searchingState()
+      this.formulaService.searchingState()
     );
 
     let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -190,16 +181,5 @@ export class FormulaPickerModal implements OnInit {
       });
     }
     return isSelected;
-  }
-
-  searchingState() {
-    let searchingShellModel: FormulaModel[] &
-      ShellModel = [] as FormulaModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new FormulaModel());
-    }
-    searchingShellModel.isShell = true;
-    this.formulas = searchingShellModel;
-    return searchingShellModel;
   }
 }

@@ -37,6 +37,7 @@ export class ProductionDetailsPage implements OnInit {
   production: ProductionModel = new ProductionModel();
   original_production: ProductionModel = new ProductionModel();
   formulas: Array<FormulaPresentModel & { show: boolean }>;
+  isCourse: boolean = false;
 
   production_in_process: boolean = false;
 
@@ -73,6 +74,7 @@ export class ProductionDetailsPage implements OnInit {
           JSON.stringify(navParams.production)
         );
         this.production_in_process = false;
+        this.isCourse = navParams.isCourse ? navParams.isCourse : false;
       }
 
       this.calculateFormulas();
@@ -197,29 +199,31 @@ export class ProductionDetailsPage implements OnInit {
   async presentOptions() {
     let current_user = this.user.email;
     let buttons = [];
-    if (
-      this.production.user.owner == current_user
-    ) {
-      buttons.push({
-        text: this.languageService.getTerm("action.update"),
-        icon: ICONS.create,
-        cssClass: "action-icon",
-        handler: () => {
-          this.updateProduction();
-        },
-      });
-    }
-    if (
-      this.production.user.owner == current_user && (this.is_modifier || this.production.user.creator.email == current_user)
-    ) {
-      buttons.push({
-        text: this.languageService.getTerm("action.share"),
-        icon: ICONS.share,
-        cssClass: "action-icon",
-        handler: () => {
-          this.shareProduction();
-        },
-      });
+    if (!this.isCourse) {
+      if (
+        this.production.user.owner == current_user
+      ) {
+        buttons.push({
+          text: this.languageService.getTerm("action.update"),
+          icon: ICONS.create,
+          cssClass: "action-icon",
+          handler: () => {
+            this.updateProduction();
+          },
+        });
+      }
+      if (
+        this.production.user.owner == current_user && (this.is_modifier || this.production.user.creator.email == current_user)
+      ) {
+        buttons.push({
+          text: this.languageService.getTerm("action.share"),
+          icon: ICONS.share,
+          cssClass: "action-icon",
+          handler: () => {
+            this.shareProduction();
+          },
+        });
+      }
     }
     if (this.production.user.owner == current_user || this.production.user.can_clone) {
       buttons.push({
@@ -231,7 +235,7 @@ export class ProductionDetailsPage implements OnInit {
         },
       });
     }
-    if (this.production.user.owner == current_user) {
+    if (!this.isCourse && this.production.user.owner == current_user) {
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
         icon: ICONS.trash,
@@ -391,7 +395,7 @@ export class ProductionDetailsPage implements OnInit {
     this.original_production.user = this.production.user;
 
     this.productionCRUDService
-      .updateProduction(this.production)
+      .updateProduction(this.production, this.production)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -536,7 +540,7 @@ export class ProductionDetailsPage implements OnInit {
       this.production.user.can_clone = value
     }
     this.productionCRUDService
-      .updateProduction(this.production)
+      .updateProduction(this.production, this.production)
       .then(() => {})
       .catch(() => {
         this.presentToast(false);
@@ -544,11 +548,5 @@ export class ProductionDetailsPage implements OnInit {
       .finally(async () => {
         await loading.dismiss();
       });
-  }
-
-  returnToList() {
-    this.router.navigateByUrl(
-      APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
-    );
   }
 }

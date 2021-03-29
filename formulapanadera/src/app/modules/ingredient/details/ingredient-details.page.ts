@@ -30,6 +30,7 @@ export class IngredientDetailsPage implements OnInit {
 
   ingredient: IngredientModel = new IngredientModel();
   ingredients_formula: IngredientPercentageModel[] = [];
+  isCourse: boolean = false;
   type: string = "simple";
 
   currency = CURRENCY;
@@ -68,6 +69,7 @@ export class IngredientDetailsPage implements OnInit {
       let navParams = this.router.getCurrentNavigation().extras.state;
       if (navParams) {
         this.ingredient = navParams.ingredient;
+        this.isCourse = navParams.isCourse ? navParams.isCourse : false;
       }
 
        if (this.ingredient.formula) {
@@ -98,33 +100,35 @@ export class IngredientDetailsPage implements OnInit {
   async presentOptions() {
     let current_user = this.user.email;
     let buttons = [];
-    if (
-      this.ingredient.user.owner == current_user
-    ) {
-      buttons.push(
-        {
-          text: this.languageService.getTerm("action.update"),
-          icon: ICONS.create,
-          cssClass: "action-icon",
-          handler: () => {
-            this.updateIngredient();
-          },
-        }
-      );
-    }
-    if (
-      this.ingredient.user.owner == current_user && (this.is_modifier || this.ingredient.user.creator.email == current_user)
-    ) {
-      buttons.push(
-        {
-          text: this.languageService.getTerm("action.share"),
-          icon: ICONS.share,
-          cssClass: "action-icon",
-          handler: () => {
-            this.shareIngredient();
-          },
-        }
-      );
+    if (!this.isCourse) {
+      if (
+        this.ingredient.user.owner == current_user
+      ) {
+        buttons.push(
+          {
+            text: this.languageService.getTerm("action.update"),
+            icon: ICONS.create,
+            cssClass: "action-icon",
+            handler: () => {
+              this.updateIngredient();
+            },
+          }
+        );
+      }
+      if (
+        this.ingredient.user.owner == current_user && (this.is_modifier || this.ingredient.user.creator.email == current_user)
+      ) {
+        buttons.push(
+          {
+            text: this.languageService.getTerm("action.share"),
+            icon: ICONS.share,
+            cssClass: "action-icon",
+            handler: () => {
+              this.shareIngredient();
+            },
+          }
+        );
+      }
     }
     if (this.ingredient.user.owner == current_user || this.ingredient.user.can_clone) {
       buttons.push({
@@ -136,7 +140,7 @@ export class IngredientDetailsPage implements OnInit {
         },
       });
     }
-    if (this.ingredient.user.owner == current_user) {
+    if (!this.isCourse && this.ingredient.user.owner == current_user) {
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
         icon: ICONS.trash,
@@ -295,7 +299,7 @@ export class IngredientDetailsPage implements OnInit {
     }
 
     this.ingredientCRUDService
-      .updateIngredient(this.ingredient)
+      .updateIngredient(this.ingredient, this.ingredient)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -439,7 +443,7 @@ export class IngredientDetailsPage implements OnInit {
       this.ingredient.user.can_clone = value
     }
     this.ingredientCRUDService
-      .updateIngredient(this.ingredient)
+      .updateIngredient(this.ingredient, this.ingredient)
       .then(() => {})
       .catch(() => {
         this.presentToast(false);
@@ -447,11 +451,5 @@ export class IngredientDetailsPage implements OnInit {
       .finally(async () => {
         await loading.dismiss();
       });
-  }
-
-  returnToList() {
-    this.router.navigateByUrl(
-      APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-    );
   }
 }

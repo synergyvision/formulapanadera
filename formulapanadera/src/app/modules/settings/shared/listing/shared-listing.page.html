@@ -28,14 +28,14 @@
     [value]="segment"
     class="segment"
   >
-    <ion-segment-button value="ingredients">
-      <ion-label>{{'ingredients.name' | translate}}</ion-label>
+    <ion-segment-button value="productions">
+      <ion-label>{{'production.name' | translate}}</ion-label>
     </ion-segment-button>
     <ion-segment-button value="formulas">
       <ion-label>{{'formulas.name' | translate}}</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="productions">
-      <ion-label>{{'production.name' | translate}}</ion-label>
+    <ion-segment-button value="ingredients">
+      <ion-label>{{'ingredients.name' | translate}}</ion-label>
     </ion-segment-button>
   </ion-segment>
   <span *ngIf="segment == 'ingredients'">

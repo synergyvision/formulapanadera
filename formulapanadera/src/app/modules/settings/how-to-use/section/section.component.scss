@@ -1,0 +1,91 @@
+.autoplay-options {
+	display: flex;
+	position: absolute;
+	z-index: 999;
+	width: 100%;
+	ion-input {
+		--padding-end: 0
+	}
+	ion-button ion-icon {
+		color: lightslategray;
+		stroke: lightslategray
+	}
+}
+ion-grid{
+	display: flex;
+	flex-flow: column;
+	height: 100%;
+	padding: 0;
+}
+.seconds-input {
+	background-color: transparent;
+	--background: transparent;
+	--inner-padding-start: 0;
+	--padding-start: 0;
+	color: lightslategray;
+	ion-input{
+		text-align: right;
+		color: lightslategray;
+	}
+}
+.remaining-space {
+	position: absolute;
+	display: flex;
+	flex-grow: 1;
+	flex-basis: auto;
+	height: 100%;
+	width: 100%;
+}
+.top {
+	top: 0
+}
+.bottom {
+	bottom: 0;
+}
+.menu-button {
+	--padding-end: 0;
+	--padding-start: 0;
+}
+.all-cards {
+	height: 100%;
+	width: 100%;
+	--bullet-background: black;
+	--bullet-background-active: var(--ion-color-secondary);
+	.flashcard {
+		height: 100%;
+		width: 100%;
+		.text-container {
+			height: 75%;
+			overflow: auto;
+			display: flex;
+			.text {
+				max-height: 100%;
+				padding: 0 8px;
+				height: auto;
+				display: flex;
+				overflow: auto;
+				flex-direction: column;
+				align-self: center;
+				text-align: left;
+			}
+		}
+		.front {
+			color: var(--ion-color-dark);
+		}
+		// .back {
+		// 	// background-color: lightcyan;
+		// }
+	}
+}
+.slides-rep {
+	display: flex;
+	justify-content: space-between;
+}
+.flip-horizontal {
+	-webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+.flip-horizontal-rotate {
+	-webkit-transform: scaleX(-1) rotate(45deg);
+  transform: scaleX(-1) rotate(45deg);
+}

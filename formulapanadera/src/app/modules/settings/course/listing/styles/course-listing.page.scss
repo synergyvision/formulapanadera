@@ -1,0 +1,36 @@
+// Variables
+
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+// Styles
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+ion-back-button {
+  height: 0;
+}
+
+.course-content {
+  --background: var(--page-background);
+
+  .courses-list {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .empty-block {
+    height: 100%;
+
+    ion-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+  }
+}

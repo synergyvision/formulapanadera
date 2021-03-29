@@ -61,3 +61,12 @@ ion-searchbar {
     margin-left: 5px !important;
   }
 }
+.normal-font-weight {
+  font-weight: normal !important;
+}
+
+.vertical-buttons-group {
+  .alert-button-group {
+    flex-direction: column;
+  }
+}

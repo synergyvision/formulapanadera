@@ -124,7 +124,7 @@ export class FormulaCRUDService {
     await Promise.all(promises)
   }
 
-  public async updateFormula(formulaData: FormulaModel): Promise<void> {
+  public async updateFormula(formulaData: FormulaModel, originalFormula: FormulaModel): Promise<void> {
     let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
     delete formula.ingredients;
     if (formula.mixing && formula.mixing.length > 0) {
@@ -140,7 +140,7 @@ export class FormulaCRUDService {
       })
     }
     // Delete sub ingredients
-    await this.deleteIngredients(formulaData);
+    await this.deleteIngredients(originalFormula);
     // Set sub ingredients
     await this.createIngredients(`${this.collection}/${formulaData.id}/${COLLECTIONS.ingredients}`, formulaData);
     await this.afs.collection(this.collection).doc(formulaData.id).set(formula);

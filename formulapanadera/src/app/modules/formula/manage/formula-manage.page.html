@@ -36,8 +36,8 @@
             <ion-label color="primary" position="stacked">{{'formulas.units' | translate}}</ion-label>
             <ion-input
               type="number"
-              formControlName="units"
               inputmode="numeric"
+              formControlName="units"
               class="formula-units"
               (ionBlur)="formatUnits(manageFormulaForm.value.units)"
               required
@@ -50,8 +50,8 @@
                     translate}})</ion-label>
             <ion-input
               type="number"
+              inputmode="decimal"
               formControlName="unit_weight"
-              inputmode="numeric"
               class="formula-unit-weight"
               (ionBlur)="formatUnitWeight(manageFormulaForm.value.unit_weight)"
               required
@@ -122,6 +122,27 @@
           *ngIf="formula.organoleptic_characteristics"
           [organoleptic_characteristics]="formula.organoleptic_characteristics"
         ></app-organoleptic-characteristics>
+      </ion-list>
+    </ion-card>
+
+    <app-divider></app-divider>
+
+    <!-- Technical notes -->
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'formulas.notes' | translate}}
+          </ion-label>
+    
+          <ion-icon button (click)="addNotes()" class="pick-ingredient" [name]="ICONS.add"></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <app-notes
+          *ngIf="formula.notes"
+          [notes]="formula.notes"
+        ></app-notes>
       </ion-list>
     </ion-card>
 
@@ -200,7 +221,7 @@
                   [(ngModel)]="item.percentage"
                   [ngModelOptions]="{standalone: true}"
                   type="number"
-                  inputmode="numeric"
+                  inputmode="decimal"
                   (ionBlur)="formatPercentage(item)"
                 ></ion-input
               ></ion-item>
@@ -349,7 +370,7 @@
                       [(ngModel)]="item.percentage"
                       [ngModelOptions]="{standalone: true}"
                       type="number"
-                      inputmode="numeric"
+                      inputmode="decimal"
                       (ionBlur)="formatStepPercentage(item)"
                     ></ion-input>
                   </ion-item>

@@ -28,6 +28,7 @@
         <ion-col size="5" class="references-wrapper">
           <ion-item class="reference-item">
             <ion-input
+              type="text"
               class="reference-data colored-field"
               [(ngModel)]="item.name"
               [ngModelOptions]="{standalone: true}"
@@ -38,6 +39,8 @@
         <ion-col size="7" class="references-wrapper">
           <ion-item class="reference-item">
             <ion-input
+              type="text"
+              inputmode="url"
               class="reference-data colored-field"
               [(ngModel)]="item.url"
               [ngModelOptions]="{standalone: true}"

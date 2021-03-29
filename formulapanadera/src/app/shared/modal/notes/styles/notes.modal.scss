@@ -1,0 +1,70 @@
+:host {
+  --page-margin: var(--app-narrow-margin);
+  --page-background: var(--app-background);
+}
+
+.btn-med {
+  font-size: 26px;
+  margin: 0 0 0 10px;
+}
+
+.notes-content {
+  --background: var(--app-background);
+
+  .input-item {
+    --padding-start: var(--app-narrow-margin);
+    font-size: 14px;
+  }
+
+  .inputs-list {
+    padding: 0;
+
+    .no-padding {
+      padding: 0;
+    }
+  }
+}
+
+.divider {
+  background-color: rgba(221, 221, 221, 0.322) !important;
+  color: black;
+  font-size: 13px;
+  padding-left: var(--app-narrow-margin);
+}
+
+.notes-item-wrapper {
+  --ion-grid-column-padding: 0px;
+  font-size: 16px;
+  width: 100%;
+
+  .notes-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+}
+
+.delete-note {
+  margin: 0;
+}
+
+.note-item {
+  --padding-start: 0 !important;
+
+  .note-data {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.colored-field {
+  color: var(--ion-color-primary);
+}
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+ion-textarea {
+  color: var(--ion-color-primary);
+}

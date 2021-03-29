@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormulaService } from "src/app/core/services/formula.service";
 import {
   ModalController,
@@ -6,6 +6,7 @@ import {
   LoadingController,
   ToastController,
   AlertController,
+  ViewWillEnter,
 } from "@ionic/angular";
 import {
   IngredientPercentageModel,
@@ -16,7 +17,7 @@ import {
 import { FormulaStepsModal } from "src/app/shared/modal/steps/formula-steps.modal";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { LanguageService } from "src/app/core/services/language.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
@@ -28,7 +29,8 @@ import { ICONS } from "src/app/config/icons";
 import { UserResumeModel } from "src/app/core/models/user.model";
 import { OrganolepticCharacteristicsModal } from "src/app/shared/modal/organoleptic-characteristics/organoleptic-characteristics.modal";
 import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
-import { ReferenceModel } from "src/app/core/models/shared.model";
+import { NoteModel, ReferenceModel } from "src/app/core/models/shared.model";
+import { NotesModal } from "src/app/shared/modal/notes/notes.modal";
 
 @Component({
   selector: "app-formula-manage",
@@ -38,7 +40,7 @@ import { ReferenceModel } from "src/app/core/models/shared.model";
     "./../../../shared/styles/confirm.alert.scss",
   ],
 })
-export class FormulaManagePage {
+export class FormulaManagePage implements OnInit, ViewWillEnter {
   APP_URL = APP_URL;
   ICONS = ICONS;
 
@@ -59,7 +61,6 @@ export class FormulaManagePage {
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
     private router: Router,
-    private route: ActivatedRoute,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
     private toastController: ToastController,
@@ -67,75 +68,87 @@ export class FormulaManagePage {
   ) {}
 
   async ngOnInit() {
-    this.route.queryParams.subscribe(async () => {
-      let state = this.router.getCurrentNavigation().extras.state;
-      this.formula = new FormulaModel();
-      this.original_formula = new FormulaModel;
-      this.formulaUnit = "%";
-      this.temperatureUnit = "C";
-      this.update = false;
-      if (state == undefined) {
-        this.manageFormulaForm = new FormGroup({
-          name: new FormControl(null, Validators.required),
-          units: new FormControl(null, Validators.required),
-          unit_weight: new FormControl(null, Validators.required),
-          description: new FormControl(null, null),
+    let state = this.router.getCurrentNavigation().extras.state;
+    this.formula = new FormulaModel();
+    this.original_formula = new FormulaModel();
+    this.formulaUnit = "%";
+    this.temperatureUnit = "C";
+    this.update = false;
+    if (state == undefined) {
+      this.manageFormulaForm = new FormGroup({
+        name: new FormControl(null, Validators.required),
+        units: new FormControl(null, Validators.required),
+        unit_weight: new FormControl(null, Validators.required),
+        description: new FormControl(null, null),
+      });
+      this.formula.user = {
+        owner: this.current_user.email,
+        can_clone: false,
+        public: false,
+        reference: "",
+        shared_users: [],
+        shared_references: [],
+        creator: {
+          name: this.current_user.name,
+          email: this.current_user.email,
+          date: new Date(),
+        },
+        modifiers: [],
+      };
+    } else {
+      this.update = true;
+      this.manageFormulaForm = new FormGroup({
+        name: new FormControl(state.formula.name, Validators.required),
+        units: new FormControl(state.formula.units, Validators.required),
+        unit_weight: new FormControl(
+          state.formula.unit_weight,
+          Validators.required
+        ),
+        description: new FormControl(state.formula.description, null),
+      });
+      this.formula.id = state.formula.id;
+      this.formula.user = state.formula.user;
+      this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
+      this.formula.notes = [];
+      this.formula.references = [];
+      this.formula.ingredients = [];
+      this.formula.mixing = [];
+      this.formula.steps = [];
+      if (state.formula.notes && state.formula.notes.length > 0) {
+        state.formula.notes.forEach((note) => {
+          this.formula.notes.push(JSON.parse(JSON.stringify(note)));
         });
-        this.formula.user = {
-          owner: this.current_user.email,
-          can_clone: false,
-          public: false,
-          reference: "",
-          shared_users: [],
-          shared_references: [],
-          creator: {
-            name: this.current_user.name,
-            email: this.current_user.email,
-            date: new Date(),
-          },
-          modifiers: [],
-        };
-      } else {
-        this.update = true;
-        this.manageFormulaForm = new FormGroup({
-          name: new FormControl(state.formula.name, Validators.required),
-          units: new FormControl(state.formula.units, Validators.required),
-          unit_weight: new FormControl(
-            state.formula.unit_weight,
-            Validators.required
-          ),
-          description: new FormControl(state.formula.description, null),
-        });
-        this.formula.id = state.formula.id;
-        this.formula.user = state.formula.user;
-        this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
-        this.formula.references = [];
-        this.formula.ingredients = [];
-        this.formula.mixing = [];
-        this.formula.steps = [];
-        if (state.formula.references && state.formula.references.length > 0) {
-          state.formula.references.forEach((reference) => {
-            this.formula.references.push(JSON.parse(JSON.stringify(reference)));
-          });
-        }
-        state.formula.ingredients.forEach((ingredient) => {
-          this.formula.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
-        });
-        if (state.formula.mixing && state.formula.mixing.length > 0) {
-          state.formula.mixing.forEach((step) => {
-            this.formula.mixing.push(JSON.parse(JSON.stringify(step)));
-          });
-        }
-        if (state.formula.steps && state.formula.steps.length > 0) {
-          state.formula.steps.forEach((step) => {
-            this.formula.steps.push(JSON.parse(JSON.stringify(step)));
-          });
-        }
-        this.original_formula = JSON.parse(JSON.stringify(state.formula))
       }
-      let user = await this.userStorageService.getUser();
-      this.current_user = { name: user.name, email: user.email };
-    })
+      if (state.formula.references && state.formula.references.length > 0) {
+        state.formula.references.forEach((reference) => {
+          this.formula.references.push(JSON.parse(JSON.stringify(reference)));
+        });
+      }
+      state.formula.ingredients.forEach((ingredient) => {
+        this.formula.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
+      });
+      if (state.formula.mixing && state.formula.mixing.length > 0) {
+        state.formula.mixing.forEach((step) => {
+          this.formula.mixing.push(JSON.parse(JSON.stringify(step)));
+        });
+      }
+      if (state.formula.steps && state.formula.steps.length > 0) {
+        state.formula.steps.forEach((step) => {
+          this.formula.steps.push(JSON.parse(JSON.stringify(step)));
+        });
+      }
+      this.original_formula = JSON.parse(JSON.stringify(state.formula))
+    }
+    let user = await this.userStorageService.getUser();
+    this.current_user = { name: user.name, email: user.email };
+  }
+
+  ionViewWillEnter() {
+    if (this.formula.id) {
+      this.update = true;
+    } else {
+      this.update = false;
+    }
   }
 
   changeUnit(ev: any) {
@@ -188,6 +201,26 @@ export class FormulaManagePage {
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
       this.formula.organoleptic_characteristics = data;
+    }
+  }
+
+  async addNotes() {
+    let notes: Array<NoteModel>;
+    if (this.formula.notes) {
+      notes = JSON.parse(JSON.stringify(this.formula.notes))
+    }
+    const modal = await this.modalController.create({
+      component: NotesModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        notes: notes
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      this.formula.notes = data;
     }
   }
 
@@ -338,7 +371,7 @@ export class FormulaManagePage {
 
   async describeSteps() {
     let steps: Array<StepDetailsModel> = [];
-    if (!this.formula.steps) {
+    if (!this.formula.steps || this.formula.steps.length == 0) {
       for (let i = 0; i < BAKERY_STEPS; i++) {
         var description = ""
         if (i == DIVITION_STEP - 1 &&
@@ -438,6 +471,9 @@ export class FormulaManagePage {
     } else {
       this.formula.organoleptic_characteristics = null;
     }
+    if (this.formula.notes) {
+      this.formula.notes = JSON.parse(JSON.stringify(this.formula.notes))
+    }
     if (this.formula.references) {
       this.formula.references = JSON.parse(JSON.stringify(this.formula.references))
     }
@@ -469,7 +505,7 @@ export class FormulaManagePage {
           });
           await loading.present();
           this.formulaCRUDService
-            .updateFormula(this.formula)
+            .updateFormula(this.formula, this.original_formula)
             .then(() => {
               this.router.navigateByUrl(
                 APP_URL.menu.name +
@@ -479,6 +515,7 @@ export class FormulaManagePage {
                 APP_URL.menu.routes.formula.routes.details,
                 {
                   state: { formula: JSON.parse(JSON.stringify(this.formula)) },
+                  replaceUrl: true
                 }
               );
             })
@@ -536,6 +573,7 @@ export class FormulaManagePage {
               APP_URL.menu.routes.formula.routes.details,
               {
                 state: { formula: JSON.parse(JSON.stringify(this.formula)) },
+                replaceUrl: true
               }
             );
           })

@@ -6,7 +6,10 @@
   <ion-header class="ion-no-border">
     <ion-toolbar color="primary">
       <ion-buttons slot="start">
-        <ion-back-button mode="md" [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.settings.main + '/' + APP_URL.menu.routes.settings.routes.user_groups.main"></ion-back-button>
+        <ion-back-button
+          mode="md"
+          [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.settings.main + '/' + APP_URL.menu.routes.settings.routes.user_groups.main"
+        ></ion-back-button>
       </ion-buttons>
       <ion-title>{{ 'settings.user_groups.name' | translate }}</ion-title>
       <ion-buttons slot="primary">
@@ -60,6 +63,7 @@
             >
             <ion-input
               type="text"
+              inputmode="url"
               formControlName="image_url"
               class="user-group-image-url colored-field"
             ></ion-input>
@@ -100,6 +104,7 @@
               </ion-row>
               <ion-item class="user-item">
                 <ion-input
+                  type="text"
                   class="user-data colored-field"
                   [(ngModel)]="item.name"
                   [ngModelOptions]="{standalone: true}"

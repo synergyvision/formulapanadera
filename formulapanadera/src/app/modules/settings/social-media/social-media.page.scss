@@ -1,0 +1,59 @@
+:host {
+    --page-items-gutter: calc(var(--page-margin) / 2);
+    --margin: calc(var(--app-fair-margin) / 2);
+  }
+  ion-segment {
+    background: #F5F5F5;
+  }
+  .hidden {
+    display: block;
+    visibility: collapse;
+  }
+  .social-media-group {
+    margin-top: 8px;
+    ion-icon {
+      margin-right: var(--page-items-gutter);
+      width: 80%;
+      height: 80%;
+    }
+    ion-label {
+      margin-top: 0;
+      margin-bottom: 8px;
+      white-space: normal;
+    }
+    .social-media {
+      color: var(--ion-color-secondary);
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+  }
+  .item-image-wrapper {
+    border: 1px solid var(--ion-color-light-shade);
+    border-radius: 10px;
+    width: 100%;
+    // &:nth-child(odd) {
+    //   margin-right: var(--page-items-gutter);
+    // }
+  
+    // &:nth-child(even) {
+    //   margin-left: var(--page-items-gutter);
+    // }
+    .iconContainer {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      ion-icon {
+        margin-right: var(--margin);
+      }
+    }
+  
+    .username{
+      border-radius: 0px 0px 8px 8px;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px;
+    }
+  }
+  
+  

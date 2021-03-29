@@ -1,11 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import {
   IonRouterOutlet,
   LoadingController,
   ModalController,
   ToastController,
+  ViewWillEnter,
 } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
@@ -28,13 +29,14 @@ import { FormulaPickerModal } from "src/app/shared/modal/formula/formula-picker.
     "./styles/production-manage.page.scss",
   ],
 })
-export class ProductionManagePage implements OnInit {
+export class ProductionManagePage implements OnInit, ViewWillEnter {
   APP_URL = APP_URL;
   ICONS = ICONS;
 
   update: boolean = false;
 
   production: ProductionModel = new ProductionModel();
+  original_production: ProductionModel = new ProductionModel();
   manageProductionForm: FormGroup;
 
   current_user = new UserResumeModel();
@@ -45,7 +47,6 @@ export class ProductionManagePage implements OnInit {
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
     private router: Router,
-    private route: ActivatedRoute,
     private formatNumberService: FormatNumberService,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
@@ -53,44 +54,51 @@ export class ProductionManagePage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.route.queryParams.subscribe(async () => {
-      let state = this.router.getCurrentNavigation().extras.state;
-      this.production = new ProductionModel();
+    let state = this.router.getCurrentNavigation().extras.state;
+    this.production = new ProductionModel();
+    this.update = false;
+    if (state == undefined) {
+      this.manageProductionForm = new FormGroup({
+        name: new FormControl(null, Validators.required),
+      });
+      this.production.user = {
+        owner: this.current_user.email,
+        can_clone: false,
+        public: false,
+        reference: "",
+        shared_users: [],
+        shared_references: [],
+        creator: {
+          name: this.current_user.name,
+          email: this.current_user.email,
+          date: new Date(),
+        },
+        modifiers: [],
+      };
+    } else {
+      this.update = true;
+      this.manageProductionForm = new FormGroup({
+        name: new FormControl(state.production.name, Validators.required),
+      });
+      this.original_production = JSON.parse(JSON.stringify(state.production))
+      this.production.id = state.production.id;
+      this.production.user = state.production.user;
+      this.production.formulas = [];
+      state.production.formulas.forEach((formula) => {
+        this.production.formulas.push(formula);
+      });
+      this.production.user = state.production.user;
+    }
+    let user = await this.userStorageService.getUser();
+    this.current_user = { name: user.name, email: user.email };
+  }
+
+  ionViewWillEnter() {
+    if (this.production.id) {
+      this.update = true;
+    } else {
       this.update = false;
-      if (state == undefined) {
-        this.manageProductionForm = new FormGroup({
-          name: new FormControl(null, Validators.required),
-        });
-        this.production.user = {
-          owner: this.current_user.email,
-          can_clone: false,
-          public: false,
-          reference: "",
-          shared_users: [],
-          shared_references: [],
-          creator: {
-            name: this.current_user.name,
-            email: this.current_user.email,
-            date: new Date(),
-          },
-          modifiers: [],
-        };
-      } else {
-        this.update = true;
-        this.manageProductionForm = new FormGroup({
-          name: new FormControl(state.production.name, Validators.required),
-        });
-        this.production.id = state.production.id;
-        this.production.user = state.production.user;
-        this.production.formulas = [];
-        state.production.formulas.forEach((formula) => {
-          this.production.formulas.push(formula);
-        });
-        this.production.user = state.production.user;
-      }
-      let user = await this.userStorageService.getUser();
-      this.current_user = { name: user.name, email: user.email };
-    });
+    }
   }
 
   async sendProduction() {
@@ -108,7 +116,7 @@ export class ProductionManagePage implements OnInit {
         date: new Date(),
       });
       this.productionCRUDService
-        .updateProduction(this.production)
+        .updateProduction(this.production, this.original_production)
         .then(async () => {
           this.router.navigateByUrl(
             APP_URL.menu.name +
@@ -118,6 +126,7 @@ export class ProductionManagePage implements OnInit {
               APP_URL.menu.routes.production.routes.details,
             {
               state: { production: JSON.parse(JSON.stringify(this.production)) },
+              replaceUrl: true
             }
           );
         })
@@ -153,6 +162,7 @@ export class ProductionManagePage implements OnInit {
               APP_URL.menu.routes.production.routes.details,
             {
               state: { production: JSON.parse(JSON.stringify(this.production)) },
+              replaceUrl: true
             }
           );
         })

@@ -1,9 +1,13 @@
 <ion-item
-  detail="true"
-  button="true"
+  [detail]="clickable"
+  [button]="clickable"
   class="user-item"
   [ngClass]="{ 'background-gray': even, 'background-selected': selected }"
 >
+  <ion-avatar slot="start">
+    <img *ngIf="user.image_url" [src]="user.image_url">
+    <img *ngIf="!user.image_url" [src]="DEFAULT_ICON">
+  </ion-avatar>
   <ion-row class="user-item-wrapper">
     <ion-col class="user-wrapper">
       <ion-row class="user-title">

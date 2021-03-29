@@ -1,0 +1,70 @@
+<app-course-item
+  (click)="courseDetails(course)"
+  [course]="course"
+  [clickable]="true"
+  [even]="even"
+></app-course-item>
+<ion-row *ngIf="course">
+  <ion-col 
+    *ngIf="type == 'production'"
+    class="ion-no-padding"
+    [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }"
+  >
+    <app-show-hide-content
+      (click)="show = !show"
+      [show]="show"
+      [title]="'production.name' | translate"
+      [transparent]="true"
+    ></app-show-hide-content>
+    <span *ngIf="show">
+      <app-production-item
+        *ngFor="let production of course.productions; index as i"
+        (click)="productionDetails(production.item)"
+        [production]="production.item"
+        [even]="(i%2==0)"
+      ></app-production-item>
+    </span>
+  </ion-col>
+  <ion-col 
+    *ngIf="type == 'formula'"
+    class="ion-no-padding"
+    [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }"
+  >
+    <app-show-hide-content
+      (click)="show = !show"
+      [show]="show"
+      [title]="'formulas.name' | translate"
+      [transparent]="true"
+    ></app-show-hide-content>
+    <span *ngIf="show">
+      <app-formula-item
+        *ngFor="let formula of course.formulas; index as i"
+        (click)="formulaDetails(formula.item)"
+        [formula]="formula.item"
+        [clickable]="true"
+        [even]="(i%2==0)"
+      ></app-formula-item>
+    </span>
+  </ion-col>
+  <ion-col 
+    *ngIf="type == 'ingredient'"
+    class="ion-no-padding"
+    [ngClass]="{ 'col-background-gray': even, 'col-background-white': !even }"
+  >
+    <app-show-hide-content
+      (click)="show = !show"
+      [show]="show"
+      [title]="'ingredients.name' | translate"
+      [transparent]="true"
+    ></app-show-hide-content>
+    <span *ngIf="show">
+      <app-ingredient-item
+        *ngFor="let ingredient of course.ingredients; index as i"
+        (click)="ingredientDetails(ingredient.item)"
+        [ingredient]="ingredient.item"
+        [clickable]="true"
+        [even]="(i%2==0)"
+      ></app-ingredient-item>
+    </span>
+  </ion-col>
+</ion-row>

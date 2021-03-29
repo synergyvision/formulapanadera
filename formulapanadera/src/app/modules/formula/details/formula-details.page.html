@@ -1,13 +1,10 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button (click)="returnToList()">
-        <ion-icon
-          slot="icon-only"
-          [name]="ICONS.back"
-          mode="md"
-        ></ion-icon>
-      </ion-button>
+      <ion-back-button
+        mode="md"
+        [defaultHref]="APP_URL.menu.name + '/' + APP_URL.menu.routes.formula.main"
+      ></ion-back-button>
     </ion-buttons>
     <ion-title> {{'formulas.name' | translate}} </ion-title>
     <ion-buttons slot="primary">
@@ -29,7 +26,13 @@
     <ion-col class="detail-col" size="4">
       <ion-item class="formula-detail" lines="full" mode="ios">
         <ion-label color="medium" position="floating">{{'formulas.units' | translate}}</ion-label>
-        <ion-input class="editable-field" [(ngModel)]="units" (ionChange)="changeUnits($event)"></ion-input>
+        <ion-input
+          class="editable-field"
+          type="number"
+          inputmode="numeric"
+          [(ngModel)]="units"
+          (ionChange)="changeUnits($event)"
+        ></ion-input>
       </ion-item>
     </ion-col>
     <ion-col size="4" class="detail-col">
@@ -131,6 +134,26 @@
             *ngIf="showOrganolepticCharacteristics"
             [organoleptic_characteristics]="formula.organoleptic_characteristics"
           ></app-organoleptic-characteristics>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </span>
+
+  <span *ngIf="formula.notes && formula.notes.length>0">
+    <app-divider></app-divider>
+
+    <ion-row>
+      <ion-col class="detail-col">
+        <app-show-hide-content
+          (click)="showNotes = !showNotes"
+          [show]="showNotes"
+          [title]="'formulas.notes' | translate"
+        ></app-show-hide-content>
+        <ion-list lines="full" class="inputs-list">
+          <app-notes
+            *ngIf="showNotes"
+            [notes]="formula.notes"
+          ></app-notes>
         </ion-list>
       </ion-col>
     </ion-row>

@@ -22,6 +22,7 @@ export class ModifierModel extends UserResumeModel {
 }
 
 export class UserGroupModel {
+  id: string;
   name: string;
   image_url: string;
   description: string;
@@ -32,5 +33,6 @@ export class UserModel {
   id: string;
   name: string;
   email: string;
+  instructor: boolean;
   user_groups: Array<UserGroupModel>;
 }

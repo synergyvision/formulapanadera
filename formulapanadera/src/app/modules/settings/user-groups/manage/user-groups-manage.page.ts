@@ -1,7 +1,7 @@
-import { Component, NgZone, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ActionSheetController, AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { ActionSheetController, AlertController, LoadingController, ToastController, ViewWillEnter } from '@ionic/angular';
 import { APP_URL } from 'src/app/config/configuration';
 import { ICONS } from 'src/app/config/icons';
 import { UserGroupModel, UserModel, UserResumeModel } from 'src/app/core/models/user.model';
@@ -14,7 +14,7 @@ import { UserStorageService } from 'src/app/core/services/storage/user.service';
   templateUrl: "./user-groups-manage.page.html",
   styleUrls: ["./styles/user-groups-manage.page.scss", "../../../../shared/styles/confirm.alert.scss"],
 })
-export class UserGroupsManagePage implements OnInit {
+export class UserGroupsManagePage implements OnInit, ViewWillEnter {
   ICONS = ICONS;
   APP_URL = APP_URL;
 
@@ -22,53 +22,55 @@ export class UserGroupsManagePage implements OnInit {
 
   user_group: UserGroupModel = new UserGroupModel();
   manageUserGroupForm: FormGroup;
-  original_name: string = "";
 
   user: UserModel = new UserModel()
   
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private userStorageService: UserStorageService,
     private userCRUDService: UserCRUDService,
     private languageService: LanguageService,
     private loadingController: LoadingController,
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
-    private alertController: AlertController,
-    private ngZone: NgZone
+    private alertController: AlertController
   ){}
 
   async ngOnInit() {
-    this.route.queryParams.subscribe(async () => {
-      let state = this.router.getCurrentNavigation().extras.state;
-      this.user_group = new UserGroupModel();
-      this.user_group.users = [];
+    let state = this.router.getCurrentNavigation().extras.state;
+    this.user_group = new UserGroupModel();
+    this.user_group.users = [];
+    this.update = false;
+    if (state == undefined) {
+      this.manageUserGroupForm = new FormGroup({
+        name: new FormControl(null, Validators.required),
+        description: new FormControl(null, null),
+        image_url: new FormControl(null, null),
+      });
+    } else {
+      this.update = true;
+      this.manageUserGroupForm = new FormGroup({
+        name: new FormControl(state.user_group.name, Validators.required),
+        description: new FormControl(state.user_group.description, null),
+        image_url: new FormControl(state.user_group.image_url, null),
+      });
+      this.user_group.id = state.user_group.id;
+      this.user_group.name = state.user_group.name;
+      this.user_group.description = state.user_group.description;
+      this.user_group.image_url = state.user_group.image_url;
+      state.user_group.users.forEach((user) => {
+        this.user_group.users.push(user);
+      });
+    }
+    this.user = await this.userStorageService.getUser();
+  }
+
+  ionViewWillEnter() {
+    if (this.user_group.users?.length > 0) {
+      this.update = true;
+    } else {
       this.update = false;
-      this.original_name = "";
-      if (state == undefined) {
-        this.manageUserGroupForm = new FormGroup({
-          name: new FormControl(null, Validators.required),
-          description: new FormControl(null, null),
-          image_url: new FormControl(null, null),
-        });
-      } else {
-        this.update = true;
-        this.manageUserGroupForm = new FormGroup({
-          name: new FormControl(state.user_group.name, Validators.required),
-          description: new FormControl(state.user_group.description, null),
-          image_url: new FormControl(state.user_group.image_url, null),
-        });
-        this.original_name = state.user_group.name;
-        this.user_group.name = state.user_group.name;
-        this.user_group.description = state.user_group.description;
-        this.user_group.image_url = state.user_group.image_url;
-        state.user_group.users.forEach((user) => {
-          this.user_group.users.push(user);
-        });
-      }
-      this.user = await this.userStorageService.getUser();
-    });
+    }
   }
 
   async sendUserGroup() {
@@ -81,7 +83,7 @@ export class UserGroupsManagePage implements OnInit {
     let group_exists = false;
     if (this.user.user_groups && this.user.user_groups.length>0) {
       this.user.user_groups.forEach((group) => {
-        if (group.name == this.manageUserGroupForm.value.name && group.name !== this.original_name) {
+        if (group.name == this.manageUserGroupForm.value.name && group.id !== this.user_group.id) {
           group_exists = true;
         }
       });
@@ -90,37 +92,26 @@ export class UserGroupsManagePage implements OnInit {
       loading.dismiss();
       this.presentToast(false, true);
     } else {
+      this.user_group.name = this.manageUserGroupForm.value.name;
+      this.user_group.description = this.manageUserGroupForm.value.description;
+      this.user_group.image_url = this.manageUserGroupForm.value.image_url;
+
       if (this.update) {
-        this.user.user_groups.forEach((group, group_index) => {
-          if (group.name == this.user_group.name) {
-            this.user.user_groups[group_index].name = this.manageUserGroupForm.value.name;
-            this.user.user_groups[group_index].description = this.manageUserGroupForm.value.description;
-            this.user.user_groups[group_index].image_url = this.manageUserGroupForm.value.image_url;
-            this.user.user_groups[group_index].users = this.user_group.users;
-          }
-        })
-      } else {
-        this.user_group.name = this.manageUserGroupForm.value.name;
-        this.user_group.description = this.manageUserGroupForm.value.description;
-        this.user_group.image_url = this.manageUserGroupForm.value.image_url;
-        this.user.user_groups.push(this.user_group)
-      }
-      this.userCRUDService
-        .updateUser(this.user)
+        this.userCRUDService
+        .updateUserGroup(this.user, this.user_group)
         .then(async () => {
           await this.userStorageService
             .setUser(this.user)
             .then(() => {
-              this.ngZone.run(() =>
-                this.router.navigate(
-                  [
-                    APP_URL.menu.name +
-                    "/" +
-                    APP_URL.menu.routes.settings.main +
-                    "/" +
-                    APP_URL.menu.routes.settings.routes.user_groups.main
-                  ]
-                )
+              this.router.navigateByUrl(
+                  APP_URL.menu.name +
+                  "/" +
+                  APP_URL.menu.routes.settings.main +
+                  "/" +
+                APP_URL.menu.routes.settings.routes.user_groups.main,
+                {
+                  replaceUrl: true
+                }
               );
             });
         })
@@ -130,6 +121,32 @@ export class UserGroupsManagePage implements OnInit {
         .finally(async () => {
           await loading.dismiss();
         });
+      } else {
+        this.userCRUDService
+        .createUserGroup(this.user, this.user_group)
+        .then(async () => {
+          await this.userStorageService
+            .setUser(this.user)
+            .then(() => {
+              this.router.navigateByUrl(
+                  APP_URL.menu.name +
+                  "/" +
+                  APP_URL.menu.routes.settings.main +
+                  "/" +
+                APP_URL.menu.routes.settings.routes.user_groups.main,
+                {
+                  replaceUrl: true
+                }
+              );
+            });
+        })
+        .catch(() => {
+          this.presentToast(false);
+        })
+        .finally(async () => {
+          await loading.dismiss();
+        });
+      }
     }
   }
 
@@ -217,7 +234,7 @@ export class UserGroupsManagePage implements OnInit {
   async deleteUserGroup(user_group: UserGroupModel) {
     let user = await this.userStorageService.getUser();
     user.user_groups.forEach((group, index) => {
-      if (group.name == user_group.name) {
+      if (group.id == user_group.id) {
         user.user_groups.splice(index, 1)
       }
     })
@@ -248,16 +265,15 @@ export class UserGroupsManagePage implements OnInit {
               .then(() => {
                 this.userStorageService.setUser(user)
                   .then(() => {
-                    this.ngZone.run(() =>
-                      this.router.navigate(
-                        [
-                          APP_URL.menu.name +
-                          "/" +
-                          APP_URL.menu.routes.settings.main +
-                          "/" +
-                          APP_URL.menu.routes.settings.routes.user_groups.main
-                        ]
-                      )
+                    this.router.navigateByUrl(
+                        APP_URL.menu.name +
+                        "/" +
+                        APP_URL.menu.routes.settings.main +
+                        "/" +
+                      APP_URL.menu.routes.settings.routes.user_groups.main,
+                      {
+                        replaceUrl: true
+                      }
                     );
                   })
               })

@@ -4,7 +4,6 @@ import { DataStore } from "../../shell/data-store";
 import { of } from "rxjs";
 import { ModalController } from "@ionic/angular";
 import { map } from "rxjs/operators";
-import { LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
 import { FormulaModel } from "src/app/core/models/formula.model";
@@ -15,6 +14,7 @@ import { IngredientModel } from "src/app/core/models/ingredient.model";
 import { ProductionModel } from "src/app/core/models/production.model";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
+import { UserService } from "src/app/core/services/user.service";
 
 @Component({
   selector: "app-shared-users-modal",
@@ -40,6 +40,7 @@ export class SharedUsersModal implements OnInit {
   user: UserModel = new UserModel();
 
   constructor(
+    private userService: UserService,
     private userStorageService: UserStorageService,
     private modalController: ModalController,
     private ingredientCRUDService: IngredientCRUDService,
@@ -52,7 +53,7 @@ export class SharedUsersModal implements OnInit {
     this.groupForm = new FormGroup({
       value: new FormControl("all"),
     });
-    this.searchingState();
+    this.users = this.userService.userSearchingState()
     this.searchList();
 
     this.user = await this.userStorageService.getUser();
@@ -80,7 +81,7 @@ export class SharedUsersModal implements OnInit {
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredUsers),
-      this.searchingState()
+      this.userService.userSearchingState()
     );
 
     let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -137,17 +138,6 @@ export class SharedUsersModal implements OnInit {
     return isSelected;
   }
 
-  searchingState() {
-    let searchingShellModel: UserResumeModel[] &
-      ShellModel = [] as UserResumeModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new UserResumeModel());
-    }
-    searchingShellModel.isShell = true;
-    this.users = searchingShellModel;
-    return searchingShellModel;
-  }
-
   // Manage shared
 
   stopShare() {
@@ -168,19 +158,19 @@ export class SharedUsersModal implements OnInit {
     })
 
     if (this.type == "ingredient") {
-      this.ingredientCRUDService.updateIngredient(this.item as IngredientModel)
+      this.ingredientCRUDService.updateIngredient(this.item as IngredientModel, this.item as IngredientModel)
         .then(() => {
           this.dismissModal()
         })
     }
     if (this.type == "formula") {
-      this.formulaCRUDService.updateFormula(this.item as FormulaModel)
+      this.formulaCRUDService.updateFormula(this.item as FormulaModel, this.item as FormulaModel)
         .then(() => {
           this.dismissModal()
         })
     }
     if (this.type == "production") {
-      this.productionCRUDService.updateProduction(this.item as ProductionModel)
+      this.productionCRUDService.updateProduction(this.item as ProductionModel, this.item as ProductionModel)
         .then(() => {
           this.dismissModal()
         })

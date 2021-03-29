@@ -1,9 +1,9 @@
-import { Component, HostBinding, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router } from '@angular/router';
 import { ViewWillEnter } from '@ionic/angular';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { APP_URL, LOADING_ITEMS } from 'src/app/config/configuration';
+import { APP_URL } from 'src/app/config/configuration';
 import { ICONS } from 'src/app/config/icons';
 import { UserGroupModel } from 'src/app/core/models/user.model';
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
@@ -24,9 +24,6 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
 
   user_groups: UserGroupModel[] & ShellModel;
   
-  @HostBinding("class.is-shell") get isShell() {
-    return this.user_groups && this.user_groups.isShell ? true : false;
-  }
   constructor(
     private router: Router,
     private userService: UserService,
@@ -35,7 +32,7 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
   
   async ngOnInit() {
     this.searchQuery = "";
-    this.searchingState();
+    this.user_groups = this.userService.userGroupSearchingState();
     this.searchList();
   }
 
@@ -53,7 +50,7 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
     
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredUserGroups),
-      this.searchingState()
+      this.user_groups = this.userService.userGroupSearchingState()
     );
 
     let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -90,19 +87,8 @@ export class UserGroupsListingPage implements OnInit, ViewWillEnter {
     );
   }
 
-  searchingState() {
-    let searchingShellModel: UserGroupModel[] &
-      ShellModel = [] as UserGroupModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new UserGroupModel());
-    }
-    searchingShellModel.isShell = true;
-    this.user_groups = searchingShellModel;
-    return searchingShellModel;
-  }
-
   updateUserGroup(user_group: UserGroupModel) {
-    if (user_group.name) {
+    if (user_group.id) {
       this.router.navigateByUrl(
         APP_URL.menu.name +
         "/" +

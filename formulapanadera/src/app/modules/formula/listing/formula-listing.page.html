@@ -81,6 +81,7 @@
             >
             <ion-input
               type="number"
+              inputmode="decimal"
               formControlName="lower"
               class="ingredient-cost-lower"
               (ionChange)="searchList()"
@@ -95,6 +96,7 @@
             </ion-label>
             <ion-input
               type="number"
+              inputmode="decimal"
               formControlName="upper"
               class="ingredient-cost-upper"
               (ionChange)="searchList()"
@@ -124,19 +126,41 @@
       <ion-label>{{'formulas.share.public' | translate}}</ion-label>
     </ion-segment-button>
   </ion-segment>
-  <ion-list
-    lines="none"
-    class="formulas-list"
-    *ngIf="formulas?.length > 0; else emptyBlock"
-  >
-    <app-formula-item
-      *ngFor="let formula of formulas; index as i"
-      (click)="formulaDetails(formula)"
-      [formula]="formula"
-      [clickable]="true"
-      [even]="(i%2==0)"
-    ></app-formula-item>
-  </ion-list>
+  <span *ngIf="formulas?.length > 0 || (courses?.length > 0 && segment == 'shared'); else emptyBlock">
+    <ion-list
+      lines="none"
+      class="formulas-list"
+      *ngIf="courses?.length > 0 && segment == 'shared'"
+    >
+      <app-title-divider
+        [title]="'settings.course.name' | translate"
+      ></app-title-divider>
+      <span *ngFor="let course of courses; index as i">
+        <app-shared-course-item
+          [course]="course"
+          type="formula"
+          [even]="(i%2==0)"
+        ></app-shared-course-item>
+      </span>
+    </ion-list>
+    <ion-list
+      lines="none"
+      class="formulas-list"
+      *ngIf="formulas?.length > 0"
+    >
+      <app-title-divider
+        *ngIf="!isLoading && (courses?.length > 0 && segment == 'shared')"
+        [title]="'formulas.name' | translate"
+      ></app-title-divider>
+      <app-formula-item
+        *ngFor="let formula of formulas; index as i"
+        (click)="formulaDetails(formula)"
+        [formula]="formula"
+        [clickable]="true"
+        [even]="(i%2==0)"
+      ></app-formula-item>
+    </ion-list>
+  </span>
   <ng-template #emptyBlock>
     <ion-row class="empty-block">
       <ion-col class="ion-text-center ion-padding">

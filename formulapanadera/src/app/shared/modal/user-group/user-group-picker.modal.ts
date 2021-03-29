@@ -4,7 +4,6 @@ import { DataStore } from "../../shell/data-store";
 import { of } from "rxjs";
 import { ModalController } from "@ionic/angular";
 import { map } from "rxjs/operators";
-import { LOADING_ITEMS } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserGroupModel } from 'src/app/core/models/user.model';
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
@@ -23,7 +22,7 @@ export class UserGroupPickerModal implements OnInit {
 
   searchQuery: string;
 
-  selectedGroups: Array<UserGroupModel>;
+  @Input() selectedGroups: Array<UserGroupModel>;
 
   user_groups: UserGroupModel[] & ShellModel;
 
@@ -38,7 +37,7 @@ export class UserGroupPickerModal implements OnInit {
 
   ngOnInit() {
     this.searchQuery = "";
-    this.searchingState();
+    this.user_groups = this.userService.userGroupSearchingState();
     this.searchList();
   }
 
@@ -52,7 +51,7 @@ export class UserGroupPickerModal implements OnInit {
     
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredUserGroups),
-      this.searchingState()
+      this.userService.userGroupSearchingState()
     );
 
     let updateSearchObservable = dataSourceWithShellObservable.pipe(
@@ -78,13 +77,13 @@ export class UserGroupPickerModal implements OnInit {
   }
 
   clickUserGroup(user_group: UserGroupModel) {
-    if (user_group !== undefined && user_group.name !== undefined) {
+    if (user_group !== undefined && user_group.id !== undefined) {
       if (this.selectedGroups === undefined) {
         this.selectedGroups = [];
       }
       if (this.isSelected(user_group)) {
         for (let index = 0; index < this.selectedGroups.length; index++) {
-          if (this.selectedGroups[index].name === user_group.name)
+          if (this.selectedGroups[index].id === user_group.id)
             this.selectedGroups.splice(index, 1);
         }
       } else {
@@ -107,22 +106,11 @@ export class UserGroupPickerModal implements OnInit {
     let isSelected = false;
     if (this.selectedGroups !== undefined) {
       this.selectedGroups.map((selected) => {
-        if (user_group.name == selected.name) {
+        if (user_group.id == selected.id) {
           isSelected = true;
         }
       });
     }
     return isSelected;
-  }
-
-  searchingState() {
-    let searchingShellModel: UserGroupModel[] &
-      ShellModel = [] as UserGroupModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new UserGroupModel());
-    }
-    searchingShellModel.isShell = true;
-    this.user_groups = searchingShellModel;
-    return searchingShellModel;
   }
 }

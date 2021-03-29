@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, OnDestroy } from "@angular/core";
+import { Component, HostBinding, OnInit } from "@angular/core";
 import { IngredientModel } from "../../../core/models/ingredient.model";
 import { ShellModel } from "../../../shared/shell/shell.model";
 import { FormGroup, FormControl } from "@angular/forms";
@@ -7,10 +7,11 @@ import { of } from "rxjs";
 import { IngredientService } from "../../../core/services/ingredient.service";
 import { Router } from "@angular/router";
 import { map } from "rxjs/operators";
-import { APP_URL, CURRENCY, LOADING_ITEMS } from "src/app/config/configuration";
+import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
-import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { CourseModel } from "src/app/core/models/course.model";
+import { CourseService } from "src/app/core/services/course.service";
 
 @Component({
   selector: "app-ingredient-listing",
@@ -20,7 +21,7 @@ import { UserStorageService } from "src/app/core/services/storage/user.service";
     "../../../shared/styles/filter.scss",
   ],
 })
-export class IngredientListingPage implements OnInit, OnDestroy {
+export class IngredientListingPage implements OnInit {
   ICONS = ICONS;
   APP_URL = APP_URL;
 
@@ -33,17 +34,21 @@ export class IngredientListingPage implements OnInit, OnDestroy {
 
   currency = CURRENCY;
   ingredients: IngredientModel[] & ShellModel;
+  all_ingredients: IngredientModel[] & ShellModel;
 
   segment: string = "mine";
+  isLoading: boolean = true;
 
   user_email: string;
+
+  courses: CourseModel[];
 
   @HostBinding("class.is-shell") get isShell() {
     return this.ingredients && this.ingredients.isShell ? true : false;
   }
   constructor(
     private ingredientService: IngredientService,
-    private ingredientCRUDService: IngredientCRUDService,
+    private courseService: CourseService,
     private router: Router,
     private userStorageService: UserStorageService
   ) {}
@@ -64,101 +69,108 @@ export class IngredientListingPage implements OnInit, OnDestroy {
       value: new FormControl("all"),
     });
 
-    this.searchingState();
+    this.ingredients = this.ingredientService.searchingState();
+    this.courses = this.courseService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
-    this.ingredientCRUDService
-      .getIngredientsDataSource(this.user_email)
-      .subscribe(async (ingredients) => {
-        this.searchingState();
-        const promises = ingredients.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
-        await Promise.all(promises)
-        this.ingredientService.setIngredients(
-          ingredients as IngredientModel[] & ShellModel
-        );
+    this.ingredientService
+      .getIngredients()
+      .subscribe((ingredients) => {
+        this.ingredients = this.ingredientService.searchingState();
+        this.all_ingredients = ingredients as IngredientModel[] & ShellModel;
+        this.isLoading = true;
         this.searchList();
       });
-  }
-
-  ngOnDestroy(): void {
-    this.ingredientService.clearIngredients();
+    this.courseService.getSharedCourses().subscribe(async courses => {
+      this.courses = [];
+      courses?.forEach(course => {
+        if (course.ingredients?.length > 0) {
+          course.ingredients = this.courseService.orderItems(course.ingredients);
+          this.courses.push(course);
+        }
+      })
+    })
   }
 
   searchList() {
-    let filteredIngredients = JSON.parse(
-      JSON.stringify(this.ingredientService.getIngredients())
-    );
-    let filters = {
-      hydration: {
-        lower: this.hydrationRangeForm.controls.dual.value.lower,
-        upper: this.hydrationRangeForm.controls.dual.value.upper,
-      },
-      cost: {
-        lower: this.costRangeForm.value.lower,
-        upper: this.costRangeForm.value.upper,
-      },
-      is_flour: this.isFlourForm.value.value,
-      type: this.typeForm.value.value,
-      query: this.searchQuery,
-    };
+    if (this.all_ingredients) {
+      let filteredIngredients = JSON.parse(
+        JSON.stringify(this.all_ingredients)
+      );
+      let filters = {
+        hydration: {
+          lower: this.hydrationRangeForm.controls.dual.value.lower,
+          upper: this.hydrationRangeForm.controls.dual.value.upper,
+        },
+        cost: {
+          lower: this.costRangeForm.value.lower,
+          upper: this.costRangeForm.value.upper,
+        },
+        is_flour: this.isFlourForm.value.value,
+        type: this.typeForm.value.value,
+        query: this.searchQuery,
+      };
 
-    filteredIngredients = this.ingredientService.searchIngredientsByHydration(
-      filters.hydration.lower,
-      filters.hydration.upper,
-      filteredIngredients
-    );
-    filteredIngredients = this.ingredientService.searchIngredientsByCost(
-      filters.cost.lower,
-      filters.cost.upper,
-      filteredIngredients
-    );
-    if (filters.is_flour !== "all") {
-      filteredIngredients = this.ingredientService.searchIngredientsByType(
-        filters.is_flour,
+      filteredIngredients = this.ingredientService.searchIngredientsByHydration(
+        filters.hydration.lower,
+        filters.hydration.upper,
         filteredIngredients
       );
-    }
-    if (filters.type !== "all") {
-      filteredIngredients = this.ingredientService.searchIngredientsByFormula(
-        filters.type,
+      filteredIngredients = this.ingredientService.searchIngredientsByCost(
+        filters.cost.lower,
+        filters.cost.upper,
         filteredIngredients
       );
+      if (filters.is_flour !== "all") {
+        filteredIngredients = this.ingredientService.searchIngredientsByType(
+          filters.is_flour,
+          filteredIngredients
+        );
+      }
+      if (filters.type !== "all") {
+        filteredIngredients = this.ingredientService.searchIngredientsByFormula(
+          filters.type,
+          filteredIngredients
+        );
+      }
+      filteredIngredients = this.ingredientService.searchIngredientsByShared(
+        this.segment,
+        filteredIngredients,
+        this.user_email
+      );
+
+      const dataSourceWithShellObservable = DataStore.AppendShell(
+        of(filteredIngredients),
+        this.ingredientService.searchingState()
+      );
+
+      let updateSearchObservable = dataSourceWithShellObservable.pipe(
+        map((filteredItems) => {
+          // Just filter items by name if there is a search query and they are not shell values
+          if (filters.query !== "" && !filteredItems.isShell) {
+            const queryFilteredItems = filteredItems.filter((item) =>
+              item.name.toLowerCase().includes(filters.query.toLowerCase())
+            );
+            // While filtering we strip out the isShell property, add it again
+            return Object.assign(queryFilteredItems, {
+              isShell: filteredItems.isShell,
+            });
+          } else {
+            return filteredItems;
+          }
+        })
+      );
+
+      updateSearchObservable.subscribe((value) => {
+        this.ingredients = this.ingredientService.sortIngredients(value);
+        this.isLoading = value.isShell;
+      });
     }
-    filteredIngredients = this.ingredientService.searchIngredientsByShared(
-      this.segment,
-      filteredIngredients,
-      this.user_email
-    );
-
-    const dataSourceWithShellObservable = DataStore.AppendShell(
-      of(filteredIngredients),
-      this.searchingState()
-    );
-
-    let updateSearchObservable = dataSourceWithShellObservable.pipe(
-      map((filteredItems) => {
-        // Just filter items by name if there is a search query and they are not shell values
-        if (filters.query !== "" && !filteredItems.isShell) {
-          const queryFilteredItems = filteredItems.filter((item) =>
-            item.name.toLowerCase().includes(filters.query.toLowerCase())
-          );
-          // While filtering we strip out the isShell property, add it again
-          return Object.assign(queryFilteredItems, {
-            isShell: filteredItems.isShell,
-          });
-        } else {
-          return filteredItems;
-        }
-      })
-    );
-
-    updateSearchObservable.subscribe((value) => {
-      this.ingredients = this.ingredientService.sortIngredients(value);
-    });
   }
 
   segmentChanged(ev: any) {
     this.segment = ev.detail.value;
+    this.isLoading = true;
     this.searchList();
   }
 
@@ -185,16 +197,5 @@ export class IngredientListingPage implements OnInit, OnDestroy {
         }
       );
     }
-  }
-
-  searchingState() {
-    let searchingShellModel: IngredientModel[] &
-      ShellModel = [] as IngredientModel[] & ShellModel;
-    for (let index = 0; index < LOADING_ITEMS; index++) {
-      searchingShellModel.push(new IngredientModel());
-    }
-    searchingShellModel.isShell = true;
-    this.ingredients = searchingShellModel;
-    return searchingShellModel;
   }
 }

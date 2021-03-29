@@ -12,6 +12,7 @@ import { ProductionService } from "src/app/core/services/production.service";
 export class ProductionItemComponent {
   @Input() production: ProductionModel;
   @Input() even: boolean = false;
+  @Input() selected: boolean = false;
 
   currency = CURRENCY;
   FORMULA_COST_FORMAT = DECIMAL_COST_FORMAT.formula;
