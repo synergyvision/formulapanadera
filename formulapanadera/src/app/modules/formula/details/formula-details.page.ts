@@ -60,6 +60,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   isCourse: boolean = false;
 
   showOrganolepticCharacteristics: boolean;
+  showNotes: boolean;
   showReferences: boolean;
   showIngredients: boolean;
   showSubIngredients: boolean;
@@ -89,6 +90,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private userCRUDService: UserCRUDService,
   ) {
     this.showOrganolepticCharacteristics = false;
+    this.showNotes = false;
     this.showReferences = false;
     this.showIngredients = true;
     this.showSubIngredients = true;

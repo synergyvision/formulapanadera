@@ -1,0 +1,71 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" class="btn-med" [name]="ICONS.formula"></ion-icon>
+    <ion-title> {{'notes.notes' | translate}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon slot="icon-only" [name]="ICONS.close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="notes-content">
+  <ion-list lines="full" class="notes-list inputs-list">
+    <span *ngFor="let item of notes; index as i">
+      <ion-item-divider class="divider">
+        <ion-label>{{'notes.note' | translate}} {{i+1}}</ion-label>
+        <ion-icon
+          [name]="ICONS.close"
+          class="delete-note"
+          slot="end"
+          color="primary"
+          button
+          *ngIf="notes?.length > 1"
+          (click)="deleteNote(item)"
+        ></ion-icon>
+      </ion-item-divider>
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">
+          {{'input.title' | translate}}
+        </ion-label>
+        <ion-textarea
+          type="text"
+          [(ngModel)]="item.title"
+        ></ion-textarea>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label color="medium" position="stacked">
+          {{'input.description' | translate}}
+        </ion-label>
+        <ion-textarea
+          #description
+          type="text"
+          [(ngModel)]="item.description"
+        ></ion-textarea>
+      </ion-item>
+    </span>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addNote()">
+      <ion-icon [name]="ICONS.add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<ion-footer>
+  <ion-row class="form-actions-wrapper">
+    <ion-col>
+      <ion-button
+        class="submit-btn"
+        expand="block"
+        color="primary"
+        (click)="save()"
+        fill="solid"
+        [disabled]="notesEmpty()"
+      >
+        {{ 'action.confirm' | translate }}</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-footer>

@@ -29,7 +29,8 @@ import { ICONS } from "src/app/config/icons";
 import { UserResumeModel } from "src/app/core/models/user.model";
 import { OrganolepticCharacteristicsModal } from "src/app/shared/modal/organoleptic-characteristics/organoleptic-characteristics.modal";
 import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
-import { ReferenceModel } from "src/app/core/models/shared.model";
+import { NoteModel, ReferenceModel } from "src/app/core/models/shared.model";
+import { NotesModal } from "src/app/shared/modal/notes/notes.modal";
 
 @Component({
   selector: "app-formula-manage",
@@ -108,10 +109,16 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
       this.formula.id = state.formula.id;
       this.formula.user = state.formula.user;
       this.formula.organoleptic_characteristics = state.formula.organoleptic_characteristics;
+      this.formula.notes = [];
       this.formula.references = [];
       this.formula.ingredients = [];
       this.formula.mixing = [];
       this.formula.steps = [];
+      if (state.formula.notes && state.formula.notes.length > 0) {
+        state.formula.notes.forEach((note) => {
+          this.formula.notes.push(JSON.parse(JSON.stringify(note)));
+        });
+      }
       if (state.formula.references && state.formula.references.length > 0) {
         state.formula.references.forEach((reference) => {
           this.formula.references.push(JSON.parse(JSON.stringify(reference)));
@@ -194,6 +201,26 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
     const { data } = await modal.onWillDismiss();
     if (data !== undefined) {
       this.formula.organoleptic_characteristics = data;
+    }
+  }
+
+  async addNotes() {
+    let notes: Array<NoteModel>;
+    if (this.formula.notes) {
+      notes = JSON.parse(JSON.stringify(this.formula.notes))
+    }
+    const modal = await this.modalController.create({
+      component: NotesModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        notes: notes
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      this.formula.notes = data;
     }
   }
 
@@ -443,6 +470,9 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
       this.formula.organoleptic_characteristics = JSON.parse(JSON.stringify(this.formula.organoleptic_characteristics));
     } else {
       this.formula.organoleptic_characteristics = null;
+    }
+    if (this.formula.notes) {
+      this.formula.notes = JSON.parse(JSON.stringify(this.formula.notes))
     }
     if (this.formula.references) {
       this.formula.references = JSON.parse(JSON.stringify(this.formula.references))

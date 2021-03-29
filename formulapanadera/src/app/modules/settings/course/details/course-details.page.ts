@@ -28,7 +28,10 @@ export class CourseDetailsPage implements OnInit {
   ICONS = ICONS;
 
   course: CourseModel = new CourseModel();
-  segment: string = "productions"
+  segment: string = "productions";
+
+  showUserGroups: boolean = false;
+  showNotes: boolean = false;
 
   user: UserModel = new UserModel();
 
@@ -44,7 +47,10 @@ export class CourseDetailsPage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private location: Location
-  ) {}
+  ) {
+    this.showUserGroups = false;
+    this.showNotes = false;
+  }
 
   async ngOnInit() {
     this.route.queryParams.subscribe(async () => {

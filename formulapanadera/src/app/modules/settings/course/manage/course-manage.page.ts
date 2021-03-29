@@ -18,6 +18,8 @@ import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group
 import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 import { CourseService } from "src/app/core/services/course.service";
 import { UserCRUDService } from "src/app/core/services/firebase/user.service";
+import { NoteModel } from "src/app/core/models/shared.model";
+import { NotesModal } from "src/app/shared/modal/notes/notes.modal";
 
 @Component({
   selector: "app-course-manage",
@@ -87,9 +89,15 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
       this.original_course = JSON.parse(JSON.stringify(state.course))
       this.course.id = state.course.id;
       this.course.user = state.course.user;
+      this.course.notes = [];
       this.course.ingredients = [];
       this.course.formulas = [];
       this.course.productions = [];
+      if (state.course.notes?.length > 0) {
+        state.course.notes.forEach((note) => {
+          this.course.notes.push(JSON.parse(JSON.stringify(note)));
+        });
+      }
       if (state.course.ingredients && state.course.ingredients.length > 0) {
         state.course.ingredients.forEach((ingredient) => {
           this.course.ingredients.push(JSON.parse(JSON.stringify(ingredient)));
@@ -260,6 +268,26 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
   }
 
   // Pickers
+
+  async addNotes() {
+    let notes: Array<NoteModel>;
+    if (this.course.notes) {
+      notes = JSON.parse(JSON.stringify(this.course.notes))
+    }
+    const modal = await this.modalController.create({
+      component: NotesModal,
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      componentProps: {
+        notes: notes
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data !== undefined) {
+      this.course.notes = data;
+    }
+  }
 
   async ingredientPicker() {
     let ingredients = this.course.ingredients ? this.course.ingredients : [];

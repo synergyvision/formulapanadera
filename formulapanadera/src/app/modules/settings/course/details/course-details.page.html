@@ -53,6 +53,26 @@
     </ion-col>
   </ion-row>
 
+  <span *ngIf="course.notes?.length > 0">
+    <app-divider></app-divider>
+
+    <ion-row>
+      <ion-col class="detail-col">
+        <app-show-hide-content
+          (click)="showNotes = !showNotes"
+          [show]="showNotes"
+          [title]="'notes.notes' | translate"
+        ></app-show-hide-content>
+        <ion-list lines="full" class="inputs-list">
+          <app-notes
+            *ngIf="showNotes"
+            [notes]="course.notes"
+          ></app-notes>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </span>
+
   <app-divider></app-divider>
 
   <ion-segment

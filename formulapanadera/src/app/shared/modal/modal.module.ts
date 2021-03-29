@@ -16,6 +16,7 @@ import { ProductionPickerModal } from "./production/production-picker.modal";
 import { AboutUsComponent } from "./about-us/about-us.component";
 import { TermConditionsComponent } from "./term-conditions/term-conditions.component";
 import { DirectivesModule } from '../directives/directives.module'
+import { NotesModal } from "./notes/notes.modal";
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { DirectivesModule } from '../directives/directives.module'
     FormulaStepsModal,
     ProductionPickerModal,
     OrganolepticCharacteristicsModal,
+    NotesModal,
     ReferencesModal,
     UserGroupPickerModal,
     SharedUsersModal,
@@ -47,6 +49,7 @@ import { DirectivesModule } from '../directives/directives.module'
     FormulaStepsModal,
     ProductionPickerModal,
     OrganolepticCharacteristicsModal,
+    NotesModal,
     ReferencesModal,
     UserGroupPickerModal,
     SharedUsersModal,

@@ -32,6 +32,7 @@ import { FormulaMixingComponent } from "./formula/formula-mixing/formula-mixing.
 import { TitleDividerComponent } from "./general/title-divider/title-divider.component";
 import { CourseItemComponent } from "./course/course-item/course-item.component";
 import { SharedCourseItemComponent } from "./course/shared-course-item/shared-course-item.component";
+import { NotesComponent } from "./general/notes/notes.component";
 
 @NgModule({
   imports: [
@@ -63,6 +64,7 @@ import { SharedCourseItemComponent } from "./course/shared-course-item/shared-co
     ProductionIngredientsComponent,
     FormulasIngredientsListComponent,
     OrganolepticCharacteristicsComponent,
+    NotesComponent,
     ReferencesComponent,
     UserItemComponent,
     UserGroupItemComponent,
@@ -91,6 +93,7 @@ import { SharedCourseItemComponent } from "./course/shared-course-item/shared-co
     ProductionIngredientsComponent,
     FormulasIngredientsListComponent,
     OrganolepticCharacteristicsComponent,
+    NotesComponent,
     ReferencesComponent,
     UserItemComponent,
     UserGroupItemComponent,

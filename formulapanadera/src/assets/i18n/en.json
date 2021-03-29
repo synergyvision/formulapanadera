@@ -32,11 +32,16 @@
   "input": {
     "fullName": "Full name",
     "name": "Name",
+    "title": "Title",
     "description": "Description",
     "email": "Email",
     "password": "Password",
     "confirm_password": "Confirm password",
     "actual_password": "Actual password"
+  },
+  "notes": {
+    "note": "Nota",
+    "notes": "Notas"
   },
   "loading": "Please wait...",
   "send": {
@@ -123,6 +128,7 @@
       "bubbles_presence": "Bubbles presence",
       "useful_life": "Useful life"
     },
+    "notes": "Technical notes",
     "references": {
       "name": "References",
       "reference_name": "Name",

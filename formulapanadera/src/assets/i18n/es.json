@@ -41,11 +41,16 @@
   "input": {
     "fullName": "Nombre completo",
     "name": "Nombre",
+    "title": "Título",
     "description": "Descripción",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "confirm_password": "Confirmación de contraseña",
     "actual_password": "Contraseña actual"
+  },
+  "notes": {
+    "note": "Nota",
+    "notes": "Notas"
   },
   "loading": "Espere un momento...",
   "send": {
@@ -132,6 +137,7 @@
       "bubbles_presence": "Presencia de burbujas",
       "useful_life": "Vida útil"
     },
+    "notes": "Notas técnicas",
     "references": {
       "name": "Referencias",
       "reference_name": "Nombre",

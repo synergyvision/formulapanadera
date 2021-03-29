@@ -127,6 +127,27 @@
 
     <app-divider></app-divider>
 
+    <!-- Technical notes -->
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'formulas.notes' | translate}}
+          </ion-label>
+    
+          <ion-icon button (click)="addNotes()" class="pick-ingredient" [name]="ICONS.add"></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <app-notes
+          *ngIf="formula.notes"
+          [notes]="formula.notes"
+        ></app-notes>
+      </ion-list>
+    </ion-card>
+
+    <app-divider></app-divider>
+
     <!-- Bread references -->
     <ion-card class="card">
       <ion-card-header class="card-header">

@@ -65,6 +65,27 @@
 
     <app-divider></app-divider>
 
+    <!-- Technical notes -->
+    <ion-card class="card">
+      <ion-card-header class="card-header">
+        <ion-item lines="full" class="input-item">
+          <ion-label class="card-title">
+            {{'notes.notes' | translate}}
+          </ion-label>
+    
+          <ion-icon button (click)="addNotes()" class="pick-item" [name]="ICONS.add"></ion-icon>
+        </ion-item>
+      </ion-card-header>
+      <ion-list lines="full" class="inputs-list">
+        <app-notes
+          *ngIf="course.notes"
+          [notes]="course.notes"
+        ></app-notes>
+      </ion-list>
+    </ion-card>
+
+    <app-divider></app-divider>
+
     <!-- Productions -->
     <ion-card class="card">
       <ion-card-header class="card-header">
