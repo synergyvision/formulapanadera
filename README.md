@@ -77,13 +77,15 @@ Si quieres conocer detalles de cómo ejecutar el proyecto y el código del mismo
   - `AndroidManifest.xml` se encuentre en `/android/app/src/main/`.
   - `build.gradle` se encuentren en `android/` y en `android/app` y sean distintos.
 
+NOTA: Si se estan utilizando los servicios de Firebase, se debe colocar el archivo `google-services.json` en `android/app/`
+
 #### Android Studio
 
 Para abrir el proyecto, crear el ejecutable e instalar la aplicación usando Android Studio ejecutar `npx cap open android`
 
 #### Android sdk
 
-Para crear el build usando las sdk de Android, se de debe:
+Para crear el build usando las sdk de Android, se debe:
   - Ubicarse en el directorio android `cd android`
   - Para generar un apk de debug, correr `./gradlew assembleDebug`
   - Para generar un apk de release, correr `./gradlew assembleRelease`
@@ -97,8 +99,11 @@ Para crear el build usando las sdk de Android, se de debe:
 - Si es el primer build o se modificaron los plugins de la aplicación móvil ejecutar `npx cap sync ios`, en caso contrario ignorar este paso.
 - Ejecutar `npx cap copy ios`.
 - Ejecutar `npx cap open ios`, ésto abrirá Xcode.
+- Realizar todos los cambios necesarios en Info.plist y otros archivos dentro de Xcode que requieran los plugins instalados, revise la documentación de los plugins para mas información.
 - Conectar el dispositivo a instalar la aplicación y seleccionarlo en Xcode.
-- Presionar el botón play ubicado en la parte superior izquierda
+- Presionar el botón play ubicado en la parte superior izquierda.
+
+NOTA: Si se estan utilizando los servicios de Firebase, abrir el proyecto de Xcode ubicado en `ios/App/App.xcworkspace` o utilizando el commando `npx cap open ios`, colocar el archivo `googleService-Info.plist` dentro de `App/App` 
 
 ## Autor 🐈
 
