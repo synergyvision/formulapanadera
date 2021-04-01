@@ -23,6 +23,7 @@
 - [Documentación](#documentación-)
 - [Proyecto](#proyecto-)
 - [Funcionalidades](#funcionalidades-)
+- [Deployment](#deployment)
 - [Autor](#autor-)
 
 ## Contexto
@@ -62,6 +63,26 @@ Si quieres conocer detalles de cómo ejecutar el proyecto y el código del mismo
   - CRUD de producción
   - Ejecución de una producción _(ordenando la misma dependiendo del tiempo de uso del horno)_
   - Verificación de jornada laboral _(ejecución de una producción)_
+
+## Deployment
+
+### Android
+
+- Crear la plataforma para Android usando `npx cap add android` si aun no lo ha agregado.
+- Realizar un build de ionic `ionic build`. Agregar bandera `--prod` si se desea generar un build de producción.
+- Si es el primer build o se modificaron los plugins de la aplicación móvil ejecutar `npx cap sync android`, en caso contrario ignorar este paso.
+- Ejecutar `npx cap copy android`.
+- Revisar que los siguientes archivos se encuentren en las ubicaciones indicadas y que tengan las modificaciones necesarias para el funcionamiento de los plugins instalados (revise las documentaciones de los distintos plugins para las modificaciones):
+  - `MainActivity.java` se encuentre en `/android/app/src/main/java/{bundleId}`.
+  - `AndroidManifest.xml` se encuentre en `/android/app/src/main/`.
+  - `build.gradle` se encuentren en `android/` y en `android/app` y sean distintos.
+- Para abrir el proyecto y crear el ejecutable en Android Studio ejecutar `npx cap open android`
+- Para crear el build usando las sdk de Android, se de debe:
+  - Ubicarse en el directorio android `cd android`
+  - Para generar un apk de debug, correr `./gradlew assembleDebug`
+  - Para generar un apk de release, correr `./gradlew assembleRelease`
+  - Navegar hasta la ubicación de los apk generados usando `cd app/outputs/builds/apk/` donde se encontrarán los directorios `/debug` y `/release` con los respectivos apk
+
 
 ## Autor 🐈
 
