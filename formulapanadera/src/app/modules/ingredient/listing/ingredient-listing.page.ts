@@ -26,6 +26,7 @@ export class IngredientListingPage implements OnInit {
   APP_URL = APP_URL;
 
   hydrationRangeForm: FormGroup;
+  fatRangeForm: FormGroup;
   costRangeForm: FormGroup;
   isFlourForm: FormGroup;
   typeForm: FormGroup;
@@ -57,6 +58,9 @@ export class IngredientListingPage implements OnInit {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
       dual: new FormControl({ lower: 0, upper: 1000 }),
+    });
+    this.fatRangeForm = new FormGroup({
+      dual: new FormControl({ lower: 0, upper: 100 }),
     });
     this.costRangeForm = new FormGroup({
       lower: new FormControl(),
@@ -102,6 +106,10 @@ export class IngredientListingPage implements OnInit {
           lower: this.hydrationRangeForm.controls.dual.value.lower,
           upper: this.hydrationRangeForm.controls.dual.value.upper,
         },
+        fat: {
+          lower: this.fatRangeForm.controls.dual.value.lower,
+          upper: this.fatRangeForm.controls.dual.value.upper,
+        },
         cost: {
           lower: this.costRangeForm.value.lower,
           upper: this.costRangeForm.value.upper,
@@ -114,6 +122,11 @@ export class IngredientListingPage implements OnInit {
       filteredIngredients = this.ingredientService.searchIngredientsByHydration(
         filters.hydration.lower,
         filters.hydration.upper,
+        filteredIngredients
+      );
+      filteredIngredients = this.ingredientService.searchIngredientsByFat(
+        filters.fat.lower,
+        filters.fat.upper,
         filteredIngredients
       );
       filteredIngredients = this.ingredientService.searchIngredientsByCost(

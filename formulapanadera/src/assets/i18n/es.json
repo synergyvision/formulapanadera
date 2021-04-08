@@ -193,6 +193,7 @@
     "ingredient_name": "Nombre",
     "is_flour": "Es harina",
     "hydration": "Hidratación",
+    "fat": "Grasa",
     "can_be_modified": "Modificable por otros usuarios",
     "cost": "Costo",
     "grams": "gr",
@@ -215,6 +216,7 @@
     "filter": {
       "name": "Filtra por nombre...",
       "hydration": "Filtra por hidratación (%)",
+      "fat": "Filtra por grasa (%)",
       "cost": "Filtra por costo",
       "min": "Mín.",
       "max": "Máx.",

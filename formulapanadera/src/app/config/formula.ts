@@ -21,7 +21,6 @@
   export const OVEN_STARTING_TIME = 1;
 
 /* COMPOUND INGREDIENTS */
-// Classification names need to be a key on "formulas.hydration" i18n files
 // Compound ingredients proportion factor (e.g. The ingledient calculates from the total flour of the formula)
 export const PROPORTION_FACTOR = ["flour", "dough", "ingredient"] as const;
 

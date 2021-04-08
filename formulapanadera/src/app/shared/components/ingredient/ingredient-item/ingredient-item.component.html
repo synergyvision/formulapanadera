@@ -25,15 +25,24 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="3" class="properties-col">
+        <ion-col size="3" class="properties-col" *ngIf="ingredient.hydration > 0">
           <p
             class="ingredients-description ingredient-hydration"
-            *ngIf="ingredient.hydration > 0"
           >
             <ion-icon class="properties-icon" [name]="ICONS.water"></ion-icon
             >{{ ingredientHydration() }}%
           </p>
-          <p class="ingredients-description" *ngIf="ingredient.is_flour">
+        </ion-col>
+        <ion-col size="3" class="properties-col" *ngIf="ingredient?.fat > 0">
+          <p
+            class="ingredients-description ingredient-fat"
+          >
+            <ion-icon class="properties-icon" [name]="ICONS.water"></ion-icon
+            >{{ ingredientFat() }}%
+          </p>
+        </ion-col>
+        <ion-col size="3" class="properties-col" *ngIf="ingredient.is_flour">
+          <p class="ingredients-description">
             <img
               class="properties-icon image-icon"
               [src]="ASSETS.icons.wheat"
@@ -42,7 +51,7 @@
             />
           </p>
         </ion-col>
-        <ion-col size="9" *ngIf="ingredient.cost && ingredient.cost>0" class="cost-col">
+        <ion-col *ngIf="ingredient.cost && ingredient.cost>0" class="cost-col">
           <p class="ingredients-description ingredient-cost">
             {{ ingredient.cost | number: INGREDIENT_COST_FORMAT }}
             <span class="ingredient-currency"
@@ -50,7 +59,7 @@
             >
           </p>
         </ion-col>
-        <ion-col size="9" class="cost-col" *ngIf="ingredient.formula">
+        <ion-col class="cost-col" *ngIf="ingredient.formula">
           <p
             class="ingredients-description"
             *ngIf="ingredient.formula.suggested_values"

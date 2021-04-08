@@ -43,6 +43,12 @@
     }
   }
 
+  .ingredient-fat {
+    ion-icon {
+      color: var(--ion-color-fat) !important;
+    }
+  }
+
   .properties-col {
     align-self: flex-end;
   }

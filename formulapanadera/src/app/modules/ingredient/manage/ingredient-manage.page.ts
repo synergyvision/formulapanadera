@@ -68,6 +68,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       this.manageIngredientForm = new FormGroup({
         name: new FormControl("", Validators.required),
         hydration: new FormControl("", Validators.required),
+        fat: new FormControl("", Validators.required),
         is_flour: new FormControl(false, Validators.required),
         cost: new FormControl("0", Validators.required),
       });
@@ -97,6 +98,10 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
         name: new FormControl(state.ingredient.name, Validators.required),
         hydration: new FormControl(
           state.ingredient.hydration,
+          Validators.required
+        ),
+        fat: new FormControl(
+          state.ingredient.fat,
           Validators.required
         ),
         is_flour: new FormControl(
@@ -274,11 +279,17 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
 
     if (!this.ingredient.formula) {
       this.ingredient.hydration = this.manageIngredientForm.value.hydration;
+      this.ingredient.fat = this.manageIngredientForm.value.fat;
       this.ingredient.is_flour = this.manageIngredientForm.value.is_flour;
       this.ingredient.cost = this.manageIngredientForm.value.cost;
     } else {
       this.ingredient.hydration = Number(
         this.ingredientService.calculateHydration(
+          this.ingredient.formula.ingredients
+        )
+      );
+      this.ingredient.fat = Number(
+        this.ingredientService.calculateFat(
           this.ingredient.formula.ingredients
         )
       );
@@ -358,13 +369,20 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     }
   }
 
-  formatNumberPercentage(value: number) {
+  formatNumberPercentage(value: number, type: "fat" | "hydration") {
     if (this.manageIngredientForm.value.is_flour) {
       this.manageIngredientForm.get("hydration").patchValue("0.0");
+      this.manageIngredientForm.get("fat").patchValue("0.0");
     } else {
-      this.manageIngredientForm
+      if (type == "hydration") {
+        this.manageIngredientForm
         .get("hydration")
         .patchValue(this.formatNumberService.formatNumberPercentage(value));
+      } else {
+        this.manageIngredientForm
+        .get("fat")
+        .patchValue(this.formatNumberService.formatNumberPercentage(value));
+      }
     }
   }
 
@@ -387,6 +405,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
   changeFlourIngredient() {
     if (this.manageIngredientForm.value.is_flour) {
       this.manageIngredientForm.get("hydration").patchValue("0.0");
+      this.manageIngredientForm.get("fat").patchValue("0.0");
     }
   }
 
