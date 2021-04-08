@@ -4,6 +4,8 @@ import { IngredientModel } from "../models/ingredient.model";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
+import { IngredientPercentageModel } from "../models/formula.model";
+import { DECIMALS } from "src/app/config/formats";
 
 @Injectable()
 export class IngredientService {
@@ -31,6 +33,20 @@ export class IngredientService {
     }
     searchingShellModel.isShell = true;
     return searchingShellModel;
+  }
+
+  public calculateHydration(
+    ingredients: Array<IngredientPercentageModel>
+  ): string {
+    let hydration: number = 0;
+    ingredients.forEach((ingredientData) => {
+      if (!ingredientData.ingredient.formula) {
+        hydration =
+          ingredientData.percentage * ingredientData.ingredient.hydration +
+          hydration;
+      }
+    });
+    return (hydration / 100).toFixed(DECIMALS.hydration);
   }
 
   /*

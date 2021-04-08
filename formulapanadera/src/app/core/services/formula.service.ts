@@ -338,8 +338,8 @@ export class FormulaService {
       });
       if (sub_ingredients_formula.length > 0) {
         this.getIngredientsCalculatedPercentages(
-          0,
-          0,
+          formula_weight,
+          Number(bakers_percentage),
           ingredients,
           sub_ingredients_formula,
           type,
@@ -350,7 +350,7 @@ export class FormulaService {
       //Gets new values of ingredients
       ingredients.forEach((ingredient) => {
         if (!ingredient.ingredient.formula) {
-          item.ingredient.formula.ingredients.forEach((ingredientFormula) => {
+          item.ingredient.formula.ingredients.forEach((ingredientFormula: IngredientPercentageModel) => {
             if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
               if (type == "ADD") {
                 ingredient.percentage =
@@ -365,6 +365,22 @@ export class FormulaService {
           });
         }
       });
+      if (type == "DELETE") {
+        item.ingredient.formula.ingredients.forEach((ingredientFormula: IngredientPercentageModel) => {
+          if (!ingredientFormula.ingredient.formula) {
+            let exists = false;
+            ingredients.forEach((ingredient) => {
+              if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
+                exists = true;
+              }
+            });
+            if (!exists) {
+              ingredients.push(ingredientFormula);
+              ingredientFormula.percentage = ingredientFormula.percentage * Number(bakers_percentage);
+            }
+          }
+        });
+      }
     });
   }
 

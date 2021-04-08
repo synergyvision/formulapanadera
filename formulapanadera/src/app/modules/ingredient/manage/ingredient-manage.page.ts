@@ -7,22 +7,21 @@ import {
   ViewWillEnter,
 } from "@ionic/angular";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
-
 import { IngredientModel } from "../../../core/models/ingredient.model";
 import { IngredientCRUDService } from "../../../core/services/firebase/ingredient.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
 import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
-import { FormulaService } from "src/app/core/services/formula.service";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { UserResumeModel } from "src/app/core/models/user.model";
 import { ReferenceModel } from "src/app/core/models/shared.model";
 import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
+import { IngredientService } from "src/app/core/services/ingredient.service";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -49,7 +48,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
   constructor(
     private ingredientCRUDService: IngredientCRUDService,
     private userStorageService: UserStorageService,
-    private formulaService: FormulaService,
+    private ingredientService: IngredientService,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
     private loadingController: LoadingController,
@@ -57,7 +56,6 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private router: Router,
-    private route: ActivatedRoute
   ) {}
 
   async ngOnInit() {
@@ -280,7 +278,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       this.ingredient.cost = this.manageIngredientForm.value.cost;
     } else {
       this.ingredient.hydration = Number(
-        this.formulaService.calculateHydration(
+        this.ingredientService.calculateHydration(
           this.ingredient.formula.ingredients
         )
       );
