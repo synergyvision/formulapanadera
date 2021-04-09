@@ -109,22 +109,13 @@ export class ProductionService {
     let bakers_percentage: number;
 
     production.formulas.forEach((item) => {
-      let formula: FormulaModel = JSON.parse(JSON.stringify(item.formula))
-      let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item.formula))
-      formula_without_compound.ingredients.forEach((ingredient, index) => {
-        if (ingredient.ingredient.formula) {
-          formula_without_compound.ingredients.splice(
-            index,
-            1
-          );
-        }
-      })
-      bakers_percentage = Number(this.formulaService.deleteIngredientsWithFormula(formula, formula_without_compound))
+      let formula_without_compound = this.formulaService.getFormulaWithoutCompoundIngredients(item.formula);
+      bakers_percentage = Number(formula_without_compound.bakers_percentage)
       cost =
         cost +
         Number(
           this.formulaService.calculateTotalCost(
-            formula_without_compound.ingredients,
+            formula_without_compound.formula.ingredients,
             bakers_percentage
           )
         );

@@ -22,7 +22,8 @@
 <ion-content class="formula-detail-content">
   <app-title [title]="formula.name"></app-title>
   <app-hydration-bar [hydration]="hydration/100"></app-hydration-bar>
-  <ion-row>
+  <app-fat-bar [fat]="fat/100"></app-fat-bar>
+  <ion-row class="detail-row">
     <ion-col class="detail-col" size="4">
       <ion-item class="formula-detail" lines="full" mode="ios">
         <ion-label color="medium" position="floating">{{'formulas.units' | translate}}</ion-label>
@@ -46,8 +47,7 @@
         data="{{total_weight}} {{'ingredients.grams' | translate}}"
       ></app-data-item> </ion-col></ion-row
   >
-  
-  <ion-row
+  <ion-row class="detail-row"
     ><ion-col class="detail-col">
       <app-data-item
         [title]="'formulas.bakers_percentage' | translate"
@@ -57,6 +57,11 @@
       <app-data-item
         [title]="'ingredients.hydration' | translate"
         data="{{hydration}} %"
+      ></app-data-item> </ion-col
+    ><ion-col class="detail-col">
+      <app-data-item
+        [title]="'ingredients.fat' | translate"
+        data="{{fat}} %"
       ></app-data-item> </ion-col
   ></ion-row>
   <ion-row *ngIf="unitary_cost>0">

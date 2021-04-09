@@ -162,6 +162,11 @@
       "normal": "Hidratación normal",
       "high": "Alta hidratación"
     },
+    "fat": {
+      "low": "Baja grasa",
+      "normal": "Grasa normal",
+      "high": "Alta grasa"
+    },
     "empty": "No se encontraron fórmulas",
     "share": {
       "instructions": "Ingresa el correo electrónico del usuario al que deseas compartir",

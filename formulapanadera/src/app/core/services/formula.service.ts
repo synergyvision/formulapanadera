@@ -50,19 +50,26 @@ export class FormulaService {
     const filtered = [];
     let hydration: number;
     formulas.forEach((item) => {
-      let formula: FormulaModel = JSON.parse(JSON.stringify(item))
-      let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item))
-      formula_without_compound.ingredients.forEach((ingredient, index) => {
-        if (ingredient.ingredient.formula) {
-          formula_without_compound.ingredients.splice(
-            index,
-            1
-          );
-        }
-      })
-      this.deleteIngredientsWithFormula(formula, formula_without_compound)
+      let formula_without_compound: FormulaModel = this.getFormulaWithoutCompoundIngredients(item).formula;
       hydration = Number(this.calculateHydration(formula_without_compound.ingredients));
       if (hydration >= lower && hydration <= upper) {
+        filtered.push(item);
+      }
+    });
+    return filtered as FormulaModel[] & ShellModel;
+  }
+
+  public searchFormulasByFat(
+    lower: number,
+    upper: number,
+    formulas: FormulaModel[] & ShellModel
+  ): FormulaModel[] & ShellModel {
+    const filtered = [];
+    let fat: number;
+    formulas.forEach((item) => {
+      let formula_without_compound: FormulaModel = this.getFormulaWithoutCompoundIngredients(item).formula;
+      fat = Number(this.calculateFat(formula_without_compound.ingredients));
+      if (fat >= lower && fat <= upper) {
         filtered.push(item);
       }
     });
@@ -78,19 +85,10 @@ export class FormulaService {
     let bakers_percentage: number;
     let cost: number;
     formulas.forEach((item) => {
-      let formula: FormulaModel = JSON.parse(JSON.stringify(item))
-      let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item))
-      formula_without_compound.ingredients.forEach((ingredient, index) => {
-        if (ingredient.ingredient.formula) {
-          formula_without_compound.ingredients.splice(
-            index,
-            1
-          );
-        }
-      })
-      bakers_percentage = Number(this.deleteIngredientsWithFormula(formula, formula_without_compound))
+      let formula_without_compound = this.getFormulaWithoutCompoundIngredients(item);
+      bakers_percentage = Number(formula_without_compound.bakers_percentage);
       cost =
-        Number(this.calculateTotalCost(formula_without_compound.ingredients, bakers_percentage)) /
+        Number(this.calculateTotalCost(formula_without_compound.formula.ingredients, bakers_percentage)) /
         item.units;
       if (
         (cost >= lower || lower == null) &&
@@ -153,6 +151,20 @@ export class FormulaService {
     return (hydration / 100).toFixed(DECIMALS.hydration);
   }
 
+  public calculateFat(
+    ingredients: Array<IngredientPercentageModel>
+  ): string {
+    let fat: number = 0;
+    ingredients.forEach((ingredientData) => {
+      if (!ingredientData.ingredient.formula && ingredientData.ingredient.fat) {
+        fat =
+          ingredientData.percentage * ingredientData.ingredient.fat +
+          fat;
+      }
+    });
+    return (fat / 100).toFixed(DECIMALS.fat);
+  }
+
   public calculateTotalCost(
     ingredients: Array<IngredientPercentageModel>,
     bakers_percentage: number
@@ -168,6 +180,23 @@ export class FormulaService {
       }
     });
     return cost.toString();
+  }
+
+  public getFormulaWithoutCompoundIngredients(
+    item: FormulaModel
+  ): { formula: FormulaModel, bakers_percentage: string }  {
+    let formula: FormulaModel = JSON.parse(JSON.stringify(item))
+    let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item))
+    formula_without_compound.ingredients.forEach((ingredient, index) => {
+      if (ingredient.ingredient.formula) {
+        formula_without_compound.ingredients.splice(
+          index,
+          1
+        );
+      }
+    })
+    let bakers_percentage = this.deleteIngredientsWithFormula(formula, formula_without_compound)
+    return { formula: formula_without_compound, bakers_percentage: bakers_percentage };
   }
 
   public fromRecipeToFormula(ingredients: Array<IngredientPercentageModel>, calculate_compound: boolean = false) {

@@ -26,6 +26,7 @@ export class FormulaListingPage implements OnInit {
   APP_URL = APP_URL;
 
   hydrationRangeForm: FormGroup;
+  fatRangeForm: FormGroup;
   costRangeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
@@ -51,6 +52,9 @@ export class FormulaListingPage implements OnInit {
   async ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
+      dual: new FormControl({ lower: 0, upper: 100 }),
+    });
+    this.fatRangeForm = new FormGroup({
       dual: new FormControl({ lower: 0, upper: 100 }),
     });
     this.costRangeForm = new FormGroup({
@@ -91,6 +95,10 @@ export class FormulaListingPage implements OnInit {
           lower: this.hydrationRangeForm.controls.dual.value.lower,
           upper: this.hydrationRangeForm.controls.dual.value.upper,
         },
+        fat: {
+          lower: this.fatRangeForm.controls.dual.value.lower,
+          upper: this.fatRangeForm.controls.dual.value.upper,
+        },
         cost: {
           lower: this.costRangeForm.value.lower,
           upper: this.costRangeForm.value.upper,
@@ -101,6 +109,11 @@ export class FormulaListingPage implements OnInit {
       filteredFormulas = this.formulaService.searchFormulasByHydration(
         filters.hydration.lower,
         filters.hydration.upper,
+        filteredFormulas
+      );
+      filteredFormulas = this.formulaService.searchFormulasByFat(
+        filters.fat.lower,
+        filters.fat.upper,
         filteredFormulas
       );
       filteredFormulas = this.formulaService.searchFormulasByCost(

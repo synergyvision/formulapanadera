@@ -49,6 +49,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   bakers_percentage: string;
   total_weight: number;
   hydration: number;
+  fat: number;
   unitary_cost: string;
   total_cost: string;
 
@@ -140,24 +141,19 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     this.total_weight = Number(
       (this.units * this.formula.unit_weight).toFixed(DECIMALS.weight)
     );
-    let formula: FormulaModel = JSON.parse(JSON.stringify(this.formula))
-    formula.units = this.units
-    formula.ingredients = JSON.parse(JSON.stringify(this.ingredients))
-    let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(formula))
-    formula_without_compound.ingredients.forEach((ingredient, index) => {
-      if (ingredient.ingredient.formula) {
-        formula_without_compound.ingredients.splice(
-          index,
-          1
-        );
-      }
-    })
-    let bakers_p = this.formulaService.deleteIngredientsWithFormula(formula, formula_without_compound)
+    let aux_formula: FormulaModel = JSON.parse(JSON.stringify(this.formula))
+    aux_formula.units = this.units
+    aux_formula.ingredients = JSON.parse(JSON.stringify(this.ingredients))
+    let formula_without_compound = this.formulaService.getFormulaWithoutCompoundIngredients(aux_formula);
+    let bakers_p = formula_without_compound.bakers_percentage;
     this.hydration = Number(
-      this.formulaService.calculateHydration(formula_without_compound.ingredients)
+      this.formulaService.calculateHydration(formula_without_compound.formula.ingredients)
+    );
+    this.fat = Number(
+      this.formulaService.calculateFat(formula_without_compound.formula.ingredients)
     );
     this.total_cost = this.formulaService.calculateTotalCost(
-      formula_without_compound.ingredients,
+      formula_without_compound.formula.ingredients,
       Number(bakers_p)
     );
     this.unitary_cost = (Number(this.total_cost) / this.units).toString();

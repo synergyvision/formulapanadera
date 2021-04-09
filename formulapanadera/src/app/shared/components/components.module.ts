@@ -14,6 +14,7 @@ import { IngredientsListComponent } from "./ingredient/ingredients-list/ingredie
 import { FormulaStepDetailsComponent } from "./formula/formula-step-details/formula-step-details.component";
 import { MixingStepsComponent } from "./formula/mixing-steps/mixing-steps.component";
 import { HydrationBarComponent } from "./formula/hydration-bar/hydration-bar.component";
+import { FatBarComponent } from "./formula/fat-bar/fat-bar.component";
 import { FormulasListComponent } from "./production/formulas-list/formulas-list.component";
 import { ProductionIngredientsComponent } from "./production/production-ingredients/production-ingredients.component";
 import { ProductionItemComponent } from "./production/production-item/production-item.component";
@@ -52,6 +53,7 @@ import { NotesComponent } from "./general/notes/notes.component";
     IngredientItemComponent,
     FormulaItemComponent,
     HydrationBarComponent,
+    FatBarComponent,
     IngredientsListComponent,
     FormulasListComponent,
     FormulaTimeTableComponent,
@@ -81,6 +83,7 @@ import { NotesComponent } from "./general/notes/notes.component";
     IngredientItemComponent,
     FormulaItemComponent,
     HydrationBarComponent,
+    FatBarComponent,
     IngredientsListComponent,
     FormulasListComponent,
     FormulaTimeTableComponent,

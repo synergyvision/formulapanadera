@@ -26,12 +26,18 @@
       </ion-row>
       <ion-row *ngIf="formula.name !== undefined">
         <ion-col size="3" class="properties-col">
-          <p class="formulas-description">
+          <p class="formulas-description formula-hydration">
             <ion-icon class="properties-icon" [name]="ICONS.water"></ion-icon
             >{{ hydration() }}%
           </p>
         </ion-col>
-        <ion-col size="9" class="cost-col">
+        <ion-col size="3" class="properties-col">
+          <p class="formulas-description formula-fat">
+            <ion-icon class="properties-icon" [name]="ICONS.water"></ion-icon
+            >{{ fat() }}%
+          </p>
+        </ion-col>
+        <ion-col class="cost-col">
           <p class="formulas-description formula-cost" *ngIf="unitCost() && unitCost()>0">
             {{ unitCost() | number: FORMULA_COST_FORMAT }}
             <span class="formula-currency"
