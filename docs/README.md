@@ -176,28 +176,28 @@ Para agregar un nuevo lenguaje a la aplicación se deben seguir los siguientes p
 1. Agregar el archivo "código.json" a `src/assets/i18n`
 2. Modificar la variable LANGUAGE en `src/app/config/configuration.ts` agregando el lenguaje con su nombre y el mismo código que se utilizó en el paso anterior, si se desea que este sea el lenguaje predeterminado se cambia el atributo "default"
 
-#### Configuración de clasificación de fórmulas (hidratación)
+#### Configuración de clasificación de fórmulas
 
-- `src/app/config/formula.ts`: Contiene la clasificación de una fórmula dependiendo de la hidratación, en la constante HYDRATION_CLASSIFICATION
+- `src/app/config/formula.ts`: Contiene la clasificación de una fórmula dependiendo de un porcentaje, en la constante name_CLASSIFICATION
 
 ```js
-export const HYDRATION_CLASSIFICATION = [
+export const name_CLASSIFICATION = [
   {
-    name: "hard",
-    values: { min: 0, max: 0.57 },
+    name: "low",
+    values: { min: 0, max: 0.50 },
   },
   {
-    name: "standard",
-    values: { min: 0.57, max: 0.65 },
+    name: "normal",
+    values: { min: 0.50, max: 0.65 },
   },
   {
-    name: "rustic",
+    name: "high",
     values: { min: 0.65, max: 1 },
   },
 ];
 ```
 
-Los nombres deben ser iguales a una key contenida en "formulas.hydration" dentro de todos los archivos i18n y los valores deben ser continuos y abarcar desde el número 0 al 1
+Los nombres deben ser iguales a una key contenida en "formulas.nombre" dentro de todos los archivos i18n y los valores deben ser continuos y abarcar desde el número 0 al 1
 
 #### Configuración de tiempos de horno
 
