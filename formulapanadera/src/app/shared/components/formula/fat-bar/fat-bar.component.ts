@@ -18,7 +18,8 @@ export class FatBarComponent {
     FAT_CLASSIFICATION.forEach((classification) => {
       if (
         this.fat > classification.values.min &&
-        this.fat <= classification.values.max
+        (classification.values.max == undefined ||
+          this.fat < classification.values.max)
       ) {
         type = this.languageService.getTerm(
           `formulas.fat.${classification.name}`

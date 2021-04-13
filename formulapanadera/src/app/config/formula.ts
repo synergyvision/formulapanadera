@@ -30,28 +30,28 @@ export const PROPORTION_FACTOR = ["flour", "dough", "ingredient"] as const;
 export const HYDRATION_CLASSIFICATION = [
   {
     name: "low",
-    values: { min: 0, max: 0.49 },
+    values: { min: 0, max: 0.51 },
   },
   {
     name: "normal",
-    values: { min: 0.49, max: 0.65 },
+    values: { min: 0.51, max: 0.65 },
   },
   {
     name: "high",
-    values: { min: 0.65, max: 1 },
+    values: { min: 0.65, max: undefined },
   },
 ];
 export const FAT_CLASSIFICATION = [
   {
     name: "low",
-    values: { min: 0, max: 0.49 },
+    values: { min: 0, max: 0.10 },
   },
   {
     name: "normal",
-    values: { min: 0.49, max: 0.65 },
+    values: { min: 0.10, max: 0.20 },
   },
   {
     name: "high",
-    values: { min: 0.65, max: 1 },
+    values: { min: 0.20, max: undefined },
   },
 ];
