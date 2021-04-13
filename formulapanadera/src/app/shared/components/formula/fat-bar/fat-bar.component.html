@@ -1,0 +1,15 @@
+<ion-item lines="full" class="fat-item">
+  <ion-row class="fat-bar-row">
+    <ion-col size="12" class="fat-bar-col">
+      <p class="fat-legend">{{ breadType() }} ({{ getFatPercentage() }}%)</p>
+      <ion-progress-bar
+        class="fat-bar"
+        [value]="fat"
+      ></ion-progress-bar>
+      <p class="fat-percentage">
+        <span>0%</span>
+        <span>100%</span>
+      </p>
+    </ion-col>
+  </ion-row>
+</ion-item>

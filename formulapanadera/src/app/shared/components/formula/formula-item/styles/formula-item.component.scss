@@ -57,8 +57,19 @@
   }
 }
 
+.formula-hydration {
+  ion-icon {
+    color: var(--ion-color-hydration) !important;
+  }
+}
+
+.formula-fat {
+  ion-icon {
+    color: var(--ion-color-fat) !important;
+  }
+}
+
 .properties-icon {
-  color: var(--ion-color-hydration) !important;
   margin-bottom: -2px;
 }
 

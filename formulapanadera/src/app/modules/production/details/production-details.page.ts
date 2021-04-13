@@ -125,19 +125,10 @@ export class ProductionDetailsPage implements OnInit {
         DECIMALS.weight
       )
     );
-    let formula: FormulaModel = JSON.parse(JSON.stringify(transformed_formula.formula))
-    let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(formula))
-    formula_without_compound.ingredients.forEach((ingredient, index) => {
-      if (ingredient.ingredient.formula) {
-        formula_without_compound.ingredients.splice(
-          index,
-          1
-        );
-      }
-    })
-    let bakers_p = this.formulaService.deleteIngredientsWithFormula(formula, formula_without_compound)
+    let formula_without_compound = this.formulaService.getFormulaWithoutCompoundIngredients(transformed_formula.formula);
+    let bakers_p = formula_without_compound.bakers_percentage
     transformed_formula.total_cost = this.formulaService.calculateTotalCost(
-      formula_without_compound.ingredients,
+      formula_without_compound.formula.ingredients,
       Number(bakers_p)
     );
     transformed_formula.unitary_cost = (

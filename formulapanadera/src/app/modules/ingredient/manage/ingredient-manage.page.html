@@ -94,7 +94,24 @@
             max="100"
             formControlName="hydration"
             class="ingredient-hydration"
-            (ionBlur)="formatNumberPercentage(manageIngredientForm.value.hydration)"
+            (ionBlur)="formatNumberPercentage(manageIngredientForm.value.hydration, 'hydration')"
+            required
+          >
+          </ion-input>
+        </ion-item>
+        <ion-item class="input-item">
+          <ion-label color="primary" position="stacked"
+            >{{'ingredients.fat' | translate}} (%)</ion-label
+          >
+          <ion-input
+            type="number"
+            inputmode="decimal"
+            step="0.1"
+            min="0"
+            max="100"
+            formControlName="fat"
+            class="ingredient-fat"
+            (ionBlur)="formatNumberPercentage(manageIngredientForm.value.fat, 'fat')"
             required
           >
           </ion-input>

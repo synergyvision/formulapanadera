@@ -17,6 +17,7 @@ export class IngredientModel {
   name: string;
   is_flour: boolean;
   hydration: number;
+  fat: number;
   cost: number;
   references: Array<ReferenceModel>;
   formula?: {

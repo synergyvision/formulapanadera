@@ -18,5 +18,6 @@ export const DECIMALS = {
   formula_percentage: 1,
   formula_grams: 1,
   hydration: 1,
+  fat: 1,
   weight: 1,
 };
