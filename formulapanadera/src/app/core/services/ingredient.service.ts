@@ -6,12 +6,15 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
 import { IngredientPercentageModel } from "../models/formula.model";
 import { DECIMALS } from "src/app/config/formats";
+import { IngredientCRUDService } from "./firebase/ingredient.service";
 
 @Injectable()
 export class IngredientService {
   private ingredients: BehaviorSubject<IngredientModel[]> = new BehaviorSubject<IngredientModel[]>(undefined);
 
-  constructor() {}
+  constructor(
+    private ingredientCRUDService: IngredientCRUDService
+  ) {}
 
   public setIngredients(ingredients: IngredientModel[] & ShellModel) {
     this.ingredients.next(ingredients);
@@ -19,6 +22,10 @@ export class IngredientService {
 
   public getIngredients(): Observable<IngredientModel[]> {
     return this.ingredients.asObservable();
+  }
+
+  public getCurrentIngredients(): IngredientModel[] {
+    return this.ingredients.getValue();
   }
 
   public clearIngredients() {
@@ -162,6 +169,45 @@ export class IngredientService {
       }
     });
     return filtered as IngredientModel[] & ShellModel;
+  }
+
+  /*
+  Update
+  */
+  
+  public hasIngredient(ingredient: IngredientModel, new_ingredient: IngredientModel): boolean {
+    let has_ingredient: boolean = false;
+    if (ingredient.formula) {
+      ingredient.formula.ingredients.forEach(ingredient => {
+        if (ingredient.ingredient.id == new_ingredient.id) {
+          has_ingredient = true;
+          ingredient.ingredient = new_ingredient;
+        }
+      });
+      if (has_ingredient) {
+        ingredient.formula.mixing?.forEach(step => {
+          step.ingredients.forEach(ingredient => {
+            if (ingredient.ingredient.id == new_ingredient.id) {
+              ingredient.ingredient = new_ingredient;
+            }
+          })
+        })
+      }
+    }
+    return has_ingredient;
+  }
+
+  public async updateIngredients(updated_ingredient: IngredientModel, updated_ingredients: IngredientModel[]) {
+    let ingredients: IngredientModel[] = JSON.parse(JSON.stringify(this.getCurrentIngredients()));
+    const ing_promises = ingredients.map((ingredient) => {
+      let original_ingredient: IngredientModel = JSON.parse(JSON.stringify(ingredient));
+      let has_ingredient: boolean = this.hasIngredient(ingredient, updated_ingredient);
+      if (has_ingredient) {
+        updated_ingredients.push(ingredient);
+        return this.ingredientCRUDService.updateIngredient(ingredient, original_ingredient);
+      }
+    })
+    await Promise.all(ing_promises);
   }
 
   // Sort

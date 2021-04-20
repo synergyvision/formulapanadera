@@ -10,12 +10,16 @@ import { ShellModel } from "src/app/shared/shell/shell.model";
 import { OVEN_STEP } from "src/app/config/formula";
 import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
+import { IngredientModel } from "../models/ingredient.model";
+import { FormulaCRUDService } from "./firebase/formula.service";
 
 @Injectable()
 export class FormulaService {
   private formulas: BehaviorSubject<FormulaModel[]> = new BehaviorSubject<FormulaModel[]>(undefined);
 
-  constructor() {}
+  constructor(
+    private formulaCRUDService: FormulaCRUDService
+  ) {}
 
   public setFormulas(formulas: FormulaModel[] & ShellModel) {
     this.formulas.next(formulas);
@@ -23,6 +27,10 @@ export class FormulaService {
 
   public getFormulas(): Observable<FormulaModel[]> {
     return this.formulas.asObservable();
+  }
+
+  public getCurrentFormulas(): FormulaModel[] {
+    return this.formulas.getValue();
   }
 
   public clearFormulas() {
@@ -121,6 +129,59 @@ export class FormulaService {
       }
     });
     return filtered as FormulaModel[] & ShellModel;
+  }
+
+  /*
+  Update
+  */
+  
+  public hasIngredient(formula: FormulaModel, updated_ingredients: IngredientModel[]): boolean {
+    let has_ingredient: boolean = false;
+    formula.ingredients.forEach(ingredient => {
+      updated_ingredients.forEach(updated_ingredient => {
+        if (ingredient.ingredient.id == updated_ingredient.id) {
+          has_ingredient = true;
+          ingredient.ingredient = updated_ingredient;
+        }
+      })
+    });
+    if (has_ingredient) {
+      formula.mixing?.forEach(mix => {
+        mix.mixing_order.forEach(step => {
+          step.ingredients.forEach(ingredient => {
+            updated_ingredients.forEach(updated_ingredient => {
+              if (ingredient.ingredient.id == updated_ingredient.id) {
+                ingredient.ingredient = updated_ingredient;
+              }
+            })
+          })
+        })
+      })
+    }
+    formula.steps?.forEach(step => {
+      step.ingredients?.forEach(ingredient => {
+        updated_ingredients.forEach(updated_ingredient => {
+          if (ingredient.ingredient.id == updated_ingredient.id) {
+            has_ingredient = true;
+            ingredient.ingredient = updated_ingredient;
+          }
+        })
+      })
+    })
+    return has_ingredient;
+  }
+
+  public async updateIngredients(updated_ingredients: IngredientModel[], updated_formulas: FormulaModel[]) {
+    let formulas: FormulaModel[] = JSON.parse(JSON.stringify(this.getCurrentFormulas()));
+    const for_promises = formulas.map((formula) => {
+      let original_formula: FormulaModel = JSON.parse(JSON.stringify(formula));
+      let has_ingredient: boolean = this.hasIngredient(formula, updated_ingredients);
+      if (has_ingredient) {
+        updated_formulas.push(formula)
+        return this.formulaCRUDService.updateFormula(formula, original_formula);
+      }
+    })
+    await Promise.all(for_promises);
   }
 
   /*

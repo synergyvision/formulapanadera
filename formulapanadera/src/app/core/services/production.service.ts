@@ -11,12 +11,16 @@ import { FormulaService } from "./formula.service";
 import { OVEN_STEP } from "src/app/config/formula";
 import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
+import { ProductionCRUDService } from "./firebase/production.service";
 
 @Injectable()
 export class ProductionService {
   private productions: BehaviorSubject<ProductionModel[]> = new BehaviorSubject<ProductionModel[]>(undefined);
 
-  constructor(private formulaService: FormulaService) { }
+  constructor(
+    private formulaService: FormulaService,
+    private productionCRUDService: ProductionCRUDService
+  ) { }
   
   public setProductions(productions: ProductionModel[] & ShellModel) {
     this.productions.next(productions);
@@ -24,6 +28,10 @@ export class ProductionService {
 
   public getProductions(): Observable<ProductionModel[]> {
     return this.productions.asObservable();
+  }
+
+  public getCurrentProductions(): ProductionModel[] {
+    return this.productions.getValue();
   }
 
   public clearProductions() {
@@ -38,6 +46,36 @@ export class ProductionService {
     }
     searchingShellModel.isShell = true;
     return searchingShellModel;
+  }
+
+  /*
+  Update
+  */
+  
+  public hasFormula(production: ProductionModel, updated_formulas: FormulaModel[]): boolean {
+    let has_formula: boolean = false;
+    production.formulas.forEach(formula => {
+      updated_formulas.forEach(updated_formula => {
+        if (formula.formula.id == updated_formula.id) {
+          has_formula = true;
+          formula.formula = updated_formula;
+        }
+      })
+    });
+    return has_formula;
+  }
+
+  public async updateFormulas(updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
+    let productions: ProductionModel[] = JSON.parse(JSON.stringify(this.getCurrentProductions()));
+    const prod_promises = productions.map((production) => {
+      let original_production: ProductionModel = JSON.parse(JSON.stringify(production));
+      let has_formula: boolean = this.hasFormula(production, updated_formulas);
+      if (has_formula) {
+        updated_productions.push(production)
+        return this.productionCRUDService.updateProduction(production, original_production);
+      }
+    })
+    await Promise.all(prod_promises);
   }
 
   /*
@@ -145,6 +183,28 @@ export class ProductionService {
             ingredient: ingredient.ingredient,
             percentage:
               ingredient.percentage * Number(formula.bakers_percentage),
+          });
+        }
+      });
+      formula.formula.steps.forEach((step) => {
+        if (step.ingredients) {
+          step.ingredients.forEach((ingredient) => {
+            exists = false;
+            ingredients.forEach((pushed_ingredient) => {
+              if (pushed_ingredient.ingredient.id === ingredient.ingredient.id) {
+                exists = true;
+                pushed_ingredient.percentage =
+                  pushed_ingredient.percentage +
+                  ingredient.percentage * (formula.formula.unit_weight * formula.number)/100;
+              }
+            });
+            if (!exists) {
+              ingredients.push({
+                ingredient: ingredient.ingredient,
+                percentage:
+                  ingredient.percentage * (formula.formula.unit_weight * formula.number)/100,
+              });
+            }
           });
         }
       });

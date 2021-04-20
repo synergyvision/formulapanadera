@@ -39,21 +39,12 @@ export class IngredientsListComponent implements OnInit, OnChanges {
   ingredientGrams(percentage: number): string {
     if (!this.compensation) {
       if (this.bakers_percentage) {
-        return this.formatNumberService.formatNumberDecimals(
-          percentage * this.bakers_percentage,
-          DECIMALS.formula_grams
-        );
-      } else { 
-        return this.formatNumberService.formatNumberDecimals(
-          percentage * this.formula_weight/100,
-          DECIMALS.formula_grams
-        );
+        return (percentage * this.bakers_percentage).toFixed(DECIMALS.formula_grams);
+      } else {
+        return (percentage * this.formula_weight/100).toFixed(DECIMALS.formula_grams);
       }
     } else {
-      return this.formatNumberService.formatNumberDecimals(
-        percentage * this.bakers_percentage * (1 + this.compensation / 100),
-        DECIMALS.formula_grams
-      );
+      return (percentage * this.bakers_percentage * (1 + this.compensation / 100)).toFixed(DECIMALS.formula_grams);
     }
   }
 

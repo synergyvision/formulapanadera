@@ -11,7 +11,6 @@ import { FormulaCRUDService } from "./formula.service";
 import { ProductionCRUDService } from "./production.service";
 import { IngredientCRUDService } from "./ingredient.service";
 import { UserGroupModel } from "../../models/user.model";
-import { CourseService } from "../course.service";
 
 @Injectable()
 export class CourseCRUDService {
@@ -19,7 +18,6 @@ export class CourseCRUDService {
 
   constructor(
     private afs: AngularFirestore,
-    private courseService: CourseService,
     private ingredientCRUDService: IngredientCRUDService,
     private formulaCRUDService: FormulaCRUDService,
     private productionCRUDService: ProductionCRUDService
@@ -168,6 +166,7 @@ export class CourseCRUDService {
     delete course.productions;
     delete course.formulas;
     delete course.ingredients;
+    course.user.last_modified = new Date();
     // Delete formulas
     await this.deleteData(originalCourse);
     // Set formulas
@@ -175,8 +174,7 @@ export class CourseCRUDService {
     await this.afs.collection(this.collection).doc(courseData.id).set(course);
   }
 
-  public async updateGroup(groupData: UserGroupModel) {
-    let courses = this.courseService.getMyCurrentCourses();
+  public async updateGroup(courses: CourseModel[],groupData: UserGroupModel) {
     courses.forEach(async (course: CourseModel) => {
       let courseHasGroup = false;
       course.user.shared_groups.forEach((courseGroup, index) => {

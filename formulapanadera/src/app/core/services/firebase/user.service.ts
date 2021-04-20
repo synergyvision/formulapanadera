@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 
 import { COLLECTIONS } from "src/app/config/firebase";
 import { UserGroupModel, UserModel } from '../../models/user.model';
+import { CourseService } from "../course.service";
 import { CourseCRUDService } from "./course.service";
 
 @Injectable()
@@ -13,6 +14,7 @@ export class UserCRUDService {
 
   constructor(
     private afs: AngularFirestore,
+    private courseService: CourseService,
     private courseCRUDService: CourseCRUDService
   ) { }
 
@@ -71,7 +73,8 @@ export class UserCRUDService {
       if (group.id == groupData.id) {
         userData.user_groups[group_index] = groupData;
         if (userData.instructor) {
-          await this.courseCRUDService.updateGroup(groupData);
+          let courses = this.courseService.getMyCurrentCourses();
+          await this.courseCRUDService.updateGroup(courses, groupData);
         }
       }
     })

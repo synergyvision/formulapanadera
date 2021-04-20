@@ -131,6 +131,7 @@ export class IngredientCRUDService {
 
   public async updateIngredient(ingredientData: IngredientModel, originalIngredient: IngredientModel): Promise<void> {
     let ingredient = JSON.parse(JSON.stringify(ingredientData));
+    ingredient.user.last_modified = new Date();
     if (ingredientData.formula) {
       delete ingredient.formula.ingredients;
       if (ingredient.formula.mixing && ingredient.formula.mixing.length > 0) {

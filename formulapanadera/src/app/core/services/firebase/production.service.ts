@@ -127,6 +127,7 @@ export class ProductionCRUDService {
   public async updateProduction(productionData: ProductionModel, originalProduction: ProductionModel): Promise<void> {
     let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
     delete production.formulas;
+    production.user.last_modified = new Date();
     // Delete formulas
     await this.deleteFormulas(originalProduction);
     // Set formulas

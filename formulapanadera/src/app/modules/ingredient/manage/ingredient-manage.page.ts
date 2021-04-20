@@ -13,15 +13,20 @@ import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
-import { IngredientPercentageModel } from "src/app/core/models/formula.model";
+import { FormulaModel, IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
-import { UserResumeModel } from "src/app/core/models/user.model";
+import { UserModel } from "src/app/core/models/user.model";
 import { ReferenceModel } from "src/app/core/models/shared.model";
 import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
 import { IngredientService } from "src/app/core/services/ingredient.service";
+import { FormulaService } from "src/app/core/services/formula.service";
+import { ProductionModel } from "src/app/core/models/production.model";
+import { ProductionService } from "src/app/core/services/production.service";
+import { CourseService } from "src/app/core/services/course.service";
+import { CourseModel } from "src/app/core/models/course.model";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -39,7 +44,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
   original_ingredient: IngredientModel = new IngredientModel();
   manageIngredientForm: FormGroup;
   update: boolean = false;
-  current_user = new UserResumeModel();
+  current_user = new UserModel();
 
   type: string = "simple";
 
@@ -48,6 +53,9 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
   constructor(
     private ingredientCRUDService: IngredientCRUDService,
     private userStorageService: UserStorageService,
+    private courseService: CourseService,
+    private productionService: ProductionService,
+    private formulaService: FormulaService,
     private ingredientService: IngredientService,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
@@ -117,8 +125,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
         });
       }
     }
-    let user = await this.userStorageService.getUser();
-    this.current_user = { name: user.name, email: user.email };
+    this.current_user = await this.userStorageService.getUser();
   }
 
   ionViewWillEnter() {
@@ -347,7 +354,17 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       });
       this.ingredientCRUDService
         .updateIngredient(this.ingredient, this.original_ingredient)
-        .then(() => {
+        .then(async () => {
+          let updated_ingredients: IngredientModel[] = [this.ingredient];
+          await this.ingredientService.updateIngredients(this.ingredient, updated_ingredients);
+          let updated_formulas: FormulaModel[] = [];
+          await this.formulaService.updateIngredients(updated_ingredients, updated_formulas);
+          let updated_productions: ProductionModel[] = []
+          await this.productionService.updateFormulas(updated_formulas, updated_productions);
+          let updated_courses: CourseModel[] = []
+          if (this.current_user.instructor) {
+            await this.courseService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);
+          }
           this.router.navigateByUrl(
             APP_URL.menu.name +
               "/" +
