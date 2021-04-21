@@ -253,6 +253,7 @@ export class CourseDetailsPage implements OnInit {
             APP_URL.menu.routes.ingredient.routes.details,
           {
             state: { ingredient: JSON.parse(JSON.stringify(item)) },
+            replaceUrl: true
           }
         );
       }
@@ -265,6 +266,7 @@ export class CourseDetailsPage implements OnInit {
           APP_URL.menu.routes.formula.routes.details,
           {
             state: { formula: JSON.parse(JSON.stringify(item)) },
+            replaceUrl: true
           }
         );
       }
@@ -277,6 +279,7 @@ export class CourseDetailsPage implements OnInit {
             APP_URL.menu.routes.production.routes.details,
           {
             state: { production: JSON.parse(JSON.stringify(item)) },
+            replaceUrl: true
           }
         );
       }

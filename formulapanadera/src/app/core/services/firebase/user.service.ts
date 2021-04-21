@@ -5,8 +5,6 @@ import { map } from 'rxjs/operators';
 
 import { COLLECTIONS } from "src/app/config/firebase";
 import { UserGroupModel, UserModel } from '../../models/user.model';
-import { CourseService } from "../course.service";
-import { CourseCRUDService } from "./course.service";
 
 @Injectable()
 export class UserCRUDService {
@@ -14,8 +12,6 @@ export class UserCRUDService {
 
   constructor(
     private afs: AngularFirestore,
-    private courseService: CourseService,
-    private courseCRUDService: CourseCRUDService
   ) { }
 
   /*
@@ -68,16 +64,7 @@ export class UserCRUDService {
       .set(JSON.parse(JSON.stringify(userData)));
   }
 
-  public async updateUserGroup(userData: UserModel, groupData: UserGroupModel): Promise<void> {
-    userData.user_groups.forEach(async (group, group_index) => {
-      if (group.id == groupData.id) {
-        userData.user_groups[group_index] = groupData;
-        if (userData.instructor) {
-          let courses = this.courseService.getMyCurrentCourses();
-          await this.courseCRUDService.updateGroup(courses, groupData);
-        }
-      }
-    })
+  public updateUserGroup(userData: UserModel): Promise<void> {
     return this.afs
       .collection(this.collection)
       .doc(userData.id)
