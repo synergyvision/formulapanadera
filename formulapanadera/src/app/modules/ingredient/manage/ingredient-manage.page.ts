@@ -361,8 +361,8 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
           await this.formulaService.updateIngredients(updated_ingredients, updated_formulas);
           let updated_productions: ProductionModel[] = []
           await this.productionService.updateFormulas(updated_formulas, updated_productions);
-          let updated_courses: CourseModel[] = []
           if (this.current_user.instructor) {
+            let updated_courses: CourseModel[] = []
             await this.courseService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);
           }
           this.router.navigateByUrl(

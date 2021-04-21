@@ -26,11 +26,15 @@ import { FormulaCRUDService } from "src/app/core/services/firebase/formula.servi
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
-import { UserResumeModel } from "src/app/core/models/user.model";
+import { UserModel } from "src/app/core/models/user.model";
 import { OrganolepticCharacteristicsModal } from "src/app/shared/modal/organoleptic-characteristics/organoleptic-characteristics.modal";
 import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
 import { NoteModel, ReferenceModel } from "src/app/core/models/shared.model";
 import { NotesModal } from "src/app/shared/modal/notes/notes.modal";
+import { ProductionModel } from "src/app/core/models/production.model";
+import { CourseModel } from "src/app/core/models/course.model";
+import { ProductionService } from "src/app/core/services/production.service";
+import { CourseService } from "src/app/core/services/course.service";
 
 @Component({
   selector: "app-formula-manage",
@@ -51,11 +55,13 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
   formulaUnit = "%";
   temperatureUnit = "C";
   update: boolean = false;
-  current_user = new UserResumeModel();
+  current_user = new UserModel();
 
   constructor(
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
+    private productionService: ProductionService,
+    private courseService: CourseService,
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
@@ -139,8 +145,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
       }
       this.original_formula = JSON.parse(JSON.stringify(state.formula))
     }
-    let user = await this.userStorageService.getUser();
-    this.current_user = { name: user.name, email: user.email };
+    this.current_user = await this.userStorageService.getUser();
   }
 
   ionViewWillEnter() {
@@ -506,7 +511,14 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
           await loading.present();
           this.formulaCRUDService
             .updateFormula(this.formula, this.original_formula)
-            .then(() => {
+            .then(async () => {
+              let updated_formulas: FormulaModel[] = [this.formula];
+              let updated_productions: ProductionModel[] = []
+              await this.productionService.updateFormulas(updated_formulas, updated_productions);
+              if (this.current_user.instructor) {
+                let updated_courses: CourseModel[] = []
+                await this.courseService.updateAll(updated_courses, [], updated_formulas, updated_productions);
+              }
               this.router.navigateByUrl(
                 APP_URL.menu.name +
                 "/" +
