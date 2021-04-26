@@ -95,6 +95,9 @@ export class FormulaService {
     formulas.forEach((item) => {
       let formula_without_compound = this.getFormulaWithoutCompoundIngredients(item);
       bakers_percentage = Number(formula_without_compound.bakers_percentage);
+      if (isNaN(bakers_percentage)) {
+        bakers_percentage = Number(this.calculateBakersPercentage(item.units * item.unit_weight, item.ingredients));
+      }
       cost =
         Number(this.calculateTotalCost(formula_without_compound.formula.ingredients, bakers_percentage)) /
         item.units;
@@ -203,7 +206,7 @@ export class FormulaService {
   ): string {
     let hydration: number = 0;
     ingredients.forEach((ingredientData) => {
-      if (!ingredientData.ingredient.formula) {
+      if (!ingredientData.ingredient.formula && ingredientData.ingredient.hydration) {
         hydration =
           ingredientData.percentage * ingredientData.ingredient.hydration +
           hydration;
@@ -232,7 +235,7 @@ export class FormulaService {
   ): string {
     let cost: number = 0;
     ingredients.forEach((ingredientData) => {
-      if (!ingredientData.ingredient.formula) {
+      if (!ingredientData.ingredient.formula && ingredientData.ingredient.cost) {
         cost =
           ingredientData.percentage *
             bakers_percentage *

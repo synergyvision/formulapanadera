@@ -52,10 +52,10 @@ export class FormulaPickerModal implements OnInit {
   async ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
-      dual: new FormControl({ lower: 0, upper: 100 }),
+      dual: new FormControl({ lower: 0, upper: 1000 }),
     });
     this.fatRangeForm = new FormGroup({
-      dual: new FormControl({ lower: 0, upper: 100 }),
+      dual: new FormControl({ lower: 0, upper: 1000 }),
     });
     this.costRangeForm = new FormGroup({
       lower: new FormControl(),

@@ -187,7 +187,7 @@
     "create": "Create ingredient",
     "update": "Update ingredient",
     "ingredient_name": "Name",
-    "is_flour": "Is flour",
+    "is_flour": "Reference ingredient",
     "hydration": "Hydration",
     "fat": "Fat",
     "can_be_modified": "Modificable by other users",

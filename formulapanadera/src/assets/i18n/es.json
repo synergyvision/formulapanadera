@@ -196,7 +196,7 @@
     "create": "Crear ingrediente",
     "update": "Modificar ingrediente",
     "ingredient_name": "Nombre",
-    "is_flour": "Es harina",
+    "is_flour": "Ingrediente de referencia",
     "hydration": "Hidratación",
     "fat": "Grasa",
     "can_be_modified": "Modificable por otros usuarios",
