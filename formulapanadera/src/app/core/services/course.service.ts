@@ -3,13 +3,19 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { CourseModel, OrderedItemModel } from "../models/course.model";
+import { FormulaModel } from "../models/formula.model";
+import { IngredientModel } from "../models/ingredient.model";
+import { ProductionModel } from "../models/production.model";
+import { CourseCRUDService } from "./firebase/course.service";
 
 @Injectable()
 export class CourseService {
   private courses: BehaviorSubject<CourseModel[]> = new BehaviorSubject<CourseModel[]>(undefined);
   private shared_courses: BehaviorSubject<CourseModel[]> = new BehaviorSubject<CourseModel[]>(undefined);
 
-  constructor() {}
+  constructor(
+    private courseCRUDService: CourseCRUDService
+  ) {}
   
   public setMyCourses(courses: CourseModel[]) {
     this.courses.next(courses);
@@ -44,6 +50,52 @@ export class CourseService {
     }
     searchingShellModel.isShell = true;
     return searchingShellModel;
+  }
+
+  /*
+  Update
+  */
+  
+  public hasAny(course: CourseModel, updated_ingredients: IngredientModel[], updated_formulas: FormulaModel[], updated_productions: ProductionModel[]): boolean {
+    let has_any: boolean = false;
+    course.ingredients.forEach(ingredient => {
+      updated_ingredients.forEach(updated_ingredient => {
+        if (ingredient.item.id == updated_ingredient.id) {
+          has_any = true;
+          ingredient.item = updated_ingredient;
+        }
+      })
+    });
+    course.formulas.forEach(formula => {
+      updated_formulas.forEach(updated_formula => {
+        if (formula.item.id == updated_formula.id) {
+          has_any = true;
+          formula.item = updated_formula;
+        }
+      })
+    });
+    course.productions.forEach(production => {
+      updated_productions.forEach(updated_production => {
+        if (production.item.id == updated_production.id) {
+          has_any = true;
+          production.item = updated_production;
+        }
+      })
+    });
+    return has_any;
+  }
+
+  public async updateAll(updated_courses: CourseModel[],updated_ingredients: IngredientModel[],updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
+    let courses: CourseModel[] = JSON.parse(JSON.stringify(this.getMyCurrentCourses()));
+    const cour_promises = courses.map((course) => {
+      let original_course: CourseModel = JSON.parse(JSON.stringify(course));
+      let has_any: boolean = this.hasAny(course, updated_ingredients, updated_formulas, updated_productions);
+      if (has_any) {
+        updated_courses.push(course);
+        return this.courseCRUDService.updateCourse(course, original_course);
+      }
+    })
+    await Promise.all(cour_promises);
   }
 
   // Sort

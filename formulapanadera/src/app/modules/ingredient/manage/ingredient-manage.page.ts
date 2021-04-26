@@ -7,22 +7,27 @@ import {
   ViewWillEnter,
 } from "@ionic/angular";
 import { Validators, FormGroup, FormControl } from "@angular/forms";
-
 import { IngredientModel } from "../../../core/models/ingredient.model";
 import { IngredientCRUDService } from "../../../core/services/firebase/ingredient.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { IngredientPickerModal } from "src/app/shared/modal/ingredient/ingredient-picker.modal";
-import { IngredientPercentageModel } from "src/app/core/models/formula.model";
+import { FormulaModel, IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { IngredientMixingModal } from "src/app/shared/modal/mixing/ingredient-mixing.modal";
-import { FormulaService } from "src/app/core/services/formula.service";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
-import { UserResumeModel } from "src/app/core/models/user.model";
+import { UserModel } from "src/app/core/models/user.model";
 import { ReferenceModel } from "src/app/core/models/shared.model";
 import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
+import { IngredientService } from "src/app/core/services/ingredient.service";
+import { FormulaService } from "src/app/core/services/formula.service";
+import { ProductionModel } from "src/app/core/models/production.model";
+import { ProductionService } from "src/app/core/services/production.service";
+import { CourseService } from "src/app/core/services/course.service";
+import { CourseModel } from "src/app/core/models/course.model";
+import { DECIMALS } from "src/app/config/formats";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -40,7 +45,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
   original_ingredient: IngredientModel = new IngredientModel();
   manageIngredientForm: FormGroup;
   update: boolean = false;
-  current_user = new UserResumeModel();
+  current_user = new UserModel();
 
   type: string = "simple";
 
@@ -49,7 +54,10 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
   constructor(
     private ingredientCRUDService: IngredientCRUDService,
     private userStorageService: UserStorageService,
+    private courseService: CourseService,
+    private productionService: ProductionService,
     private formulaService: FormulaService,
+    private ingredientService: IngredientService,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
     private loadingController: LoadingController,
@@ -57,7 +65,6 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private router: Router,
-    private route: ActivatedRoute
   ) {}
 
   async ngOnInit() {
@@ -70,6 +77,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       this.manageIngredientForm = new FormGroup({
         name: new FormControl("", Validators.required),
         hydration: new FormControl("", Validators.required),
+        fat: new FormControl("", Validators.required),
         is_flour: new FormControl(false, Validators.required),
         cost: new FormControl("0", Validators.required),
       });
@@ -101,6 +109,10 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
           state.ingredient.hydration,
           Validators.required
         ),
+        fat: new FormControl(
+          state.ingredient.fat,
+          Validators.required
+        ),
         is_flour: new FormControl(
           state.ingredient.is_flour,
           Validators.required
@@ -114,8 +126,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
         });
       }
     }
-    let user = await this.userStorageService.getUser();
-    this.current_user = { name: user.name, email: user.email };
+    this.current_user = await this.userStorageService.getUser();
   }
 
   ionViewWillEnter() {
@@ -230,14 +241,15 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     );
   }
 
-  formatSuggestedValues(type: string, value: number) {
+  formatSuggestedValues(type: string, value: string) {
+    let sugg_value: number = Number(this.formatNumberService.formatStringToDecimals(value.toString()));
     if (type == "min") {
       this.ingredient.formula.suggested_values.min = Number(
-        this.formatNumberService.formatNumberDecimals(value, 0)
+        this.formatNumberService.formatNonZeroPositiveNumber(sugg_value)
       );
     } else {
       this.ingredient.formula.suggested_values.max = Number(
-        this.formatNumberService.formatNumberDecimals(value, 0)
+        this.formatNumberService.formatNonZeroPositiveNumber(sugg_value)
       );
     }
   }
@@ -276,11 +288,17 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
 
     if (!this.ingredient.formula) {
       this.ingredient.hydration = this.manageIngredientForm.value.hydration;
+      this.ingredient.fat = this.manageIngredientForm.value.fat;
       this.ingredient.is_flour = this.manageIngredientForm.value.is_flour;
       this.ingredient.cost = this.manageIngredientForm.value.cost;
     } else {
       this.ingredient.hydration = Number(
-        this.formulaService.calculateHydration(
+        this.ingredientService.calculateHydration(
+          this.ingredient.formula.ingredients
+        )
+      );
+      this.ingredient.fat = Number(
+        this.ingredientService.calculateFat(
           this.ingredient.formula.ingredients
         )
       );
@@ -338,7 +356,17 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       });
       this.ingredientCRUDService
         .updateIngredient(this.ingredient, this.original_ingredient)
-        .then(() => {
+        .then(async () => {
+          let updated_ingredients: IngredientModel[] = [this.ingredient];
+          await this.ingredientService.updateIngredients(this.ingredient, updated_ingredients);
+          let updated_formulas: FormulaModel[] = [];
+          await this.formulaService.updateIngredients(updated_ingredients, updated_formulas);
+          let updated_productions: ProductionModel[] = []
+          await this.productionService.updateFormulas(updated_formulas, updated_productions);
+          if (this.current_user.instructor) {
+            let updated_courses: CourseModel[] = []
+            await this.courseService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);
+          }
           this.router.navigateByUrl(
             APP_URL.menu.name +
               "/" +
@@ -360,35 +388,68 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     }
   }
 
-  formatNumberPercentage(value: number) {
+  formatNumberPercentage(value: string, type: "fat" | "hydration") {
     if (this.manageIngredientForm.value.is_flour) {
       this.manageIngredientForm.get("hydration").patchValue("0.0");
+      this.manageIngredientForm.get("fat").patchValue("0.0");
     } else {
-      this.manageIngredientForm
+      let percentage: number = Number(this.formatNumberService.formatStringToDecimals(value));
+      if (type == "hydration") {
+        this.manageIngredientForm
         .get("hydration")
-        .patchValue(this.formatNumberService.formatNumberPercentage(value));
+        .patchValue(this.formatNumberService.formatNumberPercentage(percentage));
+      } else {
+        this.manageIngredientForm
+        .get("fat")
+        .patchValue(this.formatNumberService.formatNumberPercentage(percentage));
+      }
+    }
+  }
+
+  formatCost(value: string) {
+    let number = 0;
+    if (value) {
+      value = value.replace(/[^0-9.,]/, '');
+      value = value.replace(/[,]/, '.');
+      var parts = value.split(".");
+      if (parts[1] !== undefined)
+        value = parts.slice(0, -1).join('') + "." + parts.slice(-1);
+      number = Number(value)
+      if (isNaN(number)) {
+        this.manageIngredientForm
+          .get("cost")
+          .patchValue("0.00");
+      } else {
+        this.manageIngredientForm
+          .get("cost")
+          .patchValue(value);
+      }
     }
   }
 
   formatPercentage() {
     if (this.ingredient.formula) {
+      let percentage: number = Number(this.formatNumberService.formatStringToDecimals(this.ingredient.formula.compensation_percentage.toString()));
       this.ingredient.formula.compensation_percentage = Number(
-        this.formatNumberService.formatNumberPercentage(
-          this.ingredient.formula.compensation_percentage
-        )
+        this.formatNumberService.formatNumberPercentage(percentage)
       );
     }
   }
 
   formatDecimals(item: IngredientPercentageModel) {
+    let percentage: number = 0;
+    if (item.percentage) {
+      percentage = Number(this.formatNumberService.formatStringToDecimals(item.percentage.toString(), DECIMALS.formula_percentage));
+    }
     item.percentage = Number(
-      this.formatNumberService.formatNumberDecimals(item.percentage)
+      this.formatNumberService.formatNumberFixedDecimals(percentage, DECIMALS.formula_percentage)
     );
   }
 
   changeFlourIngredient() {
     if (this.manageIngredientForm.value.is_flour) {
       this.manageIngredientForm.get("hydration").patchValue("0.0");
+      this.manageIngredientForm.get("fat").patchValue("0.0");
     }
   }
 

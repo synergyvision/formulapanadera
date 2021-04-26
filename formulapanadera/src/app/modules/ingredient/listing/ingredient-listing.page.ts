@@ -12,6 +12,7 @@ import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { CourseModel } from "src/app/core/models/course.model";
 import { CourseService } from "src/app/core/services/course.service";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 @Component({
   selector: "app-ingredient-listing",
@@ -26,6 +27,7 @@ export class IngredientListingPage implements OnInit {
   APP_URL = APP_URL;
 
   hydrationRangeForm: FormGroup;
+  fatRangeForm: FormGroup;
   costRangeForm: FormGroup;
   isFlourForm: FormGroup;
   typeForm: FormGroup;
@@ -50,12 +52,16 @@ export class IngredientListingPage implements OnInit {
     private ingredientService: IngredientService,
     private courseService: CourseService,
     private router: Router,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private formatNumberService: FormatNumberService
   ) {}
 
   async ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
+      dual: new FormControl({ lower: 0, upper: 1000 }),
+    });
+    this.fatRangeForm = new FormGroup({
       dual: new FormControl({ lower: 0, upper: 1000 }),
     });
     this.costRangeForm = new FormGroup({
@@ -93,6 +99,12 @@ export class IngredientListingPage implements OnInit {
   }
 
   searchList() {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
     if (this.all_ingredients) {
       let filteredIngredients = JSON.parse(
         JSON.stringify(this.all_ingredients)
@@ -101,6 +113,10 @@ export class IngredientListingPage implements OnInit {
         hydration: {
           lower: this.hydrationRangeForm.controls.dual.value.lower,
           upper: this.hydrationRangeForm.controls.dual.value.upper,
+        },
+        fat: {
+          lower: this.fatRangeForm.controls.dual.value.lower,
+          upper: this.fatRangeForm.controls.dual.value.upper,
         },
         cost: {
           lower: this.costRangeForm.value.lower,
@@ -114,6 +130,11 @@ export class IngredientListingPage implements OnInit {
       filteredIngredients = this.ingredientService.searchIngredientsByHydration(
         filters.hydration.lower,
         filters.hydration.upper,
+        filteredIngredients
+      );
+      filteredIngredients = this.ingredientService.searchIngredientsByFat(
+        filters.fat.lower,
+        filters.fat.upper,
         filteredIngredients
       );
       filteredIngredients = this.ingredientService.searchIngredientsByCost(

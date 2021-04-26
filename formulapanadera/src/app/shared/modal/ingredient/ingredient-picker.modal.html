@@ -63,6 +63,37 @@
         </ion-col>
       </ion-row>
     </form>
+    <form [formGroup]="fatRangeForm" [hidden]="!showFilters">
+      <ion-row class="range-item-row">
+        <ion-col size="12">
+          <div class="range-header">
+            <span class="range-value"
+              >{{ fatRangeForm.controls.dual.value.lower }}</span
+            >
+            <span class="range-label"
+              >{{'ingredients.filter.fat' | translate}}</span
+            >
+            <span class="range-value"
+              >{{ fatRangeForm.controls.dual.value.upper }}</span
+            >
+          </div>
+        </ion-col>
+        <ion-col size="12">
+          <ion-range
+            class="range-control"
+            formControlName="dual"
+            color="primary"
+            pin="true"
+            dualKnobs="true"
+            (ionChange)="searchList()"
+            min="0"
+            max="100"
+            step="1"
+            debounce="400"
+          ></ion-range>
+        </ion-col>
+      </ion-row>
+    </form>
     <form [formGroup]="costRangeForm" [hidden]="!showFilters">
       <ion-row class="range-item-row">
         <ion-col size="12">
@@ -79,11 +110,11 @@
             <ion-label color="primary" position="stacked"
               >{{'ingredients.filter.min' | translate}}</ion-label
             ><ion-input
-              type="number"
+              type="text"
               inputmode="decimal"
               formControlName="lower"
               class="ingredient-cost-lower"
-              (ionChange)="searchList()"
+              (ionBlur)="searchList()"
             ></ion-input
           ></ion-item> </ion-col
         ><ion-col class="cost-input">
@@ -92,11 +123,11 @@
               >{{'ingredients.filter.max' | translate}}
             </ion-label>
             <ion-input
-              type="number"
+              type="text"
               inputmode="decimal"
               formControlName="upper"
               class="ingredient-cost-upper"
-              (ionChange)="searchList()"
+              (ionBlur)="searchList()"
             ></ion-input>
           </ion-item>
         </ion-col>

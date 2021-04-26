@@ -23,35 +23,20 @@ export class FormulaItemComponent {
   constructor(private formulaService: FormulaService) {}
 
   hydration() {
-    let formula: FormulaModel = JSON.parse(JSON.stringify(this.formula))
-    let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(formula))
-    formula_without_compound.ingredients.forEach((ingredient, index) => {
-      if (ingredient.ingredient.formula) {
-        formula_without_compound.ingredients.splice(
-          index,
-          1
-        );
-      }
-    })
-    this.formulaService.deleteIngredientsWithFormula(formula, formula_without_compound)
+    let formula_without_compound: FormulaModel = this.formulaService.getFormulaWithoutCompoundIngredients(this.formula).formula;
     return this.formulaService.calculateHydration(formula_without_compound.ingredients);
   }
 
+  fat() {
+    let formula_without_compound: FormulaModel = this.formulaService.getFormulaWithoutCompoundIngredients(this.formula).formula;
+    return this.formulaService.calculateFat(formula_without_compound.ingredients);
+  }
+
   unitCost() {
-    let bakers_percentage
-    let formula: FormulaModel = JSON.parse(JSON.stringify(this.formula))
-    let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(formula))
-    formula_without_compound.ingredients.forEach((ingredient, index) => {
-      if (ingredient.ingredient.formula) {
-        formula_without_compound.ingredients.splice(
-          index,
-          1
-        );
-      }
-    })
-    bakers_percentage = this.formulaService.deleteIngredientsWithFormula(formula, formula_without_compound)
+    let formula_without_compound = this.formulaService.getFormulaWithoutCompoundIngredients(this.formula)
+    let bakers_percentage = formula_without_compound.bakers_percentage
     let total_cost = this.formulaService.calculateTotalCost(
-      formula_without_compound.ingredients,
+      formula_without_compound.formula.ingredients,
       Number(bakers_percentage)
     );
     return (Number(total_cost) / this.formula.units).toString();

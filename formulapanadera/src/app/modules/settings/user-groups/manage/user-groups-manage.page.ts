@@ -5,6 +5,8 @@ import { ActionSheetController, AlertController, LoadingController, ToastControl
 import { APP_URL } from 'src/app/config/configuration';
 import { ICONS } from 'src/app/config/icons';
 import { UserGroupModel, UserModel, UserResumeModel } from 'src/app/core/models/user.model';
+import { CourseService } from "src/app/core/services/course.service";
+import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 import { UserCRUDService } from 'src/app/core/services/firebase/user.service';
 import { LanguageService } from 'src/app/core/services/language.service';
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
@@ -29,6 +31,8 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
     private router: Router,
     private userStorageService: UserStorageService,
     private userCRUDService: UserCRUDService,
+    private courseService: CourseService,
+    private courseCRUDService: CourseCRUDService,
     private languageService: LanguageService,
     private loadingController: LoadingController,
     private toastController: ToastController,
@@ -97,9 +101,18 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
       this.user_group.image_url = this.manageUserGroupForm.value.image_url;
 
       if (this.update) {
+        this.user.user_groups.forEach(async (group, group_index) => {
+          if (group.id == this.user_group.id) {
+            this.user.user_groups[group_index] = this.user_group;
+          }
+        })
         this.userCRUDService
-        .updateUserGroup(this.user, this.user_group)
+        .updateUserGroup(this.user)
         .then(async () => {
+          if (this.user.instructor) {
+            let courses = this.courseService.getMyCurrentCourses();
+            await this.courseCRUDService.updateGroup(courses, this.user_group);
+          }
           await this.userStorageService
             .setUser(this.user)
             .then(() => {

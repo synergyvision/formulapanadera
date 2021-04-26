@@ -10,11 +10,13 @@ import {
 } from "@ionic/angular";
 import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
+import { CourseModel } from "src/app/core/models/course.model";
 import {
   FormulaNumberModel,
   ProductionModel,
 } from "src/app/core/models/production.model";
-import { UserResumeModel } from "src/app/core/models/user.model";
+import { UserModel } from "src/app/core/models/user.model";
+import { CourseService } from "src/app/core/services/course.service";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { LanguageService } from "src/app/core/services/language.service";
@@ -39,10 +41,11 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
   original_production: ProductionModel = new ProductionModel();
   manageProductionForm: FormGroup;
 
-  current_user = new UserResumeModel();
+  current_user = new UserModel();
 
   constructor(
     private productionCRUDService: ProductionCRUDService,
+    private courseService: CourseService,
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
@@ -89,8 +92,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
       });
       this.production.user = state.production.user;
     }
-    let user = await this.userStorageService.getUser();
-    this.current_user = { name: user.name, email: user.email };
+    this.current_user = await this.userStorageService.getUser();
   }
 
   ionViewWillEnter() {
@@ -118,6 +120,11 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
       this.productionCRUDService
         .updateProduction(this.production, this.original_production)
         .then(async () => {
+          if (this.current_user.instructor) {
+            let updated_productions: ProductionModel[] = [this.production]
+            let updated_courses: CourseModel[] = []
+            await this.courseService.updateAll(updated_courses, [], [], updated_productions);
+          }
           this.router.navigateByUrl(
             APP_URL.menu.name +
               "/" +

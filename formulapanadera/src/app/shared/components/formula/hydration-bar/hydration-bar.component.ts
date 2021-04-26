@@ -17,8 +17,9 @@ export class HydrationBarComponent {
     let type = "";
     HYDRATION_CLASSIFICATION.forEach((classification) => {
       if (
-        this.hydration > classification.values.min &&
-        this.hydration <= classification.values.max
+        this.hydration >= classification.values.min &&
+        (classification.values.max == undefined ||
+          this.hydration < classification.values.max)
       ) {
         type = this.languageService.getTerm(
           `formulas.hydration.${classification.name}`

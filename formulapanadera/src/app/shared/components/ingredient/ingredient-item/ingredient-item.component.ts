@@ -41,6 +41,16 @@ export class IngredientItemComponent {
     })
     return hydration
   }
+
+  formulaTotalFat(ingredients: IngredientPercentageModel[]) {
+    let fat = 0
+    ingredients.forEach(ingredient => {
+      if (ingredient.ingredient.fat && !ingredient.ingredient.formula) {
+        fat = Number(ingredient.ingredient.fat) + fat
+      }
+    })
+    return fat
+  }
   
   ingredientHydration() {
     let hydration: number = this.ingredient.hydration;
@@ -55,5 +65,20 @@ export class IngredientItemComponent {
       })
     }
     return hydration
+  }
+
+  ingredientFat() {
+    let fat: number = this.ingredient.fat ? this.ingredient.fat : 0;
+    if (this.ingredient.formula) {
+      this.ingredient.formula.ingredients.forEach(ingredient => {
+        if (ingredient.ingredient.formula && ingredient.ingredient.fat) {
+          fat =
+            Number((fat +
+            (this.ingredient.fat * (ingredient.percentage / 100)) *
+            (this.formulaTotalFat(ingredient.ingredient.formula.ingredients)/this.formulaTotalPercentage(ingredient.ingredient.formula.ingredients))).toFixed(DECIMALS.fat))
+        }
+      })
+    }
+    return fat
   }
 }

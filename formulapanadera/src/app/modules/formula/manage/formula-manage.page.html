@@ -49,7 +49,7 @@
             <ion-label color="primary" position="stacked">{{'formulas.unit_weight' | translate}} ({{'ingredients.grams' |
                     translate}})</ion-label>
             <ion-input
-              type="number"
+              type="text"
               inputmode="decimal"
               formControlName="unit_weight"
               class="formula-unit-weight"
@@ -217,11 +217,11 @@
             <ion-col size="4">
               <ion-item class="ingredient-input"
                 ><ion-input
+                  type="text"
+                  inputmode="decimal"
                   class="ingredient-percentage"
                   [(ngModel)]="item.percentage"
                   [ngModelOptions]="{standalone: true}"
-                  type="number"
-                  inputmode="decimal"
                   (ionBlur)="formatPercentage(item)"
                 ></ion-input
               ></ion-item>
@@ -366,12 +366,12 @@
                 <ion-col size="4">
                   <ion-item lines="full">
                     <ion-input
+                      type="text"
+                      inputmode="decimal"
                       class="ingredient-percentage"
                       [(ngModel)]="item.percentage"
                       [ngModelOptions]="{standalone: true}"
-                      type="number"
-                      inputmode="decimal"
-                      (ionBlur)="formatStepPercentage(item)"
+                      (ionBlur)="formatPercentage(item)"
                     ></ion-input>
                   </ion-item>
                 </ion-col>

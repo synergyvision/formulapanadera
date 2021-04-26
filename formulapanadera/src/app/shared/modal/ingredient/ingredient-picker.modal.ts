@@ -11,6 +11,7 @@ import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 @Component({
   selector: "app-ingredient-picker-modal",
@@ -27,6 +28,7 @@ export class IngredientPickerModal implements OnInit {
   @Input() limit?: number;
 
   hydrationRangeForm: FormGroup;
+  fatRangeForm: FormGroup;
   costRangeForm: FormGroup;
   isFlourForm: FormGroup;
   typeForm: FormGroup;
@@ -40,19 +42,20 @@ export class IngredientPickerModal implements OnInit {
   segment: string = "mine";
 
   user_email: string;
-
-  @HostBinding("class.is-shell") get isShell() {
-    return this.ingredients && this.ingredients.isShell ? true : false;
-  }
+  
   constructor(
     private ingredientService: IngredientService,
     public modalController: ModalController,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private formatNumberService: FormatNumberService
   ) {}
 
   async ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
+      dual: new FormControl({ lower: 0, upper: 1000 }),
+    });
+    this.fatRangeForm = new FormGroup({
       dual: new FormControl({ lower: 0, upper: 1000 }),
     });
     this.costRangeForm = new FormGroup({
@@ -79,6 +82,12 @@ export class IngredientPickerModal implements OnInit {
   }
 
   searchList() {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
     let filteredIngredients = JSON.parse(
       JSON.stringify(this.all_ingredients ? this.all_ingredients : [])
     );
@@ -86,6 +95,10 @@ export class IngredientPickerModal implements OnInit {
       hydration: {
         lower: this.hydrationRangeForm.controls.dual.value.lower,
         upper: this.hydrationRangeForm.controls.dual.value.upper,
+      },
+      fat: {
+        lower: this.fatRangeForm.controls.dual.value.lower,
+        upper: this.fatRangeForm.controls.dual.value.upper,
       },
       cost: {
         lower: this.costRangeForm.value.lower,
@@ -99,6 +112,11 @@ export class IngredientPickerModal implements OnInit {
     filteredIngredients = this.ingredientService.searchIngredientsByHydration(
       filters.hydration.lower,
       filters.hydration.upper,
+      filteredIngredients
+    );
+    filteredIngredients = this.ingredientService.searchIngredientsByFat(
+      filters.fat.lower,
+      filters.fat.upper,
       filteredIngredients
     );
     filteredIngredients = this.ingredientService.searchIngredientsByCost(

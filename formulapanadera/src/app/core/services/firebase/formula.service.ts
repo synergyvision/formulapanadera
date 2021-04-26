@@ -127,6 +127,7 @@ export class FormulaCRUDService {
   public async updateFormula(formulaData: FormulaModel, originalFormula: FormulaModel): Promise<void> {
     let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
     delete formula.ingredients;
+    formula.user.last_modified = new Date();
     if (formula.mixing && formula.mixing.length > 0) {
       formula.mixing.forEach(mix => {
         mix.mixing_order.forEach((step=>{

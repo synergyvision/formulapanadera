@@ -76,11 +76,11 @@ export class FormulaStepsModal implements AfterViewInit {
     let max = this.formulaSteps[index].temperature.max;
     if (type == "min") {
       this.formulaSteps[index].temperature.min = Number(
-        this.formatNumberService.formatNumberDecimals(min, 0)
+        this.formatNumberService.formatNonZeroPositiveNumber(min)
       );
     } else {
       this.formulaSteps[index].temperature.max = Number(
-        this.formatNumberService.formatNumberDecimals(max, 0)
+        this.formatNumberService.formatNonZeroPositiveNumber(max)
       );
     }
   }
@@ -88,9 +88,8 @@ export class FormulaStepsModal implements AfterViewInit {
   formatTime(step: StepDetailsModel) {
     let index = this.formulaSteps.indexOf(step);
     this.formulaSteps[index].time = Number(
-      this.formatNumberService.formatNumberDecimals(
-        this.formulaSteps[index].time,
-        0
+      this.formatNumberService.formatNonZeroPositiveNumber(
+        this.formulaSteps[index].time
       )
     );
   }

@@ -73,6 +73,11 @@
         title="{{'ingredients.hydration' | translate}} (%)"
         [data]="ingredient.hydration"
       ></app-data-item>
+      <app-data-item
+        *ngIf="ingredient?.fat > 0"
+        title="{{'ingredients.fat' | translate}} (%)"
+        [data]="ingredient.fat"
+      ></app-data-item>
       <ion-item class="input-item" lines="full">
         <ion-label color="primary" class="flour-label"
           >{{'ingredients.is_flour' | translate}}</ion-label

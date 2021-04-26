@@ -51,30 +51,32 @@ export class ProductionStartPage implements OnInit {
   async ngOnInit() {
     this.route.queryParams.subscribe(async () => {
       this.state = this.router.getCurrentNavigation().extras.state;
-      this.production = JSON.parse(JSON.stringify(this.state.production));
-      let existing_production = await this.productionInProcessStorageService.getProduction();
-      this.production_in_process = new ProductionInProcessModel();
-      this.original_production = new ProductionInProcessModel();
-      this.formulas = [];
-      this.in_process = false;
-      this.specify_time = false;
-      this.laboral_time = new TimeModel();
+      if (this.state) {
+        this.production = JSON.parse(JSON.stringify(this.state.production));
+        let existing_production = await this.productionInProcessStorageService.getProduction();
+        this.production_in_process = new ProductionInProcessModel();
+        this.original_production = new ProductionInProcessModel();
+        this.formulas = [];
+        this.in_process = false;
+        this.specify_time = false;
+        this.laboral_time = new TimeModel();
 
-      if (
-        existing_production &&
-        existing_production.production.id == this.production.id
-      ) {
-        this.production = existing_production.production;
-        this.formulas = existing_production.formulas;
-        this.productionInProcessService.setProductionInProcess(
-          existing_production.production_in_process
-        );
-        this.in_process = true;
-      } else {
-        this.formulas = JSON.parse(JSON.stringify(this.state.formulas));
-        this.original_production = this.productionInProcessService.getProductionSteps(
-          this.production
-        );
+        if (
+          existing_production &&
+          existing_production.production.id == this.production.id
+        ) {
+          this.production = existing_production.production;
+          this.formulas = existing_production.formulas;
+          this.productionInProcessService.setProductionInProcess(
+            existing_production.production_in_process
+          );
+          this.in_process = true;
+        } else {
+          this.formulas = JSON.parse(JSON.stringify(this.state.formulas));
+          this.original_production = this.productionInProcessService.getProductionSteps(
+            this.production
+          );
+        }
       }
 
       this.productionInProcessService

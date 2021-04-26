@@ -10,12 +10,16 @@ import { ShellModel } from "src/app/shared/shell/shell.model";
 import { OVEN_STEP } from "src/app/config/formula";
 import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
+import { IngredientModel } from "../models/ingredient.model";
+import { FormulaCRUDService } from "./firebase/formula.service";
 
 @Injectable()
 export class FormulaService {
   private formulas: BehaviorSubject<FormulaModel[]> = new BehaviorSubject<FormulaModel[]>(undefined);
 
-  constructor() {}
+  constructor(
+    private formulaCRUDService: FormulaCRUDService
+  ) {}
 
   public setFormulas(formulas: FormulaModel[] & ShellModel) {
     this.formulas.next(formulas);
@@ -23,6 +27,10 @@ export class FormulaService {
 
   public getFormulas(): Observable<FormulaModel[]> {
     return this.formulas.asObservable();
+  }
+
+  public getCurrentFormulas(): FormulaModel[] {
+    return this.formulas.getValue();
   }
 
   public clearFormulas() {
@@ -50,19 +58,26 @@ export class FormulaService {
     const filtered = [];
     let hydration: number;
     formulas.forEach((item) => {
-      let formula: FormulaModel = JSON.parse(JSON.stringify(item))
-      let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item))
-      formula_without_compound.ingredients.forEach((ingredient, index) => {
-        if (ingredient.ingredient.formula) {
-          formula_without_compound.ingredients.splice(
-            index,
-            1
-          );
-        }
-      })
-      this.deleteIngredientsWithFormula(formula, formula_without_compound)
+      let formula_without_compound: FormulaModel = this.getFormulaWithoutCompoundIngredients(item).formula;
       hydration = Number(this.calculateHydration(formula_without_compound.ingredients));
       if (hydration >= lower && hydration <= upper) {
+        filtered.push(item);
+      }
+    });
+    return filtered as FormulaModel[] & ShellModel;
+  }
+
+  public searchFormulasByFat(
+    lower: number,
+    upper: number,
+    formulas: FormulaModel[] & ShellModel
+  ): FormulaModel[] & ShellModel {
+    const filtered = [];
+    let fat: number;
+    formulas.forEach((item) => {
+      let formula_without_compound: FormulaModel = this.getFormulaWithoutCompoundIngredients(item).formula;
+      fat = Number(this.calculateFat(formula_without_compound.ingredients));
+      if (fat >= lower && fat <= upper) {
         filtered.push(item);
       }
     });
@@ -78,19 +93,13 @@ export class FormulaService {
     let bakers_percentage: number;
     let cost: number;
     formulas.forEach((item) => {
-      let formula: FormulaModel = JSON.parse(JSON.stringify(item))
-      let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item))
-      formula_without_compound.ingredients.forEach((ingredient, index) => {
-        if (ingredient.ingredient.formula) {
-          formula_without_compound.ingredients.splice(
-            index,
-            1
-          );
-        }
-      })
-      bakers_percentage = Number(this.deleteIngredientsWithFormula(formula, formula_without_compound))
+      let formula_without_compound = this.getFormulaWithoutCompoundIngredients(item);
+      bakers_percentage = Number(formula_without_compound.bakers_percentage);
+      if (isNaN(bakers_percentage)) {
+        bakers_percentage = Number(this.calculateBakersPercentage(item.units * item.unit_weight, item.ingredients));
+      }
       cost =
-        Number(this.calculateTotalCost(formula_without_compound.ingredients, bakers_percentage)) /
+        Number(this.calculateTotalCost(formula_without_compound.formula.ingredients, bakers_percentage)) /
         item.units;
       if (
         (cost >= lower || lower == null) &&
@@ -126,6 +135,59 @@ export class FormulaService {
   }
 
   /*
+  Update
+  */
+  
+  public hasIngredient(formula: FormulaModel, updated_ingredients: IngredientModel[]): boolean {
+    let has_ingredient: boolean = false;
+    formula.ingredients.forEach(ingredient => {
+      updated_ingredients.forEach(updated_ingredient => {
+        if (ingredient.ingredient.id == updated_ingredient.id) {
+          has_ingredient = true;
+          ingredient.ingredient = updated_ingredient;
+        }
+      })
+    });
+    if (has_ingredient) {
+      formula.mixing?.forEach(mix => {
+        mix.mixing_order.forEach(step => {
+          step.ingredients.forEach(ingredient => {
+            updated_ingredients.forEach(updated_ingredient => {
+              if (ingredient.ingredient.id == updated_ingredient.id) {
+                ingredient.ingredient = updated_ingredient;
+              }
+            })
+          })
+        })
+      })
+    }
+    formula.steps?.forEach(step => {
+      step.ingredients?.forEach(ingredient => {
+        updated_ingredients.forEach(updated_ingredient => {
+          if (ingredient.ingredient.id == updated_ingredient.id) {
+            has_ingredient = true;
+            ingredient.ingredient = updated_ingredient;
+          }
+        })
+      })
+    })
+    return has_ingredient;
+  }
+
+  public async updateIngredients(updated_ingredients: IngredientModel[], updated_formulas: FormulaModel[]) {
+    let formulas: FormulaModel[] = JSON.parse(JSON.stringify(this.getCurrentFormulas()));
+    const for_promises = formulas.map((formula) => {
+      let original_formula: FormulaModel = JSON.parse(JSON.stringify(formula));
+      let has_ingredient: boolean = this.hasIngredient(formula, updated_ingredients);
+      if (has_ingredient) {
+        updated_formulas.push(formula)
+        return this.formulaCRUDService.updateFormula(formula, original_formula);
+      }
+    })
+    await Promise.all(for_promises);
+  }
+
+  /*
   Formula calculations
   */
   public calculateBakersPercentage(
@@ -144,7 +206,7 @@ export class FormulaService {
   ): string {
     let hydration: number = 0;
     ingredients.forEach((ingredientData) => {
-      if (!ingredientData.ingredient.formula) {
+      if (!ingredientData.ingredient.formula && ingredientData.ingredient.hydration) {
         hydration =
           ingredientData.percentage * ingredientData.ingredient.hydration +
           hydration;
@@ -153,13 +215,27 @@ export class FormulaService {
     return (hydration / 100).toFixed(DECIMALS.hydration);
   }
 
+  public calculateFat(
+    ingredients: Array<IngredientPercentageModel>
+  ): string {
+    let fat: number = 0;
+    ingredients.forEach((ingredientData) => {
+      if (!ingredientData.ingredient.formula && ingredientData.ingredient.fat) {
+        fat =
+          ingredientData.percentage * ingredientData.ingredient.fat +
+          fat;
+      }
+    });
+    return (fat / 100).toFixed(DECIMALS.fat);
+  }
+
   public calculateTotalCost(
     ingredients: Array<IngredientPercentageModel>,
     bakers_percentage: number
   ): string {
     let cost: number = 0;
     ingredients.forEach((ingredientData) => {
-      if (!ingredientData.ingredient.formula) {
+      if (!ingredientData.ingredient.formula && ingredientData.ingredient.cost) {
         cost =
           ingredientData.percentage *
             bakers_percentage *
@@ -168,6 +244,23 @@ export class FormulaService {
       }
     });
     return cost.toString();
+  }
+
+  public getFormulaWithoutCompoundIngredients(
+    item: FormulaModel
+  ): { formula: FormulaModel, bakers_percentage: string }  {
+    let formula: FormulaModel = JSON.parse(JSON.stringify(item))
+    let formula_without_compound: FormulaModel = JSON.parse(JSON.stringify(item))
+    formula_without_compound.ingredients.forEach((ingredient, index) => {
+      if (ingredient.ingredient.formula) {
+        formula_without_compound.ingredients.splice(
+          index,
+          1
+        );
+      }
+    })
+    let bakers_percentage = this.deleteIngredientsWithFormula(formula, formula_without_compound)
+    return { formula: formula_without_compound, bakers_percentage: bakers_percentage };
   }
 
   public fromRecipeToFormula(ingredients: Array<IngredientPercentageModel>, calculate_compound: boolean = false) {
@@ -338,8 +431,8 @@ export class FormulaService {
       });
       if (sub_ingredients_formula.length > 0) {
         this.getIngredientsCalculatedPercentages(
-          0,
-          0,
+          formula_weight,
+          Number(bakers_percentage),
           ingredients,
           sub_ingredients_formula,
           type,
@@ -350,7 +443,7 @@ export class FormulaService {
       //Gets new values of ingredients
       ingredients.forEach((ingredient) => {
         if (!ingredient.ingredient.formula) {
-          item.ingredient.formula.ingredients.forEach((ingredientFormula) => {
+          item.ingredient.formula.ingredients.forEach((ingredientFormula: IngredientPercentageModel) => {
             if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
               if (type == "ADD") {
                 ingredient.percentage =
@@ -365,6 +458,22 @@ export class FormulaService {
           });
         }
       });
+      if (type == "DELETE") {
+        item.ingredient.formula.ingredients.forEach((ingredientFormula: IngredientPercentageModel) => {
+          if (!ingredientFormula.ingredient.formula) {
+            let exists = false;
+            ingredients.forEach((ingredient) => {
+              if (ingredient.ingredient.id == ingredientFormula.ingredient.id) {
+                exists = true;
+              }
+            });
+            if (!exists) {
+              ingredients.push(ingredientFormula);
+              ingredientFormula.percentage = ingredientFormula.percentage * Number(bakers_percentage);
+            }
+          }
+        });
+      }
     });
   }
 

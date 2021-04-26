@@ -162,6 +162,11 @@
       "normal": "Hidratación normal",
       "high": "Alta hidratación"
     },
+    "fat": {
+      "low": "Baja grasa",
+      "normal": "Grasa normal",
+      "high": "Alta grasa"
+    },
     "empty": "No se encontraron fórmulas",
     "share": {
       "instructions": "Ingresa el correo electrónico del usuario al que deseas compartir",
@@ -191,8 +196,9 @@
     "create": "Crear ingrediente",
     "update": "Modificar ingrediente",
     "ingredient_name": "Nombre",
-    "is_flour": "Es harina",
+    "is_flour": "Ingrediente de referencia",
     "hydration": "Hidratación",
+    "fat": "Grasa",
     "can_be_modified": "Modificable por otros usuarios",
     "cost": "Costo",
     "grams": "gr",
@@ -215,6 +221,7 @@
     "filter": {
       "name": "Filtra por nombre...",
       "hydration": "Filtra por hidratación (%)",
+      "fat": "Filtra por grasa (%)",
       "cost": "Filtra por costo",
       "min": "Mín.",
       "max": "Máx.",

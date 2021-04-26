@@ -8,6 +8,7 @@ import { FORMULA_WARMING_TIME } from "src/app/config/formula";
 import { ICONS } from "src/app/config/icons";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { FormulaNumberModel } from "src/app/core/models/production.model";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DataStore } from "../../shell/data-store";
@@ -28,6 +29,7 @@ export class FormulaPickerModal implements OnInit {
   @Input() forProduction: boolean = false;
 
   hydrationRangeForm: FormGroup;
+  fatRangeForm: FormGroup;
   costRangeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
@@ -43,13 +45,17 @@ export class FormulaPickerModal implements OnInit {
   constructor(
     private formulaService: FormulaService,
     public modalController: ModalController,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private formatNumberService: FormatNumberService
   ) {}
 
   async ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
-      dual: new FormControl({ lower: 0, upper: 100 }),
+      dual: new FormControl({ lower: 0, upper: 1000 }),
+    });
+    this.fatRangeForm = new FormGroup({
+      dual: new FormControl({ lower: 0, upper: 1000 }),
     });
     this.costRangeForm = new FormGroup({
       lower: new FormControl(),
@@ -78,6 +84,12 @@ export class FormulaPickerModal implements OnInit {
   }
 
   searchList() {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
     let filteredFormulas = JSON.parse(
       JSON.stringify(this.all_formulas ? this.all_formulas : [])
     );
@@ -85,6 +97,10 @@ export class FormulaPickerModal implements OnInit {
       hydration: {
         lower: this.hydrationRangeForm.controls.dual.value.lower,
         upper: this.hydrationRangeForm.controls.dual.value.upper,
+      },
+      fat: {
+        lower: this.fatRangeForm.controls.dual.value.lower,
+        upper: this.fatRangeForm.controls.dual.value.upper,
       },
       cost: {
         lower: this.costRangeForm.value.lower,
@@ -96,6 +112,11 @@ export class FormulaPickerModal implements OnInit {
     filteredFormulas = this.formulaService.searchFormulasByHydration(
       filters.hydration.lower,
       filters.hydration.upper,
+      filteredFormulas
+    );
+    filteredFormulas = this.formulaService.searchFormulasByFat(
+      filters.fat.lower,
+      filters.fat.upper,
       filteredFormulas
     );
     filteredFormulas = this.formulaService.searchFormulasByCost(

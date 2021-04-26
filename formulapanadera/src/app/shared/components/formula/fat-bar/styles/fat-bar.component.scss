@@ -1,0 +1,33 @@
+.fat-item {
+  --padding-start: var(--app-narrow-margin);
+
+  .fat-bar-row {
+    width: 100%;
+    padding: var(--app-narrow-margin) 0;
+
+    .fat-bar-col {
+      padding: 0;
+
+      .fat-legend {
+        margin: 2px 0px;
+        font-size: 14px;
+        color: gray;
+        display: flex;
+        text-align: center;
+      }
+
+      .fat-bar {
+        height: 10px;
+        --progress-background: var(--ion-color-fat);
+      }
+
+      .fat-percentage {
+        margin: 2px 0px;
+        font-size: 12px;
+        color: gray;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+}

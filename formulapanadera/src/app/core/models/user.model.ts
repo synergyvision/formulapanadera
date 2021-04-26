@@ -10,6 +10,7 @@ export class UserOwnerModel {
   // Used to credit the users
   creator: ModifierModel;
   modifiers: Array<ModifierModel>;
+  last_modified?: any; // Date
 }
 
 export class UserResumeModel {

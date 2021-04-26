@@ -12,6 +12,7 @@ import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { ICONS } from "src/app/config/icons";
 import { CourseModel } from "src/app/core/models/course.model";
 import { CourseService } from "src/app/core/services/course.service";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 @Component({
   selector: "app-formula-listing",
@@ -26,6 +27,7 @@ export class FormulaListingPage implements OnInit {
   APP_URL = APP_URL;
 
   hydrationRangeForm: FormGroup;
+  fatRangeForm: FormGroup;
   costRangeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
@@ -45,13 +47,17 @@ export class FormulaListingPage implements OnInit {
     private formulaService: FormulaService,
     private courseService: CourseService,
     private router: Router,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private formatNumberService: FormatNumberService
   ) {}
 
   async ngOnInit() {
     this.searchQuery = "";
     this.hydrationRangeForm = new FormGroup({
-      dual: new FormControl({ lower: 0, upper: 100 }),
+      dual: new FormControl({ lower: 0, upper: 1000 }),
+    });
+    this.fatRangeForm = new FormGroup({
+      dual: new FormControl({ lower: 0, upper: 1000 }),
     });
     this.costRangeForm = new FormGroup({
       lower: new FormControl(),
@@ -82,6 +88,12 @@ export class FormulaListingPage implements OnInit {
   }
 
   searchList() {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
     if (this.all_formulas) {
       let filteredFormulas = JSON.parse(
         JSON.stringify(this.all_formulas)
@@ -90,6 +102,10 @@ export class FormulaListingPage implements OnInit {
         hydration: {
           lower: this.hydrationRangeForm.controls.dual.value.lower,
           upper: this.hydrationRangeForm.controls.dual.value.upper,
+        },
+        fat: {
+          lower: this.fatRangeForm.controls.dual.value.lower,
+          upper: this.fatRangeForm.controls.dual.value.upper,
         },
         cost: {
           lower: this.costRangeForm.value.lower,
@@ -101,6 +117,11 @@ export class FormulaListingPage implements OnInit {
       filteredFormulas = this.formulaService.searchFormulasByHydration(
         filters.hydration.lower,
         filters.hydration.upper,
+        filteredFormulas
+      );
+      filteredFormulas = this.formulaService.searchFormulasByFat(
+        filters.fat.lower,
+        filters.fat.upper,
         filteredFormulas
       );
       filteredFormulas = this.formulaService.searchFormulasByCost(
