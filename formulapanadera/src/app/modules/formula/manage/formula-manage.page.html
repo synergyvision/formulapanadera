@@ -50,6 +50,7 @@
                     translate}})</ion-label>
             <ion-input
               type="text"
+              inputmode="decimal"
               formControlName="unit_weight"
               class="formula-unit-weight"
               (ionBlur)="formatUnitWeight(manageFormulaForm.value.unit_weight)"
@@ -217,6 +218,7 @@
               <ion-item class="ingredient-input"
                 ><ion-input
                   type="text"
+                  inputmode="decimal"
                   class="ingredient-percentage"
                   [(ngModel)]="item.percentage"
                   [ngModelOptions]="{standalone: true}"
@@ -365,6 +367,7 @@
                   <ion-item lines="full">
                     <ion-input
                       type="text"
+                      inputmode="decimal"
                       class="ingredient-percentage"
                       [(ngModel)]="item.percentage"
                       [ngModelOptions]="{standalone: true}"
