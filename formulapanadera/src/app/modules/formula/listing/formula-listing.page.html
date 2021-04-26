@@ -111,11 +111,10 @@
               >{{'ingredients.filter.min' | translate}}</ion-label
             >
             <ion-input
-              type="number"
-              inputmode="decimal"
+              type="text"
               formControlName="lower"
               class="ingredient-cost-lower"
-              (ionChange)="searchList()"
+              (ionBlur)="searchList()"
             >
             </ion-input>
           </ion-item>
@@ -126,11 +125,10 @@
               >{{'ingredients.filter.max' | translate}}
             </ion-label>
             <ion-input
-              type="number"
-              inputmode="decimal"
+              type="text"
               formControlName="upper"
               class="ingredient-cost-upper"
-              (ionChange)="searchList()"
+              (ionBlur)="searchList()"
             >
             </ion-input>
           </ion-item>

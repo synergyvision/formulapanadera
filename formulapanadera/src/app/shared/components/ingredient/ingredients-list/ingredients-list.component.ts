@@ -49,7 +49,7 @@ export class IngredientsListComponent implements OnInit, OnChanges {
   }
 
   unitGrams(ingredientGrams: number) {
-    return this.formatNumberService.formatNumberDecimals(
+    return this.formatNumberService.formatNumberFixedDecimals(
       ingredientGrams / this.units,
       DECIMALS.formula_grams
     );
@@ -72,7 +72,7 @@ export class IngredientsListComponent implements OnInit, OnChanges {
   }
 
   unitTotalGrams(totalGrams: number) {
-    return this.formatNumberService.formatNumberDecimals(
+    return this.formatNumberService.formatNumberFixedDecimals(
       totalGrams / this.units,
       DECIMALS.formula_grams
     );

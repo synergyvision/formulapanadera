@@ -12,6 +12,7 @@ import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { CourseModel } from "src/app/core/models/course.model";
 import { CourseService } from "src/app/core/services/course.service";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 @Component({
   selector: "app-ingredient-listing",
@@ -51,7 +52,8 @@ export class IngredientListingPage implements OnInit {
     private ingredientService: IngredientService,
     private courseService: CourseService,
     private router: Router,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private formatNumberService: FormatNumberService
   ) {}
 
   async ngOnInit() {
@@ -97,6 +99,12 @@ export class IngredientListingPage implements OnInit {
   }
 
   searchList() {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
     if (this.all_ingredients) {
       let filteredIngredients = JSON.parse(
         JSON.stringify(this.all_ingredients)

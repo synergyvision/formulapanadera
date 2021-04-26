@@ -6,6 +6,7 @@ import { map } from "rxjs/operators";
 import { CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { ProductionModel } from "src/app/core/models/production.model";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { ProductionService } from "src/app/core/services/production.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DataStore } from "../../shell/data-store";
@@ -38,7 +39,8 @@ export class ProductionPickerModal implements OnInit {
   constructor(
     private productionService: ProductionService,
     public modalController: ModalController,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private formatNumberService: FormatNumberService
   ) {}
 
   async ngOnInit() {
@@ -61,6 +63,12 @@ export class ProductionPickerModal implements OnInit {
   }
 
   searchList() {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
     let filteredProductions = JSON.parse(
       JSON.stringify(this.all_productions ? this.all_productions : [])
     );

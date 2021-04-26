@@ -35,6 +35,7 @@ import { ProductionModel } from "src/app/core/models/production.model";
 import { CourseModel } from "src/app/core/models/course.model";
 import { ProductionService } from "src/app/core/services/production.service";
 import { CourseService } from "src/app/core/services/course.service";
+import { DECIMALS } from "src/app/config/formats";
 
 @Component({
   selector: "app-formula-manage",
@@ -172,24 +173,19 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
   formatUnits(value: number) {
     this.manageFormulaForm
       .get("units")
-      .patchValue(this.formatNumberService.formatNumberDecimals(value, 0));
+      .patchValue(this.formatNumberService.formatNonZeroPositiveNumber(value));
   }
 
-  formatUnitWeight(value: number) {
+  formatUnitWeight(value: string) {
     this.manageFormulaForm
       .get("unit_weight")
-      .patchValue(this.formatNumberService.formatNumberDecimals(value, 1));
+      .patchValue(this.formatNumberService.formatStringToDecimals(value, DECIMALS.weight));
   }
 
   formatPercentage(ingredient: IngredientPercentageModel) {
+    let percentage: string = ingredient.percentage ? ingredient.percentage.toString() : "";
     ingredient.percentage = Number(
-      this.formatNumberService.formatNumberDecimals(ingredient.percentage, 1)
-    );
-  }
-
-  formatStepPercentage(ingredient: IngredientPercentageModel) {
-    ingredient.percentage = Number(
-      this.formatNumberService.formatNumberDecimals(ingredient.percentage)
+      this.formatNumberService.formatStringToDecimals(percentage, DECIMALS.formula_percentage)
     );
   }
 

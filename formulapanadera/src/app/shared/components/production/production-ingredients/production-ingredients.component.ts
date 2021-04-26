@@ -30,7 +30,7 @@ export class ProductionIngredientsComponent implements OnInit {
   }
 
   parseNumberGrams(number: number) {
-    return this.formatNumberService.formatNumberDecimals(
+    return this.formatNumberService.formatNumberFixedDecimals(
       number,
       DECIMALS.formula_grams
     );

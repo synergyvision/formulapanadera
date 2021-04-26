@@ -11,6 +11,7 @@ import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 
 @Component({
   selector: "app-ingredient-picker-modal",
@@ -41,14 +42,12 @@ export class IngredientPickerModal implements OnInit {
   segment: string = "mine";
 
   user_email: string;
-
-  @HostBinding("class.is-shell") get isShell() {
-    return this.ingredients && this.ingredients.isShell ? true : false;
-  }
+  
   constructor(
     private ingredientService: IngredientService,
     public modalController: ModalController,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private formatNumberService: FormatNumberService
   ) {}
 
   async ngOnInit() {
@@ -83,6 +82,12 @@ export class IngredientPickerModal implements OnInit {
   }
 
   searchList() {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
     let filteredIngredients = JSON.parse(
       JSON.stringify(this.all_ingredients ? this.all_ingredients : [])
     );

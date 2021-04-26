@@ -27,6 +27,7 @@ import { ProductionModel } from "src/app/core/models/production.model";
 import { ProductionService } from "src/app/core/services/production.service";
 import { CourseService } from "src/app/core/services/course.service";
 import { CourseModel } from "src/app/core/models/course.model";
+import { DECIMALS } from "src/app/config/formats";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -240,14 +241,15 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     );
   }
 
-  formatSuggestedValues(type: string, value: number) {
+  formatSuggestedValues(type: string, value: string) {
+    let sugg_value: number = Number(this.formatNumberService.formatStringToDecimals(value.toString()));
     if (type == "min") {
       this.ingredient.formula.suggested_values.min = Number(
-        this.formatNumberService.formatNumberDecimals(value, 0)
+        this.formatNumberService.formatNonZeroPositiveNumber(sugg_value)
       );
     } else {
       this.ingredient.formula.suggested_values.max = Number(
-        this.formatNumberService.formatNumberDecimals(value, 0)
+        this.formatNumberService.formatNonZeroPositiveNumber(sugg_value)
       );
     }
   }
@@ -386,36 +388,61 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     }
   }
 
-  formatNumberPercentage(value: number, type: "fat" | "hydration") {
+  formatNumberPercentage(value: string, type: "fat" | "hydration") {
     if (this.manageIngredientForm.value.is_flour) {
       this.manageIngredientForm.get("hydration").patchValue("0.0");
       this.manageIngredientForm.get("fat").patchValue("0.0");
     } else {
+      let percentage: number = Number(this.formatNumberService.formatStringToDecimals(value));
       if (type == "hydration") {
         this.manageIngredientForm
         .get("hydration")
-        .patchValue(this.formatNumberService.formatNumberPercentage(value));
+        .patchValue(this.formatNumberService.formatNumberPercentage(percentage));
       } else {
         this.manageIngredientForm
         .get("fat")
-        .patchValue(this.formatNumberService.formatNumberPercentage(value));
+        .patchValue(this.formatNumberService.formatNumberPercentage(percentage));
+      }
+    }
+  }
+
+  formatCost(value: string) {
+    let number = 0;
+    if (value) {
+      value = value.replace(/[^0-9.,]/, '');
+      value = value.replace(/[,]/, '.');
+      var parts = value.split(".");
+      if (parts[1] !== undefined)
+        value = parts.slice(0, -1).join('') + "." + parts.slice(-1);
+      number = Number(value)
+      if (isNaN(number)) {
+        this.manageIngredientForm
+          .get("cost")
+          .patchValue("0.00");
+      } else {
+        this.manageIngredientForm
+          .get("cost")
+          .patchValue(value);
       }
     }
   }
 
   formatPercentage() {
     if (this.ingredient.formula) {
+      let percentage: number = Number(this.formatNumberService.formatStringToDecimals(this.ingredient.formula.compensation_percentage.toString()));
       this.ingredient.formula.compensation_percentage = Number(
-        this.formatNumberService.formatNumberPercentage(
-          this.ingredient.formula.compensation_percentage
-        )
+        this.formatNumberService.formatNumberPercentage(percentage)
       );
     }
   }
 
   formatDecimals(item: IngredientPercentageModel) {
+    let percentage: number = 0;
+    if (item.percentage) {
+      percentage = Number(this.formatNumberService.formatStringToDecimals(item.percentage.toString(), DECIMALS.formula_percentage));
+    }
     item.percentage = Number(
-      this.formatNumberService.formatNumberDecimals(item.percentage)
+      this.formatNumberService.formatNumberFixedDecimals(percentage, DECIMALS.formula_percentage)
     );
   }
 

@@ -8,6 +8,7 @@ import { FORMULA_WARMING_TIME } from "src/app/config/formula";
 import { ICONS } from "src/app/config/icons";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { FormulaNumberModel } from "src/app/core/models/production.model";
+import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DataStore } from "../../shell/data-store";
@@ -44,7 +45,8 @@ export class FormulaPickerModal implements OnInit {
   constructor(
     private formulaService: FormulaService,
     public modalController: ModalController,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private formatNumberService: FormatNumberService
   ) {}
 
   async ngOnInit() {
@@ -82,6 +84,12 @@ export class FormulaPickerModal implements OnInit {
   }
 
   searchList() {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
     let filteredFormulas = JSON.parse(
       JSON.stringify(this.all_formulas ? this.all_formulas : [])
     );
