@@ -575,9 +575,9 @@ export class FormulaService {
               original_ing,
               formula.ingredients
             );
+            ingredient.percentage = (ingredient.percentage * Number(actual_bakers_percentage) / proportion_factor) * 100;
           }
         })
-        ingredient.percentage = (ingredient.percentage * Number(actual_bakers_percentage) / proportion_factor) * 100;
       }
     });
     this.calculateIngredientsWithFormula(
