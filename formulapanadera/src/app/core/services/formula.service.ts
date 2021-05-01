@@ -139,12 +139,17 @@ export class FormulaService {
   */
   
   public hasIngredient(formula: FormulaModel, updated_ingredients: IngredientModel[]): boolean {
+    let original_formula: FormulaModel = JSON.parse(JSON.stringify(formula));
     let has_ingredient: boolean = false;
+    let updated_compound_ingredient: boolean = false;
     formula.ingredients.forEach(ingredient => {
       updated_ingredients.forEach(updated_ingredient => {
         if (ingredient.ingredient.id == updated_ingredient.id) {
           has_ingredient = true;
           ingredient.ingredient = updated_ingredient;
+          if (updated_ingredient.formula) {
+            updated_compound_ingredient = true;
+          }
         }
       })
     });
@@ -160,6 +165,9 @@ export class FormulaService {
           })
         })
       })
+      if (updated_compound_ingredient) {
+        this.recalculateFormula(original_formula, formula);
+      }
     }
     formula.steps?.forEach(step => {
       step.ingredients?.forEach(ingredient => {
@@ -547,6 +555,36 @@ export class FormulaService {
 
       return new_bakers_percentage
     }
+  }
+
+  private recalculateFormula(original_formula: FormulaModel,formula: FormulaModel) {
+    let total_weight = formula.units * formula.unit_weight;
+    let actual_bakers_percentage: string = this.calculateBakersPercentage(
+      total_weight,
+      formula.ingredients
+    );
+    let new_bakers_percentage: string = this.deleteIngredientsWithFormula(original_formula, formula);
+    let proportion_factor: number;
+    formula.ingredients.forEach(ingredient => {
+      if (ingredient.ingredient.formula) {
+        original_formula.ingredients.forEach(original_ing => {
+          if (ingredient.ingredient.id == original_ing.ingredient.id) {
+            proportion_factor = this.getProportionFactor(
+              total_weight,
+              Number(new_bakers_percentage),
+              original_ing,
+              formula.ingredients
+            );
+          }
+        })
+        ingredient.percentage = (ingredient.percentage * Number(actual_bakers_percentage) / proportion_factor) * 100;
+      }
+    });
+    this.calculateIngredientsWithFormula(
+      formula.ingredients,
+      new_bakers_percentage,
+      Number(total_weight)
+    );
   }
 
   public calculateIngredientsWithFormula(
