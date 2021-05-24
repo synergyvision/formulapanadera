@@ -39,6 +39,10 @@
     "confirm_password": "Confirm password",
     "actual_password": "Actual password"
   },
+  "connection": {
+    "online": "Online",
+    "offline": "Offline"
+  },
   "notes": {
     "note": "Nota",
     "notes": "Notas"

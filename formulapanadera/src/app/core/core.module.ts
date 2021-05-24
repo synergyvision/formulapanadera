@@ -3,12 +3,13 @@ import { RouterModule } from "@angular/router";
 import { NgModule, Optional, SkipSelf } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { ModuleLoadedOnceGuard } from "./guards/module-loaded-once.guard";
 
 import { environment } from "src/environments/environment";
 import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
+
+import { ModuleLoadedOnceGuard } from "./guards/module-loaded-once.guard";
 
 import { LanguageService } from "./services/language.service";
 import { FormatNumberService } from "./services/format-number.service";
@@ -34,6 +35,8 @@ import { TutorialsService } from "./services/tutorials.service";
 import { ContactService } from "./services/contact.service";
 import { SearchBarService } from "./services/search-bar.service";
 import { FaqService } from "./services/faq.service";
+import { NetworkService } from "./services/network.service";
+
 @NgModule({
   imports: [
     IonicModule,
@@ -42,7 +45,7 @@ import { FaqService } from "./services/faq.service";
     RouterModule,
     AngularFireModule.initializeApp(environment.connection),
     AngularFireAuthModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
   ],
   exports: [RouterModule, FormsModule],
   providers: [
@@ -69,7 +72,8 @@ import { FaqService } from "./services/faq.service";
     TutorialsService,
     ContactService,
     SearchBarService,
-    FaqService
+    FaqService,
+    NetworkService
   ]
 })
 export class CoreModule extends ModuleLoadedOnceGuard {

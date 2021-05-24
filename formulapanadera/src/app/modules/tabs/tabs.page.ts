@@ -52,7 +52,10 @@ export class TabsPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.timeService.startCurrentTime();
     let user = await this.userStorageService.getUser();
-    this.user = await this.userCRUDService.getUser(user.email)
+    this.user = await this.userCRUDService.getUser(user.email);
+    if (!this.user?.id) {
+      this.user = user;
+    }
     await this.userStorageService.setUser(this.user);
     this.ingredientsSubscriber = this.ingredientCRUDService
       .getIngredientsDataSource(this.user.email)

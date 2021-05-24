@@ -48,6 +48,10 @@
     "confirm_password": "Confirmación de contraseña",
     "actual_password": "Contraseña actual"
   },
+  "connection": {
+    "online": "En línea",
+    "offline": "Sin conexión"
+  },
   "notes": {
     "note": "Nota",
     "notes": "Notas"

@@ -11,7 +11,7 @@ import { AppComponent } from "./app.component";
 
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { HttpClientModule, HttpClient } from "@angular/common/http";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 
 import { CoreModule } from "./core/core.module";
 import { AlertModule } from './shared/alert/alert.module';
@@ -29,10 +29,10 @@ export function createTranslateLoader(http: HttpClient) {
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    HttpClientModule,
-    CoreModule,
     AlertModule,
     MarkdownModule.forRoot(),
+    HttpClientModule,
+    CoreModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
