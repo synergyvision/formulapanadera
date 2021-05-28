@@ -11,6 +11,8 @@ import { AngularFirestoreModule } from "@angular/fire/firestore";
 
 import { ModuleLoadedOnceGuard } from "./guards/module-loaded-once.guard";
 
+import { IonicStorageModule } from "@ionic/storage-angular";
+
 import { LanguageService } from "./services/language.service";
 import { FormatNumberService } from "./services/format-number.service";
 import { AuthService } from "./services/firebase/auth.service";
@@ -36,6 +38,8 @@ import { ContactService } from "./services/contact.service";
 import { SearchBarService } from "./services/search-bar.service";
 import { FaqService } from "./services/faq.service";
 import { NetworkService } from "./services/network.service";
+import { StorageService } from "./services/storage/storage.service";
+import { OfflineManagerService } from "./services/offline-manager.service";
 
 @NgModule({
   imports: [
@@ -46,6 +50,7 @@ import { NetworkService } from "./services/network.service";
     AngularFireModule.initializeApp(environment.connection),
     AngularFireAuthModule,
     AngularFirestoreModule,
+    IonicStorageModule.forRoot(),
   ],
   exports: [RouterModule, FormsModule],
   providers: [
@@ -73,7 +78,9 @@ import { NetworkService } from "./services/network.service";
     ContactService,
     SearchBarService,
     FaqService,
-    NetworkService
+    NetworkService,
+    StorageService,
+    OfflineManagerService
   ]
 })
 export class CoreModule extends ModuleLoadedOnceGuard {

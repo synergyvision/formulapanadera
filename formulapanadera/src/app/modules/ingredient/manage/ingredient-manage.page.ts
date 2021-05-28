@@ -241,7 +241,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     );
   }
 
-  formatSuggestedValues(type: string, value: string) {
+  formatSuggestedValues(type: string, value: number) {
     let sugg_value: number = Number(this.formatNumberService.formatStringToDecimals(value.toString()));
     if (type == "min") {
       this.ingredient.formula.suggested_values.min = Number(

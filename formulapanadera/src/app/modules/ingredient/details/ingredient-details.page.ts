@@ -38,6 +38,7 @@ export class IngredientDetailsPage implements OnInit {
 
   showIngredients: boolean;
   showMixing: boolean;
+  showReferences: boolean;
 
   user: UserResumeModel = new UserResumeModel();
   is_modifier: boolean = false
@@ -59,6 +60,7 @@ export class IngredientDetailsPage implements OnInit {
   ) {
     this.showIngredients = true;
     this.showMixing = false;
+    this.showReferences = false;
   }
 
   async ngOnInit() {

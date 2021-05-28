@@ -9,6 +9,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { LANGUAGE } from "./config/configuration";
 import { LanguageStorageService } from './core/services/storage/language.service';
 import { NetworkService } from "./core/services/network.service";
+import { OfflineManagerService } from "./core/services/offline-manager.service";
+import { StorageService } from "./core/services/storage/storage.service";
 
 @Component({
   selector: "app-root",
@@ -24,6 +26,8 @@ export class AppComponent implements OnDestroy {
     private statusBar: StatusBar,
     private languageStorageService: LanguageStorageService,
     private networkService: NetworkService,
+    private offlineManager: OfflineManagerService,
+    private storageService: StorageService
     
   ) {
     this.initializeApp();
@@ -34,11 +38,13 @@ export class AppComponent implements OnDestroy {
     this.platform.ready().then(async () => {
       this.statusBar.styleDefault();
       await this.networkService.initializeNetworkEvents();
+      await this.storageService.init();
       this.splashScreen.hide();
 
-      this.networkService.onNetworkChange().subscribe((status) => {
-        if (status.connected) {
+      this.networkService.onNetworkChange().subscribe(() => {
+        if (this.networkService.isConnectedToNetwork()) {
           console.log('WE ARE ONLINE');
+          this.offlineManager.checkForEvents().subscribe();
         } else {
           console.log('WE ARE OFFLINE');
         }

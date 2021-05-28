@@ -3,7 +3,7 @@ import { FormulaModel } from "../../../../core/models/formula.model";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
-import { DECIMAL_COST_FORMAT } from "src/app/config/formats";
+import { DECIMALS, DECIMAL_COST_FORMAT } from "src/app/config/formats";
 
 @Component({
   selector: "app-formula-item",
@@ -32,13 +32,13 @@ export class FormulaItemComponent {
     return this.formulaService.calculateFat(formula_without_compound.ingredients);
   }
 
-  unitCost() {
+  unitCost(): number {
     let formula_without_compound = this.formulaService.getFormulaWithoutCompoundIngredients(this.formula)
     let bakers_percentage = formula_without_compound.bakers_percentage
     let total_cost = this.formulaService.calculateTotalCost(
       formula_without_compound.formula.ingredients,
       Number(bakers_percentage)
     );
-    return (Number(total_cost) / this.formula.units).toString();
+    return Number(total_cost) / this.formula.units;
   }
 }

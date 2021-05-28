@@ -50,7 +50,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   total_weight: number;
   hydration: number;
   fat: number;
-  unitary_cost: string;
+  unitary_cost: number;
   total_cost: string;
 
   currency: string = CURRENCY;
@@ -156,7 +156,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       formula_without_compound.formula.ingredients,
       Number(bakers_p)
     );
-    this.unitary_cost = (Number(this.total_cost) / this.units).toString();
+    this.unitary_cost = Number(this.total_cost) / this.units;
 
     this.ingredients_formula = []
     let ing_formula: IngredientPercentageModel[] = [];

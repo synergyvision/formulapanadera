@@ -1,0 +1,85 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/*/**",
+          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani|json)"
+        ]
+      }
+    },
+    {
+      "name": "icons",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/svg/add-outline.svg",
+          "/svg/alarm-outline.svg",
+          "/svg/chevron-down-outline.svg",
+          "/svg/chevron-up-outline.svg",
+          "/svg/arrow-back-outline.svg",
+          "/svg/lock-closed-outline.svg",
+          "/svg/checkmark-outline.svg",
+          "/svg/add-circle-outline.svg",
+          "/svg/close-outline.svg",
+          "/svg/calendar-outline.svg",
+          "/svg/create-outline.svg",
+          "/svg/people-outline.svg",
+          "/svg/search-outline.svg",
+          "/svg/checkmark-done-outline.svg",
+          "/svg/pencil-outline.svg",
+          "/svg/ellipsis-horizontal.svg",
+          "/svg/ellipsis-vertical.svg",
+          "/svg/eye-off-outline.svg",
+          "/svg/eye-outline.svg",
+          "/svg/book-outline.svg",
+          "/svg/arrow-forward-outline.svg",
+          "/svg/information-circle-outline.svg",
+          "/svg/reader-outline.svg",
+          "/svg/language-outline.svg",
+          "/svg/list-outline.svg",
+          "/svg/options.svg",
+          "/svg/play.svg",
+          "/svg/play-circle.svg",
+          "/svg/play-circle-outline.svg",
+          "/svg/stop-circle-outline.svg",
+          "/svg/settings-outline.svg",
+          "/svg/share-outline.svg",
+          "/svg/log-out-outline.svg",
+          "/svg/sync-outline.svg",
+          "/svg/thermometer-outline.svg",
+          "/svg/timer-outline.svg",
+          "/svg/trash-outline.svg",
+          "/svg/water.svg",
+          "/svg/arrow-back-sharp.svg",
+          "/svg/information-outline.svg",
+          "/svg/help-circle.svg",
+          "/svg/mail.svg",
+          "/svg/chevron-forward.svg",
+          "/svg/close-circle.svg"
+        ]
+      },
+      "cacheQueryOptions": {
+          "ignoreSearch": true
+        }
+    }
+  ]
+}
