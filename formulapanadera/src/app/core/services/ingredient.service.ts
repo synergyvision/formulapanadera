@@ -204,7 +204,7 @@ export class IngredientService {
       let has_ingredient: boolean = this.hasIngredient(ingredient, updated_ingredient);
       if (has_ingredient) {
         updated_ingredients.push(ingredient);
-        return this.ingredientCRUDService.updateIngredient(ingredient, original_ingredient);
+        return this.ingredientCRUDService.update(ingredient, original_ingredient);
       }
     })
     await Promise.all(ing_promises);

@@ -40,12 +40,6 @@ export class AppComponent implements OnDestroy {
       await this.networkService.initializeNetworkEvents();
       await this.storageService.init();
       this.splashScreen.hide();
-
-      this.networkService.onNetworkChange().subscribe(() => {
-        if (this.networkService.isConnectedToNetwork()) {
-          this.offlineManager.checkForEvents().subscribe();
-        }
-      });
     });
   }
 

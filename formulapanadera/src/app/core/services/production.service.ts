@@ -72,7 +72,7 @@ export class ProductionService {
       let has_formula: boolean = this.hasFormula(production, updated_formulas);
       if (has_formula) {
         updated_productions.push(production)
-        return this.productionCRUDService.updateProduction(production, original_production);
+        return this.productionCRUDService.update(production, original_production);
       }
     })
     await Promise.all(prod_promises);

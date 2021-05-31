@@ -10,11 +10,12 @@ import { NetworkService } from "../network.service";
 import { StorageService } from "../storage/storage.service";
 import { environment } from "src/environments/environment";
 import { OfflineManagerService } from "../offline-manager.service";
+import { FirebaseService } from "../../interfaces/firebase-service.interface";
 
 const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
-export class FormulaCRUDService {
+export class FormulaCRUDService implements FirebaseService {
   collection = COLLECTIONS.formula;
 
   constructor(
@@ -86,26 +87,30 @@ export class FormulaCRUDService {
   /*
     Formula Management
   */
-  public async createFormula(formulaData: FormulaModel): Promise<void> {
-    let id = this.afs.createId();
-    formulaData.id = id;
-    let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
-    delete formula.ingredients;
-    if (formula.mixing && formula.mixing.length > 0) {
-      formula.mixing.forEach(mix => {
-        mix.mixing_order.forEach(step => {
-          step.ingredients.forEach(ing => {
-            if (ing.ingredient.formula) {
-              delete ing.ingredient.formula.ingredients;
-              delete ing.ingredient.formula.mixing;
-            }
+  public async create(formulaData: FormulaModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      let id = this.afs.createId();
+      formulaData.id = id;
+      let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
+      delete formula.ingredients;
+      if (formula.mixing && formula.mixing.length > 0) {
+        formula.mixing.forEach(mix => {
+          mix.mixing_order.forEach(step => {
+            step.ingredients.forEach(ing => {
+              if (ing.ingredient.formula) {
+                delete ing.ingredient.formula.ingredients;
+                delete ing.ingredient.formula.mixing;
+              }
+            })
           })
         })
-      })
+      }
+      // Set sub ingredients
+      await this.createIngredients(`${this.collection}/${id}/${COLLECTIONS.ingredients}`, formulaData);
+      await this.afs.collection(this.collection).doc(id).set(formula);
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'C', formulaData, null);
     }
-    // Set sub ingredients
-    await this.createIngredients(`${this.collection}/${id}/${COLLECTIONS.ingredients}`, formulaData);
-    await this.afs.collection(this.collection).doc(id).set(formula);
   }
 
   public async createIngredients(collection: string, formulaData: FormulaModel) {
@@ -121,32 +126,40 @@ export class FormulaCRUDService {
     await Promise.all(promises)
   }
 
-  public async updateFormula(formulaData: FormulaModel, originalFormula: FormulaModel): Promise<void> {
-    let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
-    delete formula.ingredients;
-    formula.user.last_modified = new Date();
-    if (formula.mixing && formula.mixing.length > 0) {
-      formula.mixing.forEach(mix => {
-        mix.mixing_order.forEach((step=>{
-          step.ingredients.forEach(ing => {
-            if (ing.ingredient.formula && ing.ingredient.formula.ingredients) {
-              delete ing.ingredient.formula.ingredients;
-              delete ing.ingredient.formula.mixing;
-            }
-          })
-        }))
-      })
+  public async update(formulaData: FormulaModel, originalFormula: FormulaModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
+      delete formula.ingredients;
+      formula.user.last_modified = new Date();
+      if (formula.mixing && formula.mixing.length > 0) {
+        formula.mixing.forEach(mix => {
+          mix.mixing_order.forEach((step=>{
+            step.ingredients.forEach(ing => {
+              if (ing.ingredient.formula && ing.ingredient.formula.ingredients) {
+                delete ing.ingredient.formula.ingredients;
+                delete ing.ingredient.formula.mixing;
+              }
+            })
+          }))
+        })
+      }
+      // Delete sub ingredients
+      await this.deleteIngredients(originalFormula);
+      // Set sub ingredients
+      await this.createIngredients(`${this.collection}/${formulaData.id}/${COLLECTIONS.ingredients}`, formulaData);
+      await this.afs.collection(this.collection).doc(formulaData.id).set(formula);
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'U', formulaData, originalFormula);
     }
-    // Delete sub ingredients
-    await this.deleteIngredients(originalFormula);
-    // Set sub ingredients
-    await this.createIngredients(`${this.collection}/${formulaData.id}/${COLLECTIONS.ingredients}`, formulaData);
-    await this.afs.collection(this.collection).doc(formulaData.id).set(formula);
   }
 
-  public async deleteFormula(formulaData: FormulaModel): Promise<void> {
-    await this.deleteIngredients(formulaData);
-    return this.afs.collection(this.collection).doc(formulaData.id).delete();
+  public async delete(formulaData: FormulaModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      await this.deleteIngredients(formulaData);
+      return this.afs.collection(this.collection).doc(formulaData.id).delete();
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'D', formulaData, null);
+    }
   }
 
   public async deleteIngredients(formulaData: FormulaModel, collection = this.collection): Promise<void>{

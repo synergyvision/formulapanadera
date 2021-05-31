@@ -10,11 +10,12 @@ import { NetworkService } from "../network.service";
 import { StorageService } from "../storage/storage.service";
 import { environment } from "src/environments/environment";
 import { OfflineManagerService } from "../offline-manager.service";
+import { FirebaseService } from "../../interfaces/firebase-service.interface";
 
 const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
-export class ProductionCRUDService {
+export class ProductionCRUDService implements FirebaseService{
   collection = COLLECTIONS.production;
 
   constructor(
@@ -86,16 +87,20 @@ export class ProductionCRUDService {
   /*
     Production Management
   */
-  public async createProduction(
+  public async create(
     productionData: ProductionModel
   ): Promise<void> {
-    let id = this.afs.createId();
-    productionData.id = id;
-    let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
-    delete production.formulas;
-    // Set formulas
-    await this.createFormulas(`${this.collection}/${id}/${COLLECTIONS.formula}`, productionData);
-    await this.afs.collection(this.collection).doc(id).set(production);
+    if (this.networkService.isConnectedToNetwork()) {
+      let id = this.afs.createId();
+      productionData.id = id;
+      let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
+      delete production.formulas;
+      // Set formulas
+      await this.createFormulas(`${this.collection}/${id}/${COLLECTIONS.formula}`, productionData);
+      await this.afs.collection(this.collection).doc(id).set(production);
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'C', productionData, null);
+    }
   }
 
   public async createFormulas(collection: string, productionData: ProductionModel) {
@@ -121,20 +126,28 @@ export class ProductionCRUDService {
     await Promise.all(promises)
   }
 
-  public async updateProduction(productionData: ProductionModel, originalProduction: ProductionModel): Promise<void> {
-    let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
-    delete production.formulas;
-    production.user.last_modified = new Date();
-    // Delete formulas
-    await this.deleteFormulas(originalProduction);
-    // Set formulas
-    await this.createFormulas(`${this.collection}/${productionData.id}/${COLLECTIONS.formula}`, productionData);
-    await this.afs.collection(this.collection).doc(productionData.id).set(production);
+  public async update(productionData: ProductionModel, originalProduction: ProductionModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
+      delete production.formulas;
+      production.user.last_modified = new Date();
+      // Delete formulas
+      await this.deleteFormulas(originalProduction);
+      // Set formulas
+      await this.createFormulas(`${this.collection}/${productionData.id}/${COLLECTIONS.formula}`, productionData);
+      await this.afs.collection(this.collection).doc(productionData.id).set(production);
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'U', productionData, originalProduction);
+    }
   }
 
-  public async deleteProduction(productionData: ProductionModel): Promise<void> {
-    await this.deleteFormulas(productionData);
-    return this.afs.collection(this.collection).doc(productionData.id).delete();
+  public async delete(productionData: ProductionModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      await this.deleteFormulas(productionData);
+      return this.afs.collection(this.collection).doc(productionData.id).delete();
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'D', productionData, null);
+    }
   }
 
   public async deleteFormulas(productionData: ProductionModel, collection = this.collection): Promise<void>{

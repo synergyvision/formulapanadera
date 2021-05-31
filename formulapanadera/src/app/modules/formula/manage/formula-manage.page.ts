@@ -506,7 +506,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
           });
           await loading.present();
           this.formulaCRUDService
-            .updateFormula(this.formula, this.original_formula)
+            .update(this.formula, this.original_formula)
             .then(async () => {
               let updated_formulas: FormulaModel[] = [this.formula];
               let updated_productions: ProductionModel[] = []
@@ -571,7 +571,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
         });
         await loading.present();
         this.formulaCRUDService
-          .createFormula(this.formula)
+          .create(this.formula)
           .then(() => {
             this.router.navigateByUrl(
               APP_URL.menu.name +

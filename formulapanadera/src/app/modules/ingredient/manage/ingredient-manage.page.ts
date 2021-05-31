@@ -328,7 +328,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
         modifiers: [],
       };
       this.ingredientCRUDService
-        .createIngredient(this.ingredient)
+        .create(this.ingredient)
         .then(() => {
           this.router.navigateByUrl(
             APP_URL.menu.name +
@@ -355,7 +355,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
         date: new Date(),
       });
       this.ingredientCRUDService
-        .updateIngredient(this.ingredient, this.original_ingredient)
+        .update(this.ingredient, this.original_ingredient)
         .then(async () => {
           let updated_ingredients: IngredientModel[] = [this.ingredient];
           await this.ingredientService.updateIngredients(this.ingredient, updated_ingredients);

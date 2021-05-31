@@ -482,7 +482,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     }
 
     this.formulaCRUDService
-      .updateFormula(this.formula, this.formula)
+      .update(this.formula, this.formula)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -518,7 +518,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             formula.name = `${
               this.formula.name
             } (${this.languageService.getTerm("action.copy")})`;
-            this.formulaCRUDService.createFormula(formula).then(() => {
+            this.formulaCRUDService.create(formula).then(() => {
               this.router.navigateByUrl(
                 APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
               );
@@ -554,7 +554,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             await loading.present();
 
             this.formulaCRUDService
-              .deleteFormula(this.formula)
+              .delete(this.formula)
               .then(async () => {
                 this.router.navigateByUrl(
                   APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
@@ -658,7 +658,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       });
       await loading.present();
       this.formulaCRUDService
-        .updateFormula(this.formula, this.formula)
+        .update(this.formula, this.formula)
         .then(() => { })
         .catch(() => {
           this.presentToast(false);
@@ -679,7 +679,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     await loading.present();
     
     this.productionCRUDService
-      .createProduction(production)
+      .create(production)
       .then(async () => {
         this.router.navigateByUrl(
           APP_URL.menu.name +

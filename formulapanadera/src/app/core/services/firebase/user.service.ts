@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
-import { from, Observable } from "rxjs";
-import { map, tap } from 'rxjs/operators';
+import { Observable } from "rxjs";
+import { map } from 'rxjs/operators';
 
 import { COLLECTIONS } from "src/app/config/firebase";
 import { UserGroupModel, UserModel } from '../../models/user.model';

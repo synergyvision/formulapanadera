@@ -189,7 +189,7 @@ export class FormulaService {
       let has_ingredient: boolean = this.hasIngredient(formula, updated_ingredients);
       if (has_ingredient) {
         updated_formulas.push(formula)
-        return this.formulaCRUDService.updateFormula(formula, original_formula);
+        return this.formulaCRUDService.update(formula, original_formula);
       }
     })
     await Promise.all(for_promises);

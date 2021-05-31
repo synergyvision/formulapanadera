@@ -4,7 +4,6 @@ import { ActionSheetController, AlertController, IonRouterOutlet, LoadingControl
 import { APP_URL } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
 import { ICONS } from "src/app/config/icons";
-import { FormulaModel } from 'src/app/core/models/formula.model';
 import {
   FormulaNumberModel,
   FormulaPresentModel,
@@ -386,7 +385,7 @@ export class ProductionDetailsPage implements OnInit {
     this.original_production.user = this.production.user;
 
     this.productionCRUDService
-      .updateProduction(this.production, this.production)
+      .update(this.production, this.production)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -422,7 +421,7 @@ export class ProductionDetailsPage implements OnInit {
             production.name = `${
               this.production.name
             } (${this.languageService.getTerm("action.copy")})`;
-            this.productionCRUDService.createProduction(production).then(() => {
+            this.productionCRUDService.create(production).then(() => {
               this.router.navigateByUrl(
                 APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
               );
@@ -476,7 +475,7 @@ export class ProductionDetailsPage implements OnInit {
             await loading.present();
 
             this.productionCRUDService
-              .deleteProduction(this.production)
+              .delete(this.production)
               .then(async () => {
                 this.router.navigateByUrl(
                   APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
@@ -531,7 +530,7 @@ export class ProductionDetailsPage implements OnInit {
       this.production.user.can_clone = value
     }
     this.productionCRUDService
-      .updateProduction(this.production, this.production)
+      .update(this.production, this.production)
       .then(() => {})
       .catch(() => {
         this.presentToast(false);

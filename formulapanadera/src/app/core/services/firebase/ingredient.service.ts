@@ -10,11 +10,12 @@ import { NetworkService } from "../network.service";
 import { StorageService } from "../storage/storage.service";
 import { environment } from "src/environments/environment";
 import { OfflineManagerService } from "../offline-manager.service";
+import { FirebaseService } from "../../interfaces/firebase-service.interface";
 
 const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
-export class IngredientCRUDService {
+export class IngredientCRUDService implements FirebaseService {
   collection = COLLECTIONS.ingredients;
 
   constructor(
@@ -85,39 +86,33 @@ export class IngredientCRUDService {
   /*
     Ingredient Management
   */
-  public async createIngredient(
+  public async create(
     ingredientData: IngredientModel
   ): Promise<void> {
-    // if (this.networkService.isConnectedToNetwork()) {
-    //   try {
-        let id = this.afs.createId();
-        // Set ingredient
-        ingredientData.id = id;
-        let ingredient = JSON.parse(JSON.stringify(ingredientData));
-        if (ingredientData.formula) {
-          delete ingredient.formula.ingredients;
-          if (ingredient.formula.mixing && ingredient.formula.mixing.length > 0) {
-            ingredient.formula.mixing.forEach(step => {
-              step.ingredients.forEach(ing => {
-                if (ing.ingredient.formula) {
-                  delete ing.ingredient.formula.ingredients;
-                  delete ing.ingredient.formula.mixing;
-                }
-              })
+    if (this.networkService.isConnectedToNetwork()) {
+      let id = this.afs.createId();
+      // Set ingredient
+      ingredientData.id = id;
+      let ingredient = JSON.parse(JSON.stringify(ingredientData));
+      if (ingredientData.formula) {
+        delete ingredient.formula.ingredients;
+        if (ingredient.formula.mixing && ingredient.formula.mixing.length > 0) {
+          ingredient.formula.mixing.forEach(step => {
+            step.ingredients.forEach(ing => {
+              if (ing.ingredient.formula) {
+                delete ing.ingredient.formula.ingredients;
+                delete ing.ingredient.formula.mixing;
+              }
             })
-          }
+          })
         }
-        // Set sub ingredients
-        await this.createSubIngredient(this.collection, id, ingredientData);
-        await this.afs.collection(this.collection).doc(id).set(ingredient);
-      // } catch (err) {
-      //   this.offlineManager.storeRequest(this.collection, 'C', ingredientData, null);
-      //   throw new Error(err);
-      // }
-    // } else {
-    //   console.log("CANNOT CREATE INGREDIENT")
-    //   this.offlineManager.storeRequest(this.collection, 'C', ingredientData, null);
-    // }
+      }
+      // Set sub ingredients
+      await this.createSubIngredient(this.collection, id, ingredientData);
+      await this.afs.collection(this.collection).doc(id).set(ingredient);
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'C', ingredientData, null);
+    }
   }
 
   public async createSubIngredient(collection: string, id: string, ingredientData: IngredientModel) {
@@ -138,53 +133,41 @@ export class IngredientCRUDService {
     }
   }
 
-  public async updateIngredient(ingredientData: IngredientModel, originalIngredient: IngredientModel): Promise<void> {
-    // if (this.networkService.isConnectedToNetwork()) {
-    //   try {
-        let ingredient = JSON.parse(JSON.stringify(ingredientData));
-        ingredient.user.last_modified = new Date();
-        if (ingredientData.formula) {
-          delete ingredient.formula.ingredients;
-          if (ingredient.formula.mixing && ingredient.formula.mixing.length > 0) {
-            ingredient.formula.mixing.forEach(step => {
-              step.ingredients.forEach(ing => {
-                if (ing.ingredient.formula && ing.ingredient.formula.ingredients) {
-                  delete ing.ingredient.formula.ingredients;
-                  delete ing.ingredient.formula.mixing;
-                }
-              })
+  public async update(ingredientData: IngredientModel, originalIngredient: IngredientModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      let ingredient = JSON.parse(JSON.stringify(ingredientData));
+      ingredient.user.last_modified = new Date();
+      if (ingredientData.formula) {
+        delete ingredient.formula.ingredients;
+        if (ingredient.formula.mixing && ingredient.formula.mixing.length > 0) {
+          ingredient.formula.mixing.forEach(step => {
+            step.ingredients.forEach(ing => {
+              if (ing.ingredient.formula && ing.ingredient.formula.ingredients) {
+                delete ing.ingredient.formula.ingredients;
+                delete ing.ingredient.formula.mixing;
+              }
             })
-          }
+          })
         }
+      }
 
-        // Delete sub ingredients
-        await this.deleteSubIngredient(originalIngredient);
-        // Set sub ingredients
-        await this.createSubIngredient(this.collection, ingredientData.id, ingredientData);
-        await this.afs.collection(this.collection).doc(ingredientData.id).set(ingredient);
-    //   } catch(err) {
-    //     this.offlineManager.storeRequest(this.collection, 'U', ingredientData, originalIngredient);
-    //     throw new Error(err);
-    //   }
-    // } else {
-    //   console.log("CANNOT UPDATE INGREDIENT")
-    //   from(this.offlineManager.storeRequest(this.collection, 'U', ingredientData, originalIngredient));
-    // }
+      // Delete sub ingredients
+      await this.deleteSubIngredient(originalIngredient);
+      // Set sub ingredients
+      await this.createSubIngredient(this.collection, ingredientData.id, ingredientData);
+      await this.afs.collection(this.collection).doc(ingredientData.id).set(ingredient);
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'U', ingredientData, originalIngredient);
+    }
   }
 
-  public async deleteIngredient(ingredient: IngredientModel): Promise<void> {
-    // if (this.networkService.isConnectedToNetwork()) {
-    //   try {
-      await this.deleteSubIngredient(ingredient);
-      return this.afs.collection(this.collection).doc(ingredient.id).delete();
-    //   } catch (err) {
-    //     this.offlineManager.storeRequest(this.collection, 'D', ingredient, null);
-    //     throw new Error(err);
-    //   }
-    // } else {
-    //   console.log("CANNOT DELETE INGREDIENT")
-    //   this.offlineManager.storeRequest(this.collection, 'D', ingredient, null);
-    // }
+  public async delete(ingredientData: IngredientModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      await this.deleteSubIngredient(ingredientData);
+      return this.afs.collection(this.collection).doc(ingredientData.id).delete();
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'D', ingredientData, null);
+    }
   }
 
   public async deleteSubIngredient(ingredientData: IngredientModel, collection = this.collection) {

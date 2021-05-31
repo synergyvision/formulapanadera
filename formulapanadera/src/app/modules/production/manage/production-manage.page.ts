@@ -118,7 +118,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
         date: new Date(),
       });
       this.productionCRUDService
-        .updateProduction(this.production, this.original_production)
+        .update(this.production, this.original_production)
         .then(async () => {
           if (this.current_user.instructor) {
             let updated_productions: ProductionModel[] = [this.production]
@@ -159,7 +159,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
         modifiers: [],
       };
       this.productionCRUDService
-        .createProduction(this.production)
+        .create(this.production)
         .then(async () => {
           this.router.navigateByUrl(
             APP_URL.menu.name +

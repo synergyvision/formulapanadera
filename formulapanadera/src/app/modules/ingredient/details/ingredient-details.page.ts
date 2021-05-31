@@ -301,7 +301,7 @@ export class IngredientDetailsPage implements OnInit {
     }
 
     this.ingredientCRUDService
-      .updateIngredient(this.ingredient, this.ingredient)
+      .update(this.ingredient, this.ingredient)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -337,7 +337,7 @@ export class IngredientDetailsPage implements OnInit {
             ingredient.name = `${
               this.ingredient.name
             } (${this.languageService.getTerm("action.copy")})`;
-            this.ingredientCRUDService.createIngredient(ingredient).then(() => {
+            this.ingredientCRUDService.create(ingredient).then(() => {
               this.router.navigateByUrl(
                 APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
               );
@@ -391,7 +391,7 @@ export class IngredientDetailsPage implements OnInit {
             await loading.present();
 
             this.ingredientCRUDService
-              .deleteIngredient(this.ingredient)
+              .delete(this.ingredient)
               .then(async () => {
                 this.router.navigateByUrl(
                   APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
@@ -445,7 +445,7 @@ export class IngredientDetailsPage implements OnInit {
       this.ingredient.user.can_clone = value
     }
     this.ingredientCRUDService
-      .updateIngredient(this.ingredient, this.ingredient)
+      .update(this.ingredient, this.ingredient)
       .then(() => {})
       .catch(() => {
         this.presentToast(false);

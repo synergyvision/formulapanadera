@@ -1,6 +1,9 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subscription } from "rxjs";
+import { COLLECTIONS } from "src/app/config/firebase";
 import { ICONS } from "src/app/config/icons";
+import { FirebaseService } from "src/app/core/interfaces/firebase-service.interface";
+import { StoredRequest } from "src/app/core/interfaces/stored-request.interface";
 import { CourseModel } from "src/app/core/models/course.model";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { IngredientModel } from "src/app/core/models/ingredient.model";
@@ -15,6 +18,7 @@ import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { IngredientService } from "src/app/core/services/ingredient.service";
 import { NetworkService } from "src/app/core/services/network.service";
+import { OfflineManagerService } from "src/app/core/services/offline-manager.service";
 import { ProductionService } from "src/app/core/services/production.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { TimeService } from "src/app/core/services/time.service";
@@ -48,11 +52,26 @@ export class TabsPage implements OnInit, OnDestroy {
     private formulaService: FormulaService,
     private ingredientCRUDService: IngredientCRUDService,
     private ingredientService: IngredientService,
-    private networkService: NetworkService
+    private networkService: NetworkService,
+    private offlineManager: OfflineManagerService
   ) { }
 
   async ngOnInit() {
     this.timeService.startCurrentTime();
+    this.networkService.onNetworkChange().subscribe(() => {
+      if (this.networkService.isConnectedToNetwork()) {
+        this.offlineManager.checkForEvents().subscribe(async (requests: StoredRequest[]) => {
+          if (requests && requests.length>0) {
+            const promises = requests.map(async (req) => {
+              let service = this.returnService(req.collection);
+              await this.doOperation(req, service);
+            })
+            await Promise.all(promises);
+            this.offlineManager.clearRequests();
+          }
+          });
+      }
+    });
     let user = await this.userStorageService.getUser();
     this.user = await this.userCRUDService.getUser(user.email);
     if (!this.user?.id) {
@@ -159,5 +178,32 @@ export class TabsPage implements OnInit, OnDestroy {
     this.productionService.clearProductions();
     this.formulaService.clearFormulas();
     this.ingredientService.clearIngredients();
+  }
+
+  returnService(collection: string): FirebaseService {
+    if (collection == COLLECTIONS.ingredients) {
+      return this.ingredientCRUDService;
+    }
+    if (collection == COLLECTIONS.formula) {
+      return this.formulaCRUDService;
+    }
+    if (collection == COLLECTIONS.production) {
+      return this.productionCRUDService;
+    }
+    if (collection == COLLECTIONS.course) {
+      return this.courseCRUDService;
+    }
+  }
+
+  doOperation(req: StoredRequest, service: FirebaseService) {
+    if (req.type == 'C') {
+      return service.create(req.data);
+    }
+    if (req.type == 'U') {
+      return service.update(req.data, req.originalData);
+    }
+    if (req.type == 'D') {
+      return service.delete(req.data);
+    }
   }
 }

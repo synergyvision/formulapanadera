@@ -92,7 +92,7 @@ export class CourseService {
       let has_any: boolean = this.hasAny(course, updated_ingredients, updated_formulas, updated_productions);
       if (has_any) {
         updated_courses.push(course);
-        return this.courseCRUDService.updateCourse(course, original_course);
+        return this.courseCRUDService.update(course, original_course);
       }
     })
     await Promise.all(cour_promises);

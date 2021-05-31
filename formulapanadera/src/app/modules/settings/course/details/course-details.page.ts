@@ -81,7 +81,7 @@ export class CourseDetailsPage implements OnInit {
     });
     await loading.present();
     this.courseCRUDService
-      .updateCourse(this.course, this.course)
+      .update(this.course, this.course)
       .then(() => { })
       .catch(() => {
         this.presentToast(false);
@@ -196,7 +196,7 @@ export class CourseDetailsPage implements OnInit {
             await loading.present();
 
             this.courseCRUDService
-              .deleteCourse(this.course)
+              .delete(this.course)
               .then(async () => {
                 this.router.navigateByUrl(
                   APP_URL.menu.name + "/" +

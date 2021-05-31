@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 
+import { FirebaseService } from "../../interfaces/firebase-service.interface";
 import { ProductionModel } from "../../models/production.model";
 import { COLLECTIONS } from "src/app/config/firebase";
 import { CourseModel, OrderedItemModel } from "../../models/course.model";
@@ -19,7 +20,7 @@ import { OfflineManagerService } from "../offline-manager.service";
 const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
-export class CourseCRUDService {
+export class CourseCRUDService implements FirebaseService {
   collection = COLLECTIONS.course;
 
   constructor(
@@ -97,18 +98,22 @@ export class CourseCRUDService {
   /*
     Course Management
   */
-  public async createCourse(
+  public async create(
     courseData: CourseModel
   ): Promise<void> {
-    let id = this.afs.createId();
-    courseData.id = id;
-    let course: CourseModel = JSON.parse(JSON.stringify(courseData));
-    delete course.productions;
-    delete course.formulas;
-    delete course.ingredients;
-    // Set data
-    await this.createData(`${this.collection}/${id}`, courseData);
-    await this.afs.collection(this.collection).doc(id).set(course);
+    if (this.networkService.isConnectedToNetwork()) {
+      let id = this.afs.createId();
+      courseData.id = id;
+      let course: CourseModel = JSON.parse(JSON.stringify(courseData));
+      delete course.productions;
+      delete course.formulas;
+      delete course.ingredients;
+      // Set data
+      await this.createData(`${this.collection}/${id}`, courseData);
+      await this.afs.collection(this.collection).doc(id).set(course);
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'C', courseData, null);
+    }
   }
 
   private async createData(collection: string, courseData: CourseModel) {
@@ -158,17 +163,21 @@ export class CourseCRUDService {
     }
   }
 
-  public async updateCourse(courseData: CourseModel, originalCourse: CourseModel): Promise<void> {
-    let course: CourseModel = JSON.parse(JSON.stringify(courseData));
-    delete course.productions;
-    delete course.formulas;
-    delete course.ingredients;
-    course.user.last_modified = new Date();
-    // Delete formulas
-    await this.deleteData(originalCourse);
-    // Set formulas
-    await this.createData(`${this.collection}/${courseData.id}`, courseData);
-    await this.afs.collection(this.collection).doc(courseData.id).set(course);
+  public async update(courseData: CourseModel, originalCourse: CourseModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      let course: CourseModel = JSON.parse(JSON.stringify(courseData));
+      delete course.productions;
+      delete course.formulas;
+      delete course.ingredients;
+      course.user.last_modified = new Date();
+      // Delete formulas
+      await this.deleteData(originalCourse);
+      // Set formulas
+      await this.createData(`${this.collection}/${courseData.id}`, courseData);
+      await this.afs.collection(this.collection).doc(courseData.id).set(course);
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'U', courseData, originalCourse);
+    }
   }
 
   public async updateGroup(courses: CourseModel[],groupData: UserGroupModel) {
@@ -199,9 +208,13 @@ export class CourseCRUDService {
     })
   }
 
-  public async deleteCourse(courseData: CourseModel): Promise<void> {
-    await this.deleteData(courseData);
-    return this.afs.collection(this.collection).doc(courseData.id).delete();
+  public async delete(courseData: CourseModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      await this.deleteData(courseData);
+      return this.afs.collection(this.collection).doc(courseData.id).delete();
+    } else {
+      this.offlineManager.storeRequest(this.collection, 'D', courseData, null);
+    }
   }
 
   public async deleteData(courseData: CourseModel, collection = this.collection): Promise<void>{
