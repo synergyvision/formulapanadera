@@ -16,25 +16,23 @@ export class OfflineManagerService {
   constructor(private storageService: StorageService, private toastController: ToastController) { }
  
   checkForEvents(): Observable<any> {
-    console.log("CHECKFOREVENTS")
     return from(this.storageService.get(STORAGE_REQ_KEY)).pipe(
       switchMap((storedOperations: string) => {
         let storedObj = JSON.parse(storedOperations);
         if (storedObj && storedObj.length > 0) {
           return this.sendRequests(storedObj).pipe(
             finalize(() => {
-              let toast = this.toastController.create({
-                message: `Local data succesfully synced to API!`,
-                duration: 3000,
-                position: 'bottom'
-              });
-              toast.then(toast => toast.present());
+              // let toast = this.toastController.create({
+              //   message: `Local data succesfully synced to API!`,
+              //   duration: 3000,
+              //   position: 'top'
+              // });
+              // toast.then(toast => toast.present());
  
-              this.storageService.remove(STORAGE_REQ_KEY);
+              //this.storageService.remove(STORAGE_REQ_KEY);
             })
           );
         } else {
-          console.log('no local events to sync');
           return of(false);
         }
       })
@@ -76,7 +74,7 @@ export class OfflineManagerService {
     let obs = [];
  
     for (let op of operations) {
-      console.log('Make one request: ', op);
+      //console.log('Make one request: ', op);
       //let oneObs = this.http.request(op.type, op.url, op.data);
       obs.push(op);
     }

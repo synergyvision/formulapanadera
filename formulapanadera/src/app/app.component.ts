@@ -43,10 +43,7 @@ export class AppComponent implements OnDestroy {
 
       this.networkService.onNetworkChange().subscribe(() => {
         if (this.networkService.isConnectedToNetwork()) {
-          console.log('WE ARE ONLINE');
           this.offlineManager.checkForEvents().subscribe();
-        } else {
-          console.log('WE ARE OFFLINE');
         }
       });
     });

@@ -13,7 +13,6 @@ export class StorageService {
     // If using, define drivers here: await this.storage.defineDriver(/*...*/);
     const storage = await this.storage.create();
     this._storage = storage;
-    console.log("STORAGE CREATED")
   }
 
   public set(key: string, value: any): Promise<any> {

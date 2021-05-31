@@ -6,6 +6,12 @@ import { FormulaModel, IngredientPercentageModel } from "../../models/formula.mo
 import { COLLECTIONS } from "src/app/config/firebase";
 import { map } from "rxjs/operators";
 import { IngredientCRUDService } from "./ingredient.service";
+import { NetworkService } from "../network.service";
+import { StorageService } from "../storage/storage.service";
+import { environment } from "src/environments/environment";
+import { OfflineManagerService } from "../offline-manager.service";
+
+const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
 export class FormulaCRUDService {
@@ -13,7 +19,10 @@ export class FormulaCRUDService {
 
   constructor(
     private afs: AngularFirestore,
-    private ingredientCRUDService: IngredientCRUDService
+    private ingredientCRUDService: IngredientCRUDService,
+    private networkService: NetworkService,
+    private storageService: StorageService,
+    private offlineManager: OfflineManagerService
   ) { }
 
   /*
@@ -38,8 +47,8 @@ export class FormulaCRUDService {
       )
       .valueChanges({ idField: "id" });
 
-      
-    return combineLatest([mine,shared,publics]).pipe(
+    
+    return combineLatest([mine, shared, publics]).pipe(
       map(([mine, shared, publics]) => {
         let aux1 = [...mine, ...shared, ...publics];
         let aux2 = [];
@@ -72,18 +81,6 @@ export class FormulaCRUDService {
       })
       await Promise.all(promises)
     }
-  }
-
-  public async getFormula(
-    id: string
-  ): Promise<FormulaModel> {
-    let doc = await this.afs.collection<FormulaModel>(this.collection).doc(id).ref.get()
-    if (doc.exists) {
-      let formula = doc.data() as FormulaModel;
-      await this.getIngredients(formula);
-      return formula;
-    }
-    return new FormulaModel;
   }
 
   /*
@@ -159,5 +156,15 @@ export class FormulaCRUDService {
       await this.afs.collection(subcollection).doc(ingredient.ingredient.id).delete();
     })
     await Promise.all(promises)
+  }
+
+  // Save result of API requests
+  public setLocalData(data: any) {
+    this.storageService.set(`${API_STORAGE_KEY}-${this.collection}`, data);
+  }
+ 
+  // Get cached API result
+  public getLocalData() {
+    return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}`);
   }
 }

@@ -14,6 +14,7 @@ import { ProductionCRUDService } from "src/app/core/services/firebase/production
 import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { IngredientService } from "src/app/core/services/ingredient.service";
+import { NetworkService } from "src/app/core/services/network.service";
 import { ProductionService } from "src/app/core/services/production.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { TimeService } from "src/app/core/services/time.service";
@@ -46,7 +47,8 @@ export class TabsPage implements OnInit, OnDestroy {
     private formulaCRUDService: FormulaCRUDService,
     private formulaService: FormulaService,
     private ingredientCRUDService: IngredientCRUDService,
-    private ingredientService: IngredientService
+    private ingredientService: IngredientService,
+    private networkService: NetworkService
   ) { }
 
   async ngOnInit() {
@@ -57,54 +59,90 @@ export class TabsPage implements OnInit, OnDestroy {
       this.user = user;
     }
     await this.userStorageService.setUser(this.user);
+    
     this.ingredientsSubscriber = this.ingredientCRUDService
       .getIngredientsDataSource(this.user.email)
       .subscribe(async (ingredients) => {
-        let ingredients_aux = JSON.parse(JSON.stringify(ingredients)) as IngredientModel[];
-        const promises = ingredients_aux.map((ing)=>this.ingredientCRUDService.getSubIngredients(ing))
-        await Promise.all(promises)
-        this.ingredientService.setIngredients(
-          ingredients_aux as IngredientModel[] & ShellModel
-        );
+        if (this.networkService.isConnectedToNetwork()) {
+          let ingredients_aux = JSON.parse(JSON.stringify(ingredients)) as IngredientModel[];
+          const promises = ingredients_aux.map((ing) => this.ingredientCRUDService.getSubIngredients(ing))
+          await Promise.all(promises)
+          this.ingredientService.setIngredients(
+            ingredients_aux as IngredientModel[] & ShellModel
+          );
+          this.ingredientCRUDService.setLocalData(JSON.parse(JSON.stringify(ingredients_aux)));
+        } else {
+          this.ingredientService.setIngredients(
+            await this.ingredientCRUDService.getLocalData() as IngredientModel[] & ShellModel
+          );
+        };
       });
     this.formulasSubscriber = this.formulaCRUDService
       .getFormulasDataSource(this.user.email)
       .subscribe(async (formulas) => {
-        let formulas_aux = JSON.parse(JSON.stringify(formulas)) as FormulaModel[];
-        const promises = formulas_aux.map((form)=>this.formulaCRUDService.getIngredients(form))
-        await Promise.all(promises)
-        this.formulaService.setFormulas(
-          formulas_aux as FormulaModel[] & ShellModel
-        );
+        if (this.networkService.isConnectedToNetwork()) {
+          let formulas_aux = JSON.parse(JSON.stringify(formulas)) as FormulaModel[];
+          const promises = formulas_aux.map((form) => this.formulaCRUDService.getIngredients(form))
+          await Promise.all(promises)
+          this.formulaService.setFormulas(
+            formulas_aux as FormulaModel[] & ShellModel
+          );
+          this.formulaCRUDService.setLocalData(JSON.parse(JSON.stringify(formulas_aux)));
+        } else {
+          this.formulaService.setFormulas(
+            await this.formulaCRUDService.getLocalData() as FormulaModel[] & ShellModel
+          );
+        };
       });
     this.productionsSubscriber = this.productionCRUDService
       .getProductionsDataSource(this.user.email)
       .subscribe(async (productions) => {
-        let productions_aux = JSON.parse(JSON.stringify(productions)) as ProductionModel[];
-        const promises = productions_aux.map((prod)=>this.productionCRUDService.getFormulas(prod))
-        await Promise.all(promises)
-        this.productionService.setProductions(
-          productions_aux as ProductionModel[] & ShellModel
-        );
+        if (this.networkService.isConnectedToNetwork()) {
+          let productions_aux = JSON.parse(JSON.stringify(productions)) as ProductionModel[];
+          const promises = productions_aux.map((prod) => this.productionCRUDService.getFormulas(prod))
+          await Promise.all(promises)
+          this.productionService.setProductions(
+            productions_aux as ProductionModel[] & ShellModel
+          );
+          this.productionCRUDService.setLocalData(JSON.parse(JSON.stringify(productions_aux)));
+        } else {
+          this.productionService.setProductions(
+            await this.productionCRUDService.getLocalData() as ProductionModel[] & ShellModel
+          );
+        };
       });
     this.coursesSubscriber = this.courseCRUDService.getSharedCoursesDataSource(this.user.email)
       .subscribe(async (courses) => {
-        let courses_aux = JSON.parse(JSON.stringify(courses)) as CourseModel[];
-        const promises = courses_aux.map((course)=>this.courseCRUDService.getData(course))
-        await Promise.all(promises)
-        this.courseService.setSharedCourses(
-          courses_aux as CourseModel[] & ShellModel
-        );
+        if (this.networkService.isConnectedToNetwork()) {
+          let courses_aux = JSON.parse(JSON.stringify(courses)) as CourseModel[];
+          const promises = courses_aux.map((course) => this.courseCRUDService.getData(course))
+          await Promise.all(promises)
+          this.courseService.setSharedCourses(
+            courses_aux as CourseModel[] & ShellModel
+          );
+          this.courseCRUDService.setLocalData('shared', JSON.parse(JSON.stringify(courses_aux)));
+        } else {
+          this.courseService.setSharedCourses(
+            await this.courseCRUDService.getLocalData('shared') as CourseModel[] & ShellModel
+          );
+        };
       });
     if (this.user.instructor) {
       this.myCoursesSubscriber = this.courseCRUDService.getMyCoursesDataSource(this.user.email)
         .subscribe(async (courses) => {
-          let courses_aux = JSON.parse(JSON.stringify(courses)) as CourseModel[];
-          const promises = courses_aux.map((course) => this.courseCRUDService.getData(course))
-          await Promise.all(promises)
-          this.courseService.setMyCourses(
-            courses_aux as CourseModel[] & ShellModel
-          );
+          if (this.networkService.isConnectedToNetwork()) {
+            let courses_aux = JSON.parse(JSON.stringify(courses)) as CourseModel[];
+            const promises = courses_aux.map((course) => this.courseCRUDService.getData(course))
+            await Promise.all(promises)
+            this.courseService.setMyCourses(
+              courses_aux as CourseModel[] & ShellModel
+            );
+            this.courseCRUDService.setLocalData('mine', JSON.parse(JSON.stringify(courses_aux)));
+          } else {
+            this.courseService.setMyCourses(
+              await this.courseCRUDService.getLocalData('mine') as CourseModel[] & ShellModel
+            );
+          }
         });
     }
   }

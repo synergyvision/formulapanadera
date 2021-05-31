@@ -1,11 +1,17 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
-import { combineLatest, Observable } from "rxjs";
+import { combineLatest, from, Observable } from "rxjs";
 
 import { FormulaNumberModel, ProductionModel } from "../../models/production.model";
 import { COLLECTIONS } from "src/app/config/firebase";
 import { map } from "rxjs/operators";
 import { FormulaCRUDService } from "./formula.service";
+import { NetworkService } from "../network.service";
+import { StorageService } from "../storage/storage.service";
+import { environment } from "src/environments/environment";
+import { OfflineManagerService } from "../offline-manager.service";
+
+const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
 export class ProductionCRUDService {
@@ -13,7 +19,10 @@ export class ProductionCRUDService {
 
   constructor(
     private afs: AngularFirestore,
-    private formulaCRUDService: FormulaCRUDService
+    private formulaCRUDService: FormulaCRUDService,
+    private networkService: NetworkService,
+    private storageService: StorageService,
+    private offlineManager: OfflineManagerService
   ) { }
 
   /*
@@ -38,8 +47,8 @@ export class ProductionCRUDService {
       )
       .valueChanges({ idField: "id" });
 
-      
-    return combineLatest([mine,shared,publics]).pipe(
+    
+    return combineLatest([mine, shared, publics]).pipe(
       map(([mine, shared, publics]) => {
         let aux1 = [...mine, ...shared, ...publics];
         let aux2 = [];
@@ -72,18 +81,6 @@ export class ProductionCRUDService {
       })
       await Promise.all(promises)
     }
-  }
-
-  public async getProduction(
-    id: string
-  ): Promise<ProductionModel> {
-    let doc = await this.afs.collection<ProductionModel>(this.collection).doc(id).ref.get()
-    if (doc.exists) {
-      let production = doc.data() as ProductionModel;
-      await this.getFormulas(production);
-      return production;
-    }
-    return new ProductionModel;
   }
 
   /*
@@ -147,5 +144,15 @@ export class ProductionCRUDService {
       await this.afs.collection(subcollection).doc(formula.formula.id).delete();
     })
     await Promise.all(promises)
+  }
+
+  // Save result of API requests
+  public setLocalData(data: any) {
+    this.storageService.set(`${API_STORAGE_KEY}-${this.collection}`, data);
+  }
+ 
+  // Get cached API result
+  public getLocalData() {
+    return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}`);
   }
 }

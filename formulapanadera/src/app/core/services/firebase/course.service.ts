@@ -11,6 +11,12 @@ import { FormulaCRUDService } from "./formula.service";
 import { ProductionCRUDService } from "./production.service";
 import { IngredientCRUDService } from "./ingredient.service";
 import { UserGroupModel } from "../../models/user.model";
+import { NetworkService } from "../network.service";
+import { StorageService } from "../storage/storage.service";
+import { environment } from "src/environments/environment";
+import { OfflineManagerService } from "../offline-manager.service";
+
+const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
 export class CourseCRUDService {
@@ -20,7 +26,10 @@ export class CourseCRUDService {
     private afs: AngularFirestore,
     private ingredientCRUDService: IngredientCRUDService,
     private formulaCRUDService: FormulaCRUDService,
-    private productionCRUDService: ProductionCRUDService
+    private productionCRUDService: ProductionCRUDService,
+    private networkService: NetworkService,
+    private storageService: StorageService,
+    private offlineManager: OfflineManagerService
   ) { }
 
   /*
@@ -29,11 +38,11 @@ export class CourseCRUDService {
   public getMyCoursesDataSource(
     user_email: string
   ): Observable<Array<CourseModel>> {
-    return this.afs
-      .collection<CourseModel>(this.collection, (ref) =>
-        ref.where("user.owner", "==", user_email)
-      )
-      .valueChanges({ idField: "id" });
+      return this.afs
+        .collection<CourseModel>(this.collection, (ref) =>
+          ref.where("user.owner", "==", user_email)
+        )
+        .valueChanges({ idField: "id" });
   }
 
   public getSharedCoursesDataSource(
@@ -83,18 +92,6 @@ export class CourseCRUDService {
       })
       await Promise.all(promises)
     }
-  }
-
-  public async getCourse(
-    id: string
-  ): Promise<CourseModel> {
-    let doc = await this.afs.collection<CourseModel>(this.collection).doc(id).ref.get()
-    if (doc.exists) {
-      let course = doc.data() as CourseModel;
-      await this.getData(course);
-      return course;
-    }
-    return new CourseModel;
   }
 
   /*
@@ -232,5 +229,15 @@ export class CourseCRUDService {
       })
       await Promise.all(promises)
     }
+  }
+
+  // Save result of API requests
+  public setLocalData(key: string, data: any) {
+    this.storageService.set(`${API_STORAGE_KEY}-${this.collection}-${key}`, data);
+  }
+ 
+  // Get cached API result
+  public getLocalData(key: string) {
+    return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}-${key}`);
   }
 }
