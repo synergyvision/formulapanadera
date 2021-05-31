@@ -629,9 +629,14 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
   verifyCompoundIngredients(): boolean {
     let new_compound_ingredients: IngredientPercentageModel[] = []
     let deleted_compound_ingredients: IngredientPercentageModel[] = []
-    let exists: boolean
+    let exists: boolean;
+    let had_compound: boolean = false;
+    let has_compound: boolean = false;
     this.formula.ingredients.forEach((new_ingredient: IngredientPercentageModel) => {
-      exists = false
+      exists = false;
+      if (new_ingredient.ingredient.formula) {
+        has_compound = true;
+      }
       this.original_formula.ingredients.forEach(prev_ingredient => {
         if (prev_ingredient.ingredient.id == new_ingredient.ingredient.id || !new_ingredient.ingredient.formula) {
           exists = true
@@ -641,36 +646,59 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
         new_compound_ingredients.push(new_ingredient)
       }
     })
-    this.original_formula.ingredients.forEach((new_ingredient: IngredientPercentageModel) => {
-      exists = false
-      this.formula.ingredients.forEach(prev_ingredient => {
-        if (prev_ingredient.ingredient.id == new_ingredient.ingredient.id || !new_ingredient.ingredient.formula) {
+    this.original_formula.ingredients.forEach((old_ingredient: IngredientPercentageModel) => {
+      exists = false;
+      if (old_ingredient.ingredient.formula) {
+        had_compound = true;
+      }
+      this.formula.ingredients.forEach(new_ingredient => {
+        if (new_ingredient.ingredient.id == old_ingredient.ingredient.id || !old_ingredient.ingredient.formula) {
           exists = true
         }
       })
       if (!exists) {
-        deleted_compound_ingredients.push(new_ingredient)
+        deleted_compound_ingredients.push(old_ingredient)
       }
     })
 
-    let bakers_percentage: string
-    let new_bakers_percentage: string
-    if (deleted_compound_ingredients.length !== 0) {
+    let bakers_percentage: string;
+    let new_bakers_percentage: string;
+    let actual_bakers_percentage: string;
+    if (deleted_compound_ingredients.length !== 0 || (had_compound && new_compound_ingredients.length !== 0)) {
       new_bakers_percentage = this.formulaService.deleteIngredientsWithFormula(this.original_formula, this.formula)
     }
-    if (new_compound_ingredients.length !== 0) {
-      if (new_bakers_percentage) {
-        bakers_percentage = new_bakers_percentage
-      } else {
-        bakers_percentage = this.formulaService.calculateBakersPercentage(
-          this.formula.units * this.formula.unit_weight,
-          this.original_formula.ingredients
-        );
-      }
+    if (new_compound_ingredients.length !== 0 || (has_compound && deleted_compound_ingredients.length !== 0)) {
       let total_weight = Number(
         (this.formula.units * this.formula.unit_weight)
       );
-    
+      actual_bakers_percentage = this.formulaService.calculateBakersPercentage(
+        this.formula.units * this.formula.unit_weight,
+        this.original_formula.ingredients
+      );
+      if (new_bakers_percentage) {
+        bakers_percentage = new_bakers_percentage
+      } else {
+        bakers_percentage = actual_bakers_percentage
+      }
+
+      if (had_compound || (has_compound && deleted_compound_ingredients.length !== 0)) {
+        let proportion_factor: number;
+        this.formula.ingredients.forEach(ingredient => {
+          if (ingredient.ingredient.formula) {
+            this.original_formula.ingredients.forEach(original_ingredient => {
+              if (original_ingredient.ingredient.id == ingredient.ingredient.id && original_ingredient.percentage == ingredient.percentage) {
+                proportion_factor = this.formulaService.getProportionFactor(
+                  total_weight,
+                  Number(new_bakers_percentage),
+                  original_ingredient,
+                  this.formula.ingredients
+                );
+                ingredient.percentage = (original_ingredient.percentage * Number(actual_bakers_percentage) / proportion_factor) * 100;
+              }
+            });
+          }
+        });
+      }
       this.formulaService.calculateIngredientsWithFormula(
         this.formula.ingredients,
         bakers_percentage,

@@ -21,8 +21,8 @@
 
 <ion-content class="formula-detail-content">
   <app-title [title]="formula.name"></app-title>
-  <app-hydration-bar [hydration]="hydration/100"></app-hydration-bar>
-  <app-fat-bar [fat]="fat/100"></app-fat-bar>
+  <app-hydration-bar *ngIf="hydration" [hydration]="hydration/100"></app-hydration-bar>
+  <app-fat-bar *ngIf="fat" [fat]="fat/100"></app-fat-bar>
   <ion-row class="detail-row">
     <ion-col class="detail-col" size="4">
       <ion-item class="formula-detail" lines="full" mode="ios">
@@ -55,11 +55,13 @@
       ></app-data-item> </ion-col
     ><ion-col class="detail-col">
       <app-data-item
+        *ngIf="hydration"
         [title]="'ingredients.hydration' | translate"
         data="{{hydration}} %"
       ></app-data-item> </ion-col
     ><ion-col class="detail-col">
       <app-data-item
+        *ngIf="fat"
         [title]="'ingredients.fat' | translate"
         data="{{fat}} %"
       ></app-data-item> </ion-col

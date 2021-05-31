@@ -79,7 +79,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
         hydration: new FormControl("", Validators.required),
         fat: new FormControl("", Validators.required),
         is_flour: new FormControl(false, Validators.required),
-        cost: new FormControl("0", Validators.required),
+        cost: new FormControl(0, Validators.required),
       });
       this.ingredient.user = {
         owner: this.current_user.email,
@@ -290,7 +290,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       this.ingredient.hydration = this.manageIngredientForm.value.hydration;
       this.ingredient.fat = this.manageIngredientForm.value.fat;
       this.ingredient.is_flour = this.manageIngredientForm.value.is_flour;
-      this.ingredient.cost = this.manageIngredientForm.value.cost;
+      this.ingredient.cost = Number(this.manageIngredientForm.value.cost);
     } else {
       this.ingredient.hydration = Number(
         this.ingredientService.calculateHydration(
@@ -418,11 +418,11 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       if (isNaN(number)) {
         this.manageIngredientForm
           .get("cost")
-          .patchValue("0.00");
+          .patchValue(0);
       } else {
         this.manageIngredientForm
           .get("cost")
-          .patchValue(value);
+          .patchValue(number);
       }
     }
   }
