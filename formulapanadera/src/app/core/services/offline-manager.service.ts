@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { ToastController } from '@ionic/angular';
 import { StoredRequest } from '../interfaces/stored-request.interface';
 import { environment } from 'src/environments/environment';
 import { StorageService } from './storage/storage.service';
@@ -30,7 +29,8 @@ export class OfflineManagerService {
     )
   }
  
-  async storeRequest(collection: string, type: 'C' | 'U' | 'D', data: any, originalData: any) { 
+  async storeRequest(collection: string, type: 'C' | 'U' | 'D', data: any, originalData: any) {
+    let save = true;
     let action: StoredRequest = {
       collection: collection,
       type: type,
@@ -40,14 +40,41 @@ export class OfflineManagerService {
       id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
     };
     // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+
+    if (type == 'C') {
+      data.id = action.id;
+    }
+
+    let storedREQ = await this.storageService.get(STORAGE_REQ_KEY);
+    if (storedREQ) {
+      storedREQ = JSON.parse(storedREQ);
+      storedREQ.forEach((stored, index) => {
+        if (stored.id == data.id) {
+          if (type == 'U') {
+            data.id = storedREQ[index].id;
+            storedREQ[index].data = data;
+            save = false;
+          }
+          if (type == 'D') {
+            storedREQ.splice(index, 1);
+            save = false;
+          }
+        }
+      })
+    }
+    if (!save) {
+      await this.storageService.set(STORAGE_REQ_KEY, JSON.stringify(storedREQ));
+    }
  
     return this.storageService.get(STORAGE_REQ_KEY).then(storedOperations => {
       let storedObj = JSON.parse(storedOperations);
  
-      if (storedObj) {
-        storedObj.push(action);
-      } else {
-        storedObj = [action];
+      if (save) {
+        if (storedObj) {
+          storedObj.push(action);
+        } else {
+          storedObj = [action];
+        }
       }
       // Save old & new local transactions back to Storage
       return this.storageService.set(STORAGE_REQ_KEY, JSON.stringify(storedObj));

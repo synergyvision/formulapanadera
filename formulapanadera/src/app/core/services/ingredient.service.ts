@@ -6,15 +6,12 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
 import { IngredientPercentageModel } from "../models/formula.model";
 import { DECIMALS } from "src/app/config/formats";
-import { IngredientCRUDService } from "./firebase/ingredient.service";
 
 @Injectable()
 export class IngredientService {
   private ingredients: BehaviorSubject<IngredientModel[]> = new BehaviorSubject<IngredientModel[]>(undefined);
 
-  constructor(
-    private ingredientCRUDService: IngredientCRUDService
-  ) {}
+  constructor() {}
 
   public setIngredients(ingredients: IngredientModel[] & ShellModel) {
     this.ingredients.next(ingredients);
@@ -195,19 +192,6 @@ export class IngredientService {
       }
     }
     return has_ingredient;
-  }
-
-  public async updateIngredients(updated_ingredient: IngredientModel, updated_ingredients: IngredientModel[]) {
-    let ingredients: IngredientModel[] = JSON.parse(JSON.stringify(this.getCurrentIngredients()));
-    const ing_promises = ingredients.map((ingredient) => {
-      let original_ingredient: IngredientModel = JSON.parse(JSON.stringify(ingredient));
-      let has_ingredient: boolean = this.hasIngredient(ingredient, updated_ingredient);
-      if (has_ingredient) {
-        updated_ingredients.push(ingredient);
-        return this.ingredientCRUDService.update(ingredient, original_ingredient);
-      }
-    })
-    await Promise.all(ing_promises);
   }
 
   // Sort

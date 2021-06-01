@@ -16,7 +16,7 @@ import {
   ProductionModel,
 } from "src/app/core/models/production.model";
 import { UserModel } from "src/app/core/models/user.model";
-import { CourseService } from "src/app/core/services/course.service";
+import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { LanguageService } from "src/app/core/services/language.service";
@@ -45,7 +45,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
 
   constructor(
     private productionCRUDService: ProductionCRUDService,
-    private courseService: CourseService,
+    private courseCRUDService: CourseCRUDService,
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
@@ -123,7 +123,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
           if (this.current_user.instructor) {
             let updated_productions: ProductionModel[] = [this.production]
             let updated_courses: CourseModel[] = []
-            await this.courseService.updateAll(updated_courses, [], [], updated_productions);
+            await this.courseCRUDService.updateAll(updated_courses, [], [], updated_productions);
           }
           this.router.navigateByUrl(
             APP_URL.menu.name +

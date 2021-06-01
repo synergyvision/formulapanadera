@@ -11,6 +11,9 @@ import { StorageService } from "../storage/storage.service";
 import { environment } from "src/environments/environment";
 import { OfflineManagerService } from "../offline-manager.service";
 import { FirebaseService } from "../../interfaces/firebase-service.interface";
+import { FormulaService } from "../formula.service";
+import { IngredientModel } from "../../models/ingredient.model";
+import { ShellModel } from "src/app/shared/shell/shell.model";
 
 const API_STORAGE_KEY = environment.storage_key;
 
@@ -20,6 +23,7 @@ export class FormulaCRUDService implements FirebaseService {
 
   constructor(
     private afs: AngularFirestore,
+    private formulaService: FormulaService,
     private ingredientCRUDService: IngredientCRUDService,
     private networkService: NetworkService,
     private storageService: StorageService,
@@ -109,7 +113,8 @@ export class FormulaCRUDService implements FirebaseService {
       await this.createIngredients(`${this.collection}/${id}/${COLLECTIONS.ingredients}`, formulaData);
       await this.afs.collection(this.collection).doc(id).set(formula);
     } else {
-      this.offlineManager.storeRequest(this.collection, 'C', formulaData, null);
+      await this.offlineManager.storeRequest(this.collection, 'C', formulaData, null);
+      await this.updateLocalData('C', formulaData);
     }
   }
 
@@ -149,16 +154,18 @@ export class FormulaCRUDService implements FirebaseService {
       await this.createIngredients(`${this.collection}/${formulaData.id}/${COLLECTIONS.ingredients}`, formulaData);
       await this.afs.collection(this.collection).doc(formulaData.id).set(formula);
     } else {
-      this.offlineManager.storeRequest(this.collection, 'U', formulaData, originalFormula);
+      await this.offlineManager.storeRequest(this.collection, 'U', formulaData, originalFormula);
+      await this.updateLocalData('U', formulaData);
     }
   }
 
   public async delete(formulaData: FormulaModel): Promise<void> {
     if (this.networkService.isConnectedToNetwork()) {
       await this.deleteIngredients(formulaData);
-      return this.afs.collection(this.collection).doc(formulaData.id).delete();
+      await this.afs.collection(this.collection).doc(formulaData.id).delete();
     } else {
-      this.offlineManager.storeRequest(this.collection, 'D', formulaData, null);
+      await this.offlineManager.storeRequest(this.collection, 'D', formulaData, null);
+      await this.updateLocalData('D', formulaData);
     }
   }
 
@@ -171,6 +178,19 @@ export class FormulaCRUDService implements FirebaseService {
     await Promise.all(promises)
   }
 
+  public async updateIngredients(updated_ingredients: IngredientModel[], updated_formulas: FormulaModel[]) {
+    let formulas: FormulaModel[] = JSON.parse(JSON.stringify(this.formulaService.getCurrentFormulas()));
+    const for_promises = formulas.map((formula) => {
+      let original_formula: FormulaModel = JSON.parse(JSON.stringify(formula));
+      let has_ingredient: boolean = this.formulaService.hasIngredient(formula, updated_ingredients);
+      if (has_ingredient) {
+        updated_formulas.push(formula)
+        return this.update(formula, original_formula);
+      }
+    })
+    await Promise.all(for_promises);
+  }
+
   // Save result of API requests
   public setLocalData(data: any) {
     this.storageService.set(`${API_STORAGE_KEY}-${this.collection}`, data);
@@ -179,5 +199,25 @@ export class FormulaCRUDService implements FirebaseService {
   // Get cached API result
   public getLocalData() {
     return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}`);
+  }
+
+  private async updateLocalData(operation: 'C' | 'U' | 'D', updatedData: FormulaModel) {
+    let data: FormulaModel[] = await this.getLocalData();
+    if (operation == 'C') {
+      data.push(updatedData);
+    } else {
+      data.forEach((formula, index) => {
+        if (formula.id == updatedData.id) {
+          if (operation == 'U') {
+            data[index] = JSON.parse(JSON.stringify(updatedData));
+          }
+          if (operation == 'D') {
+            data.splice(index, 1)
+          }
+        }
+      })
+    }
+    this.setLocalData(data);
+    this.formulaService.setFormulas(data as FormulaModel[] & ShellModel)
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
-import { combineLatest, from, Observable } from "rxjs";
+import { combineLatest, Observable } from "rxjs";
 
 import { IngredientModel } from "../../models/ingredient.model";
 import { COLLECTIONS } from "src/app/config/firebase";
@@ -11,6 +11,8 @@ import { StorageService } from "../storage/storage.service";
 import { environment } from "src/environments/environment";
 import { OfflineManagerService } from "../offline-manager.service";
 import { FirebaseService } from "../../interfaces/firebase-service.interface";
+import { IngredientService } from "../ingredient.service";
+import { ShellModel } from "src/app/shared/shell/shell.model";
 
 const API_STORAGE_KEY = environment.storage_key;
 
@@ -20,6 +22,7 @@ export class IngredientCRUDService implements FirebaseService {
 
   constructor(
     private afs: AngularFirestore,
+    private ingredientService: IngredientService,
     private networkService: NetworkService,
     private storageService: StorageService,
     private offlineManager: OfflineManagerService
@@ -111,7 +114,8 @@ export class IngredientCRUDService implements FirebaseService {
       await this.createSubIngredient(this.collection, id, ingredientData);
       await this.afs.collection(this.collection).doc(id).set(ingredient);
     } else {
-      this.offlineManager.storeRequest(this.collection, 'C', ingredientData, null);
+      await this.offlineManager.storeRequest(this.collection, 'C', ingredientData, null);
+      await this.updateLocalData('C', ingredientData);
     }
   }
 
@@ -157,16 +161,18 @@ export class IngredientCRUDService implements FirebaseService {
       await this.createSubIngredient(this.collection, ingredientData.id, ingredientData);
       await this.afs.collection(this.collection).doc(ingredientData.id).set(ingredient);
     } else {
-      this.offlineManager.storeRequest(this.collection, 'U', ingredientData, originalIngredient);
+      await this.offlineManager.storeRequest(this.collection, 'U', ingredientData, originalIngredient);
+      await this.updateLocalData('U', ingredientData);
     }
   }
 
   public async delete(ingredientData: IngredientModel): Promise<void> {
     if (this.networkService.isConnectedToNetwork()) {
       await this.deleteSubIngredient(ingredientData);
-      return this.afs.collection(this.collection).doc(ingredientData.id).delete();
+      await this.afs.collection(this.collection).doc(ingredientData.id).delete();
     } else {
-      this.offlineManager.storeRequest(this.collection, 'D', ingredientData, null);
+      await this.offlineManager.storeRequest(this.collection, 'D', ingredientData, null);
+      await this.updateLocalData('D', ingredientData);
     }
   }
 
@@ -181,6 +187,19 @@ export class IngredientCRUDService implements FirebaseService {
     }
   }
 
+  public async updateIngredients(updated_ingredient: IngredientModel, updated_ingredients: IngredientModel[]) {
+    let ingredients: IngredientModel[] = JSON.parse(JSON.stringify(this.ingredientService.getCurrentIngredients()));
+    const ing_promises = ingredients.map((ingredient) => {
+      let original_ingredient: IngredientModel = JSON.parse(JSON.stringify(ingredient));
+      let has_ingredient: boolean = this.ingredientService.hasIngredient(ingredient, updated_ingredient);
+      if (has_ingredient) {
+        updated_ingredients.push(ingredient);
+        return this.update(ingredient, original_ingredient);
+      }
+    })
+    await Promise.all(ing_promises);
+  }
+
   // Save result of API requests
   public setLocalData(data: any) {
     this.storageService.set(`${API_STORAGE_KEY}-${this.collection}`, data);
@@ -189,5 +208,25 @@ export class IngredientCRUDService implements FirebaseService {
   // Get cached API result
   public getLocalData() {
     return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}`);
+  }
+
+  private async updateLocalData(operation: 'C' | 'U' | 'D', updatedData: IngredientModel) {
+    let data: IngredientModel[] = await this.getLocalData();
+    if (operation == 'C') {
+      data.push(updatedData);
+    } else {
+      data.forEach((ingredient, index) => {
+        if (ingredient.id == updatedData.id) {
+          if (operation == 'U') {
+            data[index] = JSON.parse(JSON.stringify(updatedData));
+          }
+          if (operation == 'D') {
+            data.splice(index, 1)
+          }
+        }
+      })
+    }
+    this.setLocalData(data);
+    this.ingredientService.setIngredients(data as IngredientModel[] & ShellModel)
   }
 }

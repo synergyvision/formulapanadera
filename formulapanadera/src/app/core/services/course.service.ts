@@ -6,16 +6,13 @@ import { CourseModel, OrderedItemModel } from "../models/course.model";
 import { FormulaModel } from "../models/formula.model";
 import { IngredientModel } from "../models/ingredient.model";
 import { ProductionModel } from "../models/production.model";
-import { CourseCRUDService } from "./firebase/course.service";
 
 @Injectable()
 export class CourseService {
   private courses: BehaviorSubject<CourseModel[]> = new BehaviorSubject<CourseModel[]>(undefined);
   private shared_courses: BehaviorSubject<CourseModel[]> = new BehaviorSubject<CourseModel[]>(undefined);
 
-  constructor(
-    private courseCRUDService: CourseCRUDService
-  ) {}
+  constructor( ) {}
   
   public setMyCourses(courses: CourseModel[]) {
     this.courses.next(courses);
@@ -83,19 +80,6 @@ export class CourseService {
       })
     });
     return has_any;
-  }
-
-  public async updateAll(updated_courses: CourseModel[],updated_ingredients: IngredientModel[],updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
-    let courses: CourseModel[] = JSON.parse(JSON.stringify(this.getMyCurrentCourses()));
-    const cour_promises = courses.map((course) => {
-      let original_course: CourseModel = JSON.parse(JSON.stringify(course));
-      let has_any: boolean = this.hasAny(course, updated_ingredients, updated_formulas, updated_productions);
-      if (has_any) {
-        updated_courses.push(course);
-        return this.courseCRUDService.update(course, original_course);
-      }
-    })
-    await Promise.all(cour_promises);
   }
 
   // Sort

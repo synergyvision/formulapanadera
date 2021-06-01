@@ -16,6 +16,8 @@ import { NetworkService } from "../network.service";
 import { StorageService } from "../storage/storage.service";
 import { environment } from "src/environments/environment";
 import { OfflineManagerService } from "../offline-manager.service";
+import { CourseService } from "../course.service";
+import { ShellModel } from "src/app/shared/shell/shell.model";
 
 const API_STORAGE_KEY = environment.storage_key;
 
@@ -25,6 +27,7 @@ export class CourseCRUDService implements FirebaseService {
 
   constructor(
     private afs: AngularFirestore,
+    private courseService: CourseService,
     private ingredientCRUDService: IngredientCRUDService,
     private formulaCRUDService: FormulaCRUDService,
     private productionCRUDService: ProductionCRUDService,
@@ -112,7 +115,8 @@ export class CourseCRUDService implements FirebaseService {
       await this.createData(`${this.collection}/${id}`, courseData);
       await this.afs.collection(this.collection).doc(id).set(course);
     } else {
-      this.offlineManager.storeRequest(this.collection, 'C', courseData, null);
+      await this.offlineManager.storeRequest(this.collection, 'C', courseData, null);
+      await this.updateLocalData('C', courseData);
     }
   }
 
@@ -176,7 +180,8 @@ export class CourseCRUDService implements FirebaseService {
       await this.createData(`${this.collection}/${courseData.id}`, courseData);
       await this.afs.collection(this.collection).doc(courseData.id).set(course);
     } else {
-      this.offlineManager.storeRequest(this.collection, 'U', courseData, originalCourse);
+      await this.offlineManager.storeRequest(this.collection, 'U', courseData, originalCourse);
+      await this.updateLocalData('U', courseData);
     }
   }
 
@@ -211,9 +216,10 @@ export class CourseCRUDService implements FirebaseService {
   public async delete(courseData: CourseModel): Promise<void> {
     if (this.networkService.isConnectedToNetwork()) {
       await this.deleteData(courseData);
-      return this.afs.collection(this.collection).doc(courseData.id).delete();
+      await this.afs.collection(this.collection).doc(courseData.id).delete();
     } else {
-      this.offlineManager.storeRequest(this.collection, 'D', courseData, null);
+      await this.offlineManager.storeRequest(this.collection, 'D', courseData, null);
+      await this.updateLocalData('D', courseData);
     }
   }
 
@@ -244,6 +250,19 @@ export class CourseCRUDService implements FirebaseService {
     }
   }
 
+  public async updateAll(updated_courses: CourseModel[],updated_ingredients: IngredientModel[],updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
+    let courses: CourseModel[] = JSON.parse(JSON.stringify(this.courseService.getMyCurrentCourses()));
+    const cour_promises = courses.map((course) => {
+      let original_course: CourseModel = JSON.parse(JSON.stringify(course));
+      let has_any: boolean = this.courseService.hasAny(course, updated_ingredients, updated_formulas, updated_productions);
+      if (has_any) {
+        updated_courses.push(course);
+        return this.update(course, original_course);
+      }
+    })
+    await Promise.all(cour_promises);
+  }
+
   // Save result of API requests
   public setLocalData(key: string, data: any) {
     this.storageService.set(`${API_STORAGE_KEY}-${this.collection}-${key}`, data);
@@ -252,5 +271,25 @@ export class CourseCRUDService implements FirebaseService {
   // Get cached API result
   public getLocalData(key: string) {
     return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}-${key}`);
+  }
+
+  private async updateLocalData(operation: 'C' | 'U' | 'D', updatedData: CourseModel) {
+    let data: CourseModel[] = await this.getLocalData('mine');
+    if (operation == 'C') {
+      data.push(updatedData);
+    } else {
+      data.forEach((course, index) => {
+        if (course.id == updatedData.id) {
+          if (operation == 'U') {
+            data[index] = JSON.parse(JSON.stringify(updatedData));
+          }
+          if (operation == 'D') {
+            data.splice(index, 1)
+          }
+        }
+      })
+    }
+    this.setLocalData('mine', data);
+    this.courseService.setMyCourses(data as CourseModel[] & ShellModel)
   }
 }
