@@ -26,6 +26,7 @@
     "delete_question": "Do you want to delete {{item}}?",
     "formula_privacy_question": "This formula has private ingredients. Share anyway?",
     "sign_out_question": "Sign out?",
+    "clear_storage_question": "If you sign out, you will lose your locally saved actions. Sign out?",
     "yes": "Yes",
     "no": "No"
   },

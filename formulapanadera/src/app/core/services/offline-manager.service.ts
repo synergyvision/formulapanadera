@@ -16,17 +16,8 @@ export class OfflineManagerService {
     private storageService: StorageService,
   ) { }
  
-  checkForEvents(): Observable<any> {
-    return from(this.storageService.get(STORAGE_REQ_KEY)).pipe(
-      switchMap((storedOperations: string) => {
-        let storedObj = JSON.parse(storedOperations);
-        if (storedObj && storedObj.length > 0) {
-          return of(storedObj)
-        } else {
-          return of([]);
-        }
-      })
-    )
+  async getStoredRequests() {
+    return this.storageService.get(STORAGE_REQ_KEY)
   }
  
   async storeRequest(collection: string, type: 'C' | 'U' | 'D', data: any, originalData: any) {
@@ -79,6 +70,33 @@ export class OfflineManagerService {
       // Save old & new local transactions back to Storage
       return this.storageService.set(STORAGE_REQ_KEY, JSON.stringify(storedObj));
     });
+  }
+
+  async clearRequest(finishedReq: StoredRequest) {
+    let storedREQ = await this.storageService.get(STORAGE_REQ_KEY);
+    if (storedREQ) {
+      storedREQ = JSON.parse(storedREQ);
+      storedREQ.forEach((stored, index) => {
+        if (stored.id == finishedReq.id) {
+            storedREQ.splice(index, 1);
+        }
+      })
+    }
+    await this.storageService.set(STORAGE_REQ_KEY, JSON.stringify(storedREQ));
+  }
+
+  async hasStoredRequests() {
+    let storedREQ = await this.storageService.get(STORAGE_REQ_KEY);
+    if (storedREQ) {
+      storedREQ = JSON.parse(storedREQ);
+      if (storedREQ.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
   }
 
   clearRequests() {

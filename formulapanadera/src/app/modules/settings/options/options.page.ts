@@ -12,6 +12,7 @@ import { LanguageService } from "src/app/core/services/language.service";
 import { AboutUsComponent } from "src/app/shared/modal/about-us/about-us.component";
 import { TermConditionsComponent } from "src/app/shared/modal/term-conditions/term-conditions.component";
 import { Plugins } from '@capacitor/core'
+import { OfflineManagerService } from "src/app/core/services/offline-manager.service";
 const { Browser, Share, Device } = Plugins;
 @Component({
   selector: "app-options",
@@ -36,7 +37,8 @@ export class OptionsPage {
     private alertController: AlertController,
     private languageService: LanguageService,
     private modalController: ModalController,
-    private routerOutlet: IonRouterOutlet
+    private routerOutlet: IonRouterOutlet,
+    private offlineManager: OfflineManagerService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -100,19 +102,56 @@ export class OptionsPage {
         {
           text: this.languageService.getTerm("action.ok"),
           cssClass: "confirm-alert-accept",
-          handler: () => {
-            this.authService.signOut().subscribe(() => {
-              this.userStorageService.clear();
-              this.router.navigate(
-                [APP_URL.auth.name + "/" + APP_URL.auth.routes.sign_in],
-                { replaceUrl: true }
-              );
+          handler: async () => {
+            this.clearStorage().then(res => {
+              if (res === 'ok') {
+                this.authService.signOut().subscribe(() => {
+                  this.offlineManager.clearRequests();
+                  this.userStorageService.clear();
+                  this.router.navigate(
+                    [APP_URL.auth.name + "/" + APP_URL.auth.routes.sign_in],
+                    { replaceUrl: true }
+                  );
+                });
+              }
             });
           },
         },
       ],
     });
     await alert.present();
+  }
+
+  async clearStorage(): Promise<any> {
+    return new Promise(async (resolve) => {
+      let hasStoredRequests = await this.offlineManager.hasStoredRequests();
+      if (hasStoredRequests) {
+        const alert = await this.alertController.create({
+          header: this.languageService.getTerm("action.confirm"),
+          message: this.languageService.getTerm("action.clear_storage_question"),
+          cssClass: "confirm-alert",
+          buttons: [
+            {
+              text: this.languageService.getTerm("action.cancel"),
+              role: "cancel",
+              handler: () => {
+                resolve('cancel');
+              },
+            },
+            {
+              text: this.languageService.getTerm("action.ok"),
+              cssClass: "confirm-alert-accept",
+              handler: async () => {
+                resolve('ok');
+              },
+            },
+          ]
+        });
+        alert.present();
+      } else {
+        resolve('ok')
+      }
+    });
   }
 
   reportProblem() {    

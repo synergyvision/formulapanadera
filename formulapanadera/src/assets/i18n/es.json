@@ -35,6 +35,7 @@
     "delete_question": "¿Desea eliminar {{item}}?",
     "formula_privacy_question": "Esta fórmula contiene ingredientes privados. ¿Compartir de todas formas?",
     "sign_out_question": "¿Cerrar sesión?",
+    "clear_storage_question": "Si cierra sesión se perderan acciones ejecutadas localmente. ¿Cerrar sesión?",
     "yes": "Sí",
     "no": "No"
   },

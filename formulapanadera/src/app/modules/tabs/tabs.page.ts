@@ -58,18 +58,20 @@ export class TabsPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.timeService.startCurrentTime();
-    this.networkService.onNetworkChange().subscribe(() => {
+    this.networkService.onNetworkChange().subscribe(async () => {
       if (this.networkService.isConnectedToNetwork()) {
-        this.offlineManager.checkForEvents().subscribe(async (requests: StoredRequest[]) => {
-          if (requests && requests.length>0) {
+        let requests = await this.offlineManager.getStoredRequests();
+        if (requests) {
+          requests = JSON.parse(requests) as StoredRequest[];
+          if (requests.length > 0) {
             const promises = requests.map(async (req) => {
               let service = this.returnService(req.collection);
               await this.doOperation(req, service);
+              await this.offlineManager.clearRequest(req);
             })
             await Promise.all(promises);
-            this.offlineManager.clearRequests();
           }
-          });
+        }
       }
     });
     let user = await this.userStorageService.getUser();
