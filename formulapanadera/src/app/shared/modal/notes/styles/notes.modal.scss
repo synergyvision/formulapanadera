@@ -3,11 +3,6 @@
   --page-background: var(--app-background);
 }
 
-.btn-med {
-  font-size: 26px;
-  margin: 0 0 0 10px;
-}
-
 .notes-content {
   --background: var(--app-background);
 
@@ -59,10 +54,6 @@
 
 .colored-field {
   color: var(--ion-color-primary);
-}
-
-.ios.title-default {
-  padding: 0 0;
 }
 
 ion-textarea {

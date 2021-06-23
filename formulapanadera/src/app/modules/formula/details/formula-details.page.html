@@ -126,6 +126,40 @@
     </ion-col>
   </ion-row>
 
+  <app-divider></app-divider>
+  
+  <ion-row>
+    <ion-col class="detail-col">
+      <app-show-hide-content (click)="showIngredients = !showIngredients" [show]="showIngredients"
+        [title]="'ingredients.name' | translate"></app-show-hide-content>
+      <app-ingredients-list *ngIf="showIngredients" [ingredients]="ingredients" [bakers_percentage]="bakers_percentage">
+      </app-ingredients-list>
+      <span *ngIf="steps && steps.length > 0">
+        <span *ngFor="let step of steps">
+          <app-ingredients-list *ngIf="step.ingredients && showIngredients" [ingredients]="step.ingredients"
+            [name]="step.name" [formula_weight]="total_weight" [units]="units">
+          </app-ingredients-list>
+        </span>
+      </span>
+      <span *ngIf="ingredients_formula.length>0 && showIngredients">
+        <app-show-hide-content (click)="showSubIngredients = !showSubIngredients" [show]="showSubIngredients"
+          [title]="'ingredients.subingredients' | translate" [subtitle]="true">
+        </app-show-hide-content>
+        <span *ngIf="showSubIngredients">
+          <span *ngFor="let ingredientFormula of ingredients_formula">
+            <app-ingredients-list [ingredients]="ingredientFormula.ingredient.formula.ingredients"
+              [bakers_percentage]="ingredientFormula.bakers_percentage"
+              [compensation]="ingredientFormula.ingredient.formula.compensation_percentage"
+              [name]="ingredientFormula.ingredient.name" [units]="units"></app-ingredients-list>
+            <app-mixing-steps
+              *ngIf="compoundIngredientNotInStep(ingredientFormula) && ingredientFormula.ingredient.formula.mixing && ingredientFormula.ingredient.formula.mixing.length > 0"
+              [steps]="ingredientFormula.ingredient.formula.mixing"></app-mixing-steps>
+          </span>
+        </span>
+      </span>
+    </ion-col>
+  </ion-row>
+
   <span *ngIf="formula.organoleptic_characteristics">
     <app-divider></app-divider>
 
@@ -185,60 +219,6 @@
       </ion-col>
     </ion-row>
   </span>
-
-  <app-divider></app-divider>
-
-  <ion-row>
-    <ion-col class="detail-col">
-      <app-show-hide-content
-        (click)="showIngredients = !showIngredients"
-        [show]="showIngredients"
-        [title]="'ingredients.name' | translate"
-      ></app-show-hide-content>
-      <app-ingredients-list
-        *ngIf="showIngredients"
-        [ingredients]="ingredients"
-        [bakers_percentage]="bakers_percentage"
-      >
-      </app-ingredients-list>
-      <span *ngIf="steps && steps.length > 0">
-        <span *ngFor="let step of steps">
-          <app-ingredients-list
-            *ngIf="step.ingredients && showIngredients"
-            [ingredients]="step.ingredients"
-            [name]="step.name"
-            [formula_weight]="total_weight"
-            [units]="units"
-          >
-          </app-ingredients-list>
-        </span>
-      </span>
-      <span *ngIf="ingredients_formula.length>0 && showIngredients">
-        <app-show-hide-content
-          (click)="showSubIngredients = !showSubIngredients"
-          [show]="showSubIngredients"
-          [title]="'ingredients.subingredients' | translate"
-          [subtitle]="true"
-        >
-        </app-show-hide-content>
-        <span *ngIf="showSubIngredients">
-          <span *ngFor="let ingredientFormula of ingredients_formula">
-            <app-ingredients-list
-              [ingredients]="ingredientFormula.ingredient.formula.ingredients"
-              [bakers_percentage]="ingredientFormula.bakers_percentage"
-              [compensation]="ingredientFormula.ingredient.formula.compensation_percentage"
-              [name]="ingredientFormula.ingredient.name"
-              [units]="units"
-            ></app-ingredients-list>
-            <app-mixing-steps
-              *ngIf="compoundIngredientNotInStep(ingredientFormula) && ingredientFormula.ingredient.formula.mixing && ingredientFormula.ingredient.formula.mixing.length > 0"
-              [steps]="ingredientFormula.ingredient.formula.mixing"
-            ></app-mixing-steps>
-          </span>
-        </span>
-      </span>
-    </ion-col>
-  </ion-row>
 
   <app-divider *ngIf="formula.mixing && formula.mixing.length > 0"></app-divider>
 

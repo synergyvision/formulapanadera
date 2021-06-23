@@ -14,6 +14,7 @@ import { IngredientPercentageModel } from "src/app/core/models/formula.model";
 import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group-picker.modal";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { UserCRUDService } from "src/app/core/services/firebase/user.service";
+import { SettingsStorageService } from "src/app/core/services/storage/settings.service";
 
 @Component({
   selector: "app-ingredient-details",
@@ -51,6 +52,7 @@ export class IngredientDetailsPage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private languageService: LanguageService,
+    private settingsStorageService: SettingsStorageService,
     private userStorageService: UserStorageService,
     private ingredientCRUDService: IngredientCRUDService,
     private formulaService: FormulaService,
@@ -138,7 +140,7 @@ export class IngredientDetailsPage implements OnInit {
         icon: ICONS.clone,
         cssClass: "action-icon",
         handler: () => {
-          this.cloneIngredient();
+          this.cloneIngredientAlert();
         },
       });
     }
@@ -312,41 +314,60 @@ export class IngredientDetailsPage implements OnInit {
       });
   }
 
-  async cloneIngredient() {
-    const alert = await this.alertController.create({
-      header: this.languageService.getTerm("action.clone"),
-      message: this.languageService.getTerm("formulas.clone.instructions"),
-      cssClass: "alert clone-alert",
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          role: "cancel",
-          handler: () => {},
-        },
-        {
-          text: this.languageService.getTerm("action.ok"),
-          cssClass: "confirm-alert-accept",
-          handler: () => {
-            let ingredient: IngredientModel = JSON.parse(JSON.stringify(this.ingredient));
-            delete (ingredient.id)
-            ingredient.user.owner = this.user.email;
-            ingredient.user.public = false;
-            ingredient.user.reference = this.ingredient.id;
-            ingredient.user.shared_references = [];
-            ingredient.user.shared_users = [];
-            ingredient.name = `${
-              this.ingredient.name
-            } (${this.languageService.getTerm("action.copy")})`;
-            this.ingredientCRUDService.create(ingredient).then(() => {
-              this.router.navigateByUrl(
-                APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
-              );
-            });
+  async cloneIngredientAlert() {
+    let settings = await this.settingsStorageService.getSettings();
+    if (settings.clone_alert) {
+      const alert = await this.alertController.create({
+        header: this.languageService.getTerm("action.clone"),
+        message: this.languageService.getTerm("formulas.clone.instructions"),
+        cssClass: "alert clone-alert",
+        inputs: [
+          {
+            name: 'repeat',
+            type: 'checkbox',
+            label: this.languageService.getTerm("action.stop_alert"),
+            value: 'repeat',
           },
-        },
-      ],
+        ],
+        buttons: [
+          {
+            text: this.languageService.getTerm("action.cancel"),
+            role: "cancel",
+            handler: () => { },
+          },
+          {
+            text: this.languageService.getTerm("action.ok"),
+            cssClass: "confirm-alert-accept",
+            handler: (data) => {
+              let repeat: boolean = data && data.length > 0 && data[0] == "repeat";
+              settings.clone_alert = !repeat;
+              this.settingsStorageService.setSettings(settings);
+              this.cloneIngredient();
+            },
+          },
+        ],
+      });
+      await alert.present();
+    } else {
+      this.cloneIngredient();
+    }
+  }
+
+  async cloneIngredient() {
+    let ingredient: IngredientModel = JSON.parse(JSON.stringify(this.ingredient));
+    delete (ingredient.id)
+    ingredient.user.owner = this.user.email;
+    ingredient.user.public = false;
+    ingredient.user.reference = this.ingredient.id;
+    ingredient.user.shared_references = [];
+    ingredient.user.shared_users = [];
+    ingredient.name = `${this.ingredient.name
+      } (${this.languageService.getTerm("action.copy")})`;
+    this.ingredientCRUDService.create(ingredient).then(() => {
+      this.router.navigateByUrl(
+        APP_URL.menu.name + "/" + APP_URL.menu.routes.ingredient.main
+      );
     });
-    await alert.present();
   }
 
   getProportionFactor(): string {

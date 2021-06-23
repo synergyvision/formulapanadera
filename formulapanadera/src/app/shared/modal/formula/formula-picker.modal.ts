@@ -33,13 +33,15 @@ export class FormulaPickerModal implements OnInit {
   costRangeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
+  showMine = true;
+  showShared = true;
+  showPublic = true;
 
   currency = CURRENCY;
   formulas: FormulaModel[] & ShellModel;
   all_formulas: FormulaModel[] & ShellModel;
 
-  segment: string = "mine";
-
+  isLoading: boolean = true;
   user_email: string;
 
   constructor(
@@ -79,6 +81,7 @@ export class FormulaPickerModal implements OnInit {
           formulas = aux;
         }
         this.all_formulas = formulas as FormulaModel[] & ShellModel;
+        this.isLoading = true;
         this.searchList();
       });
   }
@@ -124,11 +127,6 @@ export class FormulaPickerModal implements OnInit {
       filters.cost.upper,
       filteredFormulas
     );
-    filteredFormulas = this.formulaService.searchFormulasByShared(
-      this.segment,
-      filteredFormulas,
-      this.user_email
-    );
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredFormulas),
@@ -154,12 +152,20 @@ export class FormulaPickerModal implements OnInit {
 
     updateSearchObservable.subscribe((value) => {
       this.formulas = this.formulaService.sortFormulas(value);
+      this.isLoading = value.isShell;
     });
   }
 
-  segmentChanged(ev: any) {
-    this.segment = ev.detail.value;
-    this.searchList();
+  formulasSegment(segment: 'mine' | 'shared' | 'public'): FormulaModel[] {
+    if (this.isLoading) {
+      return this.formulas;
+    } else {
+      return this.formulaService.searchFormulasByShared(
+        segment,
+        this.formulas,
+        this.user_email
+      );
+    }
   }
 
   clickFormula(formula: FormulaModel) {

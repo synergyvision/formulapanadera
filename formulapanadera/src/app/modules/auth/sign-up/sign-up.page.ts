@@ -84,7 +84,7 @@ export class SignUpPage implements OnInit {
     // That's why we need to wrap the router navigation call inside an ngZone wrapper
     this.ngZone.run(() => {
       const previousUrl =
-        APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main;
+        APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main;
 
       // No need to store in the navigation history the sign-in page with redirect params (it's justa a mandatory mid-step)
       this.router.navigate([previousUrl], { replaceUrl: true });

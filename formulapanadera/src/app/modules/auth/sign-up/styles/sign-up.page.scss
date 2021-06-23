@@ -3,10 +3,6 @@
   --page-background: white;
 }
 
-ion-back-button {
-  height: 0;
-}
-
 .signup-content {
   --background: var(--page-background);
   --padding-start: var(--page-margin);
@@ -15,7 +11,7 @@ ion-back-button {
 
   .auth-title {
     color: var(--ion-color-dark);
-    font-weight: bold;
+    font-weight: 700;
     margin-top: calc(var(--page-margin) / 2);
     margin-bottom: calc(var(--page-margin) * (3 / 2));
     letter-spacing: 0.6px;
@@ -46,7 +42,7 @@ ion-back-button {
 
     .login-btn {
       color: var(--ion-color-secondary);
-      font-size: 14px;
+      font-size: 12px;
       margin: 0px;
 
       &:focus {
@@ -54,11 +50,6 @@ ion-back-button {
       }
     }
   }
-}
-
-.btn-med {
-  font-size: 26px;
-  margin: 0 10px 0 10px;
 }
 
 .logo-auth {

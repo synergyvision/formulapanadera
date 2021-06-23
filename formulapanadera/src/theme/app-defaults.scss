@@ -3,12 +3,104 @@
   --page-background: var(--app-background);
 }
 
+.btn-med {
+  font-size: 26px;
+  margin: 0 10px 0 10px;
+}
+
+.ios.title-default {
+  padding: 0 0;
+}
+
+ion-back-button {
+  height: 0;
+}
+
 ion-title {
   font-weight: 400;
   letter-spacing: 0.4px;
 }
 
-.btn-med {
-  font-size: 26px;
-  margin: 0 10px 0 10px;
+ion-button {
+  text-transform: none;
+}
+
+.action-icon {
+  color: cornflowerblue !important;
+  ion-icon {
+    color: cornflowerblue !important;
+  }
+}
+
+.cancel-icon {
+  color: #86888f !important;
+  ion-icon {
+    color: #86888f !important;
+  }
+}
+
+.delete-icon {
+  color: red !important;
+  ion-icon {
+    color: red !important;
+  }
+}
+
+ion-searchbar {
+  .searchbar-input-container {
+    input {
+      font-size: 14px !important;
+      padding-left: 40px !important;
+    }
+  }
+  .searchbar-search-icon {
+    margin-left: 5px !important;
+  }
+}
+.normal-font-weight {
+  font-weight: normal !important;
+}
+
+.vertical-buttons-group {
+  .alert-button-group {
+    flex-direction: column;
+  }
+}
+
+.global-big-title {
+  font-size: var(--big-title-size);
+  font-weight: 800;
+}
+
+.global-title {
+  font-size: var(--title-size);
+  font-weight: 800;
+}
+
+.global-subtitle {
+  font-size: var(--subtitle-size);
+  font-weight: 700;
+}
+
+.global-description {
+  font-size: var(--description-size);
+  font-weight: 400;
+}
+
+.global-normal {
+  font-size: var(--normal-size);
+  font-weight: 400;
+}
+
+.global-note {
+  font-size: var(--note-size);
+  font-weight: 400;
+}
+
+.auth-title {
+  color: var(--ion-color-primary);
+  font-weight: 700;
+  margin-top: calc(var(--page-margin) / 2);
+  margin-bottom: calc(var(--page-margin));
+  text-align: center;
 }

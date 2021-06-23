@@ -31,12 +31,14 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
   costRangeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
+  showMine = true;
+  showShared = true;
+  showPublic = true;
 
   currency = CURRENCY;
   productions: ProductionModel[] & ShellModel;
   all_productions: ProductionModel[] & ShellModel;
 
-  segment: string = "mine";
   isLoading: boolean = true;
   user_email: string;
 
@@ -114,11 +116,6 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
         filters.cost.upper,
         filteredProductions
       );
-      filteredProductions = this.productionService.searchProductionsByShared(
-        this.segment,
-        filteredProductions,
-        this.user_email
-      );
 
       const dataSourceWithShellObservable = DataStore.AppendShell(
         of(filteredProductions),
@@ -149,10 +146,58 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
     }
   }
 
-  segmentChanged(ev: any) {
-    this.segment = ev.detail.value;
-    this.isLoading = true;
-    this.searchList();
+  filteredCourses(): CourseModel[] {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
+    let filters = {
+      cost: {
+        lower: this.costRangeForm.value.lower,
+        upper: this.costRangeForm.value.upper,
+      },
+      query: this.searchQuery,
+    };
+    
+    let filteredCourses: CourseModel[] = [];
+
+    this.courses.forEach(course => {
+      let filteredProductions: ProductionModel[] = Array.from([...course.productions], (item)=>{return item.item as ProductionModel});
+      filteredProductions = this.productionService.searchProductionsByCost(
+        filters.cost.lower,
+        filters.cost.upper,
+        filteredProductions as ProductionModel[] & ShellModel
+      );
+      if (filteredProductions.length > 0) {
+        if (filters.query !== "") {
+          let courseAdded = false;
+          filteredProductions.forEach(production => {
+            if (!courseAdded && production.name.toLowerCase().includes(filters.query.toLowerCase())) {
+              filteredCourses.push(course);
+              courseAdded = true;
+            }
+          })
+        } else {
+          filteredCourses.push(course);
+        }
+      }
+    })
+
+    return filteredCourses;
+  }
+
+  productionsSegment(segment: 'mine' | 'shared' | 'public'): ProductionModel[] {
+    if (this.isLoading) {
+      return this.productions;
+    } else {
+      return this.productionService.searchProductionsByShared(
+        segment,
+        this.productions,
+        this.user_email
+      );
+    }
   }
 
   createProduction() {

@@ -25,48 +25,4 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-ion-button {
-  text-transform: none;
-}
-
-.action-icon {
-  color: cornflowerblue !important;
-  ion-icon {
-    color: cornflowerblue !important;
-  }
-}
-
-.cancel-icon {
-  color: #86888f !important;
-  ion-icon {
-    color: #86888f !important;
-  }
-}
-
-.delete-icon {
-  color: red !important;
-  ion-icon {
-    color: red !important;
-  }
-}
-
-ion-searchbar {
-  .searchbar-input-container {
-    input {
-      font-size: 14px !important;
-      padding-left: 40px !important;
-    }
-  }
-  .searchbar-search-icon {
-    margin-left: 5px !important;
-  }
-}
-.normal-font-weight {
-  font-weight: normal !important;
-}
-
-.vertical-buttons-group {
-  .alert-button-group {
-    flex-direction: column;
-  }
-}
+@import "./theme/app-defaults.scss";

@@ -7,7 +7,7 @@ export const ICONS = {
   back: "arrow-back-outline",
   change_password: "lock-closed-outline",
   check: "checkmark-outline",
-  clone: "add-circle-outline",
+  clone: "copy-outline",
   close: "close-outline",
   courses: "calendar-outline",
   create: "create-outline",

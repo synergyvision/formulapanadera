@@ -23,7 +23,8 @@
     "confirm": "Confirmar",
     "share": "Compartir",
     "stop_sharing": "Dejar de compartir",
-    "clone": "Clonar",
+    "stop_alert": "No me vuelvas a preguntar",
+    "clone": "Duplicar",
     "copy": "Copia",
     "create": "Crear",
     "update": "Modificar",
@@ -112,7 +113,7 @@
     "temperature": "Temperatura",
     "description": "Descripción",
     "public": "Pública",
-    "can_clone": "Puede ser clonada",
+    "can_clone": "Se puede duplicar",
     "warming_time": "Temperado del horno",
     "manipulation_times": "Cantidad de manipulaciones",
     "manipulation_time":{
@@ -164,7 +165,7 @@
     },
     "hydration": {
       "low": "Baja hidratación",
-      "normal": "Hidratación normal",
+      "normal": "Hidratación moderada",
       "high": "Alta hidratación"
     },
     "fat": {
@@ -192,7 +193,7 @@
       "units": "Unidades a elaborar"
     },
     "clone": {
-      "instructions": "El clonar te permite modificar, una nueva versión aparecerá en la pestaña \"Propias\". La versión original se conservará"
+      "instructions": "El duplicar te permite modificar, una nueva versión aparecerá en la pestaña \"Propias\". La versión original se conservará"
     }
   },
   "ingredients": {
@@ -211,7 +212,7 @@
     "compensation_percentage": "Factor de compensación",
     "suggested_values": "Valores sugeridos",
     "public": "Público",
-    "can_clone": "Puede ser clonado",
+    "can_clone": "Se puede duplicar",
     "type": {
       "name": "Tipo",
       "simple": "Simple",

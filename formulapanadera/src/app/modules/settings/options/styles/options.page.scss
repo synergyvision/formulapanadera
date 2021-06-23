@@ -1,22 +1,11 @@
 // Variables
 
 :host {
-  --title-size: 16px;
-  --description-size: 12px;
   --icon-size: 24px;
   --page-background: var(--app-background);
 }
 
 // Styles
-
-.ios.title-default {
-  padding: 0 0;
-}
-
-.btn-med {
-  font-size: 26px;
-  margin: 0 0 0 10px;
-}
 
 .options-content {
   --background: var(--page-background);

@@ -76,8 +76,8 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       delete this.ingredient.formula;
       this.manageIngredientForm = new FormGroup({
         name: new FormControl("", Validators.required),
-        hydration: new FormControl("", Validators.required),
-        fat: new FormControl("", Validators.required),
+        hydration: new FormControl("0.00", Validators.required),
+        fat: new FormControl("0.00", Validators.required),
         is_flour: new FormControl(false, Validators.required),
         cost: new FormControl(0, Validators.required),
       });

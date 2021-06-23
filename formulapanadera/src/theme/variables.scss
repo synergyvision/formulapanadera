@@ -56,7 +56,13 @@
 
 :root {
   /* Set the font family of the entire app */
-  --ion-font-family: "Rubik", sans-serif;
+  --ion-font-family: "Poppins", "Roboto";
+  --big-title-size: 18px;
+  --title-size: 16px;
+  --subtitle-size: 16px;
+  --description-size: 12px;
+  --normal-size: 14px;
+  --note-size: 12px;
 
   --ion-title: "Alfa Slab One";
 

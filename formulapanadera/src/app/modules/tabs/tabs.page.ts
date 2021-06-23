@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Subscription } from "rxjs";
+import { of, Subscription } from "rxjs";
 import { COLLECTIONS } from "src/app/config/firebase";
 import { ICONS } from "src/app/config/icons";
 import { FirebaseService } from "src/app/core/interfaces/firebase-service.interface";
@@ -8,6 +8,7 @@ import { CourseModel } from "src/app/core/models/course.model";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { IngredientModel } from "src/app/core/models/ingredient.model";
 import { ProductionModel } from "src/app/core/models/production.model";
+import { SettingsModel } from "src/app/core/models/settings.model";
 import { UserModel } from "src/app/core/models/user.model";
 import { CourseService } from "src/app/core/services/course.service";
 import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
@@ -20,6 +21,7 @@ import { IngredientService } from "src/app/core/services/ingredient.service";
 import { NetworkService } from "src/app/core/services/network.service";
 import { OfflineManagerService } from "src/app/core/services/offline-manager.service";
 import { ProductionService } from "src/app/core/services/production.service";
+import { SettingsStorageService } from "src/app/core/services/storage/settings.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { TimeService } from "src/app/core/services/time.service";
 import { ShellModel } from "src/app/shared/shell/shell.model";
@@ -52,28 +54,18 @@ export class TabsPage implements OnInit, OnDestroy {
     private formulaService: FormulaService,
     private ingredientCRUDService: IngredientCRUDService,
     private ingredientService: IngredientService,
+    private settingsStorageService: SettingsStorageService,
     private networkService: NetworkService,
     private offlineManager: OfflineManagerService
   ) { }
 
   async ngOnInit() {
     this.timeService.startCurrentTime();
-    this.networkService.onNetworkChange().subscribe(async () => {
-      if (this.networkService.isConnectedToNetwork()) {
-        let requests = await this.offlineManager.getStoredRequests();
-        if (requests) {
-          requests = JSON.parse(requests) as StoredRequest[];
-          if (requests.length > 0) {
-            const promises = requests.map(async (req) => {
-              let service = this.returnService(req.collection);
-              await this.doOperation(req, service);
-              await this.offlineManager.clearRequest(req);
-            })
-            await Promise.all(promises);
-          }
-        }
-      }
-    });
+    let settings = await this.settingsStorageService.getSettings();
+    if (!settings) {
+      await this.settingsStorageService.setSettings(new SettingsModel());
+    }
+
     let user = await this.userStorageService.getUser();
     this.user = await this.userCRUDService.getUser(user.email);
     if (!this.user?.id) {
@@ -166,6 +158,28 @@ export class TabsPage implements OnInit, OnDestroy {
           }
         });
     }
+
+    setTimeout(() => {
+      this.networkService.onNetworkChange().subscribe(async () => {
+        if (this.networkService.isConnectedToNetwork()) {
+          let requests = await this.offlineManager.getStoredRequests();
+          if (requests) {
+            requests = JSON.parse(requests) as StoredRequest[];
+            if (requests.length > 0) {
+              const promises = requests.map(async (req: StoredRequest) => {
+                let service = this.returnService(req.collection);
+                await this.doOperation(req, service);
+                if (req.type == 'U') {
+                  await this.syncOperations(req);
+                }
+                await this.offlineManager.clearRequest(req);
+              })
+              await Promise.all(promises);
+            }
+          }
+        }
+      });
+    }, 15000);
   }
 
   ngOnDestroy() {
@@ -206,6 +220,37 @@ export class TabsPage implements OnInit, OnDestroy {
     }
     if (req.type == 'D') {
       return service.delete(req.data);
+    }
+  }
+
+  async syncOperations(req: StoredRequest) {
+    if (req.collection == COLLECTIONS.ingredients) {
+      let updated_ingredients: IngredientModel[] = [req.data];
+      await this.ingredientCRUDService.updateIngredients(req.data, updated_ingredients);
+      let updated_formulas: FormulaModel[] = [];
+      await this.formulaCRUDService.updateIngredients(updated_ingredients, updated_formulas);
+      let updated_productions: ProductionModel[] = []
+      await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
+      if (this.user.instructor) {
+        let updated_courses: CourseModel[] = []
+        await this.courseCRUDService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);
+      }
+    }
+    if (req.collection == COLLECTIONS.formula) {
+      let updated_formulas: FormulaModel[] = [req.data];
+      let updated_productions: ProductionModel[] = []
+      await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
+      if (this.user.instructor) {
+        let updated_courses: CourseModel[] = []
+        await this.courseCRUDService.updateAll(updated_courses, [], updated_formulas, updated_productions);
+      }
+    }
+    if (req.collection == COLLECTIONS.production) {
+      if (this.user.instructor) {
+        let updated_productions: ProductionModel[] = [req.data]
+        let updated_courses: CourseModel[] = []
+        await this.courseCRUDService.updateAll(updated_courses, [], [], updated_productions);
+      }
     }
   }
 }

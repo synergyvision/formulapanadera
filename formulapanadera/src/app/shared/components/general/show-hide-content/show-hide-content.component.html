@@ -1,8 +1,9 @@
 <ion-item
   class="content-title"
   [ngClass]="{
-    'border-top': subtitle,
-    'transparent': transparent
+    'border-top': subtitle || highlight,
+    'transparent': transparent,
+    'highlight': highlight
   }"
   lines="full"
 >
@@ -11,7 +12,8 @@
       <h5
         [ngClass]="{
           'content-name': !subtitle,
-          'content-subtitle-name': subtitle
+          'content-subtitle-name': subtitle,
+          'highlight-name': highlight
         }"
       >
         {{ title }}

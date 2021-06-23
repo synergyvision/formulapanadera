@@ -34,12 +34,15 @@ export class IngredientPickerModal implements OnInit {
   typeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
+  showMine = true;
+  showShared = true;
+  showPublic = true;
 
   currency = CURRENCY;
   ingredients: IngredientModel[] & ShellModel;
   all_ingredients: IngredientModel[] & ShellModel;
 
-  segment: string = "mine";
+  isLoading: boolean = true;
 
   user_email: string;
   
@@ -77,6 +80,7 @@ export class IngredientPickerModal implements OnInit {
       .subscribe(async (ingredients) => {
         this.ingredients = this.ingredientService.searchingState();
         this.all_ingredients = ingredients as IngredientModel[] & ShellModel;
+        this.isLoading = true;
         this.searchList();
       });
   }
@@ -136,11 +140,6 @@ export class IngredientPickerModal implements OnInit {
         filteredIngredients
       );
     }
-    filteredIngredients = this.ingredientService.searchIngredientsByShared(
-      this.segment,
-      filteredIngredients,
-      this.user_email
-    );
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredIngredients),
@@ -166,12 +165,20 @@ export class IngredientPickerModal implements OnInit {
 
     updateSearchObservable.subscribe((value) => {
       this.ingredients = this.ingredientService.sortIngredients(value);
+      this.isLoading = value.isShell;
     });
   }
 
-  segmentChanged(ev: any) {
-    this.segment = ev.detail.value;
-    this.searchList();
+  ingredientsSegment(segment: 'mine' | 'shared' | 'public'): IngredientModel[] {
+    if (this.isLoading) {
+      return this.ingredients;
+    } else {
+      return this.ingredientService.searchIngredientsByShared(
+        segment,
+        this.ingredients,
+        this.user_email
+      );
+    }
   }
 
   clickIngredient(ingredient: IngredientModel) {

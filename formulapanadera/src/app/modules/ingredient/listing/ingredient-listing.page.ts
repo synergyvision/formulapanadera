@@ -33,12 +33,14 @@ export class IngredientListingPage implements OnInit {
   typeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
+  showMine = true;
+  showShared = true;
+  showPublic = true;
 
   currency = CURRENCY;
   ingredients: IngredientModel[] & ShellModel;
   all_ingredients: IngredientModel[] & ShellModel;
 
-  segment: string = "mine";
   isLoading: boolean = true;
 
   user_email: string;
@@ -154,11 +156,6 @@ export class IngredientListingPage implements OnInit {
           filteredIngredients
         );
       }
-      filteredIngredients = this.ingredientService.searchIngredientsByShared(
-        this.segment,
-        filteredIngredients,
-        this.user_email
-      );
 
       const dataSourceWithShellObservable = DataStore.AppendShell(
         of(filteredIngredients),
@@ -189,10 +186,90 @@ export class IngredientListingPage implements OnInit {
     }
   }
 
-  segmentChanged(ev: any) {
-    this.segment = ev.detail.value;
-    this.isLoading = true;
-    this.searchList();
+  filteredCourses(): CourseModel[] {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
+    let filters = {
+      hydration: {
+        lower: this.hydrationRangeForm.controls.dual.value.lower,
+        upper: this.hydrationRangeForm.controls.dual.value.upper,
+      },
+      fat: {
+        lower: this.fatRangeForm.controls.dual.value.lower,
+        upper: this.fatRangeForm.controls.dual.value.upper,
+      },
+      cost: {
+        lower: this.costRangeForm.value.lower,
+        upper: this.costRangeForm.value.upper,
+      },
+      is_flour: this.isFlourForm.value.value,
+      type: this.typeForm.value.value,
+      query: this.searchQuery,
+    };
+
+    let filteredCourses: CourseModel[] = [];
+
+    this.courses.forEach(course => {
+      let filteredIngredients: IngredientModel[] = Array.from([...course.ingredients], (item)=>{return item.item as IngredientModel});
+      filteredIngredients = this.ingredientService.searchIngredientsByHydration(
+        filters.hydration.lower,
+        filters.hydration.upper,
+        filteredIngredients as IngredientModel[] & ShellModel
+      );
+      filteredIngredients = this.ingredientService.searchIngredientsByFat(
+        filters.fat.lower,
+        filters.fat.upper,
+        filteredIngredients as IngredientModel[] & ShellModel
+      );
+      filteredIngredients = this.ingredientService.searchIngredientsByCost(
+        filters.cost.lower,
+        filters.cost.upper,
+        filteredIngredients as IngredientModel[] & ShellModel
+      );
+      if (filters.is_flour !== "all") {
+        filteredIngredients = this.ingredientService.searchIngredientsByType(
+          filters.is_flour,
+          filteredIngredients as IngredientModel[] & ShellModel
+        );
+      }
+      if (filters.type !== "all") {
+        filteredIngredients = this.ingredientService.searchIngredientsByFormula(
+          filters.type,
+          filteredIngredients as IngredientModel[] & ShellModel
+        );
+      }
+      if (filteredIngredients.length > 0) {
+        if (filters.query !== "") {
+          let courseAdded = false;
+          filteredIngredients.forEach(ingredient => {
+            if (!courseAdded && ingredient.name.toLowerCase().includes(filters.query.toLowerCase())) {
+              filteredCourses.push(course);
+              courseAdded = true;
+            }
+          })
+        } else {
+          filteredCourses.push(course);
+        }
+      }
+    })
+
+    return filteredCourses;
+  }
+
+  ingredientsSegment(segment: 'mine' | 'shared' | 'public'): IngredientModel[] {
+    if (this.isLoading) {
+      return this.ingredients;
+    } else {
+      return this.ingredientService.searchIngredientsByShared(
+        segment,
+        this.ingredients,
+        this.user_email
+      );
+    }
   }
 
   createIngredient() {

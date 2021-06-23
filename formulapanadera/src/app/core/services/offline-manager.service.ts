@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { StoredRequest } from '../interfaces/stored-request.interface';
 import { environment } from 'src/environments/environment';
 import { StorageService } from './storage/storage.service';

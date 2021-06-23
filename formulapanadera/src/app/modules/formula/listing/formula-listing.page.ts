@@ -31,12 +31,14 @@ export class FormulaListingPage implements OnInit {
   costRangeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
+  showMine = true;
+  showShared = true;
+  showPublic = true;
 
   currency = CURRENCY;
   all_formulas: FormulaModel[] & ShellModel;
   formulas: FormulaModel[] & ShellModel;
 
-  segment: string = "mine";
   isLoading: boolean = true;
 
   user_email: string;
@@ -129,11 +131,6 @@ export class FormulaListingPage implements OnInit {
         filters.cost.upper,
         filteredFormulas
       );
-      filteredFormulas = this.formulaService.searchFormulasByShared(
-        this.segment,
-        filteredFormulas,
-        this.user_email
-      );
 
       const dataSourceWithShellObservable = DataStore.AppendShell(
         of(filteredFormulas),
@@ -164,10 +161,76 @@ export class FormulaListingPage implements OnInit {
     }
   }
 
-  segmentChanged(ev: any) {
-    this.segment = ev.detail.value;
-    this.isLoading = true;
-    this.searchList();
+  filteredCourses(): CourseModel[] {
+    this.costRangeForm
+      .get("lower")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.lower));
+    this.costRangeForm
+      .get("upper")
+      .patchValue(this.formatNumberService.formatStringToDecimals(this.costRangeForm.value.upper));
+    let filters = {
+      hydration: {
+        lower: this.hydrationRangeForm.controls.dual.value.lower,
+        upper: this.hydrationRangeForm.controls.dual.value.upper,
+      },
+      fat: {
+        lower: this.fatRangeForm.controls.dual.value.lower,
+        upper: this.fatRangeForm.controls.dual.value.upper,
+      },
+      cost: {
+        lower: this.costRangeForm.value.lower,
+        upper: this.costRangeForm.value.upper,
+      },
+      query: this.searchQuery,
+    };
+
+    let filteredCourses: CourseModel[] = [];
+
+    this.courses.forEach(course => {
+      let filteredFormulas: FormulaModel[] = Array.from([...course.formulas], (item)=>{return item.item as FormulaModel});
+      filteredFormulas = this.formulaService.searchFormulasByHydration(
+        filters.hydration.lower,
+        filters.hydration.upper,
+        filteredFormulas as FormulaModel[] & ShellModel
+      );
+      filteredFormulas = this.formulaService.searchFormulasByFat(
+        filters.fat.lower,
+        filters.fat.upper,
+        filteredFormulas as FormulaModel[] & ShellModel
+      );
+      filteredFormulas = this.formulaService.searchFormulasByCost(
+        filters.cost.lower,
+        filters.cost.upper,
+        filteredFormulas as FormulaModel[] & ShellModel
+      );
+      if (filteredFormulas.length > 0) {
+        if (filters.query !== "") {
+          let courseAdded = false;
+          filteredFormulas.forEach(formula => {
+            if (!courseAdded && formula.name.toLowerCase().includes(filters.query.toLowerCase())) {
+              filteredCourses.push(course);
+              courseAdded = true;
+            }
+          })
+        } else {
+          filteredCourses.push(course);
+        }
+      }
+    })
+
+    return filteredCourses;
+  }
+
+  formulasSegment(segment: 'mine' | 'shared' | 'public'): FormulaModel[] {
+    if (this.isLoading) {
+      return this.formulas;
+    } else {
+      return this.formulaService.searchFormulasByShared(
+        segment,
+        this.formulas,
+        this.user_email
+      );
+    }
   }
 
   createFormula() {

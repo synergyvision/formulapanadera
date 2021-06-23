@@ -40,6 +40,7 @@ import { FaqService } from "./services/faq.service";
 import { NetworkService } from "./services/network.service";
 import { StorageService } from "./services/storage/storage.service";
 import { OfflineManagerService } from "./services/offline-manager.service";
+import { SettingsStorageService } from "./services/storage/settings.service";
 
 @NgModule({
   imports: [
@@ -80,6 +81,7 @@ import { OfflineManagerService } from "./services/offline-manager.service";
     FaqService,
     NetworkService,
     StorageService,
+    SettingsStorageService,
     OfflineManagerService
   ]
 })

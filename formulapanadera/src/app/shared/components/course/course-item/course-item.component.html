@@ -8,7 +8,7 @@
     <ion-col class="courses-wrapper">
       <ion-row>
         <ion-col>
-          <h2 class="courses-name">
+          <h2 class="courses-name global-title">
             <app-text-shell
               animation="bouncing"
               lines="3"
@@ -19,7 +19,7 @@
       </ion-row>
       <ion-row *ngIf="course.name !== undefined">
         <ion-col size="12" class="properties-col">
-          <p class="course-user">
+          <p class="course-user global-note">
             {{ course.user.creator.name }}
           </p>
         </ion-col>
