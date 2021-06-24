@@ -21,6 +21,7 @@ import { ProductionCRUDService } from "src/app/core/services/firebase/production
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { UserService } from "src/app/core/services/user.service";
 import { FormulaPickerModal } from "src/app/shared/modal/formula/formula-picker.modal";
 
 @Component({
@@ -53,7 +54,8 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
     private formatNumberService: FormatNumberService,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
@@ -120,7 +122,7 @@ export class ProductionManagePage implements OnInit, ViewWillEnter {
       this.productionCRUDService
         .update(this.production, this.original_production)
         .then(async () => {
-          if (this.current_user.instructor) {
+          if (this.userService.hasPermission(this.current_user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
             let updated_productions: ProductionModel[] = [this.production]
             let updated_courses: CourseModel[] = []
             await this.courseCRUDService.updateAll(updated_courses, [], [], updated_productions);

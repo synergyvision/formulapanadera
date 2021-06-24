@@ -2,7 +2,8 @@
   <ion-toolbar color="primary">
     <ion-icon slot="start" class="btn-med" [name]="ICONS.production"></ion-icon>
     <ion-title> {{ 'production.name' | translate }} </ion-title>
-    <ion-buttons slot="end">
+    <!-- PERMISSION: PRODUCTION MANAGE (CREATE) -->
+    <ion-buttons slot="end" *appHasPermission="{name: 'PRODUCTION', type: 'MANAGE'}">
       <ion-button (click)="createProduction()" class="create-production">
         <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
       </ion-button>

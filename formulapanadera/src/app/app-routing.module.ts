@@ -12,7 +12,7 @@ const routes: Routes = [
   },
   {
     path: APP_URL.menu.name,
-    canLoad: [AuthGuard],
+    canActivate: [AuthGuard],
     loadChildren: () =>
       import("./modules/tabs/tabs.module").then((m) => m.TabsPageModule),
   },

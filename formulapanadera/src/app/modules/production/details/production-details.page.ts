@@ -9,7 +9,7 @@ import {
   FormulaPresentModel,
   ProductionModel,
 } from "src/app/core/models/production.model";
-import { UserGroupModel, UserResumeModel } from "src/app/core/models/user.model";
+import { UserGroupModel, UserModel, UserResumeModel } from "src/app/core/models/user.model";
 import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
 import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 import { FormulaService } from "src/app/core/services/formula.service";
@@ -17,6 +17,7 @@ import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
 import { SettingsStorageService } from "src/app/core/services/storage/settings.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { UserService } from "src/app/core/services/user.service";
 import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group-picker.modal";
 
 @Component({
@@ -41,7 +42,7 @@ export class ProductionDetailsPage implements OnInit {
 
   production_in_process: boolean = false;
 
-  user: UserResumeModel = new UserResumeModel();
+  user: UserModel = new UserModel();
   is_modifier: boolean = false
 
   constructor(
@@ -59,7 +60,8 @@ export class ProductionDetailsPage implements OnInit {
     private userStorageService: UserStorageService,
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
-    private userCRUDService: UserCRUDService
+    private userCRUDService: UserCRUDService,
+    private userService: UserService
   ) {
     this.showIngredients = true;
     this.showDetails = false;
@@ -87,8 +89,7 @@ export class ProductionDetailsPage implements OnInit {
       ) {
         this.production_in_process = true;
       }
-      let user = await this.userStorageService.getUser();
-      this.user = {name: user.name, email: user.email}
+      this.user = await this.userStorageService.getUser();
       this.is_modifier = false;
       this.production.user.modifiers.forEach((user) => {
         if (user.email == this.user.email) {
@@ -192,8 +193,10 @@ export class ProductionDetailsPage implements OnInit {
     let current_user = this.user.email;
     let buttons = [];
     if (!this.isCourse) {
+      // PERMISSION: PRODUCTION MANAGE (UPDATE)
       if (
-        this.production.user.owner == current_user
+        this.production.user.owner == current_user &&
+        this.userService.hasPermission(this.user.role, [{ name: 'PRODUCTION', type: 'MANAGE' }])
       ) {
         buttons.push({
           text: this.languageService.getTerm("action.update"),
@@ -204,8 +207,10 @@ export class ProductionDetailsPage implements OnInit {
           },
         });
       }
+      // PERMISSION: SHARE MANAGE
       if (
-        this.production.user.owner == current_user && (this.is_modifier || this.production.user.creator.email == current_user)
+        this.production.user.owner == current_user && (this.is_modifier || this.production.user.creator.email == current_user) &&
+        this.userService.hasPermission(this.user.role, [{ name: 'SHARE', type: 'MANAGE' }])
       ) {
         buttons.push({
           text: this.languageService.getTerm("action.share"),
@@ -227,7 +232,11 @@ export class ProductionDetailsPage implements OnInit {
         },
       });
     }
-    if (!this.isCourse && this.production.user.owner == current_user) {
+    // PERMISSION: PRODUCTION MANAGE (DELETE)
+    if (
+      !this.isCourse && this.production.user.owner == current_user &&
+      this.userService.hasPermission(this.user.role, [{ name: 'PRODUCTION', type: 'MANAGE' }])
+    ) {
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
         icon: ICONS.trash,

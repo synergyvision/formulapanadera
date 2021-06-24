@@ -37,33 +37,29 @@
       <app-divider *ngIf="!update || current_user.email === ingredient.user.owner"></app-divider>
       
       <!-- Public / clone -->
-      <ion-row *ngIf="!update || current_user.email === ingredient.user.owner">
-        <ion-col class="no-padding">
-          <ion-item class="input-item" lines="full">
-            <ion-label color="primary">{{'ingredients.public' | translate}}</ion-label>
-            <ion-checkbox
-              class="formula-is-public formula-checkbox"
-              color="primary"
-              [(ngModel)]="ingredient.user.public"
-              [ngModelOptions]="{standalone: true}"
-              slot="start">
-            </ion-checkbox>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="!update || current_user.email === ingredient.user.owner">
-        <ion-col class="no-padding">
-          <ion-item class="input-item" lines="full">
-            <ion-label color="primary">{{'ingredients.can_clone' | translate}}</ion-label>
-            <ion-checkbox class="formula-can-clone formula-checkbox"
-              color="primary"
-              [(ngModel)]="ingredient.user.can_clone"
-              [ngModelOptions]="{standalone: true}"
-              slot="start">
-            </ion-checkbox>
-          </ion-item>
-        </ion-col>
-      </ion-row>
+      <!-- PERMISSION: SHARE MANAGE -->
+      <span *appHasPermission="{name: 'SHARE', type: 'MANAGE'}">
+        <ion-row *ngIf="!update || current_user.email === ingredient.user.owner">
+          <ion-col class="no-padding">
+            <ion-item class="input-item" lines="full">
+              <ion-label color="primary">{{'ingredients.public' | translate}}</ion-label>
+              <ion-checkbox class="formula-is-public formula-checkbox" color="primary" [(ngModel)]="ingredient.user.public"
+                [ngModelOptions]="{standalone: true}" slot="start">
+              </ion-checkbox>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="!update || current_user.email === ingredient.user.owner">
+          <ion-col class="no-padding">
+            <ion-item class="input-item" lines="full">
+              <ion-label color="primary">{{'ingredients.can_clone' | translate}}</ion-label>
+              <ion-checkbox class="formula-can-clone formula-checkbox" color="primary" [(ngModel)]="ingredient.user.can_clone"
+                [ngModelOptions]="{standalone: true}" slot="start">
+              </ion-checkbox>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </span>
 
       <ion-item lines="full">
         <ion-label>{{'ingredients.type.name' | translate}}</ion-label>

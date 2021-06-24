@@ -10,6 +10,7 @@ import { CourseCRUDService } from "src/app/core/services/firebase/course.service
 import { UserCRUDService } from 'src/app/core/services/firebase/user.service';
 import { LanguageService } from 'src/app/core/services/language.service';
 import { UserStorageService } from 'src/app/core/services/storage/user.service';
+import { UserService } from "src/app/core/services/user.service";
 
 @Component({
   selector: "app-user-groups-manage",
@@ -37,7 +38,8 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private userService: UserService
   ){}
 
   async ngOnInit() {
@@ -109,7 +111,7 @@ export class UserGroupsManagePage implements OnInit, ViewWillEnter {
         this.userCRUDService
         .updateUserGroup(this.user)
         .then(async () => {
-          if (this.user.instructor) {
+          if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
             let courses = this.courseService.getMyCurrentCourses();
             await this.courseCRUDService.updateGroup(courses, this.user_group);
           }

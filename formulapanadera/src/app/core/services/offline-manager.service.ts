@@ -99,5 +99,6 @@ export class OfflineManagerService {
 
   clearRequests() {
     this.storageService.remove(STORAGE_REQ_KEY);
+    this.storageService.clear();
   }
 }

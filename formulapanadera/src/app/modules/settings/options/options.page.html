@@ -43,8 +43,10 @@
       <ion-icon name="information-outline"></ion-icon>
       <ion-label class="option">{{ 'settings.legal.privacy_policy' | translate }}</ion-label>
     </ion-item>
-    <app-divider></app-divider>
+    <app-divider *ngIf="user.role !== 'FREE'"></app-divider>
+    <!-- PERMISSION: SHARE MANAGE -->
     <ion-item
+      *appHasPermission="{name: 'SHARE', type: 'MANAGE'}"
       button
       [routerLink]="[APP_URL.menu.routes.settings.routes.shared.main]"
       routerDirection="forward"
@@ -55,7 +57,9 @@
         >{{'formulas.share.my_shares' | translate}}</ion-label
       >
     </ion-item>
+    <!-- PERMISSION: SHARE MANAGE -->
     <ion-item
+      *appHasPermission="{name: 'SHARE', type: 'MANAGE'}"
       button
       [routerLink]="[APP_URL.menu.routes.settings.routes.user_groups.main]"
       routerDirection="forward"
@@ -66,8 +70,9 @@
         >{{'settings.user_groups.name' | translate}}</ion-label
       >
     </ion-item>
+    <!-- PERMISSION: COURSE MANAGE -->
     <ion-item
-      *ngIf="user.instructor"
+      *appHasPermission="{name: 'COURSE', type: 'MANAGE'}"
       button
       [routerLink]="[APP_URL.menu.routes.settings.routes.course.main]"
       routerDirection="forward"

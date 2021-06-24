@@ -41,42 +41,35 @@
     </ion-col>
   </ion-row>
 
-  <app-divider></app-divider>
-  
-  <ion-row>
-    <ion-col class="detail-col">
-      <ion-item class="input-item" lines="full">
-        <ion-label color="primary" class="label">{{'formulas.public' | translate}}</ion-label>
-        <ion-checkbox
-          class="checkbox"
-          color="primary"
-          [ngModel]="production.user.public"
-          [ngModelOptions]="{standalone: true}"
-          slot="start"
-          [disabled]="!(user.email === production.user.creator.email) && !is_modifier"
-          (ngModelChange)="changeProduction('public', $event)"
-        >
-        </ion-checkbox>
-      </ion-item>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col class="detail-col">
-      <ion-item class="input-item" lines="full">
-        <ion-label color="primary" class="label">{{'formulas.can_clone' | translate}}</ion-label>
-        <ion-checkbox
-          class="checkbox"
-          color="primary"
-          [ngModel]="production.user.can_clone"
-          [ngModelOptions]="{standalone: true}"
-          slot="start"
-          [disabled]="!(user.email === production.user.creator.email) && !is_modifier"
-          (ngModelChange)="changeProduction('clone', $event)"
-        >
-        </ion-checkbox>
-      </ion-item>
-    </ion-col>
-  </ion-row>
+  <!-- PERMISSION: SHARE MANAGE -->
+  <span *appHasPermission="{name: 'SHARE', type: 'MANAGE'}">
+    <app-divider></app-divider>
+    
+    <ion-row>
+      <ion-col class="detail-col">
+        <ion-item class="input-item" lines="full">
+          <ion-label color="primary" class="label">{{'formulas.public' | translate}}</ion-label>
+          <ion-checkbox class="checkbox" color="primary" [ngModel]="production.user.public"
+            [ngModelOptions]="{standalone: true}" slot="start"
+            [disabled]="!(user.email === production.user.creator.email) && !is_modifier"
+            (ngModelChange)="changeProduction('public', $event)">
+          </ion-checkbox>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="detail-col">
+        <ion-item class="input-item" lines="full">
+          <ion-label color="primary" class="label">{{'formulas.can_clone' | translate}}</ion-label>
+          <ion-checkbox class="checkbox" color="primary" [ngModel]="production.user.can_clone"
+            [ngModelOptions]="{standalone: true}" slot="start"
+            [disabled]="!(user.email === production.user.creator.email) && !is_modifier"
+            (ngModelChange)="changeProduction('clone', $event)">
+          </ion-checkbox>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </span>
 
   <app-divider></app-divider>
 

@@ -2,7 +2,8 @@
   <ion-toolbar color="primary">
     <ion-icon slot="start" class="btn-med" [name]="ICONS.ingredient"></ion-icon>
     <ion-title> {{ 'ingredients.name' | translate }} </ion-title>
-    <ion-buttons slot="end">
+    <!-- PERMISSION: INGREDIENT MANAGE (CREATE) -->
+    <ion-buttons slot="end" *appHasPermission="{name: 'INGREDIENT', type: 'MANAGE'}">
       <ion-button (click)="createIngredient()" class="create-ingredient">
         <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
       </ion-button>

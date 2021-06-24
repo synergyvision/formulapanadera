@@ -28,42 +28,35 @@
       [data]="ingredient.name"
     ></app-data-item>
 
-    <app-divider></app-divider>
-  
-    <ion-row>
-      <ion-col class="detail-col">
-        <ion-item class="input-item" lines="full">
-          <ion-label color="primary" class="label">{{'ingredients.public' | translate}}</ion-label>
-          <ion-checkbox
-            class="checkbox"
-            color="primary"
-            [ngModel]="ingredient.user.public"
-            [ngModelOptions]="{standalone: true}"
-            slot="start"
-            [disabled]="!(user.email === ingredient.user.creator.email) && !is_modifier"
-            (ngModelChange)="changeIngredient('public', $event)"
-          >
-          </ion-checkbox>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="detail-col">
-        <ion-item class="input-item" lines="full">
-          <ion-label color="primary" class="label">{{'ingredients.can_clone' | translate}}</ion-label>
-          <ion-checkbox
-            class="checkbox"
-            color="primary"
-            [ngModel]="ingredient.user.can_clone"
-            [ngModelOptions]="{standalone: true}"
-            slot="start"
-            [disabled]="!(user.email === ingredient.user.creator.email) && !is_modifier"
-            (ngModelChange)="changeIngredient('clone', $event)"
-          >
-          </ion-checkbox>
-        </ion-item>
-      </ion-col>
-    </ion-row>
+    <!-- PERMISSION: SHARE MANAGE -->
+    <span *appHasPermission="{name: 'SHARE', type: 'MANAGE'}">
+      <app-divider></app-divider>
+      
+      <ion-row>
+        <ion-col class="detail-col">
+          <ion-item class="input-item" lines="full">
+            <ion-label color="primary" class="label">{{'ingredients.public' | translate}}</ion-label>
+            <ion-checkbox class="checkbox" color="primary" [ngModel]="ingredient.user.public"
+              [ngModelOptions]="{standalone: true}" slot="start"
+              [disabled]="!(user.email === ingredient.user.creator.email) && !is_modifier"
+              (ngModelChange)="changeIngredient('public', $event)">
+            </ion-checkbox>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="detail-col">
+          <ion-item class="input-item" lines="full">
+            <ion-label color="primary" class="label">{{'ingredients.can_clone' | translate}}</ion-label>
+            <ion-checkbox class="checkbox" color="primary" [ngModel]="ingredient.user.can_clone"
+              [ngModelOptions]="{standalone: true}" slot="start"
+              [disabled]="!(user.email === ingredient.user.creator.email) && !is_modifier"
+              (ngModelChange)="changeIngredient('clone', $event)">
+            </ion-checkbox>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </span>
 
     <app-divider></app-divider>
 

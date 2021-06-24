@@ -24,6 +24,7 @@ import { ProductionService } from "src/app/core/services/production.service";
 import { SettingsStorageService } from "src/app/core/services/storage/settings.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { TimeService } from "src/app/core/services/time.service";
+import { UserService } from "src/app/core/services/user.service";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 
 @Component({
@@ -56,7 +57,8 @@ export class TabsPage implements OnInit, OnDestroy {
     private ingredientService: IngredientService,
     private settingsStorageService: SettingsStorageService,
     private networkService: NetworkService,
-    private offlineManager: OfflineManagerService
+    private offlineManager: OfflineManagerService,
+    private userService: UserService
   ) { }
 
   async ngOnInit() {
@@ -140,7 +142,7 @@ export class TabsPage implements OnInit, OnDestroy {
           );
         };
       });
-    if (this.user.instructor) {
+    if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
       this.myCoursesSubscriber = this.courseCRUDService.getMyCoursesDataSource(this.user.email)
         .subscribe(async (courses) => {
           if (this.networkService.isConnectedToNetwork()) {
@@ -183,7 +185,7 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.user.instructor) {
+    if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
       this.myCoursesSubscriber.unsubscribe();
     }
     this.coursesSubscriber.unsubscribe();
@@ -231,7 +233,7 @@ export class TabsPage implements OnInit, OnDestroy {
       await this.formulaCRUDService.updateIngredients(updated_ingredients, updated_formulas);
       let updated_productions: ProductionModel[] = []
       await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
-      if (this.user.instructor) {
+      if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
         let updated_courses: CourseModel[] = []
         await this.courseCRUDService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);
       }
@@ -240,13 +242,13 @@ export class TabsPage implements OnInit, OnDestroy {
       let updated_formulas: FormulaModel[] = [req.data];
       let updated_productions: ProductionModel[] = []
       await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
-      if (this.user.instructor) {
+      if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
         let updated_courses: CourseModel[] = []
         await this.courseCRUDService.updateAll(updated_courses, [], updated_formulas, updated_productions);
       }
     }
     if (req.collection == COLLECTIONS.production) {
-      if (this.user.instructor) {
+      if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
         let updated_productions: ProductionModel[] = [req.data]
         let updated_courses: CourseModel[] = []
         await this.courseCRUDService.updateAll(updated_courses, [], [], updated_productions);

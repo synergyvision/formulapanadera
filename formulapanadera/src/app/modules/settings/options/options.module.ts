@@ -6,6 +6,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { OptionsPage } from "./options.page";
 import { ComponentsModule } from "src/app/shared/components/components.module";
+import { DirectivesModule } from "src/app/shared/directives/directives.module";
 
 const routes: Routes = [
   {
@@ -21,6 +22,7 @@ const routes: Routes = [
     ComponentsModule,
     RouterModule.forChild(routes),
     TranslateModule,
+    DirectivesModule
   ],
   declarations: [OptionsPage],
 })

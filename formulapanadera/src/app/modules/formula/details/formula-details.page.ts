@@ -15,7 +15,7 @@ import {
 } from "src/app/core/models/formula.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
-import { UserGroupModel, UserResumeModel } from "src/app/core/models/user.model";
+import { UserGroupModel, UserModel, UserResumeModel } from "src/app/core/models/user.model";
 import { DATE_FORMAT, DECIMALS, DECIMAL_BAKERS_PERCENTAGE_FORMAT, DECIMAL_COST_FORMAT, MOMENT_DATE_FORMAT } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
@@ -29,6 +29,7 @@ import { UserGroupPickerModal } from 'src/app/shared/modal/user-group/user-group
 import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 import { SettingsStorageService } from "src/app/core/services/storage/settings.service";
 import * as moment from "moment";
+import { UserService } from "src/app/core/services/user.service";
 
 @Component({
   selector: "app-formula-details",
@@ -71,7 +72,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   showSteps: boolean;
   showTimes: boolean
 
-  user: UserResumeModel = new UserResumeModel();
+  user: UserModel = new UserModel();
   is_modifier: boolean = false
 
   constructor(
@@ -92,6 +93,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private formatNumberService: FormatNumberService,
     private productionCRUDService: ProductionCRUDService,
     private userCRUDService: UserCRUDService,
+    private userService: UserService
   ) {
     this.showOrganolepticCharacteristics = false;
     this.showNotes = false;
@@ -117,8 +119,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         this.steps = JSON.parse(JSON.stringify(this.formula.steps));
       }
 
-      let user = await this.userStorageService.getUser();
-      this.user = {name: user.name, email: user.email}
+      this.user = await this.userStorageService.getUser();
       this.is_modifier = false;
       this.formula.user.modifiers.forEach((user) => {
         if (user.email == this.user.email) {
@@ -223,7 +224,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   async presentOptions() {
     let current_user = this.user.email;
     let buttons = [];
-    if (this.formula.steps && this.formula.steps.length > 0) {
+    if (this.formula.steps && this.formula.steps.length > 0 && this.userService.hasPermission(this.user.role, [{name: 'PRODUCTION', type: 'VIEW'}])) {
       buttons.push({
         text: this.languageService.getTerm("action.do_production"),
         icon: ICONS.production_start,
@@ -234,9 +235,11 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       });
     }
     if (!this.isCourse) {
+      // PERMISSION: FORMULA MANAGE (UPDATE)
       if (
-        this.formula.user.owner == current_user
-      ) {
+        this.formula.user.owner == current_user &&
+        this.userService.hasPermission(this.user.role, [{ name: 'FORMULA', type: 'MANAGE' }])
+       ) {
         buttons.push({
           text: this.languageService.getTerm("action.update"),
           icon: ICONS.create,
@@ -246,8 +249,10 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           },
         });
       }
+      // PERMISSION: SHARE MANAGE
       if (
-        this.formula.user.owner == current_user && (this.is_modifier || this.formula.user.creator.email == current_user)
+        this.formula.user.owner == current_user && (this.is_modifier || this.formula.user.creator.email == current_user) &&
+        this.userService.hasPermission(this.user.role, [{ name: 'SHARE', type: 'MANAGE' }])
       ) {
         buttons.push({
           text: this.languageService.getTerm("action.share"),
@@ -291,7 +296,11 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         },
       },
     );
-    if (!this.isCourse && this.formula.user.owner == current_user) {
+    // PERMISSION: FORMULA MANAGE (DELETE)
+    if (
+      !this.isCourse && this.formula.user.owner == current_user &&
+      this.userService.hasPermission(this.user.role, [{ name: 'FORMULA', type: 'MANAGE' }])
+    ) {
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
         icon: ICONS.trash,

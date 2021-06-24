@@ -22,7 +22,7 @@ const routes: Routes = [
   },
   {
     path: APP_URL.menu.routes.production.routes.details,
-    canLoad: [StateHasDataGuard],
+    canActivate: [StateHasDataGuard],
     loadChildren: () =>
       import("./details/production-details.module").then(
         (m) => m.ProductionDetailsPageModule
@@ -30,7 +30,7 @@ const routes: Routes = [
   },
   {
     path: APP_URL.menu.routes.production.routes.start,
-    canLoad: [StateHasDataGuard],
+    canActivate: [StateHasDataGuard],
     loadChildren: () =>
       import("./start/production-start.module").then(
         (m) => m.ProductionStartPageModule

@@ -28,6 +28,7 @@ import { DECIMALS } from "src/app/config/formats";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
+import { UserService } from "src/app/core/services/user.service";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -65,6 +66,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private router: Router,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
@@ -363,7 +365,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
           await this.formulaCRUDService.updateIngredients(updated_ingredients, updated_formulas);
           let updated_productions: ProductionModel[] = []
           await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
-          if (this.current_user.instructor) {
+          if (this.userService.hasPermission(this.current_user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
             let updated_courses: CourseModel[] = []
             await this.courseCRUDService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);
           }

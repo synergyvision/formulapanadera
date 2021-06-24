@@ -8,6 +8,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { ComponentsModule } from "src/app/shared/components/components.module";
 
 import { FormulaListingPage } from "./formula-listing.page";
+import { DirectivesModule } from "src/app/shared/directives/directives.module";
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     ComponentsModule,
     TranslateModule,
+    DirectivesModule
   ],
   declarations: [FormulaListingPage],
 })

@@ -21,8 +21,7 @@ export class UserStorageService {
   }
 
   public async setUser(user: UserModel): Promise<void> {
-    let storage_user = JSON.stringify(user);
-    Storage.set({ key: this.key, value: storage_user });
+    Storage.set({ key: this.key, value: JSON.stringify(user) });
   }
 
   public async clear() {

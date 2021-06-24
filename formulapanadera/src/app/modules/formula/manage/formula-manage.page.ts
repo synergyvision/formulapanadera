@@ -36,6 +36,7 @@ import { CourseModel } from "src/app/core/models/course.model";
 import { DECIMALS } from "src/app/config/formats";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
+import { UserService } from "src/app/core/services/user.service";
 
 @Component({
   selector: "app-formula-manage",
@@ -71,7 +72,8 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
@@ -511,7 +513,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
               let updated_formulas: FormulaModel[] = [this.formula];
               let updated_productions: ProductionModel[] = []
               await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
-              if (this.current_user.instructor) {
+              if (this.userService.hasPermission(this.current_user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
                 let updated_courses: CourseModel[] = []
                 await this.courseCRUDService.updateAll(updated_courses, [], updated_formulas, updated_productions);
               }

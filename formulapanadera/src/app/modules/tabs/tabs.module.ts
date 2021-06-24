@@ -8,6 +8,7 @@ import { TranslateModule } from "@ngx-translate/core";
 
 import { TabsPage } from "./tabs.page";
 import { ModalModule } from "src/app/shared/modal/modal.module";
+import { DirectivesModule } from "src/app/shared/directives/directives.module";
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { ModalModule } from "src/app/shared/modal/modal.module";
     TabsPageRoutingModule,
     TranslateModule,
     ModalModule,
+    DirectivesModule
   ],
   declarations: [TabsPage],
 })

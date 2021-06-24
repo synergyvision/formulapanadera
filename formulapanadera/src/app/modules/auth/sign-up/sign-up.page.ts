@@ -111,6 +111,7 @@ export class SignUpPage implements OnInit {
         this.user.name = values.fullName;
         this.user.email = values.email;
         this.user.user_groups = [];
+        this.user.role = 'FREE';
         this.userCRUDService
           .createUser(result.user.uid, this.user)
           .then(async () => {

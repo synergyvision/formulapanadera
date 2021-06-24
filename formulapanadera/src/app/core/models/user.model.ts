@@ -34,6 +34,6 @@ export class UserModel {
   id: string;
   name: string;
   email: string;
-  instructor: boolean;
+  role: string;
   user_groups: Array<UserGroupModel>;
 }
