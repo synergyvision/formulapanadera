@@ -507,7 +507,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
           {
             name: 'repeat',
             type: 'checkbox',
-            label: this.languageService.getTerm("formulas.can_clone"),
+            label: this.languageService.getTerm("action.stop_alert"),
             value: 'repeat',
           },
         ],

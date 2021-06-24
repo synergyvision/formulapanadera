@@ -39,12 +39,12 @@ export class IngredientsListComponent implements OnInit, OnChanges {
   ingredientGrams(percentage: number): number {
     if (!this.compensation) {
       if (this.bakers_percentage) {
-        return Number((percentage * this.bakers_percentage).toFixed(DECIMALS.formula_grams));
+        return Number(this.formatNumberService.formatNumberFixedDecimals(percentage * this.bakers_percentage, DECIMALS.formula_grams));
       } else {
-        return Number((percentage * this.formula_weight/100).toFixed(DECIMALS.formula_grams));
+        return Number(this.formatNumberService.formatNumberFixedDecimals(percentage * this.formula_weight / 100, DECIMALS.formula_grams));
       }
     } else {
-      return Number((percentage * this.bakers_percentage * (1 + this.compensation / 100)).toFixed(DECIMALS.formula_grams));
+      return Number(this.formatNumberService.formatNumberFixedDecimals(percentage * this.bakers_percentage * (1 + this.compensation / 100), DECIMALS.formula_grams));
     }
   }
 
@@ -68,7 +68,7 @@ export class IngredientsListComponent implements OnInit, OnChanges {
     this.ingredients.forEach((ingredient) => {
       total = total + Number(this.ingredientGrams(ingredient.percentage));
     });
-    return Number(total.toFixed(DECIMALS.formula_grams));
+    return Number(this.formatNumberService.formatNumberFixedDecimals(total, DECIMALS.formula_grams));
   }
 
   unitTotalGrams(totalGrams: number) {

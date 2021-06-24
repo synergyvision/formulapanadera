@@ -185,7 +185,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
   formatPercentage(ingredient: IngredientPercentageModel) {
     let percentage: string = ingredient.percentage ? ingredient.percentage.toString() : "";
     ingredient.percentage = Number(
-      this.formatNumberService.formatStringToDecimals(percentage, DECIMALS.formula_percentage)
+      this.formatNumberService.formatStringToDecimals(percentage, 3)
     );
   }
 
