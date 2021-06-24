@@ -189,35 +189,82 @@
 </ion-header>
 
 <ion-content class="ingredient-content">
-  <ion-segment
-    mode="ios"
-    (ionChange)="segmentChanged($event)"
-    [value]="segment"
-    class="segment"
-  >
-    <ion-segment-button value="mine">
-      <ion-label>{{'formulas.share.mine' | translate}}</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="shared">
-      <ion-label>{{'formulas.share.shared' | translate}}</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="public">
-      <ion-label>{{'formulas.share.public' | translate}}</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-  <ion-list
-    lines="none"
-    class="ingredients-list"
-    *ngIf="ingredients?.length > 0; else emptyBlock"
-  >
-    <app-ingredient-item
-      *ngFor="let ingredient of ingredients; index as i"
-      [selected]="isSelected(ingredient)"
-      (click)="clickIngredient(ingredient)"
-      [ingredient]="ingredient"
-      [even]="(i%2==0)"
-    ></app-ingredient-item>
-  </ion-list>
+  <span *ngIf="ingredients?.length > 0; else emptyBlock">
+    <!-- Mine -->
+    <span *ngIf="ingredientsSegment('mine')?.length > 0">
+      <app-show-hide-content
+        *ngIf="!isLoading"
+        (click)="showMine = !showMine"
+        [show]="showMine"
+        [title]="'formulas.share.mine' | translate"
+        [highlight]="true"
+      ></app-show-hide-content>
+      <ion-list
+        lines="none"
+        class="ingredients-list"
+        *ngIf="showMine"
+      >
+        <app-ingredient-item
+          *ngFor="let ingredient of ingredientsSegment('mine'); index as i"
+          [selected]="isSelected(ingredient)"
+          (click)="clickIngredient(ingredient)"
+          [ingredient]="ingredient"
+          [even]="(i%2==0)"
+        >
+        </app-ingredient-item>
+      </ion-list>
+    </span>
+
+    <!-- Shared -->
+    <span *ngIf="ingredientsSegment('shared')?.length > 0">
+      <app-show-hide-content
+        *ngIf="!isLoading"
+        (click)="showShared = !showShared"
+        [show]="showShared"
+        [title]="'formulas.share.shared' | translate"
+        [highlight]="true"
+      ></app-show-hide-content>
+      <ion-list
+        lines="none"
+        class="ingredients-list"
+        *ngIf="showShared && ingredientsSegment('shared')?.length > 0"
+      >
+        <app-ingredient-item
+          *ngFor="let ingredient of ingredientsSegment('shared'); index as i"
+          [selected]="isSelected(ingredient)"
+          (click)="clickIngredient(ingredient)"
+          [ingredient]="ingredient"
+          [even]="(i%2==0)"
+        >
+        </app-ingredient-item>
+      </ion-list>
+    </span>
+
+    <!-- Public -->
+    <span *ngIf="ingredientsSegment('public')?.length > 0">
+      <app-show-hide-content
+        *ngIf="!isLoading"
+        (click)="showPublic = !showPublic"
+        [show]="showPublic"
+        [title]="'formulas.share.public' | translate"
+        [highlight]="true"
+      ></app-show-hide-content>
+      <ion-list
+        lines="none"
+        class="ingredients-list"
+        *ngIf="showPublic"
+      >
+        <app-ingredient-item
+          *ngFor="let ingredient of ingredientsSegment('public'); index as i"
+          [selected]="isSelected(ingredient)"
+          (click)="clickIngredient(ingredient)"
+          [ingredient]="ingredient"
+          [even]="(i%2==0)"
+        >
+        </app-ingredient-item>
+      </ion-list>
+    </span>
+  </span>
   <ng-template #emptyBlock>
     <ion-row class="empty-block">
       <ion-col class="ion-text-center ion-padding">

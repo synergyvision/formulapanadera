@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, QueryList, ViewChildren } from "@angular/core";
 import { IonTextarea, ModalController } from "@ionic/angular";
-import { MANIPULATION_STEP } from "src/app/config/formula";
+import { MANIPULATION_STEP, OVEN_STEP } from "src/app/config/formula";
 import { ICONS } from "src/app/config/icons";
 import { StepDetailsModel } from "src/app/core/models/formula.model";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
@@ -48,10 +48,17 @@ export class FormulaStepsModal implements AfterViewInit {
     if (event.detail.value == "no") {
       this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = null;
     } else if (event.detail.value == "yes") {
-      this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = {
-        min: 26,
-        max: -1,
-      };
+      if (step.number !== OVEN_STEP - 1) {
+        this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = {
+          min: 26,
+          max: -1,
+        };
+      } else {
+        this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = {
+          min: 180,
+          max: -1,
+        };
+      }
     } else if (event.detail.value == "range") {
       this.formulaSteps[this.formulaSteps.indexOf(step)].temperature = {
         min: 25,

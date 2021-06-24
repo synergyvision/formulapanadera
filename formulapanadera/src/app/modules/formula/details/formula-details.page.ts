@@ -16,7 +16,7 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { LanguageService } from "src/app/core/services/language.service";
 import { UserGroupModel, UserResumeModel } from "src/app/core/models/user.model";
-import { DATE_FORMAT, DECIMALS, DECIMAL_BAKERS_PERCENTAGE_FORMAT, DECIMAL_COST_FORMAT } from "src/app/config/formats";
+import { DATE_FORMAT, DECIMALS, DECIMAL_BAKERS_PERCENTAGE_FORMAT, DECIMAL_COST_FORMAT, MOMENT_DATE_FORMAT } from "src/app/config/formats";
 import { DatePipe } from "@angular/common";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
@@ -27,6 +27,8 @@ import { FormatNumberService } from 'src/app/core/services/format-number.service
 import { ProductionCRUDService } from 'src/app/core/services/firebase/production.service';
 import { UserGroupPickerModal } from 'src/app/shared/modal/user-group/user-group-picker.modal';
 import { UserCRUDService } from "src/app/core/services/firebase/user.service";
+import { SettingsStorageService } from "src/app/core/services/storage/settings.service";
+import * as moment from "moment";
 
 @Component({
   selector: "app-formula-details",
@@ -50,7 +52,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   total_weight: number;
   hydration: number;
   fat: number;
-  unitary_cost: string;
+  unitary_cost: number;
   total_cost: string;
 
   currency: string = CURRENCY;
@@ -76,6 +78,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
     private languageService: LanguageService,
+    private settingsStorageService: SettingsStorageService,
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
     private toastController: ToastController,
@@ -156,7 +159,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       formula_without_compound.formula.ingredients,
       Number(bakers_p)
     );
-    this.unitary_cost = (Number(this.total_cost) / this.units).toString();
+    this.unitary_cost = Number(this.total_cost) / this.units;
 
     this.ingredients_formula = []
     let ing_formula: IngredientPercentageModel[] = [];
@@ -274,7 +277,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
         icon: ICONS.clone,
         cssClass: "action-icon",
         handler: () => {
-          this.cloneFormula();
+          this.cloneFormulaAlert();
         },
       });
     }
@@ -482,7 +485,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     }
 
     this.formulaCRUDService
-      .updateFormula(this.formula, this.formula)
+      .update(this.formula, this.formula)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -493,41 +496,61 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       });
   }
 
-  async cloneFormula() {
-    const alert = await this.alertController.create({
-      header: this.languageService.getTerm("action.clone"),
-      message: this.languageService.getTerm("formulas.clone.instructions"),
-      cssClass: "alert clone-alert",
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          role: "cancel",
-          handler: () => {},
-        },
-        {
-          text: this.languageService.getTerm("action.ok"),
-          cssClass: "confirm-alert-accept",
-          handler: () => {
-            let formula: FormulaModel = JSON.parse(JSON.stringify(this.formula));
-            delete(formula.id)
-            formula.user.owner = this.user.email;
-            formula.user.public = false;
-            formula.user.reference = this.formula.id;
-            formula.user.shared_references = [];
-            formula.user.shared_users = [];
-            formula.name = `${
-              this.formula.name
-            } (${this.languageService.getTerm("action.copy")})`;
-            this.formulaCRUDService.createFormula(formula).then(() => {
-              this.router.navigateByUrl(
-                APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
-              );
-            });
+  async cloneFormulaAlert() {
+    let settings = await this.settingsStorageService.getSettings();
+    if (settings.clone_alert) {
+      const alert = await this.alertController.create({
+        header: this.languageService.getTerm("action.clone"),
+        message: this.languageService.getTerm("formulas.clone.instructions"),
+        cssClass: "alert clone-alert",
+        inputs: [
+          {
+            name: 'repeat',
+            type: 'checkbox',
+            label: this.languageService.getTerm("formulas.can_clone"),
+            value: 'repeat',
           },
-        },
-      ],
+        ],
+        buttons: [
+          {
+            text: this.languageService.getTerm("action.cancel"),
+            role: "cancel",
+            handler: () => { },
+          },
+          {
+            text: this.languageService.getTerm("action.ok"),
+            cssClass: "confirm-alert-accept",
+            handler: (data) => {
+              let repeat: boolean = data && data.length > 0 && data[0] == "repeat";
+              settings.clone_alert = !repeat;
+              this.settingsStorageService.setSettings(settings);
+              this.cloneFormula();
+            },
+          },
+        ],
+      });
+      await alert.present();
+    } else {
+      this.cloneFormula();
+    }
+  }
+
+  async cloneFormula() {
+    let formula: FormulaModel = JSON.parse(JSON.stringify(this.formula));
+    delete(formula.id)
+    formula.user.owner = this.user.email;
+    formula.user.public = false;
+    formula.user.reference = this.formula.id;
+    formula.user.shared_references = [];
+    formula.user.shared_users = [];
+    formula.name = `${
+      this.formula.name
+    } (${this.languageService.getTerm("action.copy")})`;
+    this.formulaCRUDService.create(formula).then(() => {
+      this.router.navigateByUrl(
+        APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
+      );
     });
-    await alert.present();
   }
 
   async deleteFormula() {
@@ -554,7 +577,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
             await loading.present();
 
             this.formulaCRUDService
-              .deleteFormula(this.formula)
+              .delete(this.formula)
               .then(async () => {
                 this.router.navigateByUrl(
                   APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main
@@ -576,19 +599,24 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
   async showCredits() {
     let creator_title = this.languageService.getTerm("credits.creator");
     let creator_name = `${this.formula.user.creator.name}<br/>${this.formula.user.creator.email}`;
-    let creator_date = `${this.datePipe.transform(
-      this.formula.user.creator.date.seconds * 1000,
-      DATE_FORMAT
-    )}`;
+    let creator_date = "";
+    if (typeof this.formula.user.creator.date === 'object' && this.formula.user.creator.date !== null) {
+      creator_date = this.datePipe.transform(this.formula.user.creator.date.seconds * 1000, DATE_FORMAT);
+    } else if (this.formula.user.creator.date !== null) {
+      creator_date = moment(this.formula.user.creator.date).format(MOMENT_DATE_FORMAT);
+    }
     let modifiers_title = this.languageService.getTerm("credits.modifiers");
     let modifiers = "";
     this.formula.user.modifiers.forEach((modifier) => {
+      let date = "";
+      if (typeof modifier.date === 'object' && modifier.date !== null) {
+        date = this.datePipe.transform(modifier.date.seconds * 1000, DATE_FORMAT);
+      } else if (modifier.date !== null) {
+        date = moment(modifier.date).format(MOMENT_DATE_FORMAT);
+      }
       modifiers =
         modifiers +
-        `${modifier.name}<br/>${modifier.email}<br>${this.datePipe.transform(
-          modifier.date.seconds * 1000,
-          DATE_FORMAT
-        )}<br/><br/>`;
+        `${modifier.name}<br/>${modifier.email}<br>${date}<br/><br/>`;
     });
     let text = `<strong>${creator_title}</strong><br/>${creator_name}<br/>${creator_date}<br/>`;
     if (modifiers) {
@@ -658,7 +686,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
       });
       await loading.present();
       this.formulaCRUDService
-        .updateFormula(this.formula, this.formula)
+        .update(this.formula, this.formula)
         .then(() => { })
         .catch(() => {
           this.presentToast(false);
@@ -679,7 +707,7 @@ export class FormulaDetailsPage implements OnInit, OnDestroy {
     await loading.present();
     
     this.productionCRUDService
-      .createProduction(production)
+      .create(production)
       .then(async () => {
         this.router.navigateByUrl(
           APP_URL.menu.name +

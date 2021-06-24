@@ -29,13 +29,17 @@ export class CourseListingPage implements OnInit {
   courses: CourseModel[] & ShellModel;
   all_courses: CourseModel[] & ShellModel;
 
+  showFilters: boolean;
+
   user: UserResumeModel = new UserResumeModel();
 
   constructor(
     private router: Router,
     private courseService: CourseService,
     private userStorageService: UserStorageService,
-  ) {}
+  ) {
+    this.showFilters = false;
+  }
 
   async ngOnInit() {
     this.searchQuery = "";

@@ -42,3 +42,13 @@
 .transparent {
   --background: transparent;
 }
+
+.highlight {
+  --background: var(--ion-color-secondary);
+  color: white;
+
+  .highlight-name {
+      text-align: start;
+      color: white !important;
+    }
+}

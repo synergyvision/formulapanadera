@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 
+import { FirebaseService } from "../../interfaces/firebase-service.interface";
 import { ProductionModel } from "../../models/production.model";
 import { COLLECTIONS } from "src/app/config/firebase";
 import { CourseModel, OrderedItemModel } from "../../models/course.model";
@@ -11,16 +12,28 @@ import { FormulaCRUDService } from "./formula.service";
 import { ProductionCRUDService } from "./production.service";
 import { IngredientCRUDService } from "./ingredient.service";
 import { UserGroupModel } from "../../models/user.model";
+import { NetworkService } from "../network.service";
+import { StorageService } from "../storage/storage.service";
+import { environment } from "src/environments/environment";
+import { OfflineManagerService } from "../offline-manager.service";
+import { CourseService } from "../course.service";
+import { ShellModel } from "src/app/shared/shell/shell.model";
+
+const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
-export class CourseCRUDService {
+export class CourseCRUDService implements FirebaseService {
   collection = COLLECTIONS.course;
 
   constructor(
     private afs: AngularFirestore,
+    private courseService: CourseService,
     private ingredientCRUDService: IngredientCRUDService,
     private formulaCRUDService: FormulaCRUDService,
-    private productionCRUDService: ProductionCRUDService
+    private productionCRUDService: ProductionCRUDService,
+    private networkService: NetworkService,
+    private storageService: StorageService,
+    private offlineManager: OfflineManagerService
   ) { }
 
   /*
@@ -29,11 +42,11 @@ export class CourseCRUDService {
   public getMyCoursesDataSource(
     user_email: string
   ): Observable<Array<CourseModel>> {
-    return this.afs
-      .collection<CourseModel>(this.collection, (ref) =>
-        ref.where("user.owner", "==", user_email)
-      )
-      .valueChanges({ idField: "id" });
+      return this.afs
+        .collection<CourseModel>(this.collection, (ref) =>
+          ref.where("user.owner", "==", user_email)
+        )
+        .valueChanges({ idField: "id" });
   }
 
   public getSharedCoursesDataSource(
@@ -85,33 +98,26 @@ export class CourseCRUDService {
     }
   }
 
-  public async getCourse(
-    id: string
-  ): Promise<CourseModel> {
-    let doc = await this.afs.collection<CourseModel>(this.collection).doc(id).ref.get()
-    if (doc.exists) {
-      let course = doc.data() as CourseModel;
-      await this.getData(course);
-      return course;
-    }
-    return new CourseModel;
-  }
-
   /*
     Course Management
   */
-  public async createCourse(
+  public async create(
     courseData: CourseModel
   ): Promise<void> {
-    let id = this.afs.createId();
-    courseData.id = id;
-    let course: CourseModel = JSON.parse(JSON.stringify(courseData));
-    delete course.productions;
-    delete course.formulas;
-    delete course.ingredients;
-    // Set data
-    await this.createData(`${this.collection}/${id}`, courseData);
-    await this.afs.collection(this.collection).doc(id).set(course);
+    if (this.networkService.isConnectedToNetwork()) {
+      let id = this.afs.createId();
+      courseData.id = id;
+      let course: CourseModel = JSON.parse(JSON.stringify(courseData));
+      delete course.productions;
+      delete course.formulas;
+      delete course.ingredients;
+      // Set data
+      await this.createData(`${this.collection}/${id}`, courseData);
+      await this.afs.collection(this.collection).doc(id).set(course);
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'C', courseData, null);
+      await this.updateLocalData('C', courseData);
+    }
   }
 
   private async createData(collection: string, courseData: CourseModel) {
@@ -161,17 +167,22 @@ export class CourseCRUDService {
     }
   }
 
-  public async updateCourse(courseData: CourseModel, originalCourse: CourseModel): Promise<void> {
-    let course: CourseModel = JSON.parse(JSON.stringify(courseData));
-    delete course.productions;
-    delete course.formulas;
-    delete course.ingredients;
-    course.user.last_modified = new Date();
-    // Delete formulas
-    await this.deleteData(originalCourse);
-    // Set formulas
-    await this.createData(`${this.collection}/${courseData.id}`, courseData);
-    await this.afs.collection(this.collection).doc(courseData.id).set(course);
+  public async update(courseData: CourseModel, originalCourse: CourseModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      let course: CourseModel = JSON.parse(JSON.stringify(courseData));
+      delete course.productions;
+      delete course.formulas;
+      delete course.ingredients;
+      course.user.last_modified = new Date();
+      // Delete formulas
+      await this.deleteData(originalCourse);
+      // Set formulas
+      await this.createData(`${this.collection}/${courseData.id}`, courseData);
+      await this.afs.collection(this.collection).doc(courseData.id).set(course);
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'U', courseData, originalCourse);
+      await this.updateLocalData('U', courseData);
+    }
   }
 
   public async updateGroup(courses: CourseModel[],groupData: UserGroupModel) {
@@ -202,9 +213,14 @@ export class CourseCRUDService {
     })
   }
 
-  public async deleteCourse(courseData: CourseModel): Promise<void> {
-    await this.deleteData(courseData);
-    return this.afs.collection(this.collection).doc(courseData.id).delete();
+  public async delete(courseData: CourseModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      await this.deleteData(courseData);
+      await this.afs.collection(this.collection).doc(courseData.id).delete();
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'D', courseData, null);
+      await this.updateLocalData('D', courseData);
+    }
   }
 
   public async deleteData(courseData: CourseModel, collection = this.collection): Promise<void>{
@@ -232,5 +248,48 @@ export class CourseCRUDService {
       })
       await Promise.all(promises)
     }
+  }
+
+  public async updateAll(updated_courses: CourseModel[],updated_ingredients: IngredientModel[],updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
+    let courses: CourseModel[] = JSON.parse(JSON.stringify(this.courseService.getMyCurrentCourses()));
+    const cour_promises = courses.map((course) => {
+      let original_course: CourseModel = JSON.parse(JSON.stringify(course));
+      let has_any: boolean = this.courseService.hasAny(course, updated_ingredients, updated_formulas, updated_productions);
+      if (has_any) {
+        updated_courses.push(course);
+        return this.update(course, original_course);
+      }
+    })
+    await Promise.all(cour_promises);
+  }
+
+  // Save result of API requests
+  public setLocalData(key: string, data: any) {
+    this.storageService.set(`${API_STORAGE_KEY}-${this.collection}-${key}`, data);
+  }
+ 
+  // Get cached API result
+  public getLocalData(key: string) {
+    return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}-${key}`);
+  }
+
+  private async updateLocalData(operation: 'C' | 'U' | 'D', updatedData: CourseModel) {
+    let data: CourseModel[] = await this.getLocalData('mine');
+    if (operation == 'C') {
+      data.push(updatedData);
+    } else {
+      data.forEach((course, index) => {
+        if (course.id == updatedData.id) {
+          if (operation == 'U') {
+            data[index] = JSON.parse(JSON.stringify(updatedData));
+          }
+          if (operation == 'D') {
+            data.splice(index, 1)
+          }
+        }
+      })
+    }
+    this.setLocalData('mine', data);
+    this.courseService.setMyCourses(data as CourseModel[] & ShellModel)
   }
 }

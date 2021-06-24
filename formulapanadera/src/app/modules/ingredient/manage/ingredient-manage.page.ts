@@ -22,12 +22,12 @@ import { UserModel } from "src/app/core/models/user.model";
 import { ReferenceModel } from "src/app/core/models/shared.model";
 import { ReferencesModal } from "src/app/shared/modal/references/references.modal";
 import { IngredientService } from "src/app/core/services/ingredient.service";
-import { FormulaService } from "src/app/core/services/formula.service";
 import { ProductionModel } from "src/app/core/models/production.model";
-import { ProductionService } from "src/app/core/services/production.service";
-import { CourseService } from "src/app/core/services/course.service";
 import { CourseModel } from "src/app/core/models/course.model";
 import { DECIMALS } from "src/app/config/formats";
+import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
+import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
+import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 
 @Component({
   selector: "app-ingredient-manage",
@@ -53,10 +53,10 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
 
   constructor(
     private ingredientCRUDService: IngredientCRUDService,
+    private formulaCRUDService: FormulaCRUDService,
+    private productionCRUDService: ProductionCRUDService,
+    private courseCRUDService: CourseCRUDService,
     private userStorageService: UserStorageService,
-    private courseService: CourseService,
-    private productionService: ProductionService,
-    private formulaService: FormulaService,
     private ingredientService: IngredientService,
     private languageService: LanguageService,
     private formatNumberService: FormatNumberService,
@@ -76,8 +76,8 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       delete this.ingredient.formula;
       this.manageIngredientForm = new FormGroup({
         name: new FormControl("", Validators.required),
-        hydration: new FormControl("", Validators.required),
-        fat: new FormControl("", Validators.required),
+        hydration: new FormControl("0.00", Validators.required),
+        fat: new FormControl("0.00", Validators.required),
         is_flour: new FormControl(false, Validators.required),
         cost: new FormControl(0, Validators.required),
       });
@@ -241,7 +241,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
     );
   }
 
-  formatSuggestedValues(type: string, value: string) {
+  formatSuggestedValues(type: string, value: number) {
     let sugg_value: number = Number(this.formatNumberService.formatStringToDecimals(value.toString()));
     if (type == "min") {
       this.ingredient.formula.suggested_values.min = Number(
@@ -328,7 +328,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
         modifiers: [],
       };
       this.ingredientCRUDService
-        .createIngredient(this.ingredient)
+        .create(this.ingredient)
         .then(() => {
           this.router.navigateByUrl(
             APP_URL.menu.name +
@@ -355,17 +355,17 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
         date: new Date(),
       });
       this.ingredientCRUDService
-        .updateIngredient(this.ingredient, this.original_ingredient)
+        .update(this.ingredient, this.original_ingredient)
         .then(async () => {
           let updated_ingredients: IngredientModel[] = [this.ingredient];
-          await this.ingredientService.updateIngredients(this.ingredient, updated_ingredients);
+          await this.ingredientCRUDService.updateIngredients(this.ingredient, updated_ingredients);
           let updated_formulas: FormulaModel[] = [];
-          await this.formulaService.updateIngredients(updated_ingredients, updated_formulas);
+          await this.formulaCRUDService.updateIngredients(updated_ingredients, updated_formulas);
           let updated_productions: ProductionModel[] = []
-          await this.productionService.updateFormulas(updated_formulas, updated_productions);
+          await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
           if (this.current_user.instructor) {
             let updated_courses: CourseModel[] = []
-            await this.courseService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);
+            await this.courseCRUDService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);
           }
           this.router.navigateByUrl(
             APP_URL.menu.name +

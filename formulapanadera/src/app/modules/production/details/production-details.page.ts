@@ -4,7 +4,6 @@ import { ActionSheetController, AlertController, IonRouterOutlet, LoadingControl
 import { APP_URL } from "src/app/config/configuration";
 import { DECIMALS } from "src/app/config/formats";
 import { ICONS } from "src/app/config/icons";
-import { FormulaModel } from 'src/app/core/models/formula.model';
 import {
   FormulaNumberModel,
   FormulaPresentModel,
@@ -16,6 +15,7 @@ import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
+import { SettingsStorageService } from "src/app/core/services/storage/settings.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group-picker.modal";
 
@@ -47,6 +47,7 @@ export class ProductionDetailsPage implements OnInit {
   constructor(
     private formulaService: FormulaService,
     private languageService: LanguageService,
+    private settingsStorageService: SettingsStorageService,
     private router: Router,
     private route: ActivatedRoute,
     private actionSheetController: ActionSheetController,
@@ -222,7 +223,7 @@ export class ProductionDetailsPage implements OnInit {
         icon: ICONS.clone,
         cssClass: "action-icon",
         handler: () => {
-          this.cloneProduction();
+          this.cloneProductionAlert();
         },
       });
     }
@@ -386,7 +387,7 @@ export class ProductionDetailsPage implements OnInit {
     this.original_production.user = this.production.user;
 
     this.productionCRUDService
-      .updateProduction(this.production, this.production)
+      .update(this.production, this.production)
       .then(() => {
         if (toast) {
           this.presentToast(true);
@@ -397,41 +398,61 @@ export class ProductionDetailsPage implements OnInit {
       });
   }
 
-  async cloneProduction() {
-    const alert = await this.alertController.create({
-      header: this.languageService.getTerm("action.clone"),
-      message: this.languageService.getTerm("formulas.clone.instructions"),
-      cssClass: "alert clone-alert",
-      buttons: [
-        {
-          text: this.languageService.getTerm("action.cancel"),
-          role: "cancel",
-          handler: () => {},
-        },
-        {
-          text: this.languageService.getTerm("action.ok"),
-          cssClass: "confirm-alert-accept",
-          handler: () => {
-            let production: ProductionModel = JSON.parse(JSON.stringify(this.production));
-            delete(production.id)
-            production.user.owner = this.user.email;
-            production.user.public = false;
-            production.user.reference = this.production.id;
-            production.user.shared_references = [];
-            production.user.shared_users = [];
-            production.name = `${
-              this.production.name
-            } (${this.languageService.getTerm("action.copy")})`;
-            this.productionCRUDService.createProduction(production).then(() => {
-              this.router.navigateByUrl(
-                APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
-              );
-            });
+  async cloneProductionAlert() {
+    let settings = await this.settingsStorageService.getSettings();
+    if (settings.clone_alert) {
+      const alert = await this.alertController.create({
+        header: this.languageService.getTerm("action.clone"),
+        message: this.languageService.getTerm("formulas.clone.instructions"),
+        cssClass: "alert clone-alert",
+        inputs: [
+          {
+            name: 'repeat',
+            type: 'checkbox',
+            label: this.languageService.getTerm("action.stop_alert"),
+            value: 'repeat',
           },
-        },
-      ],
+        ],
+        buttons: [
+          {
+            text: this.languageService.getTerm("action.cancel"),
+            role: "cancel",
+            handler: () => { },
+          },
+          {
+            text: this.languageService.getTerm("action.ok"),
+            cssClass: "confirm-alert-accept",
+            handler: (data) => {
+              let repeat: boolean = data && data.length > 0 && data[0] == "repeat";
+              settings.clone_alert = !repeat;
+              this.settingsStorageService.setSettings(settings);
+              this.cloneProduction();
+            },
+          },
+        ],
+      });
+      await alert.present();
+    } else {
+      this.cloneProduction();
+    }
+  }
+
+  async cloneProduction() {
+    let production: ProductionModel = JSON.parse(JSON.stringify(this.production));
+    delete(production.id)
+    production.user.owner = this.user.email;
+    production.user.public = false;
+    production.user.reference = this.production.id;
+    production.user.shared_references = [];
+    production.user.shared_users = [];
+    production.name = `${
+      this.production.name
+    } (${this.languageService.getTerm("action.copy")})`;
+    this.productionCRUDService.create(production).then(() => {
+      this.router.navigateByUrl(
+        APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
+      );
     });
-    await alert.present();
   }
 
   startProduction() {
@@ -476,7 +497,7 @@ export class ProductionDetailsPage implements OnInit {
             await loading.present();
 
             this.productionCRUDService
-              .deleteProduction(this.production)
+              .delete(this.production)
               .then(async () => {
                 this.router.navigateByUrl(
                   APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main
@@ -531,7 +552,7 @@ export class ProductionDetailsPage implements OnInit {
       this.production.user.can_clone = value
     }
     this.productionCRUDService
-      .updateProduction(this.production, this.production)
+      .update(this.production, this.production)
       .then(() => {})
       .catch(() => {
         this.presentToast(false);

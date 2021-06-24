@@ -156,7 +156,7 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
         });
         await loading.present();
         this.courseCRUDService
-          .updateCourse(this.course, this.original_course)
+          .update(this.course, this.original_course)
           .then(() => {
             this.router.navigateByUrl(
               APP_URL.menu.name +
@@ -191,7 +191,7 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
       });
       await loading.present();
       this.courseCRUDService
-        .createCourse(this.course)
+        .create(this.course)
         .then(() => {
           this.router.navigateByUrl(
             APP_URL.menu.name +

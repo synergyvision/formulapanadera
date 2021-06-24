@@ -1,19 +1,33 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
-import { combineLatest, Observable } from "rxjs";
+import { combineLatest, from, Observable } from "rxjs";
 
 import { FormulaNumberModel, ProductionModel } from "../../models/production.model";
 import { COLLECTIONS } from "src/app/config/firebase";
 import { map } from "rxjs/operators";
 import { FormulaCRUDService } from "./formula.service";
+import { NetworkService } from "../network.service";
+import { StorageService } from "../storage/storage.service";
+import { environment } from "src/environments/environment";
+import { OfflineManagerService } from "../offline-manager.service";
+import { FirebaseService } from "../../interfaces/firebase-service.interface";
+import { ProductionService } from "../production.service";
+import { ShellModel } from "src/app/shared/shell/shell.model";
+import { FormulaModel } from "../../models/formula.model";
+
+const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
-export class ProductionCRUDService {
+export class ProductionCRUDService implements FirebaseService{
   collection = COLLECTIONS.production;
 
   constructor(
     private afs: AngularFirestore,
-    private formulaCRUDService: FormulaCRUDService
+    private productionService: ProductionService,
+    private formulaCRUDService: FormulaCRUDService,
+    private networkService: NetworkService,
+    private storageService: StorageService,
+    private offlineManager: OfflineManagerService
   ) { }
 
   /*
@@ -38,8 +52,8 @@ export class ProductionCRUDService {
       )
       .valueChanges({ idField: "id" });
 
-      
-    return combineLatest([mine,shared,publics]).pipe(
+    
+    return combineLatest([mine, shared, publics]).pipe(
       map(([mine, shared, publics]) => {
         let aux1 = [...mine, ...shared, ...publics];
         let aux2 = [];
@@ -74,31 +88,24 @@ export class ProductionCRUDService {
     }
   }
 
-  public async getProduction(
-    id: string
-  ): Promise<ProductionModel> {
-    let doc = await this.afs.collection<ProductionModel>(this.collection).doc(id).ref.get()
-    if (doc.exists) {
-      let production = doc.data() as ProductionModel;
-      await this.getFormulas(production);
-      return production;
-    }
-    return new ProductionModel;
-  }
-
   /*
     Production Management
   */
-  public async createProduction(
+  public async create(
     productionData: ProductionModel
   ): Promise<void> {
-    let id = this.afs.createId();
-    productionData.id = id;
-    let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
-    delete production.formulas;
-    // Set formulas
-    await this.createFormulas(`${this.collection}/${id}/${COLLECTIONS.formula}`, productionData);
-    await this.afs.collection(this.collection).doc(id).set(production);
+    if (this.networkService.isConnectedToNetwork()) {
+      let id = this.afs.createId();
+      productionData.id = id;
+      let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
+      delete production.formulas;
+      // Set formulas
+      await this.createFormulas(`${this.collection}/${id}/${COLLECTIONS.formula}`, productionData);
+      await this.afs.collection(this.collection).doc(id).set(production);
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'C', productionData, null);
+      await this.updateLocalData('C', productionData);
+    }
   }
 
   public async createFormulas(collection: string, productionData: ProductionModel) {
@@ -124,20 +131,30 @@ export class ProductionCRUDService {
     await Promise.all(promises)
   }
 
-  public async updateProduction(productionData: ProductionModel, originalProduction: ProductionModel): Promise<void> {
-    let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
-    delete production.formulas;
-    production.user.last_modified = new Date();
-    // Delete formulas
-    await this.deleteFormulas(originalProduction);
-    // Set formulas
-    await this.createFormulas(`${this.collection}/${productionData.id}/${COLLECTIONS.formula}`, productionData);
-    await this.afs.collection(this.collection).doc(productionData.id).set(production);
+  public async update(productionData: ProductionModel, originalProduction: ProductionModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      let production: ProductionModel = JSON.parse(JSON.stringify(productionData));
+      delete production.formulas;
+      production.user.last_modified = new Date();
+      // Delete formulas
+      await this.deleteFormulas(originalProduction);
+      // Set formulas
+      await this.createFormulas(`${this.collection}/${productionData.id}/${COLLECTIONS.formula}`, productionData);
+      await this.afs.collection(this.collection).doc(productionData.id).set(production);
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'U', productionData, originalProduction);
+      await this.updateLocalData('U', productionData);
+    }
   }
 
-  public async deleteProduction(productionData: ProductionModel): Promise<void> {
-    await this.deleteFormulas(productionData);
-    return this.afs.collection(this.collection).doc(productionData.id).delete();
+  public async delete(productionData: ProductionModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      await this.deleteFormulas(productionData);
+      await this.afs.collection(this.collection).doc(productionData.id).delete();
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'D', productionData, null);
+      await this.updateLocalData('D', productionData);
+    }
   }
 
   public async deleteFormulas(productionData: ProductionModel, collection = this.collection): Promise<void>{
@@ -147,5 +164,48 @@ export class ProductionCRUDService {
       await this.afs.collection(subcollection).doc(formula.formula.id).delete();
     })
     await Promise.all(promises)
+  }
+
+  public async updateFormulas(updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
+    let productions: ProductionModel[] = JSON.parse(JSON.stringify(this.productionService.getCurrentProductions()));
+    const prod_promises = productions.map((production) => {
+      let original_production: ProductionModel = JSON.parse(JSON.stringify(production));
+      let has_formula: boolean = this.productionService.hasFormula(production, updated_formulas);
+      if (has_formula) {
+        updated_productions.push(production)
+        return this.update(production, original_production);
+      }
+    })
+    await Promise.all(prod_promises);
+  }
+
+  // Save result of API requests
+  public setLocalData(data: any) {
+    this.storageService.set(`${API_STORAGE_KEY}-${this.collection}`, data);
+  }
+ 
+  // Get cached API result
+  public getLocalData() {
+    return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}`);
+  }
+
+  private async updateLocalData(operation: 'C' | 'U' | 'D', updatedData: ProductionModel) {
+    let data: ProductionModel[] = await this.getLocalData();
+    if (operation == 'C') {
+      data.push(updatedData);
+    } else {
+      data.forEach((production, index) => {
+        if (production.id == updatedData.id) {
+          if (operation == 'U') {
+            data[index] = JSON.parse(JSON.stringify(updatedData));
+          }
+          if (operation == 'D') {
+            data.splice(index, 1)
+          }
+        }
+      })
+    }
+    this.setLocalData(data);
+    this.productionService.setProductions(data as ProductionModel[] & ShellModel)
   }
 }

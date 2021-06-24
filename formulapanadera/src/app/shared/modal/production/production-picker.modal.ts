@@ -28,12 +28,15 @@ export class ProductionPickerModal implements OnInit {
   costRangeForm: FormGroup;
   searchQuery: string;
   showFilters = false;
+  showMine = true;
+  showShared = true;
+  showPublic = true;
 
   currency = CURRENCY;
   productions: ProductionModel[] & ShellModel;
   all_productions: ProductionModel[] & ShellModel;
 
-  segment: string = "mine";
+  isLoading: boolean = true;
   user_email: string;
 
   constructor(
@@ -58,6 +61,7 @@ export class ProductionPickerModal implements OnInit {
       .subscribe(async (productions) => {
         this.productions = this.productionService.searchingState();
         this.all_productions = productions as ProductionModel[] & ShellModel;
+        this.isLoading = true;
         this.searchList();
       });
   }
@@ -85,11 +89,6 @@ export class ProductionPickerModal implements OnInit {
       filters.cost.upper,
       filteredProductions
     );
-    filteredProductions = this.productionService.searchProductionsByShared(
-      this.segment,
-      filteredProductions,
-      this.user_email
-    );
 
     const dataSourceWithShellObservable = DataStore.AppendShell(
       of(filteredProductions),
@@ -115,12 +114,20 @@ export class ProductionPickerModal implements OnInit {
 
     updateSearchObservable.subscribe((value) => {
       this.productions = this.productionService.sortProductions(value);
+      this.isLoading = value.isShell;
     });
   }
 
-  segmentChanged(ev: any) {
-    this.segment = ev.detail.value;
-    this.searchList();
+  productionsSegment(segment: 'mine' | 'shared' | 'public'): ProductionModel[] {
+    if (this.isLoading) {
+      return this.productions;
+    } else {
+      return this.productionService.searchProductionsByShared(
+        segment,
+        this.productions,
+        this.user_email
+      );
+    }
   }
 
   clickProduction(production: ProductionModel) {

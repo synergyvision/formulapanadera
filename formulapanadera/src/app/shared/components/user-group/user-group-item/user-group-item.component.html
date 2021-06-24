@@ -12,7 +12,7 @@
     <ion-col class="user-group-wrapper">
       <ion-row class="user-group-title">
         <ion-col>
-          <h2 class="user-group-name">
+          <h2 class="user-group-name global-subtitle">
             <app-text-shell
               animation="bouncing"
               lines="3"
@@ -23,7 +23,7 @@
       </ion-row>
       <ion-row *ngIf="user_group.description">
         <ion-col size="12" class="properties-col">
-          <p class="group-user">
+          <p class="group-user global-note">
             {{ user_group.description}}
           </p>
         </ion-col>

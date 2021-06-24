@@ -14,7 +14,8 @@
     "confirm": "Confirm",
     "share": "Share",
     "stop_sharing": "Stop sharing",
-    "clone": "Clone",
+    "stop_alert": "Don't ask me again",
+    "clone": "Duplicate",
     "copy": "Copy",
     "create": "Create",
     "update": "Update",
@@ -26,6 +27,7 @@
     "delete_question": "Do you want to delete {{item}}?",
     "formula_privacy_question": "This formula has private ingredients. Share anyway?",
     "sign_out_question": "Sign out?",
+    "clear_storage_question": "If you sign out, you will lose your locally saved actions. Sign out?",
     "yes": "Yes",
     "no": "No"
   },
@@ -38,6 +40,10 @@
     "password": "Password",
     "confirm_password": "Confirm password",
     "actual_password": "Actual password"
+  },
+  "connection": {
+    "online": "Online",
+    "offline": "Offline"
   },
   "notes": {
     "note": "Nota",
@@ -98,7 +104,7 @@
     "temperature": "Temperature",
     "description": "Description",
     "public": "Public",
-    "can_clone": "Can be cloned",
+    "can_clone": "Can be duplicated",
     "warming_time": "Oven warming time",
     "manipulation_times": "Number of manipulations",
     "manipulation_time":{
@@ -150,7 +156,7 @@
     },
     "hydration": {
       "low": "Low hydration",
-      "normal": "Normal hydration",
+      "normal": "Moderate hydration",
       "high": "High hydration"
     },
     "fat": {
@@ -178,7 +184,7 @@
       "units": "Production units"
     },
     "clone": {
-      "instructions": "By cloning you can modify, a new version will appear in \"Mine\" tab. The original version will be preserved"
+      "instructions": "Duplicating allows you to modify, a new version will appear in \"Mine\" tab. The original version will be preserved"
     }
   },
   "ingredients": {
@@ -197,7 +203,7 @@
     "compensation_percentage": "Compensation factor",
     "suggested_values": "Suggested values",
     "public": "Public",
-    "can_clone": "Can be cloned",
+    "can_clone": "Can be duplicated",
     "type": {
       "name": "Type",
       "simple": "Simple",

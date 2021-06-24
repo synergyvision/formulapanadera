@@ -5,8 +5,7 @@
   [ngClass]="{ 'background-gray': even, 'background-selected': selected }"
 >
   <ion-avatar slot="start">
-    <img *ngIf="user.image_url" [src]="user.image_url">
-    <img *ngIf="!user.image_url" [src]="DEFAULT_ICON">
+    <img [src]="DEFAULT_ICON">
   </ion-avatar>
   <ion-row class="user-item-wrapper">
     <ion-col class="user-wrapper">

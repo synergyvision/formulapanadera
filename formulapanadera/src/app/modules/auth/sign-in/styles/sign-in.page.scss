@@ -9,14 +9,6 @@
   --padding-end: var(--page-margin);
   --padding-bottom: var(--page-margin);
 
-  .auth-title {
-    color: var(--ion-color-dark);
-    font-weight: bold;
-    margin-top: calc(var(--page-margin) / 2);
-    margin-bottom: calc(var(--page-margin) * (3 / 2));
-    letter-spacing: 0.6px;
-  }
-
   .inputs-list {
     --ion-item-background: var(--page-background);
 
@@ -43,7 +35,7 @@
     .signup-btn,
     .forgot-btn {
       color: var(--ion-color-secondary);
-      font-size: 14px;
+      font-size: 12px;
       margin: 0px;
 
       &:focus {
@@ -51,11 +43,6 @@
       }
     }
   }
-}
-
-.btn-med {
-  font-size: 26px;
-  margin: 0 10px 0 10px;
 }
 
 .logo-auth {

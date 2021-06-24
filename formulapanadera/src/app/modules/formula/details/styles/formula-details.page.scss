@@ -7,21 +7,13 @@
 
 // Styles
 
-.ios.title-default {
-  padding: 0 0;
-}
-
-ion-back-button {
-  height: 0;
-}
-
 .formula-detail-content {
   --background: var(--page-background);
 
   .formula-detail {
     font-size: 14px;
     --padding-start: var(--page-margin);
-    max-height: 58px;
+    max-height: 66px;
     border-bottom: 1px solid lightgray;
 
     .editable-field {

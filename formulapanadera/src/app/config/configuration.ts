@@ -28,7 +28,7 @@ export const HELP_CENTER = {
 export const CURRENCY = "$";
 
 // Number of loading items on listing pages
-export const LOADING_ITEMS = 10;
+export const LOADING_ITEMS = 2;
 
 
 // Page URLs
@@ -108,4 +108,4 @@ export const APP_URL = {
 
 // Main page
 export const MAIN_PAGE =
-  "/" + APP_URL.menu.name + "/" + APP_URL.menu.routes.production.main;
+  "/" + APP_URL.menu.name + "/" + APP_URL.menu.routes.formula.main;

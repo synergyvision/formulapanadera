@@ -33,9 +33,9 @@ import { NoteModel, ReferenceModel } from "src/app/core/models/shared.model";
 import { NotesModal } from "src/app/shared/modal/notes/notes.modal";
 import { ProductionModel } from "src/app/core/models/production.model";
 import { CourseModel } from "src/app/core/models/course.model";
-import { ProductionService } from "src/app/core/services/production.service";
-import { CourseService } from "src/app/core/services/course.service";
 import { DECIMALS } from "src/app/config/formats";
+import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
+import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
 
 @Component({
   selector: "app-formula-manage",
@@ -61,8 +61,8 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
   constructor(
     private formulaService: FormulaService,
     private formulaCRUDService: FormulaCRUDService,
-    private productionService: ProductionService,
-    private courseService: CourseService,
+    private productionCRUDService: ProductionCRUDService,
+    private courseCRUDService: CourseCRUDService,
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
     private languageService: LanguageService,
@@ -506,14 +506,14 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
           });
           await loading.present();
           this.formulaCRUDService
-            .updateFormula(this.formula, this.original_formula)
+            .update(this.formula, this.original_formula)
             .then(async () => {
               let updated_formulas: FormulaModel[] = [this.formula];
               let updated_productions: ProductionModel[] = []
-              await this.productionService.updateFormulas(updated_formulas, updated_productions);
+              await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
               if (this.current_user.instructor) {
                 let updated_courses: CourseModel[] = []
-                await this.courseService.updateAll(updated_courses, [], updated_formulas, updated_productions);
+                await this.courseCRUDService.updateAll(updated_courses, [], updated_formulas, updated_productions);
               }
               this.router.navigateByUrl(
                 APP_URL.menu.name +
@@ -571,7 +571,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
         });
         await loading.present();
         this.formulaCRUDService
-          .createFormula(this.formula)
+          .create(this.formula)
           .then(() => {
             this.router.navigateByUrl(
               APP_URL.menu.name +

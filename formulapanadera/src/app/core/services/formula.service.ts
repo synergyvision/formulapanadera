@@ -10,16 +10,13 @@ import { ShellModel } from "src/app/shared/shell/shell.model";
 import { OVEN_STEP } from "src/app/config/formula";
 import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
-import { IngredientModel } from "../models/ingredient.model";
-import { FormulaCRUDService } from "./firebase/formula.service";
+import { IngredientModel } from "../models/ingredient.model"
 
 @Injectable()
 export class FormulaService {
   private formulas: BehaviorSubject<FormulaModel[]> = new BehaviorSubject<FormulaModel[]>(undefined);
 
-  constructor(
-    private formulaCRUDService: FormulaCRUDService
-  ) {}
+  constructor() {}
 
   public setFormulas(formulas: FormulaModel[] & ShellModel) {
     this.formulas.next(formulas);
@@ -180,19 +177,6 @@ export class FormulaService {
       })
     })
     return has_ingredient;
-  }
-
-  public async updateIngredients(updated_ingredients: IngredientModel[], updated_formulas: FormulaModel[]) {
-    let formulas: FormulaModel[] = JSON.parse(JSON.stringify(this.getCurrentFormulas()));
-    const for_promises = formulas.map((formula) => {
-      let original_formula: FormulaModel = JSON.parse(JSON.stringify(formula));
-      let has_ingredient: boolean = this.hasIngredient(formula, updated_ingredients);
-      if (has_ingredient) {
-        updated_formulas.push(formula)
-        return this.formulaCRUDService.updateFormula(formula, original_formula);
-      }
-    })
-    await Promise.all(for_promises);
   }
 
   /*

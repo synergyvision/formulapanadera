@@ -11,7 +11,6 @@ import { FormulaService } from "./formula.service";
 import { OVEN_STEP } from "src/app/config/formula";
 import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
-import { ProductionCRUDService } from "./firebase/production.service";
 
 @Injectable()
 export class ProductionService {
@@ -19,7 +18,6 @@ export class ProductionService {
 
   constructor(
     private formulaService: FormulaService,
-    private productionCRUDService: ProductionCRUDService
   ) { }
   
   public setProductions(productions: ProductionModel[] & ShellModel) {
@@ -63,19 +61,6 @@ export class ProductionService {
       })
     });
     return has_formula;
-  }
-
-  public async updateFormulas(updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
-    let productions: ProductionModel[] = JSON.parse(JSON.stringify(this.getCurrentProductions()));
-    const prod_promises = productions.map((production) => {
-      let original_production: ProductionModel = JSON.parse(JSON.stringify(production));
-      let has_formula: boolean = this.hasFormula(production, updated_formulas);
-      if (has_formula) {
-        updated_productions.push(production)
-        return this.productionCRUDService.updateProduction(production, original_production);
-      }
-    })
-    await Promise.all(prod_promises);
   }
 
   /*

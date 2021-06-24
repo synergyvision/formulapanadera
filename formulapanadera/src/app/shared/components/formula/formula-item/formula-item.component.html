@@ -8,7 +8,7 @@
     <ion-col class="formulas-wrapper">
       <ion-row>
         <ion-col>
-          <h2 class="formulas-name">
+          <h2 class="formulas-name global-subtitle">
             <app-text-shell
               animation="bouncing"
               lines="3"
@@ -19,7 +19,7 @@
       </ion-row>
       <ion-row *ngIf="formula.name !== undefined">
         <ion-col size="12" class="properties-col">
-          <p class="formula-user">
+          <p class="formula-user global-note">
             {{ formula.user.creator.name }}
           </p>
         </ion-col>

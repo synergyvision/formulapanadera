@@ -6,14 +6,28 @@ import { FormulaModel, IngredientPercentageModel } from "../../models/formula.mo
 import { COLLECTIONS } from "src/app/config/firebase";
 import { map } from "rxjs/operators";
 import { IngredientCRUDService } from "./ingredient.service";
+import { NetworkService } from "../network.service";
+import { StorageService } from "../storage/storage.service";
+import { environment } from "src/environments/environment";
+import { OfflineManagerService } from "../offline-manager.service";
+import { FirebaseService } from "../../interfaces/firebase-service.interface";
+import { FormulaService } from "../formula.service";
+import { IngredientModel } from "../../models/ingredient.model";
+import { ShellModel } from "src/app/shared/shell/shell.model";
+
+const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
-export class FormulaCRUDService {
+export class FormulaCRUDService implements FirebaseService {
   collection = COLLECTIONS.formula;
 
   constructor(
     private afs: AngularFirestore,
-    private ingredientCRUDService: IngredientCRUDService
+    private formulaService: FormulaService,
+    private ingredientCRUDService: IngredientCRUDService,
+    private networkService: NetworkService,
+    private storageService: StorageService,
+    private offlineManager: OfflineManagerService
   ) { }
 
   /*
@@ -38,8 +52,8 @@ export class FormulaCRUDService {
       )
       .valueChanges({ idField: "id" });
 
-      
-    return combineLatest([mine,shared,publics]).pipe(
+    
+    return combineLatest([mine, shared, publics]).pipe(
       map(([mine, shared, publics]) => {
         let aux1 = [...mine, ...shared, ...publics];
         let aux2 = [];
@@ -74,41 +88,34 @@ export class FormulaCRUDService {
     }
   }
 
-  public async getFormula(
-    id: string
-  ): Promise<FormulaModel> {
-    let doc = await this.afs.collection<FormulaModel>(this.collection).doc(id).ref.get()
-    if (doc.exists) {
-      let formula = doc.data() as FormulaModel;
-      await this.getIngredients(formula);
-      return formula;
-    }
-    return new FormulaModel;
-  }
-
   /*
     Formula Management
   */
-  public async createFormula(formulaData: FormulaModel): Promise<void> {
-    let id = this.afs.createId();
-    formulaData.id = id;
-    let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
-    delete formula.ingredients;
-    if (formula.mixing && formula.mixing.length > 0) {
-      formula.mixing.forEach(mix => {
-        mix.mixing_order.forEach(step => {
-          step.ingredients.forEach(ing => {
-            if (ing.ingredient.formula) {
-              delete ing.ingredient.formula.ingredients;
-              delete ing.ingredient.formula.mixing;
-            }
+  public async create(formulaData: FormulaModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      let id = this.afs.createId();
+      formulaData.id = id;
+      let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
+      delete formula.ingredients;
+      if (formula.mixing && formula.mixing.length > 0) {
+        formula.mixing.forEach(mix => {
+          mix.mixing_order.forEach(step => {
+            step.ingredients.forEach(ing => {
+              if (ing.ingredient.formula) {
+                delete ing.ingredient.formula.ingredients;
+                delete ing.ingredient.formula.mixing;
+              }
+            })
           })
         })
-      })
+      }
+      // Set sub ingredients
+      await this.createIngredients(`${this.collection}/${id}/${COLLECTIONS.ingredients}`, formulaData);
+      await this.afs.collection(this.collection).doc(id).set(formula);
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'C', formulaData, null);
+      await this.updateLocalData('C', formulaData);
     }
-    // Set sub ingredients
-    await this.createIngredients(`${this.collection}/${id}/${COLLECTIONS.ingredients}`, formulaData);
-    await this.afs.collection(this.collection).doc(id).set(formula);
   }
 
   public async createIngredients(collection: string, formulaData: FormulaModel) {
@@ -124,32 +131,42 @@ export class FormulaCRUDService {
     await Promise.all(promises)
   }
 
-  public async updateFormula(formulaData: FormulaModel, originalFormula: FormulaModel): Promise<void> {
-    let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
-    delete formula.ingredients;
-    formula.user.last_modified = new Date();
-    if (formula.mixing && formula.mixing.length > 0) {
-      formula.mixing.forEach(mix => {
-        mix.mixing_order.forEach((step=>{
-          step.ingredients.forEach(ing => {
-            if (ing.ingredient.formula && ing.ingredient.formula.ingredients) {
-              delete ing.ingredient.formula.ingredients;
-              delete ing.ingredient.formula.mixing;
-            }
-          })
-        }))
-      })
+  public async update(formulaData: FormulaModel, originalFormula: FormulaModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      let formula: FormulaModel = JSON.parse(JSON.stringify(formulaData));
+      delete formula.ingredients;
+      formula.user.last_modified = new Date();
+      if (formula.mixing && formula.mixing.length > 0) {
+        formula.mixing.forEach(mix => {
+          mix.mixing_order.forEach((step=>{
+            step.ingredients.forEach(ing => {
+              if (ing.ingredient.formula && ing.ingredient.formula.ingredients) {
+                delete ing.ingredient.formula.ingredients;
+                delete ing.ingredient.formula.mixing;
+              }
+            })
+          }))
+        })
+      }
+      // Delete sub ingredients
+      await this.deleteIngredients(originalFormula);
+      // Set sub ingredients
+      await this.createIngredients(`${this.collection}/${formulaData.id}/${COLLECTIONS.ingredients}`, formulaData);
+      await this.afs.collection(this.collection).doc(formulaData.id).set(formula);
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'U', formulaData, originalFormula);
+      await this.updateLocalData('U', formulaData);
     }
-    // Delete sub ingredients
-    await this.deleteIngredients(originalFormula);
-    // Set sub ingredients
-    await this.createIngredients(`${this.collection}/${formulaData.id}/${COLLECTIONS.ingredients}`, formulaData);
-    await this.afs.collection(this.collection).doc(formulaData.id).set(formula);
   }
 
-  public async deleteFormula(formulaData: FormulaModel): Promise<void> {
-    await this.deleteIngredients(formulaData);
-    return this.afs.collection(this.collection).doc(formulaData.id).delete();
+  public async delete(formulaData: FormulaModel): Promise<void> {
+    if (this.networkService.isConnectedToNetwork()) {
+      await this.deleteIngredients(formulaData);
+      await this.afs.collection(this.collection).doc(formulaData.id).delete();
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'D', formulaData, null);
+      await this.updateLocalData('D', formulaData);
+    }
   }
 
   public async deleteIngredients(formulaData: FormulaModel, collection = this.collection): Promise<void>{
@@ -159,5 +176,48 @@ export class FormulaCRUDService {
       await this.afs.collection(subcollection).doc(ingredient.ingredient.id).delete();
     })
     await Promise.all(promises)
+  }
+
+  public async updateIngredients(updated_ingredients: IngredientModel[], updated_formulas: FormulaModel[]) {
+    let formulas: FormulaModel[] = JSON.parse(JSON.stringify(this.formulaService.getCurrentFormulas()));
+    const for_promises = formulas.map((formula) => {
+      let original_formula: FormulaModel = JSON.parse(JSON.stringify(formula));
+      let has_ingredient: boolean = this.formulaService.hasIngredient(formula, updated_ingredients);
+      if (has_ingredient) {
+        updated_formulas.push(formula)
+        return this.update(formula, original_formula);
+      }
+    })
+    await Promise.all(for_promises);
+  }
+
+  // Save result of API requests
+  public setLocalData(data: any) {
+    this.storageService.set(`${API_STORAGE_KEY}-${this.collection}`, data);
+  }
+ 
+  // Get cached API result
+  public getLocalData() {
+    return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}`);
+  }
+
+  private async updateLocalData(operation: 'C' | 'U' | 'D', updatedData: FormulaModel) {
+    let data: FormulaModel[] = await this.getLocalData();
+    if (operation == 'C') {
+      data.push(updatedData);
+    } else {
+      data.forEach((formula, index) => {
+        if (formula.id == updatedData.id) {
+          if (operation == 'U') {
+            data[index] = JSON.parse(JSON.stringify(updatedData));
+          }
+          if (operation == 'D') {
+            data.splice(index, 1)
+          }
+        }
+      })
+    }
+    this.setLocalData(data);
+    this.formulaService.setFormulas(data as FormulaModel[] & ShellModel)
   }
 }

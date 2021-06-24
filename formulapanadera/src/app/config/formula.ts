@@ -30,11 +30,11 @@ export const PROPORTION_FACTOR = ["flour", "dough", "ingredient"] as const;
 export const HYDRATION_CLASSIFICATION = [
   {
     name: "low",
-    values: { min: 0, max: 0.51 },
+    values: { min: 0, max: 0.52 },
   },
   {
     name: "normal",
-    values: { min: 0.51, max: 0.65 },
+    values: { min: 0.52, max: 0.65 },
   },
   {
     name: "high",

@@ -1,6 +1,21 @@
+
 @font-face {
-  font-family: "Alfa Slab One";
-  src: url("../assets/fonts/Alfa_Slab_One/AlfaSlabOne-Regular.ttf");
-  font-weight: 200;
+  font-family: "Poppins";
+  src: url("../assets/fonts/Poppins/Poppins-Bold.ttf");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../assets/fonts/Poppins/Poppins-ExtraBold.ttf");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../assets/fonts/Poppins/Poppins-Regular.ttf");
+  font-weight: normal;
   font-style: normal;
 }

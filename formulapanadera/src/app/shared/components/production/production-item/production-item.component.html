@@ -8,7 +8,7 @@
     <ion-col class="productions-wrapper">
       <ion-row>
         <ion-col>
-          <h2 class="productions-name">
+          <h2 class="productions-name global-subtitle">
             <app-text-shell
               animation="bouncing"
               lines="3"
@@ -19,7 +19,7 @@
       </ion-row>
       <ion-row *ngIf="production.name !== undefined">
         <ion-col size="12" class="properties-col">
-          <p class="production-user">
+          <p class="production-user global-note">
             {{ production.user.creator.name }}
           </p>
         </ion-col>
