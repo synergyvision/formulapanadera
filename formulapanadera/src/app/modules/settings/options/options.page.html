@@ -57,9 +57,9 @@
         >{{'formulas.share.my_shares' | translate}}</ion-label
       >
     </ion-item>
-    <!-- PERMISSION: SHARE MANAGE -->
+    <!-- PERMISSION: USER_GROUP MANAGE -->
     <ion-item
-      *appHasPermission="{name: 'SHARE', type: 'MANAGE'}"
+      *appHasPermission="{name: 'USER_GROUP', type: 'MANAGE'}"
       button
       [routerLink]="[APP_URL.menu.routes.settings.routes.user_groups.main]"
       routerDirection="forward"

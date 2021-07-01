@@ -8,11 +8,13 @@ import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { CourseModel } from "src/app/core/models/course.model";
 import { ProductionModel } from "src/app/core/models/production.model";
+import { UserModel } from "src/app/core/models/user.model";
 import { CourseService } from "src/app/core/services/course.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { ProductionService } from "src/app/core/services/production.service";
 import { ProductionInProcessStorageService } from "src/app/core/services/storage/production-in-process.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
+import { UserService } from "src/app/core/services/user.service";
 import { DataStore } from "src/app/shared/shell/data-store";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 
@@ -40,7 +42,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
   all_productions: ProductionModel[] & ShellModel;
 
   isLoading: boolean = true;
-  user_email: string;
+  user: UserModel;
 
   production_in_process: ProductionModel;
 
@@ -52,7 +54,8 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
     private courseService: CourseService,
     private router: Router,
     private userStorageService: UserStorageService,
-    private formatNumberService: FormatNumberService
+    private formatNumberService: FormatNumberService,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
@@ -65,7 +68,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
     this.productions = this.productionService.searchingState();
     this.courses = this.courseService.searchingState();
 
-    this.user_email = (await this.userStorageService.getUser()).email;
+    this.user = await this.userStorageService.getUser();
     this.productionService
       .getProductions()
       .subscribe(async (productions) => {
@@ -74,15 +77,19 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
         this.isLoading = true;
         this.searchList();
       });
-    this.courseService.getSharedCourses().subscribe(async courses => {
-      this.courses = [];
-      courses?.forEach(course => {
-        if (course.productions?.length > 0) {
-          course.productions = this.courseService.orderItems(course.productions);
-          this.courses.push(course);
-        }
+    if (this.userService.hasPermission(this.user.role, [{ name: 'COURSE', type: 'VIEW' }])) {
+      this.courseService.getSharedCourses().subscribe(async courses => {
+        this.courses = [];
+        courses?.forEach(course => {
+          if (course.productions?.length > 0) {
+            course.productions = this.courseService.orderItems(course.productions);
+            this.courses.push(course);
+          }
+        })
       })
-    })
+    } else {
+      this.courses = [];
+    }
   }
 
   async ionViewWillEnter() {
@@ -195,7 +202,7 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
       return this.productionService.searchProductionsByShared(
         segment,
         this.productions,
-        this.user_email
+        this.user.email
       );
     }
   }

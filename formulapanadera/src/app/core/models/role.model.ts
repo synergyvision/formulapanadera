@@ -1,5 +1,5 @@
 export class PermissionModel {
-  name: "FORMULA" | "INGREDIENT" | "PRODUCTION" | "COURSE" | "SHARE";
+  name: "FORMULA" | "INGREDIENT" | "PRODUCTION" | "COURSE" | "SHARE" | "USER_GROUP";
   type: "MANAGE" | "VIEW";
 }
 

@@ -13,6 +13,8 @@ import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { CourseModel } from "src/app/core/models/course.model";
 import { CourseService } from "src/app/core/services/course.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
+import { UserService } from "src/app/core/services/user.service";
+import { UserModel } from "src/app/core/models/user.model";
 
 @Component({
   selector: "app-ingredient-listing",
@@ -43,7 +45,7 @@ export class IngredientListingPage implements OnInit {
 
   isLoading: boolean = true;
 
-  user_email: string;
+  user: UserModel;
 
   courses: CourseModel[];
 
@@ -55,7 +57,8 @@ export class IngredientListingPage implements OnInit {
     private courseService: CourseService,
     private router: Router,
     private userStorageService: UserStorageService,
-    private formatNumberService: FormatNumberService
+    private formatNumberService: FormatNumberService,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
@@ -80,7 +83,7 @@ export class IngredientListingPage implements OnInit {
     this.ingredients = this.ingredientService.searchingState();
     this.courses = this.courseService.searchingState();
 
-    this.user_email = (await this.userStorageService.getUser()).email;
+    this.user = await this.userStorageService.getUser();
     this.ingredientService
       .getIngredients()
       .subscribe((ingredients) => {
@@ -89,15 +92,19 @@ export class IngredientListingPage implements OnInit {
         this.isLoading = true;
         this.searchList();
       });
-    this.courseService.getSharedCourses().subscribe(async courses => {
-      this.courses = [];
-      courses?.forEach(course => {
-        if (course.ingredients?.length > 0) {
-          course.ingredients = this.courseService.orderItems(course.ingredients);
-          this.courses.push(course);
-        }
+    if (this.userService.hasPermission(this.user.role, [{ name: 'COURSE', type: 'VIEW' }])) {
+      this.courseService.getSharedCourses().subscribe(async courses => {
+        this.courses = [];
+        courses?.forEach(course => {
+          if (course.ingredients?.length > 0) {
+            course.ingredients = this.courseService.orderItems(course.ingredients);
+            this.courses.push(course);
+          }
+        })
       })
-    })
+    } else {
+      this.courses = [];
+    }
   }
 
   searchList() {
@@ -267,7 +274,7 @@ export class IngredientListingPage implements OnInit {
       return this.ingredientService.searchIngredientsByShared(
         segment,
         this.ingredients,
-        this.user_email
+        this.user.email
       );
     }
   }

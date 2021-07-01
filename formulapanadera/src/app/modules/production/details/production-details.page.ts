@@ -335,7 +335,15 @@ export class ProductionDetailsPage implements OnInit {
           handler: (data) => {
             this.userCRUDService.getUser(data.email)
               .then((user) => {
-                this.shareProductionToEmail([{name: user.name, email: user.email}], can_clone)
+                if (!user.role) {
+                  this.presentToast(false, this.languageService.getTerm("send.user_error"));
+                } else {
+                  if (this.userService.hasPermission(user.role, [{ name: 'SHARE', type: 'MANAGE' }])) {
+                    this.shareProductionToEmail([{ name: user.name, email: user.email }], can_clone)
+                  } else {
+                    this.presentToast(false, this.languageService.getTerm("send.user_unauthorized_error", { version: 'SOCIAL' }));
+                  }
+                }
               }).catch(() => {
                 this.presentToast(false);
               })
@@ -525,12 +533,15 @@ export class ProductionDetailsPage implements OnInit {
     await alert.present();
   }
 
-  async presentToast(success: boolean) {
+  async presentToast(success: boolean, customMessage?: string) {
     let message = "";
     if (success) {
       message = message + this.languageService.getTerm("formulas.share.success")
     } else {
       message = message + this.languageService.getTerm("formulas.share.error")
+    }
+    if (customMessage) {
+      message = customMessage;
     }
     const toast = await this.toastController.create({
       message: message,

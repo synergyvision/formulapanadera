@@ -65,7 +65,8 @@
     "exists": "El nombre ya existe. Verifique e intente de nuevo",
     "password_error": "Contraseña inválida. Verifique e intente de nuevo",
     "user_error": "Usuario inválido. Verifique e intente de nuevo",
-    "user_exists_error": "Correo electrónico en uso. Verifique e intente de nuevo"
+    "user_exists_error": "Correo electrónico en uso. Verifique e intente de nuevo",
+    "user_unauthorized_error": "El usuario no soporta la versión {{version}} de la aplicación"
   },
   "credits": {
     "name": "Créditos",

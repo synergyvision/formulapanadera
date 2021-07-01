@@ -34,10 +34,8 @@ export const ROLES: RoleModel[] = [
       { name: "PRODUCTION", type: "VIEW" },
       { name: "COURSE", type: "MANAGE" },
       { name: "COURSE", type: "VIEW" },
+      { name: "USER_GROUP", type: "MANAGE" },
       { name: "SHARE", type: "MANAGE" },
     ],
   }
 ];
-
-// { name: "COURSE", type: "VIEW" },
-// { name: "SHARE", type: "MANAGE" },
