@@ -215,6 +215,7 @@ export class FormulaCRUDService implements FirebaseService {
 
   public async updateIngredients(updated_ingredients: IngredientModel[], updated_formulas: FormulaModel[]) {
     let formulas: FormulaModel[] = JSON.parse(JSON.stringify(this.formulaService.getCurrentFormulas()));
+    if (!formulas) formulas = [];
     const for_promises = formulas.map((formula) => {
       let original_formula: FormulaModel = JSON.parse(JSON.stringify(formula));
       let has_ingredient: boolean = this.formulaService.hasIngredient(formula, updated_ingredients);

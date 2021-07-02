@@ -186,6 +186,7 @@ export class ProductionCRUDService implements FirebaseService{
 
   public async updateFormulas(updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
     let productions: ProductionModel[] = JSON.parse(JSON.stringify(this.productionService.getCurrentProductions()));
+    if (!productions) productions = [];
     const prod_promises = productions.map((production) => {
       let original_production: ProductionModel = JSON.parse(JSON.stringify(production));
       let has_formula: boolean = this.productionService.hasFormula(production, updated_formulas);

@@ -270,6 +270,7 @@ export class CourseCRUDService implements FirebaseService {
 
   public async updateAll(updated_courses: CourseModel[],updated_ingredients: IngredientModel[],updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
     let courses: CourseModel[] = JSON.parse(JSON.stringify(this.courseService.getMyCurrentCourses()));
+    if (!courses) courses = [];
     const cour_promises = courses.map((course) => {
       let original_course: CourseModel = JSON.parse(JSON.stringify(course));
       let has_any: boolean = this.courseService.hasAny(course, updated_ingredients, updated_formulas, updated_productions);

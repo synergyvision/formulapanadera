@@ -150,6 +150,9 @@ export class ProductionListingPage implements OnInit, ViewWillEnter {
         this.productions = this.productionService.sortProductions(value);
         this.isLoading = value.isShell;
       });
+    } else {
+      this.productions = [] as ProductionModel[] & ShellModel;
+      this.isLoading = false;
     }
   }
 

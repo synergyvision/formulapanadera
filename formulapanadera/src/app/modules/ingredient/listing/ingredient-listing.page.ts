@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnInit } from "@angular/core";
-import { IngredientListingModel } from "../../../core/models/ingredient.model";
+import { IngredientListingModel, IngredientModel } from "../../../core/models/ingredient.model";
 import { ShellModel } from "../../../shared/shell/shell.model";
 import { FormGroup, FormControl } from "@angular/forms";
 import { DataStore } from "../../../shared/shell/data-store";
@@ -202,6 +202,9 @@ export class IngredientListingPage implements OnInit {
         this.courses = this.filteredCourses();
         this.isLoading = value.isShell;
       });
+    } else {
+      this.ingredients = [] as IngredientModel[] & ShellModel;
+      this.isLoading = false;
     }
   }
 

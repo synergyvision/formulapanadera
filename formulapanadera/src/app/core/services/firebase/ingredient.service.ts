@@ -14,6 +14,7 @@ import { FirebaseService } from "../../interfaces/firebase-service.interface";
 import { IngredientService } from "../ingredient.service";
 import { UserStorageService } from "../storage/user.service";
 import * as moment from "moment";
+import { ShellModel } from "src/app/shared/shell/shell.model";
 
 const API_STORAGE_KEY = environment.storage_key;
 
@@ -302,6 +303,7 @@ export class IngredientCRUDService implements FirebaseService {
 
   public async updateIngredients(updated_ingredient: IngredientModel, updated_ingredients: IngredientModel[]) {
     let ingredients: IngredientModel[] = await this.getLocalData();
+    if (!ingredients) ingredients = [];
     const ing_promises = ingredients.map((ingredient) => {
       let original_ingredient: IngredientModel = JSON.parse(JSON.stringify(ingredient));
       let has_ingredient: boolean = this.ingredientService.hasIngredient(ingredient, updated_ingredient);
@@ -340,7 +342,7 @@ export class IngredientCRUDService implements FirebaseService {
   }
 
   private async updateLocalData(operation: 'C' | 'U' | 'D', updatedData: IngredientModel) {
-    let data: IngredientModel[] = await this.getLocalData();
+    let data = await this.getLocalData();
     if (operation == 'C') {
       data.push(updatedData);
     } else {
@@ -355,6 +357,7 @@ export class IngredientCRUDService implements FirebaseService {
         }
       })
     }
+    this.ingredientService.setIngredientsListing(data as IngredientListingModel[] & ShellModel)
     this.setLocalData(data);
   }
 }
