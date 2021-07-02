@@ -511,8 +511,11 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
             .update(this.formula, this.original_formula)
             .then(async () => {
               let updated_formulas: FormulaModel[] = [this.formula];
-              let updated_productions: ProductionModel[] = []
-              await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
+              let updated_productions: ProductionModel[];
+              if (this.userService.hasPermission(this.current_user.role, [{ name: 'PRODUCTION', type: 'MANAGE' }])) {
+                updated_productions = []
+                await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
+              }
               if (this.userService.hasPermission(this.current_user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
                 let updated_courses: CourseModel[] = []
                 await this.courseCRUDService.updateAll(updated_courses, [], updated_formulas, updated_productions);

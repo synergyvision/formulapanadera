@@ -27,10 +27,10 @@ export class UserCRUDService {
     User Collection
   */
   public getUserDataSource(uid: string): Observable<UserModel> {
-    return this.afs.doc(`${this.collection}/${uid}`).snapshotChanges()
+    return this.afs.doc(`${this.collection}/${uid}`).get()
       .pipe(
         map(a => {
-          let userData: any = a.payload.data();
+          let userData: any = a.data();
           return userData as UserModel;
         })
       );

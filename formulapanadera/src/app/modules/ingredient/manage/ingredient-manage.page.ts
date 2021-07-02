@@ -359,12 +359,19 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
       this.ingredientCRUDService
         .update(this.ingredient, this.original_ingredient)
         .then(async () => {
-          let updated_ingredients: IngredientModel[] = [this.ingredient];
+          let updated_ingredients: IngredientModel[];
+          let updated_formulas: FormulaModel[];
+          let updated_productions: ProductionModel[];
+          updated_ingredients = [this.ingredient];
           await this.ingredientCRUDService.updateIngredients(this.ingredient, updated_ingredients);
-          let updated_formulas: FormulaModel[] = [];
-          await this.formulaCRUDService.updateIngredients(updated_ingredients, updated_formulas);
-          let updated_productions: ProductionModel[] = []
-          await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
+          if (this.userService.hasPermission(this.current_user.role, [{ name: 'FORMULA', type: 'MANAGE' }])) {
+            updated_formulas = [];
+            await this.formulaCRUDService.updateIngredients(updated_ingredients, updated_formulas);
+          }
+          if (this.userService.hasPermission(this.current_user.role, [{ name: 'PRODUCTION', type: 'MANAGE' }])) {
+            updated_productions = []
+            await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
+          }
           if (this.userService.hasPermission(this.current_user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
             let updated_courses: CourseModel[] = []
             await this.courseCRUDService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);

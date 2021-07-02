@@ -13,6 +13,7 @@ import { OfflineManagerService } from "../offline-manager.service";
 import { FirebaseService } from "../../interfaces/firebase-service.interface";
 import { IngredientService } from "../ingredient.service";
 import { ShellModel } from "src/app/shared/shell/shell.model";
+import { UserStorageService } from "../storage/user.service";
 
 const API_STORAGE_KEY = environment.storage_key;
 
@@ -25,7 +26,8 @@ export class IngredientCRUDService implements FirebaseService {
     private ingredientService: IngredientService,
     private networkService: NetworkService,
     private storageService: StorageService,
-    private offlineManager: OfflineManagerService
+    private offlineManager: OfflineManagerService,
+    private userStorageService: UserStorageService
   ) { }
 
   /*
@@ -86,6 +88,23 @@ export class IngredientCRUDService implements FirebaseService {
     }
   }
 
+  public async getIngredients(user_email: string): Promise<void>{
+    const docs = await this.afs
+      .collection<IngredientModel>(this.collection).ref.where("user.owner", "==", user_email).get();
+    if (!docs.empty) {
+      const ingredients = []
+      docs.forEach(doc => {
+        ingredients.push(doc.data() as IngredientModel)
+      });
+      const promises = ingredients.map((ing) => this.getSubIngredients(ing))
+      await Promise.all(promises)
+      this.ingredientService.setIngredients(
+        ingredients as IngredientModel[] & ShellModel
+      );
+      this.setLocalData([...ingredients]);
+    }
+  }
+
   /*
     Ingredient Management
   */
@@ -113,6 +132,11 @@ export class IngredientCRUDService implements FirebaseService {
       // Set sub ingredients
       await this.createSubIngredient(this.collection, id, ingredientData);
       await this.afs.collection(this.collection).doc(id).set(ingredient);
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('C', ingredientData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'C', ingredientData, null);
       await this.updateLocalData('C', ingredientData);
@@ -160,6 +184,11 @@ export class IngredientCRUDService implements FirebaseService {
       // Set sub ingredients
       await this.createSubIngredient(this.collection, ingredientData.id, ingredientData);
       await this.afs.collection(this.collection).doc(ingredientData.id).set(ingredient);
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('U', ingredientData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'U', ingredientData, originalIngredient);
       await this.updateLocalData('U', ingredientData);
@@ -170,6 +199,11 @@ export class IngredientCRUDService implements FirebaseService {
     if (this.networkService.isConnectedToNetwork()) {
       await this.deleteSubIngredient(ingredientData);
       await this.afs.collection(this.collection).doc(ingredientData.id).delete();
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('D', ingredientData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'D', ingredientData, null);
       await this.updateLocalData('D', ingredientData);
