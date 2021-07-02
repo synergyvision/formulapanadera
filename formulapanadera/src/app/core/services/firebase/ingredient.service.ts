@@ -319,7 +319,7 @@ export class IngredientCRUDService implements FirebaseService {
     if (user.role == 'FREE') {
       return current_ingredient;
     } else {
-      if (!current_ingredient || moment(typeof current_ingredient.user.last_modified === 'object' ? current_ingredient.user.last_modified.seconds * 1000 : current_ingredient.user.last_modified).isBefore(typeof listing_ingredient.user.last_modified === 'object' ? listing_ingredient.user.last_modified.seconds * 1000 : listing_ingredient.user.last_modified)) {
+      if (!current_ingredient || !current_ingredient.user.last_modified || moment(current_ingredient.user.last_modified.seconds ? current_ingredient.user.last_modified.seconds * 1000 : current_ingredient.user.last_modified).isBefore(listing_ingredient.user.last_modified.seconds ? listing_ingredient.user.last_modified.seconds * 1000 : listing_ingredient.user.last_modified)) {
         let updated_ingredient = await this.getIngredient(listing_ingredient.id);
         this.updateLocalData(!current_ingredient ? 'C' : 'U', updated_ingredient);
         return updated_ingredient;

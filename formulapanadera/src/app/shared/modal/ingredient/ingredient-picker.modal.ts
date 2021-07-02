@@ -12,6 +12,7 @@ import { CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 
 @Component({
   selector: "app-ingredient-picker-modal",
@@ -39,8 +40,8 @@ export class IngredientPickerModal implements OnInit {
   showPublic = true;
 
   currency = CURRENCY;
-  ingredients: IngredientListingModel[] & ShellModel;
-  all_ingredients: IngredientListingModel[] & ShellModel;
+  ingredients: IngredientModel[];
+  all_ingredients: IngredientModel[];
 
   isLoading: boolean = true;
 
@@ -50,7 +51,8 @@ export class IngredientPickerModal implements OnInit {
     private ingredientService: IngredientService,
     public modalController: ModalController,
     private userStorageService: UserStorageService,
-    private formatNumberService: FormatNumberService
+    private formatNumberService: FormatNumberService,
+    private ingredientCRUDService: IngredientCRUDService
   ) {}
 
   async ngOnInit() {
@@ -75,14 +77,9 @@ export class IngredientPickerModal implements OnInit {
     this.ingredients = this.ingredientService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
-    this.ingredientService
-      .getIngredientsListing()
-      .subscribe(async (ingredients) => {
-        this.ingredients = this.ingredientService.searchingState();
-        this.all_ingredients = ingredients as IngredientListingModel[] & ShellModel;
-        this.isLoading = true;
-        this.searchList();
-      });
+    this.all_ingredients = await this.ingredientCRUDService.getLocalData() as IngredientModel[];
+    this.isLoading = true;
+    this.searchList();
   }
 
   searchList() {
@@ -169,13 +166,13 @@ export class IngredientPickerModal implements OnInit {
     });
   }
 
-  ingredientsSegment(segment: 'mine' | 'shared' | 'public'): IngredientListingModel[] {
+  ingredientsSegment(segment: 'mine' | 'shared' | 'public') {
     if (this.isLoading) {
       return this.ingredients;
     } else {
       return this.ingredientService.searchIngredientsByShared(
         segment,
-        this.ingredients,
+        this.ingredients as IngredientModel[] & ShellModel,
         this.user_email
       );
     }

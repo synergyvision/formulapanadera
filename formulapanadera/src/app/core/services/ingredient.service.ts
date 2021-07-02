@@ -69,36 +69,36 @@ export class IngredientService {
   public searchIngredientsByHydration(
     lower: number,
     upper: number,
-    ingredients: IngredientListingModel[] & ShellModel
-  ): IngredientListingModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     ingredients.forEach((item) => {
       if (item.hydration >= lower && item.hydration <= upper) {
         filtered.push(item);
       }
     });
-    return filtered as IngredientListingModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByFat(
     lower: number,
     upper: number,
-    ingredients: IngredientListingModel[] & ShellModel
-  ): IngredientListingModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     ingredients.forEach((item) => {
       if ((!item.fat && lower == 0) || (item.fat >= lower && item.fat <= upper)) {
         filtered.push(item);
       }
     });
-    return filtered as IngredientListingModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByCost(
     lower: number,
     upper: number,
-    ingredients: IngredientListingModel[] & ShellModel
-  ): IngredientListingModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     ingredients.forEach((item) => {
       if (
@@ -108,13 +108,13 @@ export class IngredientService {
         filtered.push(item);
       }
     });
-    return filtered as IngredientListingModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByType(
     type: string,
-    ingredients: IngredientListingModel[] & ShellModel
-  ): IngredientListingModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     let isFlour = type == "flour";
     ingredients.forEach((item) => {
@@ -123,13 +123,13 @@ export class IngredientService {
       }
     });
 
-    return filtered as IngredientListingModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByFormula(
     type: string,
-    ingredients: IngredientListingModel[] & ShellModel
-  ): IngredientListingModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     let simple = type == "simple";
     ingredients.forEach((item) => {
@@ -138,14 +138,14 @@ export class IngredientService {
       }
     });
 
-    return filtered as IngredientListingModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByShared(
     type: string,
-    ingredients: IngredientListingModel[] & ShellModel,
+    ingredients,
     user_email: string
-  ): IngredientListingModel[] & ShellModel {
+  ) {
     const filtered = [];
     ingredients.forEach((item) => {
       if (
@@ -161,7 +161,7 @@ export class IngredientService {
         filtered.push(item);
       }
     });
-    return filtered as IngredientListingModel[] & ShellModel;
+    return filtered;
   }
 
   /*
