@@ -79,6 +79,7 @@ export class CourseManagePage implements OnInit, ViewWillEnter {
           date: new Date(),
         },
         modifiers: [],
+        last_modified: new Date()
       };
     } else {
       this.update = true;

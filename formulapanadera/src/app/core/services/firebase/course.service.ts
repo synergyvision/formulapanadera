@@ -25,6 +25,7 @@ const API_STORAGE_KEY = environment.storage_key;
 @Injectable()
 export class CourseCRUDService implements FirebaseService {
   collection = COLLECTIONS.course;
+  listing_collection = COLLECTIONS.course + '-listing';
 
   constructor(
     private afs: AngularFirestore,

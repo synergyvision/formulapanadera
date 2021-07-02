@@ -5,14 +5,30 @@ import {
   IngredientMixingModel,
 } from "./formula.model";
 import { ReferenceModel } from "./shared.model";
-import { UserOwnerModel } from "./user.model";
+import { UserOwnerModel, UserOwnerResumeModel } from "./user.model";
 
 export type ProportionFactor = {
   factor: typeof PROPORTION_FACTOR[number];
   ingredient?: { id: string; name: string };
 };
 
-export class IngredientModel {
+export class IngredientListingModel {
+  id: string;
+  name: string;
+  is_flour: boolean;
+  hydration: number;
+  fat: number;
+  cost: number;
+  formula?: {
+    suggested_values: {
+      min: number;
+      max: number;
+    };
+  };
+  user: UserOwnerResumeModel;
+}
+
+export class IngredientModel extends IngredientListingModel {
   id: string;
   name: string;
   is_flour: boolean;

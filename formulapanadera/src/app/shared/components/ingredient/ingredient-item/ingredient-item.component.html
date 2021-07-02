@@ -30,7 +30,7 @@
             class="ingredients-description ingredient-hydration"
           >
             <ion-icon class="properties-icon" [name]="ICONS.water"></ion-icon
-            >{{ ingredientHydration() }}%
+            >{{ ingredient.hydration }}%
           </p>
         </ion-col>
         <ion-col size="3" class="properties-col" *ngIf="ingredient?.fat > 0">
@@ -38,7 +38,7 @@
             class="ingredients-description ingredient-fat"
           >
             <ion-icon class="properties-icon" [name]="ICONS.water"></ion-icon
-            >{{ ingredientFat() }}%
+            >{{ ingredient?.fat }}%
           </p>
         </ion-col>
         <ion-col size="3" class="properties-col" *ngIf="ingredient.is_flour">

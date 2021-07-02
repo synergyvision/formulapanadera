@@ -96,6 +96,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
           date: new Date(),
         },
         modifiers: [],
+        last_modified: null
       };
     } else {
       this.update = true;
@@ -328,6 +329,7 @@ export class IngredientManagePage implements OnInit, ViewWillEnter {
           date: new Date(),
         },
         modifiers: [],
+        last_modified: new Date(),
       };
       this.ingredientCRUDService
         .create(this.ingredient)

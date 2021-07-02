@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
 import { combineLatest, Observable } from "rxjs";
 
-import { IngredientModel } from "../../models/ingredient.model";
+import { IngredientListingModel, IngredientModel } from "../../models/ingredient.model";
 import { COLLECTIONS } from "src/app/config/firebase";
 import { IngredientPercentageModel } from "../../models/formula.model";
 import { map } from "rxjs/operators";
@@ -12,14 +12,15 @@ import { environment } from "src/environments/environment";
 import { OfflineManagerService } from "../offline-manager.service";
 import { FirebaseService } from "../../interfaces/firebase-service.interface";
 import { IngredientService } from "../ingredient.service";
-import { ShellModel } from "src/app/shared/shell/shell.model";
 import { UserStorageService } from "../storage/user.service";
+import * as moment from "moment";
 
 const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
 export class IngredientCRUDService implements FirebaseService {
   collection = COLLECTIONS.ingredients;
+  listing_collection = COLLECTIONS.ingredients + '-listing';
 
   constructor(
     private afs: AngularFirestore,
@@ -30,24 +31,46 @@ export class IngredientCRUDService implements FirebaseService {
     private userStorageService: UserStorageService
   ) { }
 
+  public convertToListing(ingredient: IngredientModel): IngredientListingModel {
+    return {
+      id: ingredient.id,
+      name: ingredient.name,
+      is_flour: ingredient.is_flour,
+      hydration: ingredient.hydration,
+      fat: ingredient.fat,
+      cost: ingredient.cost,
+      formula: ingredient.formula ? {
+        suggested_values: ingredient.formula.suggested_values,
+      }: null,
+      user: {
+        owner: ingredient.user.owner,
+        public: ingredient.user.public,
+        shared_references: ingredient.user.shared_references ? ingredient.user.shared_references : [],
+        shared_users: ingredient.user.shared_users ? ingredient.user.shared_users : [],
+        creator: ingredient.user.creator,
+        last_modified: ingredient.user.last_modified ? ingredient.user.last_modified : null
+      }
+    }
+  }
+
   /*
     Ingredient Collection
   */
   public getIngredientsDataSource(
     user_email: string
-  ): Observable<Array<IngredientModel>> {
+  ): Observable<Array<IngredientListingModel>> {
     let mine = this.afs
-      .collection<IngredientModel>(this.collection, (ref) =>
+      .collection<IngredientListingModel>(this.listing_collection, (ref) =>
         ref.where("user.owner", "==", user_email)
       )
       .valueChanges({ idField: "id" });
     let shared = this.afs
-      .collection<IngredientModel>(this.collection, (ref) =>
+      .collection<IngredientListingModel>(this.listing_collection, (ref) =>
         ref.where("user.shared_references", "array-contains", user_email)
       )
       .valueChanges({ idField: "id" });
     let publics = this.afs
-      .collection<IngredientModel>(this.collection, (ref) =>
+      .collection<IngredientListingModel>(this.listing_collection, (ref) =>
         ref.where("user.public", "==", true)
       )
       .valueChanges({ idField: "id" });
@@ -73,6 +96,15 @@ export class IngredientCRUDService implements FirebaseService {
     )
   }
 
+  public async getIngredient(id: string): Promise<IngredientModel> {
+    const doc = await this.afs.collection<IngredientModel>(this.collection).doc(id).ref.get();
+    if (doc.exists) {
+      const ingredient = doc.data() as IngredientModel;
+      await this.getSubIngredients(ingredient);
+      return ingredient;
+    }
+  }
+
   public async getSubIngredients(ingredient: IngredientModel, collection = this.collection) {
     if (ingredient.formula && !ingredient.formula.ingredients) {
       ingredient.formula.ingredients = [];
@@ -89,20 +121,50 @@ export class IngredientCRUDService implements FirebaseService {
   }
 
   public async getIngredients(user_email: string): Promise<void>{
-    const docs = await this.afs
+    const mine = []
+    const shared = []
+    const publics = []
+    const afs_mine = await this.afs
       .collection<IngredientModel>(this.collection).ref.where("user.owner", "==", user_email).get();
-    if (!docs.empty) {
-      const ingredients = []
-      docs.forEach(doc => {
-        ingredients.push(doc.data() as IngredientModel)
+    if (!afs_mine.empty) {
+      afs_mine.forEach(doc => {
+        mine.push(doc.data() as IngredientModel)
       });
-      const promises = ingredients.map((ing) => this.getSubIngredients(ing))
-      await Promise.all(promises)
-      this.ingredientService.setIngredients(
-        ingredients as IngredientModel[] & ShellModel
-      );
-      this.setLocalData([...ingredients]);
     }
+    let user = await this.userStorageService.getUser();
+    if (user.role !== 'FREE') {
+      const afs_shared = await this.afs
+        .collection<IngredientModel>(this.collection).ref.where("user.shared_references", "array-contains", user_email).get();
+      if (!afs_shared.empty) {
+        afs_shared.forEach(doc => {
+          shared.push(doc.data() as IngredientModel)
+        });
+      }
+      const afs_public = await this.afs
+        .collection<IngredientModel>(this.collection).ref.where("user.public", "==", true).get();
+      if (!afs_public.empty) {
+        afs_public.forEach(doc => {
+          publics.push(doc.data() as IngredientModel)
+        });
+      }
+    }
+    
+    let aux = [...mine, ...shared, ...publics] as IngredientModel[];
+    let ingredients: IngredientModel[] = [];
+    aux.forEach((item1) => {
+      let exists = false;
+      ingredients.forEach((item2) => {
+        if (item1.id == item2.id) {
+          exists = true;
+        }
+      })
+      if (!exists) {
+        ingredients.push(item1);
+      }
+    })
+    const promises = ingredients.map((ing) => this.getSubIngredients(ing))
+    await Promise.all(promises)
+    this.setLocalData([...ingredients]);
   }
 
   /*
@@ -115,7 +177,7 @@ export class IngredientCRUDService implements FirebaseService {
       let id = this.afs.createId();
       // Set ingredient
       ingredientData.id = id;
-      let ingredient = JSON.parse(JSON.stringify(ingredientData));
+      let ingredient: IngredientModel = JSON.parse(JSON.stringify(ingredientData));
       if (ingredientData.formula) {
         delete ingredient.formula.ingredients;
         if (ingredient.formula.mixing && ingredient.formula.mixing.length > 0) {
@@ -132,15 +194,16 @@ export class IngredientCRUDService implements FirebaseService {
       // Set sub ingredients
       await this.createSubIngredient(this.collection, id, ingredientData);
       await this.afs.collection(this.collection).doc(id).set(ingredient);
-
-      let user = await this.userStorageService.getUser();
-      if (user.role == 'FREE') {
-        await this.updateLocalData('C', ingredientData);
-      }
+      await this.createListing(id, this.convertToListing(ingredient));
+      await this.updateLocalData('C', ingredientData);
     } else {
       await this.offlineManager.storeRequest(this.collection, 'C', ingredientData, null);
       await this.updateLocalData('C', ingredientData);
     }
+  }
+
+  public async createListing(id: string, ingredient: IngredientListingModel) {
+    await this.afs.collection(this.listing_collection).doc(id).set(ingredient);
   }
 
   public async createSubIngredient(collection: string, id: string, ingredientData: IngredientModel) {
@@ -184,30 +247,46 @@ export class IngredientCRUDService implements FirebaseService {
       // Set sub ingredients
       await this.createSubIngredient(this.collection, ingredientData.id, ingredientData);
       await this.afs.collection(this.collection).doc(ingredientData.id).set(ingredient);
-
-      let user = await this.userStorageService.getUser();
-      if (user.role == 'FREE') {
-        await this.updateLocalData('U', ingredientData);
-      }
+      await this.updateListing(this.convertToListing(ingredient));
+      await this.updateLocalData('U', ingredient);
     } else {
       await this.offlineManager.storeRequest(this.collection, 'U', ingredientData, originalIngredient);
       await this.updateLocalData('U', ingredientData);
     }
   }
 
+  public async updateShare(ingredientData: IngredientModel) {
+    if (this.networkService.isConnectedToNetwork()) {
+      let ingredient = JSON.parse(JSON.stringify(ingredientData));
+      ingredient.user.last_modified = new Date();
+
+      await this.afs.collection(this.collection).doc(ingredientData.id).update({user: ingredient.user});
+      await this.updateListing(this.convertToListing(ingredient));
+      await this.updateLocalData('U', ingredient);
+    } else {
+      await this.offlineManager.storeRequest(this.collection, 'U', ingredientData, ingredientData);
+      await this.updateLocalData('U', ingredientData);
+    }
+  }
+
+  public async updateListing(ingredient: IngredientListingModel) {
+    await this.afs.collection(this.listing_collection).doc(ingredient.id).set(ingredient);
+  }
+
   public async delete(ingredientData: IngredientModel): Promise<void> {
     if (this.networkService.isConnectedToNetwork()) {
       await this.deleteSubIngredient(ingredientData);
       await this.afs.collection(this.collection).doc(ingredientData.id).delete();
-
-      let user = await this.userStorageService.getUser();
-      if (user.role == 'FREE') {
-        await this.updateLocalData('D', ingredientData);
-      }
+      await this.deleteListing(ingredientData.id);
+      await this.updateLocalData('D', ingredientData);
     } else {
       await this.offlineManager.storeRequest(this.collection, 'D', ingredientData, null);
       await this.updateLocalData('D', ingredientData);
     }
+  }
+
+  public async deleteListing(id: string) {
+    await this.afs.collection(this.listing_collection).doc(id).delete();
   }
 
   public async deleteSubIngredient(ingredientData: IngredientModel, collection = this.collection) {
@@ -222,7 +301,7 @@ export class IngredientCRUDService implements FirebaseService {
   }
 
   public async updateIngredients(updated_ingredient: IngredientModel, updated_ingredients: IngredientModel[]) {
-    let ingredients: IngredientModel[] = JSON.parse(JSON.stringify(this.ingredientService.getCurrentIngredients()));
+    let ingredients: IngredientModel[] = await this.getLocalData();
     const ing_promises = ingredients.map((ingredient) => {
       let original_ingredient: IngredientModel = JSON.parse(JSON.stringify(ingredient));
       let has_ingredient: boolean = this.ingredientService.hasIngredient(ingredient, updated_ingredient);
@@ -234,13 +313,29 @@ export class IngredientCRUDService implements FirebaseService {
     await Promise.all(ing_promises);
   }
 
+  public async updatedCacheData(listing_ingredient: IngredientListingModel): Promise<IngredientModel> {
+    let current_ingredient = (await this.getLocalData()).find(value => value.id == listing_ingredient.id);
+    let user = await this.userStorageService.getUser();
+    if (user.role == 'FREE') {
+      return current_ingredient;
+    } else {
+      if (!current_ingredient || moment(typeof current_ingredient.user.last_modified === 'object' ? current_ingredient.user.last_modified.seconds * 1000 : current_ingredient.user.last_modified).isBefore(typeof listing_ingredient.user.last_modified === 'object' ? listing_ingredient.user.last_modified.seconds * 1000 : listing_ingredient.user.last_modified)) {
+        let updated_ingredient = await this.getIngredient(listing_ingredient.id);
+        this.updateLocalData(!current_ingredient ? 'C' : 'U', updated_ingredient);
+        return updated_ingredient;
+      } else {
+        return current_ingredient;
+      }
+    }
+  }
+
   // Save result of API requests
-  public setLocalData(data: any) {
+  public setLocalData(data: IngredientModel[]) {
     this.storageService.set(`${API_STORAGE_KEY}-${this.collection}`, data);
   }
  
   // Get cached API result
-  public getLocalData() {
+  public getLocalData(): any {
     return this.storageService.get(`${API_STORAGE_KEY}-${this.collection}`);
   }
 
@@ -261,6 +356,5 @@ export class IngredientCRUDService implements FirebaseService {
       })
     }
     this.setLocalData(data);
-    this.ingredientService.setIngredients(data as IngredientModel[] & ShellModel)
   }
 }

@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnInit } from "@angular/core";
-import { IngredientModel } from "../../../core/models/ingredient.model";
+import { IngredientListingModel } from "../../../core/models/ingredient.model";
 import { ShellModel } from "../../../shared/shell/shell.model";
 import { FormGroup, FormControl } from "@angular/forms";
 import { DataStore } from "../../../shared/shell/data-store";
@@ -15,6 +15,9 @@ import { CourseService } from "src/app/core/services/course.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
 import { UserService } from "src/app/core/services/user.service";
 import { UserModel } from "src/app/core/models/user.model";
+import { LoadingController } from "@ionic/angular";
+import { LanguageService } from "src/app/core/services/language.service";
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 
 @Component({
   selector: "app-ingredient-listing",
@@ -40,25 +43,29 @@ export class IngredientListingPage implements OnInit {
   showPublic = true;
 
   currency = CURRENCY;
-  ingredients: IngredientModel[] & ShellModel;
-  all_ingredients: IngredientModel[] & ShellModel;
+  ingredients: IngredientListingModel[] & ShellModel;
+  all_ingredients: IngredientListingModel[] & ShellModel;
 
   isLoading: boolean = true;
 
   user: UserModel;
 
   courses: CourseModel[];
+  all_courses: CourseModel[] = [];
 
   @HostBinding("class.is-shell") get isShell() {
     return this.ingredients && this.ingredients.isShell ? true : false;
   }
   constructor(
+    private ingredientCRUDService: IngredientCRUDService,
     private ingredientService: IngredientService,
     private courseService: CourseService,
     private router: Router,
     private userStorageService: UserStorageService,
     private formatNumberService: FormatNumberService,
-    private userService: UserService
+    private userService: UserService,
+    private loadingController: LoadingController,
+    private languageService: LanguageService
   ) {}
 
   async ngOnInit() {
@@ -85,25 +92,29 @@ export class IngredientListingPage implements OnInit {
 
     this.user = await this.userStorageService.getUser();
     this.ingredientService
-      .getIngredients()
+      .getIngredientsListing()
       .subscribe((ingredients) => {
         this.ingredients = this.ingredientService.searchingState();
-        this.all_ingredients = ingredients as IngredientModel[] & ShellModel;
+        this.all_ingredients = ingredients as IngredientListingModel[] & ShellModel;
         this.isLoading = true;
         this.searchList();
       });
     if (this.userService.hasPermission(this.user.role, [{ name: 'COURSE', type: 'VIEW' }])) {
       this.courseService.getSharedCourses().subscribe(async courses => {
-        this.courses = [];
+        this.all_courses = [];
         courses?.forEach(course => {
           if (course.ingredients?.length > 0) {
             course.ingredients = this.courseService.orderItems(course.ingredients);
-            this.courses.push(course);
+            this.all_courses.push(course);
           }
         })
+        if (this.all_courses.length > 0) {
+          this.isLoading = true;
+          this.searchList();
+        }
       })
     } else {
-      this.courses = [];
+      this.all_courses = [];
     }
   }
 
@@ -188,6 +199,7 @@ export class IngredientListingPage implements OnInit {
 
       updateSearchObservable.subscribe((value) => {
         this.ingredients = this.ingredientService.sortIngredients(value);
+        this.courses = this.filteredCourses();
         this.isLoading = value.isShell;
       });
     }
@@ -220,33 +232,33 @@ export class IngredientListingPage implements OnInit {
 
     let filteredCourses: CourseModel[] = [];
 
-    this.courses.forEach(course => {
-      let filteredIngredients: IngredientModel[] = Array.from([...course.ingredients], (item)=>{return item.item as IngredientModel});
+    this.all_courses.forEach(course => {
+      let filteredIngredients: IngredientListingModel[] = Array.from([...course.ingredients], (item)=>{return item.item as IngredientListingModel});
       filteredIngredients = this.ingredientService.searchIngredientsByHydration(
         filters.hydration.lower,
         filters.hydration.upper,
-        filteredIngredients as IngredientModel[] & ShellModel
+        filteredIngredients as IngredientListingModel[] & ShellModel
       );
       filteredIngredients = this.ingredientService.searchIngredientsByFat(
         filters.fat.lower,
         filters.fat.upper,
-        filteredIngredients as IngredientModel[] & ShellModel
+        filteredIngredients as IngredientListingModel[] & ShellModel
       );
       filteredIngredients = this.ingredientService.searchIngredientsByCost(
         filters.cost.lower,
         filters.cost.upper,
-        filteredIngredients as IngredientModel[] & ShellModel
+        filteredIngredients as IngredientListingModel[] & ShellModel
       );
       if (filters.is_flour !== "all") {
         filteredIngredients = this.ingredientService.searchIngredientsByType(
           filters.is_flour,
-          filteredIngredients as IngredientModel[] & ShellModel
+          filteredIngredients as IngredientListingModel[] & ShellModel
         );
       }
       if (filters.type !== "all") {
         filteredIngredients = this.ingredientService.searchIngredientsByFormula(
           filters.type,
-          filteredIngredients as IngredientModel[] & ShellModel
+          filteredIngredients as IngredientListingModel[] & ShellModel
         );
       }
       if (filteredIngredients.length > 0) {
@@ -267,7 +279,7 @@ export class IngredientListingPage implements OnInit {
     return filteredCourses;
   }
 
-  ingredientsSegment(segment: 'mine' | 'shared' | 'public'): IngredientModel[] {
+  ingredientsSegment(segment: 'mine' | 'shared' | 'public'): IngredientListingModel[] {
     if (this.isLoading) {
       return this.ingredients;
     } else {
@@ -289,18 +301,28 @@ export class IngredientListingPage implements OnInit {
     );
   }
 
-  ingredientDetails(ingredient: IngredientModel) {
-    if (ingredient.name !== undefined) {
-      this.router.navigateByUrl(
-        APP_URL.menu.name +
+  async ingredientDetails(listing_ingredient: IngredientListingModel) {
+    if (listing_ingredient.name !== undefined) {
+      const loading = await this.loadingController.create({
+        cssClass: "app-send-loading",
+        message: this.languageService.getTerm("loading"),
+      });
+      await loading.present();
+
+      let ingredient = await this.ingredientCRUDService.updatedCacheData(listing_ingredient);
+      if (ingredient) {
+        this.router.navigateByUrl(
+          APP_URL.menu.name +
           "/" +
           APP_URL.menu.routes.ingredient.main +
           "/" +
           APP_URL.menu.routes.ingredient.routes.details,
-        {
-          state: { ingredient: JSON.parse(JSON.stringify(ingredient)) },
-        }
-      );
+          {
+            state: { ingredient: JSON.parse(JSON.stringify(ingredient)) },
+          }
+        );
+      }
+      await loading.dismiss();
     }
   }
 }

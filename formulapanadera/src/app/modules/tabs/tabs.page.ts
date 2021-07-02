@@ -6,7 +6,7 @@ import { FirebaseService } from "src/app/core/interfaces/firebase-service.interf
 import { StoredRequest } from "src/app/core/interfaces/stored-request.interface";
 import { CourseModel } from "src/app/core/models/course.model";
 import { FormulaModel } from "src/app/core/models/formula.model";
-import { IngredientModel } from "src/app/core/models/ingredient.model";
+import { IngredientListingModel, IngredientModel } from "src/app/core/models/ingredient.model";
 import { ProductionModel } from "src/app/core/models/production.model";
 import { SettingsModel } from "src/app/core/models/settings.model";
 import { UserModel } from "src/app/core/models/user.model";
@@ -78,8 +78,8 @@ export class TabsPage implements OnInit, OnDestroy {
     }
     
     if (this.user.role == 'FREE') {
-      this.ingredientService.setIngredients(
-        await this.ingredientCRUDService.getLocalData() as IngredientModel[] & ShellModel
+      this.ingredientService.setIngredientsListing(
+        await this.ingredientCRUDService.getLocalData() as IngredientListingModel[] & ShellModel
       );
       this.formulaService.setFormulas(
         await this.formulaCRUDService.getLocalData() as FormulaModel[] & ShellModel
@@ -117,15 +117,12 @@ export class TabsPage implements OnInit, OnDestroy {
         .getIngredientsDataSource(this.user.email)
         .subscribe(async (ingredients) => {
           if (this.networkService.isConnectedToNetwork()) {
-            let ingredients_aux = JSON.parse(JSON.stringify(ingredients)) as IngredientModel[];
-            const promises = ingredients_aux.map((ing) => this.ingredientCRUDService.getSubIngredients(ing))
-            await Promise.all(promises)
-            this.ingredientService.setIngredients(
-              ingredients_aux as IngredientModel[] & ShellModel
+            let ingredients_aux = [...ingredients] as IngredientListingModel[];
+            this.ingredientService.setIngredientsListing(
+              ingredients_aux as IngredientListingModel[] & ShellModel
             );
-            this.ingredientCRUDService.setLocalData(JSON.parse(JSON.stringify(ingredients_aux)));
           } else {
-            this.ingredientService.setIngredients(
+            this.ingredientService.setIngredientsListing(
               await this.ingredientCRUDService.getLocalData() as IngredientModel[] & ShellModel
             );
           };

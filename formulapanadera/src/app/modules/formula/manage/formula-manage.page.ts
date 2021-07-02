@@ -103,6 +103,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
           date: new Date(),
         },
         modifiers: [],
+        last_modified: null
       };
     } else {
       this.update = true;
@@ -556,6 +557,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
           date: new Date(),
         },
         modifiers: [],
+        last_modified: new Date(),
       };
       let share: boolean = true;
       if (this.formula.user.owner == "") {

@@ -18,9 +18,7 @@ export class UserCRUDService {
 
   constructor(
     private afs: AngularFirestore,
-    private networkService: NetworkService,
     private storageService: StorageService,
-    private offlineManager: OfflineManagerService
   ) { }
 
   /*

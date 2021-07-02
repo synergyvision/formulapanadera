@@ -158,7 +158,7 @@ export class SharedUsersModal implements OnInit {
     })
 
     if (this.type == "ingredient") {
-      this.ingredientCRUDService.update(this.item as IngredientModel, this.item as IngredientModel)
+      this.ingredientCRUDService.updateShare(this.item as IngredientModel)
         .then(() => {
           this.dismissModal()
         })

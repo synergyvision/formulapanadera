@@ -1,5 +1,5 @@
-import { Component, HostBinding, OnInit, Input } from "@angular/core";
-import { IngredientModel } from "../../../core/models/ingredient.model";
+import { Component, OnInit, Input } from "@angular/core";
+import { IngredientListingModel, IngredientModel } from "../../../core/models/ingredient.model";
 import { ShellModel } from "../../shell/shell.model";
 import { FormGroup, FormControl } from "@angular/forms";
 import { DataStore } from "../../shell/data-store";
@@ -39,8 +39,8 @@ export class IngredientPickerModal implements OnInit {
   showPublic = true;
 
   currency = CURRENCY;
-  ingredients: IngredientModel[] & ShellModel;
-  all_ingredients: IngredientModel[] & ShellModel;
+  ingredients: IngredientListingModel[] & ShellModel;
+  all_ingredients: IngredientListingModel[] & ShellModel;
 
   isLoading: boolean = true;
 
@@ -76,10 +76,10 @@ export class IngredientPickerModal implements OnInit {
 
     this.user_email = (await this.userStorageService.getUser()).email;
     this.ingredientService
-      .getIngredients()
+      .getIngredientsListing()
       .subscribe(async (ingredients) => {
         this.ingredients = this.ingredientService.searchingState();
-        this.all_ingredients = ingredients as IngredientModel[] & ShellModel;
+        this.all_ingredients = ingredients as IngredientListingModel[] & ShellModel;
         this.isLoading = true;
         this.searchList();
       });
@@ -169,7 +169,7 @@ export class IngredientPickerModal implements OnInit {
     });
   }
 
-  ingredientsSegment(segment: 'mine' | 'shared' | 'public'): IngredientModel[] {
+  ingredientsSegment(segment: 'mine' | 'shared' | 'public'): IngredientListingModel[] {
     if (this.isLoading) {
       return this.ingredients;
     } else {

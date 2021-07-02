@@ -6,8 +6,9 @@ import { map } from 'rxjs/operators';
 import { APP_URL } from 'src/app/config/configuration';
 import { ICONS } from 'src/app/config/icons';
 import { FormulaModel } from "src/app/core/models/formula.model";
-import { IngredientModel } from "src/app/core/models/ingredient.model";
+import { IngredientListingModel, IngredientModel } from "src/app/core/models/ingredient.model";
 import { ProductionModel } from "src/app/core/models/production.model";
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 import { FormulaService } from "src/app/core/services/formula.service";
 import { IngredientService } from "src/app/core/services/ingredient.service";
 import { LanguageService } from "src/app/core/services/language.service";
@@ -31,11 +32,11 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
 
   productions: ProductionModel[] & ShellModel;
   formulas: FormulaModel[] & ShellModel;
-  ingredients: IngredientModel[] & ShellModel;
+  ingredients: IngredientModel[];
 
   all_productions: ProductionModel[] & ShellModel;
   all_formulas: FormulaModel[] & ShellModel;
-  all_ingredients: IngredientModel[] & ShellModel;
+  all_ingredients: IngredientModel[];
 
   user_email: string;
 
@@ -49,7 +50,8 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
     private productionService: ProductionService,
     private userStorageService: UserStorageService,
     private router: Router,
-    private routerOutlet: IonRouterOutlet
+    private routerOutlet: IonRouterOutlet,
+    private ingredientCRUDService: IngredientCRUDService
   ) { }
   
   async ngOnInit() {
@@ -58,12 +60,6 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
 
     this.user_email = (await this.userStorageService.getUser()).email;
 
-    this.ingredientService
-      .getIngredients()
-      .subscribe(async (ingredients) => {
-        this.searchingState(this.segment);
-        this.all_ingredients = ingredients as IngredientModel[] & ShellModel;
-      });
     this.productionService
       .getProductions()
       .subscribe(async (productions) => {
@@ -86,7 +82,8 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
     }
   }
 
-  searchList() {
+  async searchList() {
+    this.all_ingredients = await this.ingredientCRUDService.getLocalData() as IngredientModel[];
     if (this.all_ingredients || this.all_formulas || this.all_productions) {
       let filtered = [];
       if (this.segment == "ingredients") {
@@ -136,7 +133,7 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
 
       updateSearchObservable.subscribe((value) => {
         if (this.segment == "ingredients") {
-          this.ingredients = this.ingredientService.sortIngredients(value);
+          this.ingredients = this.ingredientService.sortIngredients(value) as IngredientModel[] & ShellModel;
         }
         if (this.segment == "formulas") {
           this.formulas = this.formulaService.sortFormulas(value);
@@ -246,22 +243,25 @@ export class SharedListingPage implements OnInit, ViewWillEnter {
     this.searchList();
   }
 
-  details(
+  async details(
     type: "ingredient" | "formula" | "production",
     item: IngredientModel | FormulaModel | ProductionModel
   ) {
     if (item.name !== undefined) {
       if (type == "ingredient") {
-        this.router.navigateByUrl(
-          APP_URL.menu.name +
+        let ingredient = await this.ingredientCRUDService.updatedCacheData(item as IngredientListingModel);
+        if (ingredient) {
+          this.router.navigateByUrl(
+            APP_URL.menu.name +
             "/" +
             APP_URL.menu.routes.ingredient.main +
             "/" +
             APP_URL.menu.routes.ingredient.routes.details,
-          {
-            state: { ingredient: JSON.parse(JSON.stringify(item)) },
-          }
-        );
+            {
+              state: { ingredient: JSON.parse(JSON.stringify(ingredient)) },
+            }
+          );
+        }
       }
       if (type == "formula") {
         this.router.navigateByUrl(
