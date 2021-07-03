@@ -2,7 +2,8 @@
   <ion-toolbar color="primary">
     <ion-icon slot="start" class="btn-med" [name]="ICONS.production"></ion-icon>
     <ion-title> {{ 'production.name' | translate }} </ion-title>
-    <ion-buttons slot="end">
+    <!-- PERMISSION: PRODUCTION MANAGE (CREATE) -->
+    <ion-buttons slot="end" *appHasPermission="{name: 'PRODUCTION', type: 'MANAGE'}">
       <ion-button (click)="createProduction()" class="create-production">
         <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
       </ion-button>
@@ -114,46 +115,27 @@
     </span>
 
     <!-- Shared -->
-    <span *ngIf="productionsSegment('shared')?.length > 0 || filteredCourses()?.length > 0">
-      <app-show-hide-content
-        *ngIf="!isLoading"
-        (click)="showShared = !showShared"
-        [show]="showShared"
-        [title]="'formulas.share.shared' | translate"
-        [highlight]="true"
-      ></app-show-hide-content>
-      <ion-list
-        lines="none"
-        class="productions-list"
-        *ngIf="showShared && !isLoading && filteredCourses()?.length > 0"
-      >
-        <app-title-divider
-          [title]="'settings.course.name' | translate"
-        ></app-title-divider>
-        <span *ngFor="let course of filteredCourses(); index as i">
-          <app-shared-course-item
-            [course]="course"
-            type="production"
-            [even]="(i%2==0)"
-          ></app-shared-course-item>
+    <!-- PERMISSION: SHARE MANAGE -->
+    <span *appHasPermission="{name: 'SHARE', type: 'MANAGE'}">
+      <span *ngIf="productionsSegment('shared')?.length > 0 || filteredCourses()?.length > 0">
+        <app-show-hide-content *ngIf="!isLoading" (click)="showShared = !showShared" [show]="showShared"
+          [title]="'formulas.share.shared' | translate" [highlight]="true"></app-show-hide-content>
+        <!-- PERMISSION: COURSE VIEW -->
+        <span *appHasPermission="{name: 'COURSE', type: 'VIEW'}">
+          <ion-list lines="none" class="productions-list" *ngIf="showShared && !isLoading && filteredCourses()?.length > 0">
+            <app-title-divider [title]="'settings.course.name' | translate"></app-title-divider>
+            <span *ngFor="let course of filteredCourses(); index as i">
+              <app-shared-course-item [course]="course" type="production" [even]="(i%2==0)"></app-shared-course-item>
+            </span>
+          </ion-list>
         </span>
-      </ion-list>
-      <ion-list
-        lines="none"
-        class="productions-list"
-        *ngIf="showShared && productionsSegment('shared')?.length > 0"
-      >
-        <app-title-divider
-          *ngIf="!isLoading && courses?.length > 0"
-          [title]="'production.name' | translate"
-        ></app-title-divider>
-        <app-production-item
-          *ngFor="let production of productionsSegment('shared'); index as i"
-          (click)="productionDetails(production)"
-          [production]="production"
-          [even]="(i%2==0)"
-        ></app-production-item>
-      </ion-list>
+        <ion-list lines="none" class="productions-list" *ngIf="showShared && productionsSegment('shared')?.length > 0">
+          <app-title-divider *ngIf="!isLoading && courses?.length > 0" [title]="'production.name' | translate">
+          </app-title-divider>
+          <app-production-item *ngFor="let production of productionsSegment('shared'); index as i"
+            (click)="productionDetails(production)" [production]="production" [even]="(i%2==0)"></app-production-item>
+        </ion-list>
+      </span>
     </span>
 
     <!-- Public -->

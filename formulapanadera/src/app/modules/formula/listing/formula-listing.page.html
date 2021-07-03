@@ -2,7 +2,8 @@
   <ion-toolbar color="primary">
     <ion-icon slot="start" class="btn-med" [name]="ICONS.formula"></ion-icon>
     <ion-title> {{ 'formulas.name' | translate }} </ion-title>
-    <ion-buttons slot="end">
+    <!-- PERMISSION: FORMULA MANAGE (CREATE) -->
+    <ion-buttons slot="end" *appHasPermission="{name: 'FORMULA', type: 'MANAGE'}">
       <ion-button class="create-formula" (click)="createFormula()">
         <ion-icon slot="icon-only" [name]="ICONS.add"></ion-icon>
       </ion-button>
@@ -167,47 +168,27 @@
     </span>
 
     <!-- Shared -->
-    <span *ngIf="formulasSegment('shared')?.length > 0 || filteredCourses()?.length > 0">
-      <app-show-hide-content
-        *ngIf="!isLoading"
-        (click)="showShared = !showShared"
-        [show]="showShared"
-        [title]="'formulas.share.shared' | translate"
-        [highlight]="true"
-      ></app-show-hide-content>
-      <ion-list
-        lines="none"
-        class="formulas-list"
-        *ngIf="showShared && !isLoading && filteredCourses()?.length > 0"
-      >
-        <app-title-divider
-          [title]="'settings.course.name' | translate"
-        ></app-title-divider>
-        <span *ngFor="let course of filteredCourses(); index as i">
-          <app-shared-course-item
-            [course]="course"
-            type="formula"
-            [even]="(i%2==0)"
-          ></app-shared-course-item>
+    <!-- PERMISSION: SHARE MANAGE -->
+    <span *appHasPermission="{name: 'SHARE', type: 'MANAGE'}">
+      <span *ngIf="formulasSegment('shared')?.length > 0 || filteredCourses()?.length > 0">
+        <app-show-hide-content *ngIf="!isLoading" (click)="showShared = !showShared" [show]="showShared"
+          [title]="'formulas.share.shared' | translate" [highlight]="true"></app-show-hide-content>
+        <!-- PERMISSION: COURSE VIEW -->
+        <span *appHasPermission="{name: 'COURSE', type: 'VIEW'}">
+          <ion-list lines="none" class="formulas-list" *ngIf="showShared && !isLoading && filteredCourses()?.length > 0">
+            <app-title-divider [title]="'settings.course.name' | translate"></app-title-divider>
+            <span *ngFor="let course of filteredCourses(); index as i">
+              <app-shared-course-item [course]="course" type="formula" [even]="(i%2==0)"></app-shared-course-item>
+            </span>
+          </ion-list>
         </span>
-      </ion-list>
-      <ion-list
-        lines="none"
-        class="formulas-list"
-        *ngIf="showShared && formulasSegment('shared')?.length > 0"
-      >
-        <app-title-divider
-          *ngIf="!isLoading && filteredCourses()?.length > 0"
-          [title]="'formulas.name' | translate"
-        ></app-title-divider>
-        <app-formula-item
-          *ngFor="let formula of formulasSegment('shared'); index as i"
-          (click)="formulaDetails(formula)"
-          [formula]="formula"
-          [clickable]="true"
-          [even]="(i%2==0)"
-        ></app-formula-item>
-      </ion-list>
+        <ion-list lines="none" class="formulas-list" *ngIf="showShared && formulasSegment('shared')?.length > 0">
+          <app-title-divider *ngIf="!isLoading && filteredCourses()?.length > 0" [title]="'formulas.name' | translate">
+          </app-title-divider>
+          <app-formula-item *ngFor="let formula of formulasSegment('shared'); index as i" (click)="formulaDetails(formula)"
+            [formula]="formula" [clickable]="true" [even]="(i%2==0)"></app-formula-item>
+        </ion-list>
+      </span>
     </span>
 
     <!-- Public -->

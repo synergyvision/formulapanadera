@@ -1,16 +1,19 @@
 <ion-tabs>
   <ion-tab-bar slot="bottom" class="tabs-content">
-    <ion-tab-button tab="formula">
+    <!-- PERMISSION: FORMULA VIEW -->
+    <ion-tab-button tab="formula" *appHasPermission="{name: 'FORMULA', type: 'VIEW'}">
       <ion-icon [name]="ICONS.formula"></ion-icon>
       <ion-label>{{ 'formulas.name' | translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="ingredient">
+    <!-- PERMISSION: INGREDIENT VIEW -->
+    <ion-tab-button tab="ingredient" *appHasPermission="{name: 'INGREDIENT', type: 'VIEW'}">
       <ion-icon [name]="ICONS.ingredient"></ion-icon>
       <ion-label>{{ 'ingredients.name' | translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="production">
+    <!-- PERMISSION: PRODUCTION VIEW -->
+    <ion-tab-button tab="production" *appHasPermission="{name: 'PRODUCTION', type: 'VIEW'}">
       <ion-icon [name]="ICONS.production"></ion-icon>
       <ion-label>{{ 'production.name' | translate }}</ion-label>
     </ion-tab-button>

@@ -15,7 +15,7 @@ const routes: Routes = [
   },
   {
     path: APP_URL.menu.routes.settings.routes.course.routes.details,
-    canLoad: [StateHasDataGuard],
+    canActivate: [StateHasDataGuard],
     loadChildren: () =>
       import("./details/course-details.module").then(
         (m) => m.CourseDetailsPageModule

@@ -11,6 +11,7 @@ import { FormulaService } from "./formula.service";
 import { OVEN_STEP } from "src/app/config/formula";
 import { BehaviorSubject, Observable } from "rxjs";
 import { LOADING_ITEMS } from "src/app/config/configuration";
+import { FormatNumberService } from "./format-number.service";
 
 @Injectable()
 export class ProductionService {
@@ -18,6 +19,7 @@ export class ProductionService {
 
   constructor(
     private formulaService: FormulaService,
+    private formatNumberService: FormatNumberService
   ) { }
   
   public setProductions(productions: ProductionModel[] & ShellModel) {
@@ -195,7 +197,7 @@ export class ProductionService {
       });
     });
     ingredients.forEach((item) => {
-      item.percentage = Number(item.percentage.toFixed(DECIMALS.formula_grams));
+      item.percentage = Number(this.formatNumberService.formatNumberFixedDecimals(item.percentage, DECIMALS.formula_grams));
     });
     return ingredients;
   }

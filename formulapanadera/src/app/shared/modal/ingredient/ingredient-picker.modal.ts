@@ -1,5 +1,5 @@
-import { Component, HostBinding, OnInit, Input } from "@angular/core";
-import { IngredientModel } from "../../../core/models/ingredient.model";
+import { Component, OnInit, Input } from "@angular/core";
+import { IngredientListingModel, IngredientModel } from "../../../core/models/ingredient.model";
 import { ShellModel } from "../../shell/shell.model";
 import { FormGroup, FormControl } from "@angular/forms";
 import { DataStore } from "../../shell/data-store";
@@ -12,6 +12,7 @@ import { CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 
 @Component({
   selector: "app-ingredient-picker-modal",
@@ -39,8 +40,8 @@ export class IngredientPickerModal implements OnInit {
   showPublic = true;
 
   currency = CURRENCY;
-  ingredients: IngredientModel[] & ShellModel;
-  all_ingredients: IngredientModel[] & ShellModel;
+  ingredients: IngredientModel[];
+  all_ingredients: IngredientModel[];
 
   isLoading: boolean = true;
 
@@ -50,7 +51,8 @@ export class IngredientPickerModal implements OnInit {
     private ingredientService: IngredientService,
     public modalController: ModalController,
     private userStorageService: UserStorageService,
-    private formatNumberService: FormatNumberService
+    private formatNumberService: FormatNumberService,
+    private ingredientCRUDService: IngredientCRUDService
   ) {}
 
   async ngOnInit() {
@@ -75,14 +77,9 @@ export class IngredientPickerModal implements OnInit {
     this.ingredients = this.ingredientService.searchingState();
 
     this.user_email = (await this.userStorageService.getUser()).email;
-    this.ingredientService
-      .getIngredients()
-      .subscribe(async (ingredients) => {
-        this.ingredients = this.ingredientService.searchingState();
-        this.all_ingredients = ingredients as IngredientModel[] & ShellModel;
-        this.isLoading = true;
-        this.searchList();
-      });
+    this.all_ingredients = await this.ingredientCRUDService.getLocalData() as IngredientModel[];
+    this.isLoading = true;
+    this.searchList();
   }
 
   searchList() {
@@ -169,13 +166,13 @@ export class IngredientPickerModal implements OnInit {
     });
   }
 
-  ingredientsSegment(segment: 'mine' | 'shared' | 'public'): IngredientModel[] {
+  ingredientsSegment(segment: 'mine' | 'shared' | 'public') {
     if (this.isLoading) {
       return this.ingredients;
     } else {
       return this.ingredientService.searchIngredientsByShared(
         segment,
-        this.ingredients,
+        this.ingredients as IngredientModel[] & ShellModel,
         this.user_email
       );
     }

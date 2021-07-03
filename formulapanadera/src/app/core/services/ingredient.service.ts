@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { IngredientModel } from "../models/ingredient.model";
+import { IngredientListingModel, IngredientModel } from "../models/ingredient.model";
 
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -9,24 +9,20 @@ import { DECIMALS } from "src/app/config/formats";
 
 @Injectable()
 export class IngredientService {
-  private ingredients: BehaviorSubject<IngredientModel[]> = new BehaviorSubject<IngredientModel[]>(undefined);
+  private ingredients_listing: BehaviorSubject<IngredientListingModel[]> = new BehaviorSubject<IngredientListingModel[]>(undefined);
 
   constructor() {}
 
-  public setIngredients(ingredients: IngredientModel[] & ShellModel) {
-    this.ingredients.next(ingredients);
+  public setIngredientsListing(ingredients: IngredientListingModel[] & ShellModel) {
+    this.ingredients_listing.next(ingredients);
   }
 
-  public getIngredients(): Observable<IngredientModel[]> {
-    return this.ingredients.asObservable();
-  }
-
-  public getCurrentIngredients(): IngredientModel[] {
-    return this.ingredients.getValue();
+  public getIngredientsListing(): Observable<IngredientListingModel[]> {
+    return this.ingredients_listing.asObservable();
   }
 
   public clearIngredients() {
-    this.ingredients = new BehaviorSubject<IngredientModel[]>(undefined);
+    this.ingredients_listing = new BehaviorSubject<IngredientListingModel[]>(undefined);
   }
 
   public searchingState() {
@@ -73,36 +69,36 @@ export class IngredientService {
   public searchIngredientsByHydration(
     lower: number,
     upper: number,
-    ingredients: IngredientModel[] & ShellModel
-  ): IngredientModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     ingredients.forEach((item) => {
       if (item.hydration >= lower && item.hydration <= upper) {
         filtered.push(item);
       }
     });
-    return filtered as IngredientModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByFat(
     lower: number,
     upper: number,
-    ingredients: IngredientModel[] & ShellModel
-  ): IngredientModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     ingredients.forEach((item) => {
       if ((!item.fat && lower == 0) || (item.fat >= lower && item.fat <= upper)) {
         filtered.push(item);
       }
     });
-    return filtered as IngredientModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByCost(
     lower: number,
     upper: number,
-    ingredients: IngredientModel[] & ShellModel
-  ): IngredientModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     ingredients.forEach((item) => {
       if (
@@ -112,13 +108,13 @@ export class IngredientService {
         filtered.push(item);
       }
     });
-    return filtered as IngredientModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByType(
     type: string,
-    ingredients: IngredientModel[] & ShellModel
-  ): IngredientModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     let isFlour = type == "flour";
     ingredients.forEach((item) => {
@@ -127,13 +123,13 @@ export class IngredientService {
       }
     });
 
-    return filtered as IngredientModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByFormula(
     type: string,
-    ingredients: IngredientModel[] & ShellModel
-  ): IngredientModel[] & ShellModel {
+    ingredients
+  ) {
     const filtered = [];
     let simple = type == "simple";
     ingredients.forEach((item) => {
@@ -142,14 +138,14 @@ export class IngredientService {
       }
     });
 
-    return filtered as IngredientModel[] & ShellModel;
+    return filtered;
   }
 
   public searchIngredientsByShared(
     type: string,
-    ingredients: IngredientModel[] & ShellModel,
+    ingredients,
     user_email: string
-  ): IngredientModel[] & ShellModel {
+  ) {
     const filtered = [];
     ingredients.forEach((item) => {
       if (
@@ -165,7 +161,7 @@ export class IngredientService {
         filtered.push(item);
       }
     });
-    return filtered as IngredientModel[] & ShellModel;
+    return filtered;
   }
 
   /*
@@ -195,7 +191,7 @@ export class IngredientService {
   }
 
   // Sort
-  sortIngredients(ingredients: IngredientModel[]): IngredientModel[] & ShellModel {
+  sortIngredients(ingredients) {
     return ingredients.sort(function (a, b) {
       if (a.name && b.name) {
         if (a.name.toUpperCase() > b.name.toUpperCase()) {
@@ -206,6 +202,6 @@ export class IngredientService {
         }
       }
       return 0;
-    }) as IngredientModel[] & ShellModel
+    })
   }
 }

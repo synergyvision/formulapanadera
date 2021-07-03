@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { LOADING_ITEMS } from "src/app/config/configuration";
+import { ROLES } from "src/app/config/roles";
 import { ShellModel } from 'src/app/shared/shell/shell.model';
+import { PermissionModel, RoleModel } from "../models/role.model";
 import { UserGroupModel, UserResumeModel } from '../models/user.model';
 
 @Injectable()
@@ -26,6 +28,19 @@ export class UserService {
     }
     searchingShellModel.isShell = true;
     return searchingShellModel;
+  }
+
+  public hasPermission(user_role: string, permissions: PermissionModel[]): boolean {
+    if (!user_role) {
+      return false;
+    }
+    let role = ROLES.find((role) => { return role.name == user_role });
+    for (const permission of permissions) {
+      if (!role.permissions.some((value) => { return value.name == permission.name && value.type == permission.type })) {
+        return false;
+      }
+    }
+    return true;
   }
   
   // Sort

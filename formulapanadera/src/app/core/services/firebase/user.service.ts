@@ -18,19 +18,17 @@ export class UserCRUDService {
 
   constructor(
     private afs: AngularFirestore,
-    private networkService: NetworkService,
     private storageService: StorageService,
-    private offlineManager: OfflineManagerService
   ) { }
 
   /*
     User Collection
   */
   public getUserDataSource(uid: string): Observable<UserModel> {
-    return this.afs.doc(`${this.collection}/${uid}`).snapshotChanges()
+    return this.afs.doc(`${this.collection}/${uid}`).get()
       .pipe(
         map(a => {
-          let userData: any = a.payload.data();
+          let userData: any = a.data();
           return userData as UserModel;
         })
       );

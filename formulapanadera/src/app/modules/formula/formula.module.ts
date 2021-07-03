@@ -22,7 +22,7 @@ const routes: Routes = [
   },
   {
     path: APP_URL.menu.routes.formula.routes.details,
-    canLoad: [StateHasDataGuard],
+    canActivate: [StateHasDataGuard],
     loadChildren: () =>
       import("./details/formula-details.module").then(
         (m) => m.FormulaDetailsPageModule

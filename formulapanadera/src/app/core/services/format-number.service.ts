@@ -18,7 +18,7 @@ export class FormatNumberService {
       if (isNaN(number)) {
         return "";
       } else if (number < 1) {
-        return (Math.round(number * 100) / 100).toFixed(2);
+        return (Math.round(number * 100) / 100).toFixed(3);
       } else {
         return (Math.round(number * 100) / 100).toFixed(decimals);
       }
@@ -30,9 +30,9 @@ export class FormatNumberService {
   formatNumberFixedDecimals(value: number, decimals: number = 1): string {
     if (value != null) {
       if (value < 1) {
-        return (Math.round(value * 100) / 100).toFixed(2);
+        return value.toFixed(3);
       } else {
-        return (Math.round(value * 100) / 100).toFixed(decimals);
+        return value.toFixed(decimals);
       }
     } else {
       return "";

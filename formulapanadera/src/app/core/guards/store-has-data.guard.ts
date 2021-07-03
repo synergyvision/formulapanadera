@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { Router, CanLoad } from "@angular/router";
+import { Router, CanActivate } from "@angular/router";
 
 @Injectable()
-export class StateHasDataGuard implements CanLoad {
+export class StateHasDataGuard implements CanActivate {
   constructor(private router: Router) {}
 
-  async canLoad(): Promise<any> {
+  async canActivate(): Promise<any> {
     let state = this.router.getCurrentNavigation().extras.state;
     if (state) {
       return true;

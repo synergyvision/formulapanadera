@@ -18,12 +18,14 @@ import { environment } from "src/environments/environment";
 import { OfflineManagerService } from "../offline-manager.service";
 import { CourseService } from "../course.service";
 import { ShellModel } from "src/app/shared/shell/shell.model";
+import { UserStorageService } from "../storage/user.service";
 
 const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
 export class CourseCRUDService implements FirebaseService {
   collection = COLLECTIONS.course;
+  listing_collection = COLLECTIONS.course + '-listing';
 
   constructor(
     private afs: AngularFirestore,
@@ -33,7 +35,8 @@ export class CourseCRUDService implements FirebaseService {
     private productionCRUDService: ProductionCRUDService,
     private networkService: NetworkService,
     private storageService: StorageService,
-    private offlineManager: OfflineManagerService
+    private offlineManager: OfflineManagerService,
+    private userStorageService: UserStorageService
   ) { }
 
   /*
@@ -114,6 +117,11 @@ export class CourseCRUDService implements FirebaseService {
       // Set data
       await this.createData(`${this.collection}/${id}`, courseData);
       await this.afs.collection(this.collection).doc(id).set(course);
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('C', courseData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'C', courseData, null);
       await this.updateLocalData('C', courseData);
@@ -179,6 +187,11 @@ export class CourseCRUDService implements FirebaseService {
       // Set formulas
       await this.createData(`${this.collection}/${courseData.id}`, courseData);
       await this.afs.collection(this.collection).doc(courseData.id).set(course);
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('U', courseData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'U', courseData, originalCourse);
       await this.updateLocalData('U', courseData);
@@ -217,6 +230,11 @@ export class CourseCRUDService implements FirebaseService {
     if (this.networkService.isConnectedToNetwork()) {
       await this.deleteData(courseData);
       await this.afs.collection(this.collection).doc(courseData.id).delete();
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('D', courseData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'D', courseData, null);
       await this.updateLocalData('D', courseData);
@@ -252,6 +270,7 @@ export class CourseCRUDService implements FirebaseService {
 
   public async updateAll(updated_courses: CourseModel[],updated_ingredients: IngredientModel[],updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
     let courses: CourseModel[] = JSON.parse(JSON.stringify(this.courseService.getMyCurrentCourses()));
+    if (!courses) courses = [];
     const cour_promises = courses.map((course) => {
       let original_course: CourseModel = JSON.parse(JSON.stringify(course));
       let has_any: boolean = this.courseService.hasAny(course, updated_ingredients, updated_formulas, updated_productions);

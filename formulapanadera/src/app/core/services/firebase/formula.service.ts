@@ -14,12 +14,14 @@ import { FirebaseService } from "../../interfaces/firebase-service.interface";
 import { FormulaService } from "../formula.service";
 import { IngredientModel } from "../../models/ingredient.model";
 import { ShellModel } from "src/app/shared/shell/shell.model";
+import { UserStorageService } from "../storage/user.service";
 
 const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
 export class FormulaCRUDService implements FirebaseService {
   collection = COLLECTIONS.formula;
+  listing_collection = COLLECTIONS.formula + '-listing';
 
   constructor(
     private afs: AngularFirestore,
@@ -27,7 +29,8 @@ export class FormulaCRUDService implements FirebaseService {
     private ingredientCRUDService: IngredientCRUDService,
     private networkService: NetworkService,
     private storageService: StorageService,
-    private offlineManager: OfflineManagerService
+    private offlineManager: OfflineManagerService,
+    private userStorageService: UserStorageService
   ) { }
 
   /*
@@ -88,6 +91,23 @@ export class FormulaCRUDService implements FirebaseService {
     }
   }
 
+  public async getFormulas(user_email: string): Promise<void>{
+    let docs = await this.afs
+      .collection<FormulaModel>(this.collection).ref.where("user.owner", "==", user_email).get();
+    if (!docs.empty) {
+      const formulas = []
+      docs.forEach(doc => {
+        formulas.push(doc.data() as FormulaModel)
+      });
+      const promises = formulas.map((ing) => this.getIngredients(ing))
+      await Promise.all(promises)
+      this.formulaService.setFormulas(
+        formulas as FormulaModel[] & ShellModel
+      );
+      this.setLocalData([...formulas]);
+    }
+  }
+
   /*
     Formula Management
   */
@@ -112,6 +132,11 @@ export class FormulaCRUDService implements FirebaseService {
       // Set sub ingredients
       await this.createIngredients(`${this.collection}/${id}/${COLLECTIONS.ingredients}`, formulaData);
       await this.afs.collection(this.collection).doc(id).set(formula);
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('C', formulaData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'C', formulaData, null);
       await this.updateLocalData('C', formulaData);
@@ -153,6 +178,11 @@ export class FormulaCRUDService implements FirebaseService {
       // Set sub ingredients
       await this.createIngredients(`${this.collection}/${formulaData.id}/${COLLECTIONS.ingredients}`, formulaData);
       await this.afs.collection(this.collection).doc(formulaData.id).set(formula);
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('U', formulaData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'U', formulaData, originalFormula);
       await this.updateLocalData('U', formulaData);
@@ -163,6 +193,11 @@ export class FormulaCRUDService implements FirebaseService {
     if (this.networkService.isConnectedToNetwork()) {
       await this.deleteIngredients(formulaData);
       await this.afs.collection(this.collection).doc(formulaData.id).delete();
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('D', formulaData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'D', formulaData, null);
       await this.updateLocalData('D', formulaData);
@@ -180,6 +215,7 @@ export class FormulaCRUDService implements FirebaseService {
 
   public async updateIngredients(updated_ingredients: IngredientModel[], updated_formulas: FormulaModel[]) {
     let formulas: FormulaModel[] = JSON.parse(JSON.stringify(this.formulaService.getCurrentFormulas()));
+    if (!formulas) formulas = [];
     const for_promises = formulas.map((formula) => {
       let original_formula: FormulaModel = JSON.parse(JSON.stringify(formula));
       let has_ingredient: boolean = this.formulaService.hasIngredient(formula, updated_ingredients);

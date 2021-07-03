@@ -8,11 +8,12 @@ import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { LanguageService } from "src/app/core/services/language.service";
 import { ActionSheetController, AlertController, LoadingController, ToastController } from "@ionic/angular";
 import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
-import { IngredientModel } from "src/app/core/models/ingredient.model";
+import { IngredientListingModel } from "src/app/core/models/ingredient.model";
 import { FormulaModel } from "src/app/core/models/formula.model";
 import { ProductionModel } from "src/app/core/models/production.model";
 import { CourseService } from "src/app/core/services/course.service";
 import { Location } from '@angular/common';
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 
 @Component({
   selector: "app-course-details",
@@ -46,7 +47,8 @@ export class CourseDetailsPage implements OnInit {
     private alertController: AlertController,
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private location: Location
+    private location: Location,
+    private ingredientCRUDService: IngredientCRUDService
   ) {
     this.showUserGroups = false;
     this.showNotes = false;
@@ -239,23 +241,26 @@ export class CourseDetailsPage implements OnInit {
     toast.present();
   }
 
-  details(
+  async details(
     type: "ingredient" | "formula" | "production",
-    item: IngredientModel | FormulaModel | ProductionModel
+    item: IngredientListingModel | FormulaModel | ProductionModel
   ) {
     if (item.name !== undefined) {
       if (type == "ingredient") {
-        this.router.navigateByUrl(
-          APP_URL.menu.name +
+        let ingredient = await this.ingredientCRUDService.updatedCacheData(item as IngredientListingModel);
+        if (ingredient) {
+          this.router.navigateByUrl(
+            APP_URL.menu.name +
             "/" +
             APP_URL.menu.routes.ingredient.main +
             "/" +
             APP_URL.menu.routes.ingredient.routes.details,
-          {
-            state: { ingredient: JSON.parse(JSON.stringify(item)) },
-            replaceUrl: true
-          }
-        );
+            {
+              state: { ingredient: JSON.parse(JSON.stringify(ingredient)) },
+              replaceUrl: true
+            }
+          );
+        }
       }
       if (type == "formula") {
         this.router.navigateByUrl(

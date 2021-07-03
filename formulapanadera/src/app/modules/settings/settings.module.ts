@@ -4,6 +4,7 @@ import { CommonModule } from "@angular/common";
 import { Routes, RouterModule } from "@angular/router";
 import { ComponentsModule } from "../../shared/components/components.module";
 import { APP_URL } from "src/app/config/configuration";
+import { AuthorizationGuard } from "src/app/core/guards/authorization.guard";
 
 const routes: Routes = [
   {
@@ -24,6 +25,10 @@ const routes: Routes = [
       import("./user-groups/user-groups.module").then(
         (m) => m.UserGroupsModule
       ),
+    canActivate: [AuthorizationGuard],
+    data: {
+      permission: 'USER_GROUP'
+    }
   },
   {
     path: APP_URL.menu.routes.settings.routes.shared.main,
@@ -31,6 +36,10 @@ const routes: Routes = [
       import("./shared/shared.module").then(
         (m) => m.SharedModule
       ),
+    canActivate: [AuthorizationGuard],
+    data: {
+      permission: 'SHARE'
+    }
   },
   {
     path: APP_URL.menu.routes.settings.routes.course.main,
@@ -38,6 +47,10 @@ const routes: Routes = [
       import("./course/course.module").then(
         (m) => m.CourseModule
       ),
+    canActivate: [AuthorizationGuard],
+    data: {
+      permission: 'COURSE'
+    }
   },
   {
     path: APP_URL.menu.routes.settings.routes.how_to_use,
@@ -68,5 +81,6 @@ const routes: Routes = [
     ComponentsModule,
     RouterModule.forChild(routes),
   ],
+  providers: [AuthorizationGuard],
 })
 export class SettingsModule {}

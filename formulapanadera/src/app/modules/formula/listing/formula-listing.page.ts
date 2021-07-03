@@ -13,6 +13,8 @@ import { ICONS } from "src/app/config/icons";
 import { CourseModel } from "src/app/core/models/course.model";
 import { CourseService } from "src/app/core/services/course.service";
 import { FormatNumberService } from "src/app/core/services/format-number.service";
+import { UserModel } from "src/app/core/models/user.model";
+import { UserService } from "src/app/core/services/user.service";
 
 @Component({
   selector: "app-formula-listing",
@@ -41,7 +43,7 @@ export class FormulaListingPage implements OnInit {
 
   isLoading: boolean = true;
 
-  user_email: string;
+  user: UserModel;
 
   courses: CourseModel[];
 
@@ -50,7 +52,8 @@ export class FormulaListingPage implements OnInit {
     private courseService: CourseService,
     private router: Router,
     private userStorageService: UserStorageService,
-    private formatNumberService: FormatNumberService
+    private formatNumberService: FormatNumberService,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
@@ -69,7 +72,7 @@ export class FormulaListingPage implements OnInit {
     this.formulas = this.formulaService.searchingState();
     this.courses = this.courseService.searchingState();
 
-    this.user_email = (await this.userStorageService.getUser()).email;
+    this.user = await this.userStorageService.getUser();
     this.formulaService
       .getFormulas()
       .subscribe((formulas) => {
@@ -78,15 +81,19 @@ export class FormulaListingPage implements OnInit {
         this.isLoading = true;
         this.searchList();
       });
-    this.courseService.getSharedCourses().subscribe(async courses => {
-      this.courses = [];
-      courses?.forEach(course => {
-        if (course.formulas?.length > 0) {
-          course.formulas = this.courseService.orderItems(course.formulas);
-          this.courses.push(course);
-        }
+    if (this.userService.hasPermission(this.user.role, [{ name: 'COURSE', type: 'VIEW' }])) {
+      this.courseService.getSharedCourses().subscribe(async courses => {
+        this.courses = [];
+        courses?.forEach(course => {
+          if (course.formulas?.length > 0) {
+            course.formulas = this.courseService.orderItems(course.formulas);
+            this.courses.push(course);
+          }
+        })
       })
-    })
+    } else {
+      this.courses = [];
+    }
   }
 
   searchList() {
@@ -158,6 +165,9 @@ export class FormulaListingPage implements OnInit {
         this.formulas = this.formulaService.sortFormulas(value);
         this.isLoading = value.isShell;
       });
+    } else {
+      this.formulas = [] as FormulaModel[] & ShellModel;
+      this.isLoading = false;
     }
   }
 
@@ -228,7 +238,7 @@ export class FormulaListingPage implements OnInit {
       return this.formulaService.searchFormulasByShared(
         segment,
         this.formulas,
-        this.user_email
+        this.user.email
       );
     }
   }

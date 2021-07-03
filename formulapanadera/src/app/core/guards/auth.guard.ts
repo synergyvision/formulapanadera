@@ -1,19 +1,19 @@
 import { Injectable } from "@angular/core";
-import { Router, CanLoad } from "@angular/router";
+import { Router, CanActivate } from "@angular/router";
 import { APP_URL } from "src/app/config/configuration";
 
-import { UserResumeModel } from "../models/user.model";
+import { UserModel } from "../models/user.model";
 import { UserStorageService } from "../services/storage/user.service";
 
 @Injectable()
-export class AuthGuard implements CanLoad {
+export class AuthGuard implements CanActivate {
   constructor(
     private router: Router,
     private userStorageService: UserStorageService
   ) {}
 
-  async canLoad(): Promise<any> {
-    let user: UserResumeModel;
+  async canActivate(): Promise<any> {
+    let user: UserModel;
     user = await this.userStorageService.getUser();
     if (user) {
       return true;

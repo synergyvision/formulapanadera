@@ -6,7 +6,7 @@ import { FirebaseService } from "src/app/core/interfaces/firebase-service.interf
 import { StoredRequest } from "src/app/core/interfaces/stored-request.interface";
 import { CourseModel } from "src/app/core/models/course.model";
 import { FormulaModel } from "src/app/core/models/formula.model";
-import { IngredientModel } from "src/app/core/models/ingredient.model";
+import { IngredientListingModel, IngredientModel } from "src/app/core/models/ingredient.model";
 import { ProductionModel } from "src/app/core/models/production.model";
 import { SettingsModel } from "src/app/core/models/settings.model";
 import { UserModel } from "src/app/core/models/user.model";
@@ -24,6 +24,7 @@ import { ProductionService } from "src/app/core/services/production.service";
 import { SettingsStorageService } from "src/app/core/services/storage/settings.service";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { TimeService } from "src/app/core/services/time.service";
+import { UserService } from "src/app/core/services/user.service";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 
 @Component({
@@ -56,107 +57,35 @@ export class TabsPage implements OnInit, OnDestroy {
     private ingredientService: IngredientService,
     private settingsStorageService: SettingsStorageService,
     private networkService: NetworkService,
-    private offlineManager: OfflineManagerService
+    private offlineManager: OfflineManagerService,
+    private userService: UserService
   ) { }
 
   async ngOnInit() {
-    this.timeService.startCurrentTime();
-    let settings = await this.settingsStorageService.getSettings();
-    if (!settings) {
-      await this.settingsStorageService.setSettings(new SettingsModel());
-    }
-
     let user = await this.userStorageService.getUser();
     this.user = await this.userCRUDService.getUser(user.email);
     if (!this.user?.id) {
       this.user = user;
     }
     await this.userStorageService.setUser(this.user);
+
+    if (this.userService.hasPermission(this.user.role, [{ name: 'PRODUCTION', type: 'VIEW' }])) {
+      this.timeService.startCurrentTime();
+    }
+    let settings = await this.settingsStorageService.getSettings();
+    if (!settings) {
+      await this.settingsStorageService.setSettings(new SettingsModel());
+    }
     
-    this.ingredientsSubscriber = this.ingredientCRUDService
-      .getIngredientsDataSource(this.user.email)
-      .subscribe(async (ingredients) => {
-        if (this.networkService.isConnectedToNetwork()) {
-          let ingredients_aux = JSON.parse(JSON.stringify(ingredients)) as IngredientModel[];
-          const promises = ingredients_aux.map((ing) => this.ingredientCRUDService.getSubIngredients(ing))
-          await Promise.all(promises)
-          this.ingredientService.setIngredients(
-            ingredients_aux as IngredientModel[] & ShellModel
-          );
-          this.ingredientCRUDService.setLocalData(JSON.parse(JSON.stringify(ingredients_aux)));
-        } else {
-          this.ingredientService.setIngredients(
-            await this.ingredientCRUDService.getLocalData() as IngredientModel[] & ShellModel
-          );
-        };
-      });
-    this.formulasSubscriber = this.formulaCRUDService
-      .getFormulasDataSource(this.user.email)
-      .subscribe(async (formulas) => {
-        if (this.networkService.isConnectedToNetwork()) {
-          let formulas_aux = JSON.parse(JSON.stringify(formulas)) as FormulaModel[];
-          const promises = formulas_aux.map((form) => this.formulaCRUDService.getIngredients(form))
-          await Promise.all(promises)
-          this.formulaService.setFormulas(
-            formulas_aux as FormulaModel[] & ShellModel
-          );
-          this.formulaCRUDService.setLocalData(JSON.parse(JSON.stringify(formulas_aux)));
-        } else {
-          this.formulaService.setFormulas(
-            await this.formulaCRUDService.getLocalData() as FormulaModel[] & ShellModel
-          );
-        };
-      });
-    this.productionsSubscriber = this.productionCRUDService
-      .getProductionsDataSource(this.user.email)
-      .subscribe(async (productions) => {
-        if (this.networkService.isConnectedToNetwork()) {
-          let productions_aux = JSON.parse(JSON.stringify(productions)) as ProductionModel[];
-          const promises = productions_aux.map((prod) => this.productionCRUDService.getFormulas(prod))
-          await Promise.all(promises)
-          this.productionService.setProductions(
-            productions_aux as ProductionModel[] & ShellModel
-          );
-          this.productionCRUDService.setLocalData(JSON.parse(JSON.stringify(productions_aux)));
-        } else {
-          this.productionService.setProductions(
-            await this.productionCRUDService.getLocalData() as ProductionModel[] & ShellModel
-          );
-        };
-      });
-    this.coursesSubscriber = this.courseCRUDService.getSharedCoursesDataSource(this.user.email)
-      .subscribe(async (courses) => {
-        if (this.networkService.isConnectedToNetwork()) {
-          let courses_aux = JSON.parse(JSON.stringify(courses)) as CourseModel[];
-          const promises = courses_aux.map((course) => this.courseCRUDService.getData(course))
-          await Promise.all(promises)
-          this.courseService.setSharedCourses(
-            courses_aux as CourseModel[] & ShellModel
-          );
-          this.courseCRUDService.setLocalData('shared', JSON.parse(JSON.stringify(courses_aux)));
-        } else {
-          this.courseService.setSharedCourses(
-            await this.courseCRUDService.getLocalData('shared') as CourseModel[] & ShellModel
-          );
-        };
-      });
-    if (this.user.instructor) {
-      this.myCoursesSubscriber = this.courseCRUDService.getMyCoursesDataSource(this.user.email)
-        .subscribe(async (courses) => {
-          if (this.networkService.isConnectedToNetwork()) {
-            let courses_aux = JSON.parse(JSON.stringify(courses)) as CourseModel[];
-            const promises = courses_aux.map((course) => this.courseCRUDService.getData(course))
-            await Promise.all(promises)
-            this.courseService.setMyCourses(
-              courses_aux as CourseModel[] & ShellModel
-            );
-            this.courseCRUDService.setLocalData('mine', JSON.parse(JSON.stringify(courses_aux)));
-          } else {
-            this.courseService.setMyCourses(
-              await this.courseCRUDService.getLocalData('mine') as CourseModel[] & ShellModel
-            );
-          }
-        });
+    if (this.user.role == 'FREE') {
+      this.ingredientService.setIngredientsListing(
+        await this.ingredientCRUDService.getLocalData() as IngredientListingModel[] & ShellModel
+      );
+      this.formulaService.setFormulas(
+        await this.formulaCRUDService.getLocalData() as FormulaModel[] & ShellModel
+      );
+    } else {
+      this.startSubscribers();
     }
 
     setTimeout(() => {
@@ -182,14 +111,117 @@ export class TabsPage implements OnInit, OnDestroy {
     }, 15000);
   }
 
-  ngOnDestroy() {
-    if (this.user.instructor) {
-      this.myCoursesSubscriber.unsubscribe();
+  private async startSubscribers() {
+    if (this.userService.hasPermission(this.user.role, [{ name: 'INGREDIENT', type: 'VIEW' }])) {
+      this.ingredientsSubscriber = this.ingredientCRUDService
+        .getIngredientsDataSource(this.user.email)
+        .subscribe(async (ingredients) => {
+          if (this.networkService.isConnectedToNetwork()) {
+            let ingredients_aux = [...ingredients] as IngredientListingModel[];
+            this.ingredientService.setIngredientsListing(
+              ingredients_aux as IngredientListingModel[] & ShellModel
+            );
+          } else {
+            this.ingredientService.setIngredientsListing(
+              await this.ingredientCRUDService.getLocalData() as IngredientModel[] & ShellModel
+            );
+          };
+        });
     }
-    this.coursesSubscriber.unsubscribe();
-    this.productionsSubscriber.unsubscribe();
-    this.formulasSubscriber.unsubscribe();
-    this.ingredientsSubscriber.unsubscribe();
+    if (this.userService.hasPermission(this.user.role, [{ name: 'FORMULA', type: 'VIEW' }])) {
+      this.formulasSubscriber = this.formulaCRUDService
+        .getFormulasDataSource(this.user.email)
+        .subscribe(async (formulas) => {
+          if (this.networkService.isConnectedToNetwork()) {
+            let formulas_aux = JSON.parse(JSON.stringify(formulas)) as FormulaModel[];
+            const promises = formulas_aux.map((form) => this.formulaCRUDService.getIngredients(form))
+            await Promise.all(promises)
+            this.formulaService.setFormulas(
+              formulas_aux as FormulaModel[] & ShellModel
+            );
+            this.formulaCRUDService.setLocalData(JSON.parse(JSON.stringify(formulas_aux)));
+          } else {
+            this.formulaService.setFormulas(
+              await this.formulaCRUDService.getLocalData() as FormulaModel[] & ShellModel
+            );
+          };
+        });
+    }
+    if (this.userService.hasPermission(this.user.role, [{ name: 'PRODUCTION', type: 'VIEW' }])) {
+      this.productionsSubscriber = this.productionCRUDService
+        .getProductionsDataSource(this.user.email)
+        .subscribe(async (productions) => {
+          if (this.networkService.isConnectedToNetwork()) {
+            let productions_aux = JSON.parse(JSON.stringify(productions)) as ProductionModel[];
+            const promises = productions_aux.map((prod) => this.productionCRUDService.getFormulas(prod))
+            await Promise.all(promises)
+            this.productionService.setProductions(
+              productions_aux as ProductionModel[] & ShellModel
+            );
+            this.productionCRUDService.setLocalData(JSON.parse(JSON.stringify(productions_aux)));
+          } else {
+            this.productionService.setProductions(
+              await this.productionCRUDService.getLocalData() as ProductionModel[] & ShellModel
+            );
+          };
+        });
+    }
+    if (this.userService.hasPermission(this.user.role, [{ name: 'COURSE', type: 'VIEW' }])) {
+      this.coursesSubscriber = this.courseCRUDService.getSharedCoursesDataSource(this.user.email)
+        .subscribe(async (courses) => {
+          if (this.networkService.isConnectedToNetwork()) {
+            let courses_aux = JSON.parse(JSON.stringify(courses)) as CourseModel[];
+            const promises = courses_aux.map((course) => this.courseCRUDService.getData(course))
+            await Promise.all(promises)
+            this.courseService.setSharedCourses(
+              courses_aux as CourseModel[] & ShellModel
+            );
+            this.courseCRUDService.setLocalData('shared', JSON.parse(JSON.stringify(courses_aux)));
+          } else {
+            this.courseService.setSharedCourses(
+              await this.courseCRUDService.getLocalData('shared') as CourseModel[] & ShellModel
+            );
+          };
+        });
+    }
+    if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
+      this.myCoursesSubscriber = this.courseCRUDService.getMyCoursesDataSource(this.user.email)
+        .subscribe(async (courses) => {
+          if (this.networkService.isConnectedToNetwork()) {
+            let courses_aux = JSON.parse(JSON.stringify(courses)) as CourseModel[];
+            const promises = courses_aux.map((course) => this.courseCRUDService.getData(course))
+            await Promise.all(promises)
+            this.courseService.setMyCourses(
+              courses_aux as CourseModel[] & ShellModel
+            );
+            this.courseCRUDService.setLocalData('mine', JSON.parse(JSON.stringify(courses_aux)));
+          } else {
+            this.courseService.setMyCourses(
+              await this.courseCRUDService.getLocalData('mine') as CourseModel[] & ShellModel
+            );
+          }
+        });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.user.role !== 'FREE') {
+      if (this.userService.hasPermission(this.user.role, [{ name: 'COURSE', type: 'MANAGE' }])) {
+        this.myCoursesSubscriber.unsubscribe();
+      }
+      if (this.userService.hasPermission(this.user.role, [{ name: 'COURSE', type: 'VIEW' }])) {
+        this.coursesSubscriber.unsubscribe();
+      }
+      if (this.userService.hasPermission(this.user.role, [{ name: 'PRODUCTION', type: 'VIEW' }])) {
+        this.productionsSubscriber.unsubscribe();
+      }
+      if (this.userService.hasPermission(this.user.role, [{ name: 'FORMULA', type: 'VIEW' }])) {
+        this.formulasSubscriber.unsubscribe();
+      }
+      if (this.userService.hasPermission(this.user.role, [{ name: 'INGREDIENT', type: 'VIEW' }])) {
+        this.ingredientsSubscriber.unsubscribe();
+      }
+    }
     this.courseService.clearCourses();
     this.productionService.clearProductions();
     this.formulaService.clearFormulas();
@@ -228,10 +260,14 @@ export class TabsPage implements OnInit, OnDestroy {
       let updated_ingredients: IngredientModel[] = [req.data];
       await this.ingredientCRUDService.updateIngredients(req.data, updated_ingredients);
       let updated_formulas: FormulaModel[] = [];
-      await this.formulaCRUDService.updateIngredients(updated_ingredients, updated_formulas);
+      if (this.userService.hasPermission(this.user.role, [{ name: 'FORMULA', type: 'MANAGE' }])) {
+        await this.formulaCRUDService.updateIngredients(updated_ingredients, updated_formulas);
+      }
       let updated_productions: ProductionModel[] = []
-      await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
-      if (this.user.instructor) {
+      if (this.userService.hasPermission(this.user.role, [{ name: 'PRODUCTION', type: 'MANAGE' }])) {
+        await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
+      }
+      if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
         let updated_courses: CourseModel[] = []
         await this.courseCRUDService.updateAll(updated_courses, updated_ingredients, updated_formulas, updated_productions);
       }
@@ -239,14 +275,16 @@ export class TabsPage implements OnInit, OnDestroy {
     if (req.collection == COLLECTIONS.formula) {
       let updated_formulas: FormulaModel[] = [req.data];
       let updated_productions: ProductionModel[] = []
-      await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
-      if (this.user.instructor) {
+      if (this.userService.hasPermission(this.user.role, [{ name: 'PRODUCTION', type: 'MANAGE' }])) {
+        await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
+      }
+      if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
         let updated_courses: CourseModel[] = []
         await this.courseCRUDService.updateAll(updated_courses, [], updated_formulas, updated_productions);
       }
     }
     if (req.collection == COLLECTIONS.production) {
-      if (this.user.instructor) {
+      if (this.userService.hasPermission(this.user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
         let updated_productions: ProductionModel[] = [req.data]
         let updated_courses: CourseModel[] = []
         await this.courseCRUDService.updateAll(updated_courses, [], [], updated_productions);

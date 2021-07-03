@@ -6,7 +6,7 @@ import { ActionSheetController, AlertController, IonRouterOutlet, LoadingControl
 import { LanguageService } from "src/app/core/services/language.service";
 import { APP_URL, CURRENCY } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
-import { UserGroupModel, UserResumeModel } from "src/app/core/models/user.model";
+import { UserGroupModel, UserModel, UserResumeModel } from "src/app/core/models/user.model";
 import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { DECIMAL_COST_FORMAT } from "src/app/config/formats";
 import { IngredientCRUDService } from 'src/app/core/services/firebase/ingredient.service';
@@ -15,6 +15,7 @@ import { UserGroupPickerModal } from "src/app/shared/modal/user-group/user-group
 import { FormulaService } from "src/app/core/services/formula.service";
 import { UserCRUDService } from "src/app/core/services/firebase/user.service";
 import { SettingsStorageService } from "src/app/core/services/storage/settings.service";
+import { UserService } from "src/app/core/services/user.service";
 
 @Component({
   selector: "app-ingredient-details",
@@ -41,7 +42,7 @@ export class IngredientDetailsPage implements OnInit {
   showMixing: boolean;
   showReferences: boolean;
 
-  user: UserResumeModel = new UserResumeModel();
+  user: UserModel = new UserModel();
   is_modifier: boolean = false
 
   constructor(
@@ -58,7 +59,8 @@ export class IngredientDetailsPage implements OnInit {
     private formulaService: FormulaService,
     private modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
-    private userCRUDService: UserCRUDService
+    private userCRUDService: UserCRUDService,
+    private userService: UserService
   ) {
     this.showIngredients = true;
     this.showMixing = false;
@@ -90,8 +92,7 @@ export class IngredientDetailsPage implements OnInit {
           this.ingredients_formula
         )
       }
-      let user = await this.userStorageService.getUser();
-      this.user = {name: user.name, email: user.email}
+      this.user = await this.userStorageService.getUser();
       this.is_modifier = false;
       this.ingredient.user.modifiers.forEach((user) => {
         if (user.email == this.user.email) {
@@ -105,8 +106,10 @@ export class IngredientDetailsPage implements OnInit {
     let current_user = this.user.email;
     let buttons = [];
     if (!this.isCourse) {
+      // PERMISSION: INGREDIENT MANAGE (UPDATE)
       if (
-        this.ingredient.user.owner == current_user
+        this.ingredient.user.owner == current_user &&
+        this.userService.hasPermission(this.user.role, [{ name: 'INGREDIENT', type: 'MANAGE' }])
       ) {
         buttons.push(
           {
@@ -119,8 +122,10 @@ export class IngredientDetailsPage implements OnInit {
           }
         );
       }
+      // PERMISSION: SHARE MANAGE
       if (
-        this.ingredient.user.owner == current_user && (this.is_modifier || this.ingredient.user.creator.email == current_user)
+        this.ingredient.user.owner == current_user && (this.is_modifier || this.ingredient.user.creator.email == current_user) &&
+        this.userService.hasPermission(this.user.role, [{ name: 'SHARE', type: 'MANAGE' }])
       ) {
         buttons.push(
           {
@@ -144,7 +149,11 @@ export class IngredientDetailsPage implements OnInit {
         },
       });
     }
-    if (!this.isCourse && this.ingredient.user.owner == current_user) {
+    // PERMISSION: INGREDIENT MANAGE (DELETE)
+    if (
+      !this.isCourse && this.ingredient.user.owner == current_user &&
+      this.userService.hasPermission(this.user.role, [{ name: 'INGREDIENT', type: 'MANAGE' }])
+    ) {
       buttons.push({
         text: this.languageService.getTerm("action.delete"),
         icon: ICONS.trash,
@@ -243,7 +252,15 @@ export class IngredientDetailsPage implements OnInit {
           handler: (data) => {
             this.userCRUDService.getUser(data.email)
               .then((user) => {
-                this.shareIngredientToEmail([{name: user.name, email: user.email}], can_clone)
+                if (!user.role) {
+                  this.presentToast(false, this.languageService.getTerm("send.user_error"));
+                } else {
+                  if (this.userService.hasPermission(user.role, [{ name: 'SHARE', type: 'MANAGE' }])) {
+                    this.shareIngredientToEmail([{ name: user.name, email: user.email }], can_clone)
+                  } else {
+                    this.presentToast(false, this.languageService.getTerm("send.user_unauthorized_error", { version: 'SOCIAL' }));
+                  }
+                }
               }).catch(() => {
                 this.presentToast(false);
               })
@@ -431,12 +448,15 @@ export class IngredientDetailsPage implements OnInit {
     await alert.present();
   }
 
-  async presentToast(success: boolean) {
+  async presentToast(success: boolean, customMessage?: string) {
     let message = ""
     if (success) {
       message = message + this.languageService.getTerm("formulas.share.success")
     } else {
       message = message + this.languageService.getTerm("formulas.share.error")
+    }
+    if (customMessage) {
+      message = customMessage;
     }
     const toast = await this.toastController.create({
       message: message,

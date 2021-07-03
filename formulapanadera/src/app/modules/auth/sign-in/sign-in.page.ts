@@ -12,6 +12,9 @@ import { UserStorageService } from "src/app/core/services/storage/user.service";
 import { LoadingController, ToastController } from "@ionic/angular";
 import { LanguageService } from "src/app/core/services/language.service";
 import { UserCRUDService } from 'src/app/core/services/firebase/user.service';
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
+import { FormulaCRUDService } from "src/app/core/services/firebase/formula.service";
+import { UserService } from "src/app/core/services/user.service";
 
 @Component({
   selector: "app-sign-in",
@@ -35,11 +38,14 @@ export class SignInPage implements OnInit {
     private authService: AuthService,
     private ngZone: NgZone,
     private languageAlert: LanguageAlert,
+    private userService: UserService,
     private userCRUDService: UserCRUDService,
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
     private languageService: LanguageService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private ingredientCRUDService: IngredientCRUDService,
+    private formulaCRUDService: FormulaCRUDService,
   ) {
     this.loginForm = new FormGroup({
       email: new FormControl(
@@ -97,10 +103,16 @@ export class SignInPage implements OnInit {
       .then((loggedUser) => {
         this.userCRUDService
           .getUserDataSource(loggedUser.user.uid)
-          .subscribe((userdata) => {
+          .subscribe(async (userdata) => {
             if (userdata) {
               userdata.id = loggedUser.user.uid;
               this.userStorageService.setUser(userdata);
+              if (this.userService.hasPermission(userdata.role, [{ name: 'INGREDIENT', type: 'VIEW' }])) {
+                await this.ingredientCRUDService.getIngredients(userdata.email);
+              }
+              if (this.userService.hasPermission(userdata.role, [{ name: 'FORMULA', type: 'VIEW' }])) {
+                await this.formulaCRUDService.getFormulas(userdata.email);
+              }
               this.redirectLoggedUserToMainPage();
             }
           });

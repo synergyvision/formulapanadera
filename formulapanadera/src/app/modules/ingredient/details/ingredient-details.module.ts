@@ -8,6 +8,7 @@ import { ComponentsModule } from "src/app/shared/components/components.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { IngredientDetailsPage } from "./ingredient-details.page";
+import { DirectivesModule } from "src/app/shared/directives/directives.module";
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
     ComponentsModule,
     FormsModule,
     ReactiveFormsModule,
+    DirectivesModule
   ],
   declarations: [IngredientDetailsPage],
 })

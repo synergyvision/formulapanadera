@@ -22,7 +22,7 @@ const routes: Routes = [
   },
   {
     path: APP_URL.menu.routes.ingredient.routes.details,
-    canLoad: [StateHasDataGuard],
+    canActivate: [StateHasDataGuard],
     loadChildren: () =>
       import("./details/ingredient-details.module").then(
         (m) => m.IngredientDetailsPageModule

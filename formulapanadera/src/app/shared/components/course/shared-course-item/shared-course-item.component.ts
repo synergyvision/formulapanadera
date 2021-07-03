@@ -4,8 +4,9 @@ import { APP_URL } from "src/app/config/configuration";
 import { ICONS } from "src/app/config/icons";
 import { CourseModel } from "src/app/core/models/course.model";
 import { FormulaModel } from "src/app/core/models/formula.model";
-import { IngredientModel } from "src/app/core/models/ingredient.model";
+import { IngredientListingModel } from "src/app/core/models/ingredient.model";
 import { ProductionModel } from "src/app/core/models/production.model";
+import { IngredientCRUDService } from "src/app/core/services/firebase/ingredient.service";
 
 @Component({
   selector: "app-shared-course-item",
@@ -23,7 +24,8 @@ export class SharedCourseItemComponent {
   show: boolean = false;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private ingredientCRUDService: IngredientCRUDService
   ) { }
   
   courseDetails(course: CourseModel) {
@@ -79,21 +81,24 @@ export class SharedCourseItemComponent {
     }
   }
 
-  ingredientDetails(ingredient: IngredientModel) {
-    if (ingredient.name !== undefined) {
-      this.router.navigateByUrl(
-        APP_URL.menu.name +
+  async ingredientDetails(listing_ingredient: IngredientListingModel) {
+    if (listing_ingredient.name !== undefined) {
+      let ingredient = await this.ingredientCRUDService.updatedCacheData(listing_ingredient);
+      if (ingredient) {
+        this.router.navigateByUrl(
+          APP_URL.menu.name +
           "/" +
           APP_URL.menu.routes.ingredient.main +
           "/" +
           APP_URL.menu.routes.ingredient.routes.details,
-        {
-          state: {
-            ingredient: JSON.parse(JSON.stringify(ingredient)),
-            isCourse: true
-          },
-        }
-      );
+          {
+            state: {
+              ingredient: JSON.parse(JSON.stringify(ingredient)),
+              isCourse: true
+            },
+          }
+        );
+      }
     }
   }
 }

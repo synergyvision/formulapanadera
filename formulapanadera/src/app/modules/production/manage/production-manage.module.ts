@@ -7,6 +7,7 @@ import { IonicModule } from "@ionic/angular";
 import { TranslateModule } from "@ngx-translate/core";
 import { ComponentsModule } from "src/app/shared/components/components.module";
 import { ProductionManagePage } from "./production-manage.page";
+import { DirectivesModule } from "src/app/shared/directives/directives.module";
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TranslateModule,
     ComponentsModule,
+    DirectivesModule
   ],
   declarations: [ProductionManagePage],
 })

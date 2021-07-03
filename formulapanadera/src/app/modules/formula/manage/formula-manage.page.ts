@@ -36,6 +36,7 @@ import { CourseModel } from "src/app/core/models/course.model";
 import { DECIMALS } from "src/app/config/formats";
 import { ProductionCRUDService } from "src/app/core/services/firebase/production.service";
 import { CourseCRUDService } from "src/app/core/services/firebase/course.service";
+import { UserService } from "src/app/core/services/user.service";
 
 @Component({
   selector: "app-formula-manage",
@@ -71,7 +72,8 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
     private userStorageService: UserStorageService,
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
@@ -101,6 +103,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
           date: new Date(),
         },
         modifiers: [],
+        last_modified: null
       };
     } else {
       this.update = true;
@@ -185,7 +188,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
   formatPercentage(ingredient: IngredientPercentageModel) {
     let percentage: string = ingredient.percentage ? ingredient.percentage.toString() : "";
     ingredient.percentage = Number(
-      this.formatNumberService.formatStringToDecimals(percentage, DECIMALS.formula_percentage)
+      this.formatNumberService.formatStringToDecimals(percentage, 3)
     );
   }
 
@@ -509,9 +512,12 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
             .update(this.formula, this.original_formula)
             .then(async () => {
               let updated_formulas: FormulaModel[] = [this.formula];
-              let updated_productions: ProductionModel[] = []
-              await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
-              if (this.current_user.instructor) {
+              let updated_productions: ProductionModel[];
+              if (this.userService.hasPermission(this.current_user.role, [{ name: 'PRODUCTION', type: 'MANAGE' }])) {
+                updated_productions = []
+                await this.productionCRUDService.updateFormulas(updated_formulas, updated_productions);
+              }
+              if (this.userService.hasPermission(this.current_user.role, [{name: 'COURSE', type: 'MANAGE'}])) {
                 let updated_courses: CourseModel[] = []
                 await this.courseCRUDService.updateAll(updated_courses, [], updated_formulas, updated_productions);
               }
@@ -551,6 +557,7 @@ export class FormulaManagePage implements OnInit, ViewWillEnter {
           date: new Date(),
         },
         modifiers: [],
+        last_modified: new Date(),
       };
       let share: boolean = true;
       if (this.formula.user.owner == "") {

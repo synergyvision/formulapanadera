@@ -14,12 +14,14 @@ import { FirebaseService } from "../../interfaces/firebase-service.interface";
 import { ProductionService } from "../production.service";
 import { ShellModel } from "src/app/shared/shell/shell.model";
 import { FormulaModel } from "../../models/formula.model";
+import { UserStorageService } from "../storage/user.service";
 
 const API_STORAGE_KEY = environment.storage_key;
 
 @Injectable()
 export class ProductionCRUDService implements FirebaseService{
   collection = COLLECTIONS.production;
+  listing_collection = COLLECTIONS.production + '-listing';
 
   constructor(
     private afs: AngularFirestore,
@@ -27,7 +29,8 @@ export class ProductionCRUDService implements FirebaseService{
     private formulaCRUDService: FormulaCRUDService,
     private networkService: NetworkService,
     private storageService: StorageService,
-    private offlineManager: OfflineManagerService
+    private offlineManager: OfflineManagerService,
+    private userStorageService: UserStorageService
   ) { }
 
   /*
@@ -102,6 +105,11 @@ export class ProductionCRUDService implements FirebaseService{
       // Set formulas
       await this.createFormulas(`${this.collection}/${id}/${COLLECTIONS.formula}`, productionData);
       await this.afs.collection(this.collection).doc(id).set(production);
+      
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('C', productionData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'C', productionData, null);
       await this.updateLocalData('C', productionData);
@@ -141,6 +149,11 @@ export class ProductionCRUDService implements FirebaseService{
       // Set formulas
       await this.createFormulas(`${this.collection}/${productionData.id}/${COLLECTIONS.formula}`, productionData);
       await this.afs.collection(this.collection).doc(productionData.id).set(production);
+      
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('U', productionData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'U', productionData, originalProduction);
       await this.updateLocalData('U', productionData);
@@ -151,6 +164,11 @@ export class ProductionCRUDService implements FirebaseService{
     if (this.networkService.isConnectedToNetwork()) {
       await this.deleteFormulas(productionData);
       await this.afs.collection(this.collection).doc(productionData.id).delete();
+
+      let user = await this.userStorageService.getUser();
+      if (user.role == 'FREE') {
+        await this.updateLocalData('D', productionData);
+      }
     } else {
       await this.offlineManager.storeRequest(this.collection, 'D', productionData, null);
       await this.updateLocalData('D', productionData);
@@ -168,6 +186,7 @@ export class ProductionCRUDService implements FirebaseService{
 
   public async updateFormulas(updated_formulas: FormulaModel[], updated_productions: ProductionModel[]) {
     let productions: ProductionModel[] = JSON.parse(JSON.stringify(this.productionService.getCurrentProductions()));
+    if (!productions) productions = [];
     const prod_promises = productions.map((production) => {
       let original_production: ProductionModel = JSON.parse(JSON.stringify(production));
       let has_formula: boolean = this.productionService.hasFormula(production, updated_formulas);
