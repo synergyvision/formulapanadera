@@ -78,11 +78,13 @@ export class TabsPage implements OnInit, OnDestroy {
     }
     
     if (this.user.role == 'FREE') {
+      const local_ingredients = await this.ingredientCRUDService.getLocalData() as IngredientListingModel[] & ShellModel;
+      const local_formulas = await this.formulaCRUDService.getLocalData() as FormulaModel[] & ShellModel;
       this.ingredientService.setIngredientsListing(
-        await this.ingredientCRUDService.getLocalData() as IngredientListingModel[] & ShellModel
+        local_ingredients ? local_ingredients : []  as IngredientListingModel[] & ShellModel
       );
       this.formulaService.setFormulas(
-        await this.formulaCRUDService.getLocalData() as FormulaModel[] & ShellModel
+        local_formulas ? local_formulas : [] as FormulaModel[] & ShellModel
       );
     } else {
       this.startSubscribers();
@@ -122,8 +124,9 @@ export class TabsPage implements OnInit, OnDestroy {
               ingredients_aux as IngredientListingModel[] & ShellModel
             );
           } else {
+            const local_ingredients = await this.ingredientCRUDService.getLocalData() as IngredientModel[] & ShellModel;
             this.ingredientService.setIngredientsListing(
-              await this.ingredientCRUDService.getLocalData() as IngredientModel[] & ShellModel
+              local_ingredients ? local_ingredients : []  as IngredientListingModel[] & ShellModel
             );
           };
         });
@@ -141,8 +144,9 @@ export class TabsPage implements OnInit, OnDestroy {
             );
             this.formulaCRUDService.setLocalData(JSON.parse(JSON.stringify(formulas_aux)));
           } else {
+            const local_formulas = await this.formulaCRUDService.getLocalData() as FormulaModel[] & ShellModel;
             this.formulaService.setFormulas(
-              await this.formulaCRUDService.getLocalData() as FormulaModel[] & ShellModel
+              local_formulas ? local_formulas : [] as FormulaModel[] & ShellModel
             );
           };
         });
@@ -160,8 +164,9 @@ export class TabsPage implements OnInit, OnDestroy {
             );
             this.productionCRUDService.setLocalData(JSON.parse(JSON.stringify(productions_aux)));
           } else {
+            const local_productions = await this.productionCRUDService.getLocalData() as ProductionModel[] & ShellModel;
             this.productionService.setProductions(
-              await this.productionCRUDService.getLocalData() as ProductionModel[] & ShellModel
+              local_productions ? local_productions : [] as ProductionModel[] & ShellModel
             );
           };
         });
@@ -178,8 +183,9 @@ export class TabsPage implements OnInit, OnDestroy {
             );
             this.courseCRUDService.setLocalData('shared', JSON.parse(JSON.stringify(courses_aux)));
           } else {
+            const local_courses = await this.courseCRUDService.getLocalData('shared') as CourseModel[] & ShellModel;
             this.courseService.setSharedCourses(
-              await this.courseCRUDService.getLocalData('shared') as CourseModel[] & ShellModel
+              local_courses ? local_courses : [] as CourseModel[] & ShellModel
             );
           };
         });
@@ -196,8 +202,9 @@ export class TabsPage implements OnInit, OnDestroy {
             );
             this.courseCRUDService.setLocalData('mine', JSON.parse(JSON.stringify(courses_aux)));
           } else {
+            const local_courses = await this.courseCRUDService.getLocalData('mine') as CourseModel[] & ShellModel;
             this.courseService.setMyCourses(
-              await this.courseCRUDService.getLocalData('mine') as CourseModel[] & ShellModel
+              local_courses ? local_courses : [] as CourseModel[] & ShellModel
             );
           }
         });
