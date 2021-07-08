@@ -202,9 +202,6 @@ export class IngredientListingPage implements OnInit {
         this.courses = this.filteredCourses();
         this.isLoading = value.isShell;
       });
-    } else {
-      this.ingredients = [] as IngredientModel[] & ShellModel;
-      this.isLoading = false;
     }
   }
 

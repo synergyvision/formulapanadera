@@ -120,8 +120,6 @@ export class CourseListingPage implements OnInit {
       updateSearchObservable.subscribe((value) => {
         this.courses = value;
       });
-    } else {
-      this.courses = [] as CourseModel[] & ShellModel;
     }
   }
 }
