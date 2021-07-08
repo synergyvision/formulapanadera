@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(): Promise<any> {
     let user: UserModel;
     user = await this.userStorageService.getUser();
-    if (user) {
+    if (user && user.role) {
       return true;
     } else {
       this.router.navigate(

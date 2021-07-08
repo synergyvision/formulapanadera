@@ -165,9 +165,6 @@ export class FormulaListingPage implements OnInit {
         this.formulas = this.formulaService.sortFormulas(value);
         this.isLoading = value.isShell;
       });
-    } else {
-      this.formulas = [] as FormulaModel[] & ShellModel;
-      this.isLoading = false;
     }
   }
 

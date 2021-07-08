@@ -16,8 +16,8 @@ export const DECIMAL_BAKERS_PERCENTAGE_FORMAT = "1.1-2"
 // Number of decimals required
 export const DECIMALS = {
   temperature: 0,
-  formula_percentage: 2,
-  formula_grams: 2,
+  formula_percentage: 1,
+  formula_grams: 1,
   hydration: 1,
   fat: 1,
   weight: 1,
